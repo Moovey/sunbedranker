@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Log;
 
 class AmadeusService
 {
-    private string $apiKey;
-    private string $apiSecret;
-    private string $baseUrl;
+    private ?string $apiKey;
+    private ?string $apiSecret;
+    private ?string $baseUrl;
     private ?string $accessToken = null;
 
     public function __construct()
@@ -18,6 +18,14 @@ class AmadeusService
         $this->apiKey = config('services.amadeus.api_key');
         $this->apiSecret = config('services.amadeus.api_secret');
         $this->baseUrl = config('services.amadeus.base_url');
+    }
+
+    /**
+     * Check if service is properly configured
+     */
+    public function isConfigured(): bool
+    {
+        return !empty($this->apiKey) && !empty($this->apiSecret) && !empty($this->baseUrl);
     }
 
     /**
