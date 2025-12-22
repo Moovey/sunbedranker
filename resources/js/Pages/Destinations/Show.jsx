@@ -4,6 +4,7 @@ import Header from '@/Components/Header';
 
 export default function DestinationShow({ destination, hotels, filters = {} }) {
     const [localFilters, setLocalFilters] = useState(filters);
+    const [compareList, setCompareList] = useState([]);
 
     const handleFilterChange = (key, value) => {
         const newFilters = { ...localFilters, [key]: value };
@@ -14,6 +15,20 @@ export default function DestinationShow({ destination, hotels, filters = {} }) {
     const clearFilters = () => {
         setLocalFilters({});
         router.get(`/destinations/${destination.slug}`);
+    };
+
+    const toggleCompare = (hotelId, event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        setCompareList(prev => {
+            if (prev.includes(hotelId)) {
+                return prev.filter(id => id !== hotelId);
+            } else if (prev.length < 4) {
+                return [...prev, hotelId];
+            }
+            return prev;
+        });
     };
 
     return (
@@ -144,6 +159,36 @@ export default function DestinationShow({ destination, hotels, filters = {} }) {
 
                         {/* Hotels Grid */}
                         <div className="flex-1 min-w-0">
+                            {/* Compare Bar - Shows when hotels are selected */}
+                            {compareList.length > 0 && (
+                                <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border-2 border-neutral-900 p-4 sm:p-5 mb-4 sm:mb-6">
+                                    <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                                        <div className="text-center sm:text-left">
+                                            <p className="text-sm sm:text-base font-serif-luxury font-semibold text-neutral-900 mb-1">
+                                                {compareList.length} hotel{compareList.length !== 1 ? 's' : ''} selected
+                                            </p>
+                                            <p className="text-[10px] sm:text-xs text-neutral-600 font-sans-luxury">
+                                                Select up to 4 hotels to compare
+                                            </p>
+                                        </div>
+                                        <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
+                                            <button
+                                                onClick={() => setCompareList([])}
+                                                className="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-2.5 border border-neutral-300 text-neutral-700 font-sans-luxury font-normal rounded-lg hover:bg-neutral-50 transition-all duration-300 text-xs sm:text-sm tracking-wide"
+                                            >
+                                                Clear
+                                            </button>
+                                            <Link
+                                                href={`/compare?hotels=${compareList.join(',')}`}
+                                                className="flex-1 sm:flex-none px-6 sm:px-8 py-2 sm:py-2.5 bg-neutral-900 text-white font-sans-luxury font-normal rounded-lg hover:bg-neutral-800 transition-all duration-300 text-xs sm:text-sm tracking-wide uppercase hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] text-center"
+                                            >
+                                                Compare {compareList.length}
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            
                             {hotels.data.length === 0 ? (
                                 <div className="bg-white rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 md:p-10 lg:p-12 text-center">
                                     <div className="mb-4 sm:mb-6">
@@ -163,7 +208,12 @@ export default function DestinationShow({ destination, hotels, filters = {} }) {
                                 <>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-5 lg:gap-6 mb-4 sm:mb-6 md:mb-8">
                                         {hotels.data.map((hotel) => (
-                                            <HotelCard key={hotel.id} hotel={hotel} />
+                                            <HotelCard 
+                                                key={hotel.id} 
+                                                hotel={hotel}
+                                                isInCompare={compareList.includes(hotel.id)}
+                                                onToggleCompare={(e) => toggleCompare(hotel.id, e)}
+                                            />
                                         ))}
                                     </div>
 
@@ -194,9 +244,28 @@ export default function DestinationShow({ destination, hotels, filters = {} }) {
     );
 }
 
-function HotelCard({ hotel }) {
+function HotelCard({ hotel, isInCompare, onToggleCompare }) {
     return (
-        <div className="bg-white rounded-lg sm:rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group relative">
+            {/* Compare Checkbox */}
+            <button
+                onClick={onToggleCompare}
+                className={`absolute top-2 sm:top-3 left-2 sm:left-3 z-10 p-2 rounded-lg transition-all duration-300 shadow-lg ${
+                    isInCompare 
+                        ? 'bg-neutral-900 text-white' 
+                        : 'bg-white/90 text-neutral-700 hover:bg-white'
+                }`}
+                title={isInCompare ? 'Remove from comparison' : 'Add to comparison'}
+            >
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {isInCompare ? (
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    ) : (
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    )}
+                </svg>
+            </button>
+            
             <div className="flex flex-col sm:flex-row h-full">
                 <div className="relative w-full sm:w-2/5 md:w-1/3 lg:w-2/5 h-40 sm:h-auto flex-shrink-0">
                     <img
