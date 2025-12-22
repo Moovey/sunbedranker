@@ -100,20 +100,8 @@ class DatabaseSeeder extends Seeder
      */
     private function createScoringWeights(): void
     {
-        $weights = [
-            ['criteria' => 'pool_size', 'weight' => 25],
-            ['criteria' => 'pool_features', 'weight' => 20],
-            ['criteria' => 'atmosphere', 'weight' => 15],
-            ['criteria' => 'cleanliness', 'weight' => 20],
-            ['criteria' => 'value', 'weight' => 20],
-        ];
-
-        foreach ($weights as $weight) {
-            ScoringWeight::firstOrCreate(
-                ['criteria' => $weight['criteria']],
-                $weight
-            );
-        }
+        // Scoring weights are already created by the migration
+        // No need to create them again
     }
 
     /**
