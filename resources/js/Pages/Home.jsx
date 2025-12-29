@@ -49,7 +49,9 @@ export default function Home({ featuredDestinations, topRatedHotels, familyFrien
 
     return (
         <>
-            <Head title="Find the Best Hotel Pools & Sunbeds" />
+            <Head title="Find the Best Hotel Pools & Sunbeds">
+                <meta name="agd-partner-manual-verification" />
+            </Head>
             
             <div className="min-h-screen bg-white font-sans-luxury">
                 <Header />
