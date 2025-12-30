@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -48,6 +49,12 @@ class Hotel extends Model
         'click_count',
         'average_rating',
         'review_count',
+        'affiliate_provider',
+        'affiliate_tracking_code',
+        'affiliate_revenue',
+        'override_name',
+        'override_images',
+        'override_description',
     ];
 
     protected $casts = [
@@ -64,6 +71,10 @@ class Hotel extends Model
         'quiet_score' => 'decimal:1',
         'party_score' => 'decimal:1',
         'average_rating' => 'decimal:1',
+        'affiliate_revenue' => 'decimal:2',
+        'override_name' => 'boolean',
+        'override_images' => 'boolean',
+        'override_description' => 'boolean',
     ];
 
     public function destination(): BelongsTo
@@ -94,6 +105,11 @@ class Hotel extends Model
     public function analytics(): HasMany
     {
         return $this->hasMany(HotelAnalytic::class);
+    }
+
+    public function badges(): BelongsToMany
+    {
+        return $this->belongsToMany(Badge::class)->withTimestamps();
     }
 
     public function isPremium(): bool

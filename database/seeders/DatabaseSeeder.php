@@ -54,6 +54,17 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        // Create hotelier user
+        if (!User::where('email', 'hotelier@sunbedranker.com')->exists()) {
+            User::create([
+                'name' => 'Hotelier User',
+                'email' => 'hotelier@sunbedranker.com',
+                'password' => bcrypt('Hotelier@123456'),
+                'email_verified_at' => now(),
+                'role' => 'hotelier',
+            ]);
+        }
+
         // Create scoring weights
         $this->createScoringWeights();
 
@@ -84,6 +95,15 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Admin User',
                 'email' => 'admin@example.com',
                 'role' => 'admin',
+            ]);
+        }
+
+        // Hotelier User (only if doesn't exist)
+        if (!User::where('email', 'hotelier@example.com')->exists()) {
+            User::factory()->create([
+                'name' => 'Hotelier User',
+                'email' => 'hotelier@example.com',
+                'role' => 'hotelier',
             ]);
         }
 

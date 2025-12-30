@@ -54,6 +54,12 @@ class PoolCriteria extends Model
         'is_verified',
         'verified_at',
         'verified_by',
+        'pool_overview',
+        'pool_details',
+        'shade_options',
+        'special_features_list',
+        'atmosphere_vibe',
+        'family_features',
     ];
 
     protected $casts = [
@@ -77,6 +83,12 @@ class PoolCriteria extends Model
         'has_kids_activities' => 'boolean',
         'is_verified' => 'boolean',
         'verified_at' => 'datetime',
+        'pool_overview' => 'array',
+        'pool_details' => 'array',
+        'shade_options' => 'array',
+        'special_features_list' => 'array',
+        'atmosphere_vibe' => 'array',
+        'family_features' => 'array',
     ];
 
     protected static function boot()

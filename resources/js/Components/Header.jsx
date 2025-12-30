@@ -75,7 +75,7 @@ export default function Header() {
                                         
                                         {auth.user.role === 'admin' && (
                                             <Link
-                                                href="/admin"
+                                                href={route('admin.dashboard')}
                                                 className="block px-4 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50 transition-colors duration-200"
                                             >
                                                 <div className="flex items-center gap-2">
@@ -183,7 +183,7 @@ export default function Header() {
                                         
                                         {auth.user.role === 'admin' && (
                                             <Link
-                                                href="/admin"
+                                                href={route('admin.dashboard')}
                                                 className="block px-4 py-3 text-sm text-neutral-700 hover:bg-neutral-50"
                                             >
                                                 <div className="flex items-center gap-3">
