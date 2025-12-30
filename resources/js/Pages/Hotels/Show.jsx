@@ -168,25 +168,6 @@ export default function HotelShow({ hotel, similarHotels }) {
                         {/* Main Content */}
                         <div className="lg:col-span-2 space-y-5 sm:space-y-6 lg:space-y-7 xl:space-y-8">
                             
-                            {/* Pool & Sun Overview - Badges */}
-                            {hotel.pool_criteria && (
-                                <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-4 sm:mb-5 lg:mb-6 flex items-center gap-2 lg:gap-3">
-                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M2 15c1.67-2.67 3.67-4 6-4s4.33 1.33 6 4c1.67-2.67 3.67-4 6-4s4.33 1.33 6 4M2 21c1.67-2.67 3.67-4 6-4s4.33 1.33 6 4c1.67-2.67 3.67-4 6-4s4.33 1.33 6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
-                                        Pool & Sun Overview
-                                    </h2>
-                                    <div className="flex flex-wrap gap-2 sm:gap-3 lg:gap-4">
-                                        {getSunBadges(hotel.pool_criteria).map((badge, index) => (
-                                            <span key={index} className={`px-3 sm:px-4 lg:px-5 xl:px-6 py-1.5 sm:py-2 lg:py-2.5 xl:py-3 rounded-full font-sans-luxury font-medium text-xs sm:text-sm lg:text-base xl:text-lg ${badge.color}`}>
-                                                {badge.icon} {badge.text}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
                             {/* Pool Details - Metrics Table */}
                             {hotel.pool_criteria && (
                                 <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
@@ -435,71 +416,6 @@ export default function HotelShow({ hotel, similarHotels }) {
                                 </div>
                             )}
 
-                            {/* Atmosphere & Vibe */}
-                            {hotel.pool_criteria && (
-                                <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
-                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 0 1-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
-                                        Atmosphere & Vibe
-                                    </h2>
-                                    
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {hotel.pool_criteria.atmosphere && (
-                                            <div className="flex items-start gap-3 p-4 rounded-lg bg-neutral-50">
-                                                <div className="text-2xl sm:text-3xl flex-shrink-0">{getAtmosphereIcon(hotel.pool_criteria.atmosphere)}</div>
-                                                <div>
-                                                    <h4 className="font-serif-luxury font-semibold text-neutral-900 mb-1 text-sm sm:text-base">
-                                                        {hotel.pool_criteria.atmosphere.charAt(0).toUpperCase() + hotel.pool_criteria.atmosphere.slice(1)} Atmosphere
-                                                    </h4>
-                                                    <p className="text-xs sm:text-sm text-neutral-600 font-sans-luxury">{getAtmosphereDescription(hotel.pool_criteria.atmosphere)}</p>
-                                                </div>
-                                            </div>
-                                        )}
-                                        
-                                        {hotel.pool_criteria.noise_level && (
-                                            <div className="flex items-start gap-3 p-4 rounded-lg bg-neutral-50">
-                                                <svg className="w-6 h-6 sm:w-7 sm:h-7 text-neutral-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414 1.06l3-3a2 2 0 012.828 0l3 3a9 9 0 003.172-14.9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                </svg>
-                                                <div>
-                                                    <h4 className="font-serif-luxury font-semibold text-neutral-900 mb-1 text-sm sm:text-base">
-                                                        {hotel.pool_criteria.noise_level.charAt(0).toUpperCase() + hotel.pool_criteria.noise_level.slice(1)} Noise Level
-                                                    </h4>
-                                                    <p className="text-xs sm:text-sm text-neutral-600 font-sans-luxury">{getNoiseDescription(hotel.pool_criteria.noise_level)}</p>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {hotel.pool_criteria.is_adults_only && (
-                                            <div className="flex items-start gap-3 p-4 rounded-lg bg-neutral-50">
-                                                <svg className="w-6 h-6 sm:w-7 sm:h-7 text-neutral-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                </svg>
-                                                <div>
-                                                    <h4 className="font-serif-luxury font-semibold text-neutral-900 mb-1 text-sm sm:text-base">Adults Only</h4>
-                                                    <p className="text-xs sm:text-sm text-neutral-600 font-sans-luxury">Peaceful environment without children</p>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {hotel.pool_criteria.has_music && (
-                                            <div className="flex items-start gap-3 p-4 rounded-lg bg-neutral-50">
-                                                <svg className="w-6 h-6 sm:w-7 sm:h-7 text-neutral-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                </svg>
-                                                <div>
-                                                    <h4 className="font-serif-luxury font-semibold text-neutral-900 mb-1 text-sm sm:text-base">Background Music</h4>
-                                                    <p className="text-xs sm:text-sm text-neutral-600 font-sans-luxury">Ambient music enhances the atmosphere</p>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Family Features */}
                             {hotel.pool_criteria && (hotel.pool_criteria.has_kids_pool || hotel.pool_criteria.has_splash_area || hotel.pool_criteria.has_lifeguard) && (
                                 <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
                                     <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">

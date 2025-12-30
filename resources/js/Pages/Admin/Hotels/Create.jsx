@@ -39,7 +39,7 @@ export default function CreateHotel({ destinations, stats }) {
         pool_details: [],
         pool_details_other: '',
         sun_exposure: '',
-        number_of_pools: '',
+        number_of_pools: 1,
         shade_options: [],
         shade_options_other: '',
         special_features: [],
