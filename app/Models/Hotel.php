@@ -77,6 +77,8 @@ class Hotel extends Model
         'override_description' => 'boolean',
     ];
 
+    protected $appends = ['main_image_url', 'gallery_images_urls'];
+
     public function destination(): BelongsTo
     {
         return $this->belongsTo(Destination::class);
@@ -179,5 +181,42 @@ class Hotel extends Model
     {
         return $query->whereNotNull('quiet_score')
             ->orderByDesc('quiet_score');
+    }
+
+    /**
+     * Get the main image URL (handles both uploaded files and external URLs)
+     */
+    public function getMainImageUrlAttribute(): ?string
+    {
+        if (!$this->main_image) {
+            return null;
+        }
+
+        // If it's already a full URL (Unsplash, etc.), return as is
+        if (filter_var($this->main_image, FILTER_VALIDATE_URL)) {
+            return $this->main_image;
+        }
+
+        // Otherwise, convert storage path to URL
+        return asset('storage/' . $this->main_image);
+    }
+
+    /**
+     * Get gallery images URLs (handles both uploaded files and external URLs)
+     */
+    public function getGalleryImagesUrlsAttribute(): array
+    {
+        if (!$this->images || !is_array($this->images)) {
+            return [];
+        }
+
+        return array_map(function ($image) {
+            // If it's already a full URL, return as is
+            if (filter_var($image, FILTER_VALIDATE_URL)) {
+                return $image;
+            }
+            // Otherwise, convert storage path to URL
+            return asset('storage/' . $image);
+        }, $this->images);
     }
 }

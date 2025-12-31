@@ -84,11 +84,11 @@ export default function HotelCompare({ hotels, auth }) {
                                     {hotels.map((hotel) => (
                                         <th key={hotel.id} className="p-3 sm:p-4 md:p-5 lg:p-6 text-center min-w-[220px] sm:min-w-[250px] md:min-w-[280px] lg:min-w-[300px]">
                                             <div className="space-y-2 sm:space-y-3">
-                                                <div className="overflow-hidden rounded-lg sm:rounded-xl shadow-md sm:shadow-lg">
+                                                <div className="overflow-hidden rounded-lg sm:rounded-xl shadow-md sm:shadow-lg w-full h-32 sm:h-36 md:h-40">
                                                     <img
-                                                        src={hotel.main_image || '/images/default-hotel.jpg'}
+                                                        src={hotel.main_image_url || '/images/default-hotel.jpg'}
                                                         alt={hotel.name}
-                                                        className="w-full h-28 sm:h-32 md:h-36 lg:h-40 xl:h-44 object-cover transform hover:scale-105 transition-transform duration-500"
+                                                        className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-500"
                                                     />
                                                 </div>
                                                 <Link

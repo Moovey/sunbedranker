@@ -269,7 +269,7 @@ function HotelCard({ hotel, isInCompare, onToggleCompare }) {
             <div className="flex flex-col sm:flex-row h-full">
                 <div className="relative w-full sm:w-2/5 md:w-1/3 lg:w-2/5 h-40 sm:h-auto flex-shrink-0">
                     <img
-                        src={hotel.main_image || '/images/default-hotel.jpg'}
+                        src={hotel.main_image_url || '/images/default-hotel.jpg'}
                         alt={hotel.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />

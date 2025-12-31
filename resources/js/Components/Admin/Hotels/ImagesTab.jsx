@@ -12,9 +12,9 @@ export default function ImagesTab({
             <div>
                 <h3 className="text-lg font-medium text-neutral-900 mb-4">Main Image</h3>
                 <div className="flex items-start gap-6">
-                    {hotel.main_image && (
+                    {hotel.main_image_url && (
                         <img
-                            src={hotel.main_image}
+                            src={hotel.main_image_url}
                             alt={hotel.name}
                             className="w-64 h-40 object-cover rounded-lg"
                         />
@@ -45,15 +45,15 @@ export default function ImagesTab({
             <div className="border-t border-neutral-200 pt-8">
                 <h3 className="text-lg font-medium text-neutral-900 mb-4">Image Gallery</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                    {hotel.images?.map((image, index) => (
+                    {hotel.gallery_images_urls?.map((imageUrl, index) => (
                         <div key={index} className="relative group">
                             <img
-                                src={`/storage/${image}`}
+                                src={imageUrl}
                                 alt={`Gallery ${index + 1}`}
                                 className="w-full h-32 object-cover rounded-lg"
                             />
                             <button
-                                onClick={() => deleteGalleryImage(image)}
+                                onClick={() => deleteGalleryImage(hotel.images[index])}
                                 className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                                 ×

@@ -173,9 +173,9 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
                                         <tr key={hotel.id} className="hover:bg-neutral-50">
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center">
-                                                    {hotel.main_image && (
+                                                    {hotel.main_image_url && (
                                                         <img
-                                                            src={hotel.main_image}
+                                                            src={hotel.main_image_url}
                                                             alt={hotel.name}
                                                             className="w-16 h-16 rounded-lg object-cover mr-4"
                                                         />

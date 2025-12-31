@@ -12,8 +12,8 @@ export default function HotelShow({ hotel, similarHotels }) {
 
     // Get all images (main + gallery)
     const allImages = [
-        hotel.main_image,
-        ...(hotel.images || [])
+        hotel.main_image_url,
+        ...(hotel.gallery_images_urls || [])
     ].filter(Boolean);
 
     return (
@@ -820,7 +820,7 @@ function SimilarHotelCard({ hotel }) {
         <Link href={`/hotels/${hotel.slug}`} className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
             <div className="relative h-40 sm:h-48 overflow-hidden">
                 <img
-                    src={hotel.main_image || '/images/default-hotel.jpg'}
+                    src={hotel.main_image_url || '/images/default-hotel.jpg'}
                     alt={hotel.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />

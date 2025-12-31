@@ -8,6 +8,7 @@ import ContactLocationTab from '@/Components/Admin/Hotels/ContactLocationTab';
 import PoolFeaturesTab from '@/Components/Admin/Hotels/PoolFeaturesTab';
 import CreateAffiliateTab from '@/Components/Admin/Hotels/CreateAffiliateTab';
 import SettingsTab from '@/Components/Admin/Hotels/SettingsTab';
+import CreateImagesTab from '@/Components/Admin/Hotels/CreateImagesTab';
 
 export default function CreateHotel({ destinations, stats }) {
     const [activeTab, setActiveTab] = useState('basic');
@@ -33,6 +34,9 @@ export default function CreateHotel({ destinations, stats }) {
         is_verified: false,
         is_featured: false,
         subscription_tier: 'free',
+        // Images
+        main_image: null,
+        gallery_images: [],
         // Pool & Features
         pool_overview: [],
         pool_overview_other: '',
@@ -98,6 +102,9 @@ export default function CreateHotel({ destinations, stats }) {
                                 <TabButton active={activeTab === 'contact'} onClick={() => setActiveTab('contact')}>
                                     Contact & Location
                                 </TabButton>
+                                <TabButton active={activeTab === 'images'} onClick={() => setActiveTab('images')}>
+                                    Images
+                                </TabButton>
                                 <TabButton active={activeTab === 'pool'} onClick={() => setActiveTab('pool')}>
                                     Pool & Features
                                 </TabButton>
@@ -123,6 +130,14 @@ export default function CreateHotel({ destinations, stats }) {
 
                             {activeTab === 'contact' && (
                                 <ContactLocationTab
+                                    data={data}
+                                    setData={setData}
+                                    errors={errors}
+                                />
+                            )}
+
+                            {activeTab === 'images' && (
+                                <CreateImagesTab
                                     data={data}
                                     setData={setData}
                                     errors={errors}

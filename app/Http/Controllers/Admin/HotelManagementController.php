@@ -87,6 +87,10 @@ class HotelManagementController extends Controller
             'is_verified' => 'boolean',
             'is_featured' => 'boolean',
             'subscription_tier' => 'in:free,enhanced,premium',
+            // Images
+            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'gallery_images' => 'nullable|array|max:10',
+            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
             // Pool & Features
             'pool_overview' => 'nullable|array',
             'pool_details' => 'nullable|array',
@@ -101,6 +105,20 @@ class HotelManagementController extends Controller
         $validated['slug'] = Str::slug($validated['name']);
         $validated['is_active'] = $validated['is_active'] ?? true;
 
+        // Handle main image upload
+        if ($request->hasFile('main_image')) {
+            $validated['main_image'] = $request->file('main_image')->store('hotels/main', 'public');
+        }
+
+        // Handle gallery images upload
+        if ($request->hasFile('gallery_images')) {
+            $galleryPaths = [];
+            foreach ($request->file('gallery_images') as $image) {
+                $galleryPaths[] = $image->store('hotels/gallery', 'public');
+            }
+            $validated['images'] = $galleryPaths;
+        }
+
         // Extract pool criteria data
         $poolCriteriaData = [
             'pool_overview' => $validated['pool_overview'] ?? [],
@@ -113,10 +131,10 @@ class HotelManagementController extends Controller
             'family_features' => $validated['family_features'] ?? [],
         ];
 
-        // Remove pool criteria fields from hotel data
+        // Remove pool criteria and gallery_images fields from hotel data
         unset($validated['pool_overview'], $validated['pool_details'], $validated['sun_exposure'], 
               $validated['number_of_pools'], $validated['shade_options'], $validated['special_features'],
-              $validated['atmosphere_vibe'], $validated['family_features']);
+              $validated['atmosphere_vibe'], $validated['family_features'], $validated['gallery_images']);
 
         $hotel = Hotel::create($validated);
 
