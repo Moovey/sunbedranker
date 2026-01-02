@@ -126,8 +126,30 @@ export default function CreateHotel({ destinations, stats }) {
             },
             onError: (errors) => {
                 console.error('Validation errors:', errors);
-                const errorMessages = Object.values(errors).flat();
-                toast.error(errorMessages[0] || 'Failed to create hotel. Please check the form.');
+                
+                // Scroll to top to show error messages
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Show first error in toast
+                const firstError = Object.values(errors)[0];
+                const errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
+                toast.error(errorMessage || 'Please fix the validation errors and try again.');
+                
+                // Switch to the first tab with errors
+                const errorFields = Object.keys(errors);
+                if (errorFields.includes('name') || errorFields.includes('destination_id') || errorFields.includes('description')) {
+                    setActiveTab('basic');
+                } else if (errorFields.includes('address') || errorFields.includes('latitude') || errorFields.includes('longitude') || errorFields.includes('email')) {
+                    setActiveTab('contact');
+                } else if (errorFields.includes('main_image') || errorFields.includes('gallery_images')) {
+                    setActiveTab('images');
+                } else if (errorFields.includes('sunbed_count') || errorFields.includes('sun_exposure') || errorFields.includes('pool_size_category')) {
+                    setActiveTab('pool');
+                } else if (errorFields.some(field => field.includes('affiliate'))) {
+                    setActiveTab('affiliate');
+                } else {
+                    setActiveTab('settings');
+                }
             },
         });
     };
