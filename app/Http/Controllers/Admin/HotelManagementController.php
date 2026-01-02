@@ -76,11 +76,15 @@ class HotelManagementController extends Controller
                 'has_gallery' => $request->hasFile('gallery_images'),
             ]);
             
-            // Convert empty strings to null for rating fields
+            // Convert empty strings to null for all nullable numeric fields
             $request->merge([
+                'latitude' => $request->latitude === '' ? null : $request->latitude,
+                'longitude' => $request->longitude === '' ? null : $request->longitude,
                 'cleanliness_rating' => $request->cleanliness_rating ?: null,
-                'sunbed_condition_rating' => $request->sunbed_condition_rating ?: null,
+                'sunbed_condition_rating' => ($request->sunbed_condition_rating === '0' || $request->sunbed_condition_rating === 0) ? null : ($request->sunbed_condition_rating ?: null),
                 'tiling_condition_rating' => $request->tiling_condition_rating ?: null,
+                'pool_size_sqm' => $request->pool_size_sqm === '' ? null : $request->pool_size_sqm,
+                'kids_pool_depth_m' => $request->kids_pool_depth_m === '' ? null : $request->kids_pool_depth_m,
             ]);
             
             $validated = $request->validate([
@@ -88,8 +92,8 @@ class HotelManagementController extends Controller
                 'destination_id' => 'required|exists:destinations,id',
                 'description' => 'nullable|string',
                 'address' => 'required|string',
-                'latitude' => 'nullable|numeric|between:-90,90',
-                'longitude' => 'nullable|numeric|between:-180,180',
+                'latitude' => 'required|numeric|between:-90,90',
+                'longitude' => 'required|numeric|between:-180,180',
                 'star_rating' => 'nullable|integer|min:1|max:5',
                 'total_rooms' => 'nullable|integer|min:1',
                 'phone' => 'nullable|string',
@@ -144,9 +148,9 @@ class HotelManagementController extends Controller
                 'entertainment_types' => 'nullable|array',
                 
                 // Pool Criteria - 8. Cleanliness & Maintenance
-                'cleanliness_rating' => 'nullable|sometimes|integer|min:1|max:5',
-                'sunbed_condition_rating' => 'nullable|sometimes|integer|min:1|max:5',
-                'tiling_condition_rating' => 'nullable|sometimes|integer|min:1|max:5',
+                'cleanliness_rating' => 'nullable|integer|min:1|max:5',
+                'sunbed_condition_rating' => 'nullable|integer|min:1|max:5',
+                'tiling_condition_rating' => 'nullable|integer|min:1|max:5',
                 
                 // Pool Criteria - 9. Accessibility Features
                 'has_accessibility_ramp' => 'boolean',
@@ -257,9 +261,13 @@ class HotelManagementController extends Controller
             Log::warning('Validation failed', [
                 'errors' => $e->errors(),
                 'user_id' => Auth::id(),
+                'request_data' => $request->except(['main_image', 'gallery_images']),
             ]);
-            // Re-throw validation exceptions so they're handled properly
-            throw $e;
+            
+            // Make sure errors are returned to Inertia
+            return back()
+                ->withErrors($e->errors())
+                ->withInput();
         } catch (\Exception $e) {
             // Log the error for debugging
             Log::error('Hotel creation failed', [
