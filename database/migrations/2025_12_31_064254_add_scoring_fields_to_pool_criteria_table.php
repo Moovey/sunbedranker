@@ -27,6 +27,10 @@ return new class extends Migration
                 $table->enum('pool_size_category', ['small', 'medium', 'large', 'very_large'])->nullable();
             }
             
+            if (!Schema::hasColumn('pool_criteria', 'pool_size_sqm')) {
+                $table->decimal('pool_size_sqm', 8, 2)->nullable();
+            }
+            
             if (!Schema::hasColumn('pool_criteria', 'has_waiter_service')) {
                 $table->boolean('has_waiter_service')->default(false);
             }
@@ -100,7 +104,7 @@ return new class extends Migration
     {
         Schema::table('pool_criteria', function (Blueprint $table) {
             $columns = [
-                'sunbed_count', 'sunbed_types', 'pool_size_category', 'has_waiter_service',
+                'sunbed_count', 'sunbed_types', 'pool_size_category', 'pool_size_sqm', 'has_waiter_service',
                 'sunbed_condition_rating', 'tiling_condition_rating', 'has_accessibility_ramp',
                 'has_pool_hoist', 'has_step_free_access', 'has_elevator_to_rooftop',
                 'has_splash_park', 'has_waterslide', 'has_luxury_cabanas', 'has_cabana_service',
