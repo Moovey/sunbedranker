@@ -225,7 +225,7 @@ class HotelManagementController extends Controller
             $this->scoringService->calculateAndUpdateScores($hotel->fresh());
         }
 
-        return redirect()->route('admin.hotels.edit', $hotel)
+        return redirect()->route('admin.hotels.index')
             ->with('success', 'Hotel created successfully with pool criteria scores calculated.');
     }
 

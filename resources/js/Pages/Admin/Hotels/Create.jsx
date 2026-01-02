@@ -12,6 +12,91 @@ import CreateImagesTab from '@/Components/Admin/Hotels/CreateImagesTab';
 
 export default function CreateHotel({ destinations, stats }) {
     const [activeTab, setActiveTab] = useState('basic');
+    const [validationErrors, setValidationErrors] = useState({});
+
+    const tabs = ['basic', 'contact', 'images', 'pool', 'affiliate', 'settings'];
+    
+    const validateTab = (tab) => {
+        const errors = {};
+        
+        switch(tab) {
+            case 'basic':
+                if (!data.name?.trim()) {
+                    errors.name = 'Hotel name is required';
+                }
+                if (!data.destination_id) {
+                    errors.destination_id = 'Destination is required';
+                }
+                break;
+                
+            case 'contact':
+                if (!data.address?.trim()) {
+                    errors.address = 'Address is required';
+                }
+                if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+                    errors.email = 'Valid email is required';
+                }
+                if (data.latitude && (isNaN(data.latitude) || data.latitude < -90 || data.latitude > 90)) {
+                    errors.latitude = 'Latitude must be between -90 and 90';
+                }
+                if (data.longitude && (isNaN(data.longitude) || data.longitude < -180 || data.longitude > 180)) {
+                    errors.longitude = 'Longitude must be between -180 and 180';
+                }
+                break;
+                
+            case 'images':
+                if (!data.main_image) {
+                    errors.main_image = 'Main image is required';
+                }
+                break;
+                
+            case 'pool':
+                if (!data.sunbed_count || data.sunbed_count < 1) {
+                    errors.sunbed_count = 'Sunbed count is required';
+                }
+                if (!data.sun_exposure) {
+                    errors.sun_exposure = 'Sun exposure is required';
+                }
+                if (!data.pool_size_category) {
+                    errors.pool_size_category = 'Pool size category is required';
+                }
+                break;
+                
+            case 'affiliate':
+                // Affiliate links are optional, no required validation
+                break;
+                
+            case 'settings':
+                // Settings have defaults, no required validation
+                break;
+        }
+        
+        return errors;
+    };
+    
+    const nextTab = () => {
+        const errors = validateTab(activeTab);
+        
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
+            toast.error('Please fill in all required fields before proceeding');
+            return;
+        }
+        
+        setValidationErrors({});
+        const currentIndex = tabs.indexOf(activeTab);
+        if (currentIndex < tabs.length - 1) {
+            setActiveTab(tabs[currentIndex + 1]);
+        }
+    };
+
+    const prevTab = () => {
+        setValidationErrors({});
+        const currentIndex = tabs.indexOf(activeTab);
+        if (currentIndex > 0) {
+            setActiveTab(tabs[currentIndex - 1]);
+        }
+    };
 
     const { data, setData, post, processing, errors } = useForm({
         name: '',
@@ -143,11 +228,11 @@ export default function CreateHotel({ destinations, stats }) {
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12 lg:py-16">
                     {/* Validation Errors Display */}
-                    {Object.keys(errors).length > 0 && (
+                    {(Object.keys(errors).length > 0 || Object.keys(validationErrors).length > 0) && (
                         <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
                             <h3 className="text-red-800 font-semibold mb-2">Please fix the following errors:</h3>
                             <ul className="list-disc list-inside text-red-700 space-y-1">
-                                {Object.entries(errors).map(([field, messages]) => (
+                                {Object.entries({...errors, ...validationErrors}).map(([field, messages]) => (
                                     <li key={field}>
                                         <span className="font-medium">{field}:</span> {Array.isArray(messages) ? messages.join(', ') : messages}
                                     </li>
@@ -187,7 +272,7 @@ export default function CreateHotel({ destinations, stats }) {
                                 <CreateBasicInfoTab
                                     data={data}
                                     setData={setData}
-                                    errors={errors}
+                                    errors={{...errors, ...validationErrors}}
                                     destinations={destinations}
                                 />
                             )}
@@ -196,7 +281,7 @@ export default function CreateHotel({ destinations, stats }) {
                                 <ContactLocationTab
                                     data={data}
                                     setData={setData}
-                                    errors={errors}
+                                    errors={{...errors, ...validationErrors}}
                                 />
                             )}
 
@@ -204,7 +289,7 @@ export default function CreateHotel({ destinations, stats }) {
                                 <CreateImagesTab
                                     data={data}
                                     setData={setData}
-                                    errors={errors}
+                                    errors={{...errors, ...validationErrors}}
                                 />
                             )}
 
@@ -212,7 +297,7 @@ export default function CreateHotel({ destinations, stats }) {
                                 <PoolCriteriaTab
                                     data={data}
                                     setData={setData}
-                                    errors={errors}
+                                    errors={{...errors, ...validationErrors}}
                                 />
                             )}
 
@@ -220,7 +305,7 @@ export default function CreateHotel({ destinations, stats }) {
                                 <CreateAffiliateTab
                                     data={data}
                                     setData={setData}
-                                    errors={errors}
+                                    errors={{...errors, ...validationErrors}}
                                 />
                             )}
 
@@ -228,26 +313,49 @@ export default function CreateHotel({ destinations, stats }) {
                                 <SettingsTab
                                     data={data}
                                     setData={setData}
-                                    errors={errors}
+                                    errors={{...errors, ...validationErrors}}
                                 />
                             )}
 
                             {/* Action Buttons */}
-                            <div className="mt-8 pt-6 border-t border-neutral-200 flex flex-col sm:flex-row gap-3 justify-end">
+                            <div className="mt-8 pt-6 border-t border-neutral-200 flex flex-col sm:flex-row gap-3 justify-between">
                                 <Link
                                     href={route('admin.hotels.index')}
                                     className="px-4 sm:px-6 py-3 sm:py-4 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 font-light transition-all duration-300 text-center tracking-wide text-sm sm:text-base"
                                 >
                                     Cancel
                                 </Link>
-                                <button
-                                    type="submit"
-                                    disabled={processing}
-                                    className="px-4 sm:px-6 py-3 sm:py-4 bg-neutral-900 text-white font-light rounded-lg hover:bg-neutral-800 transition-all duration-300 text-center tracking-wide hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
-                                >
-                                    {processing ? 'Creating...' : 'Create Hotel'}
-                                </button>
-                            </div> Hotel & Calculating Scores
+                                
+                                <div className="flex flex-col sm:flex-row gap-3">
+                                    {activeTab !== 'basic' && (
+                                        <button
+                                            type="button"
+                                            onClick={prevTab}
+                                            className="px-4 sm:px-6 py-3 sm:py-4 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 font-light transition-all duration-300 text-center tracking-wide text-sm sm:text-base"
+                                        >
+                                            Previous
+                                        </button>
+                                    )}
+                                    
+                                    {activeTab !== 'settings' ? (
+                                        <button
+                                            type="button"
+                                            onClick={nextTab}
+                                            className="px-4 sm:px-6 py-3 sm:py-4 bg-neutral-900 text-white font-light rounded-lg hover:bg-neutral-800 transition-all duration-300 text-center tracking-wide hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] text-sm sm:text-base"
+                                        >
+                                            Next
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="submit"
+                                            disabled={processing}
+                                            className="px-4 sm:px-6 py-3 sm:py-4 bg-neutral-900 text-white font-light rounded-lg hover:bg-neutral-800 transition-all duration-300 text-center tracking-wide hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                                        >
+                                            {processing ? 'Creating...' : 'Create Hotel'}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
