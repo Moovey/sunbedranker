@@ -477,6 +477,372 @@ export default function HotelShow({ hotel, similarHotels }) {
                                 </div>
                             )}
 
+                            {/* Comprehensive Pool Criteria Details */}
+                            {hotel.pool_criteria && (
+                                <>
+                                    {/* 1. Sunbed Availability & Ratio */}
+                                    {(hotel.pool_criteria.sunbed_count || hotel.pool_criteria.sunbed_to_guest_ratio || hotel.pool_criteria.sunbed_types) && (
+                                        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
+                                            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                                                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                                Sunbed Availability
+                                            </h2>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                                {hotel.pool_criteria.sunbed_count && (
+                                                    <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                                                        <div className="text-2xl font-bold text-amber-700">{hotel.pool_criteria.sunbed_count}</div>
+                                                        <div className="text-sm text-neutral-700">Total Sunbeds</div>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.sunbed_to_guest_ratio && (
+                                                    <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                                                        <div className="text-2xl font-bold text-emerald-700">{hotel.pool_criteria.sunbed_to_guest_ratio}</div>
+                                                        <div className="text-sm text-neutral-700">Sunbed Ratio</div>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.sunbed_types && hotel.pool_criteria.sunbed_types.length > 0 && (
+                                                    <div className="md:col-span-2 lg:col-span-1">
+                                                        <div className="text-sm font-semibold text-neutral-900 mb-2">Sunbed Types:</div>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {hotel.pool_criteria.sunbed_types.map((type, i) => (
+                                                                <span key={i} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium capitalize">
+                                                                    {type.replace('_', ' ')}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 2. Sun Exposure */}
+                                    {hotel.pool_criteria.sun_exposure && (
+                                        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
+                                            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                                                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                                Sun Exposure
+                                            </h2>
+                                            <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                                                <div className="text-lg font-semibold text-yellow-800 capitalize">
+                                                    {hotel.pool_criteria.sun_exposure.replace('_', ' ')}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 3. Pool Size & Variety */}
+                                    {(hotel.pool_criteria.pool_size_category || hotel.pool_criteria.total_pool_area_sqm || hotel.pool_criteria.number_of_pools || hotel.pool_criteria.pool_types) && (
+                                        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
+                                            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                                                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                                Pool Size & Variety
+                                            </h2>
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                {hotel.pool_criteria.pool_size_category && (
+                                                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                                        <div className="text-sm text-neutral-600 mb-1">Pool Size</div>
+                                                        <div className="text-lg font-semibold text-blue-700 capitalize">
+                                                            {hotel.pool_criteria.pool_size_category.replace('_', ' ')}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.total_pool_area_sqm && (
+                                                    <div className="p-4 bg-cyan-50 rounded-lg border border-cyan-200">
+                                                        <div className="text-sm text-neutral-600 mb-1">Total Area</div>
+                                                        <div className="text-lg font-semibold text-cyan-700">
+                                                            {hotel.pool_criteria.total_pool_area_sqm} m²
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.number_of_pools && (
+                                                    <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                                                        <div className="text-sm text-neutral-600 mb-1">Number of Pools</div>
+                                                        <div className="text-lg font-semibold text-indigo-700">
+                                                            {hotel.pool_criteria.number_of_pools}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.pool_types && hotel.pool_criteria.pool_types.length > 0 && (
+                                                    <div className="md:col-span-3">
+                                                        <div className="text-sm font-semibold text-neutral-900 mb-2">Pool Types:</div>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {hotel.pool_criteria.pool_types.map((type, i) => (
+                                                                <span key={i} className="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-medium capitalize">
+                                                                    {type.replace('_', ' ')}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 4. Facilities & Amenities */}
+                                    {(hotel.pool_criteria.has_pool_bar || hotel.pool_criteria.has_waiter_service || (hotel.pool_criteria.shade_options && hotel.pool_criteria.shade_options.length > 0)) && (
+                                        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
+                                            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                                                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0A2.707 2.707 0 003 15.546M12 6.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12 3v2.25m0 0l2.25 9.75H9.75L12 5.25z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                                Facilities & Amenities
+                                            </h2>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {hotel.pool_criteria.has_pool_bar && (
+                                                    <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                                                        <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                        <span className="text-neutral-900 font-medium">Pool Bar Available</span>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.has_waiter_service && (
+                                                    <div className="flex items-center gap-3 p-4 bg-teal-50 rounded-lg border border-teal-200">
+                                                        <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                        <span className="text-neutral-900 font-medium">Waiter Service</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 5. Atmosphere & Vibe */}
+                                    {(hotel.pool_criteria.atmosphere || hotel.pool_criteria.music_level) && (
+                                        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
+                                            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                                                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 0 1-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                                Atmosphere & Vibe
+                                            </h2>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {hotel.pool_criteria.atmosphere && (
+                                                    <div className="p-4 bg-pink-50 rounded-lg border border-pink-200">
+                                                        <div className="text-sm text-neutral-600 mb-1">Atmosphere</div>
+                                                        <div className="text-lg font-semibold text-pink-700 capitalize">
+                                                            {hotel.pool_criteria.atmosphere}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.music_level && (
+                                                    <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                                                        <div className="text-sm text-neutral-600 mb-1">Music Level</div>
+                                                        <div className="text-lg font-semibold text-purple-700 capitalize">
+                                                            {hotel.pool_criteria.music_level}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 6. Cleanliness & Maintenance */}
+                                    {(hotel.pool_criteria.cleanliness_rating || hotel.pool_criteria.sunbed_condition_rating || hotel.pool_criteria.tiling_condition_rating) && (
+                                        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
+                                            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                                                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                                Cleanliness & Maintenance
+                                            </h2>
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                {hotel.pool_criteria.cleanliness_rating > 0 && (
+                                                    <div className="p-4 bg-teal-50 rounded-lg border border-teal-200">
+                                                        <div className="text-sm text-neutral-600 mb-2">Cleanliness</div>
+                                                        <div className="flex gap-1">
+                                                            {[...Array(5)].map((_, i) => (
+                                                                <svg key={i} className={`w-5 h-5 ${i < hotel.pool_criteria.cleanliness_rating ? 'text-teal-600' : 'text-neutral-300'}`} fill="currentColor" viewBox="0 0 20 20">
+                                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                                </svg>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.sunbed_condition_rating > 0 && (
+                                                    <div className="p-4 bg-cyan-50 rounded-lg border border-cyan-200">
+                                                        <div className="text-sm text-neutral-600 mb-2">Sunbed Condition</div>
+                                                        <div className="flex gap-1">
+                                                            {[...Array(5)].map((_, i) => (
+                                                                <svg key={i} className={`w-5 h-5 ${i < hotel.pool_criteria.sunbed_condition_rating ? 'text-cyan-600' : 'text-neutral-300'}`} fill="currentColor" viewBox="0 0 20 20">
+                                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                                </svg>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.tiling_condition_rating > 0 && (
+                                                    <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                                                        <div className="text-sm text-neutral-600 mb-2">Tiling Condition</div>
+                                                        <div className="flex gap-1">
+                                                            {[...Array(5)].map((_, i) => (
+                                                                <svg key={i} className={`w-5 h-5 ${i < hotel.pool_criteria.tiling_condition_rating ? 'text-indigo-600' : 'text-neutral-300'}`} fill="currentColor" viewBox="0 0 20 20">
+                                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                                </svg>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 7. Accessibility Features */}
+                                    {(hotel.pool_criteria.has_accessibility_ramp || hotel.pool_criteria.has_pool_hoist || hotel.pool_criteria.has_step_free_access || hotel.pool_criteria.has_elevator_to_rooftop) && (
+                                        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
+                                            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                                                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                                Accessibility Features
+                                            </h2>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {hotel.pool_criteria.has_accessibility_ramp && (
+                                                    <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                                        <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                        <span className="text-neutral-900 font-medium">Accessibility Ramp</span>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.has_pool_hoist && (
+                                                    <div className="flex items-center gap-3 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                                                        <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                        <span className="text-neutral-900 font-medium">Pool Hoist</span>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.has_step_free_access && (
+                                                    <div className="flex items-center gap-3 p-4 bg-cyan-50 rounded-lg border border-cyan-200">
+                                                        <svg className="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                        <span className="text-neutral-900 font-medium">Step-Free Access</span>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.has_elevator_to_rooftop && (
+                                                    <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                                                        <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                        <span className="text-neutral-900 font-medium">Elevator to Rooftop</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 8. Kids & Family Features */}
+                                    {(hotel.pool_criteria.has_kids_pool || hotel.pool_criteria.has_splash_park || hotel.pool_criteria.has_waterslide || hotel.pool_criteria.has_lifeguard) && (
+                                        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
+                                            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                                                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                                Kids & Family Features
+                                            </h2>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {hotel.pool_criteria.has_kids_pool && (
+                                                    <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg border border-green-200">
+                                                        <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                        <span className="text-neutral-900 font-medium">Kids Pool</span>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.has_splash_park && (
+                                                    <div className="flex items-center gap-3 p-4 bg-sky-50 rounded-lg border border-sky-200">
+                                                        <svg className="w-6 h-6 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                        <span className="text-neutral-900 font-medium">Splash Park</span>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.has_waterslide && (
+                                                    <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                                                        <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                        <span className="text-neutral-900 font-medium">Water Slides</span>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.has_lifeguard && (
+                                                    <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                                                        <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                        <span className="text-neutral-900 font-medium">Lifeguard on Duty</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 9. Luxury & Premium Features */}
+                                    {(hotel.pool_criteria.has_luxury_cabanas || hotel.pool_criteria.has_cabana_service || hotel.pool_criteria.has_heated_pool || hotel.pool_criteria.has_jacuzzi || hotel.pool_criteria.has_adult_sun_terrace) && (
+                                        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
+                                            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                                                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                                Luxury & Premium Features
+                                            </h2>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {hotel.pool_criteria.has_luxury_cabanas && (
+                                                    <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                                                        <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                        <span className="text-neutral-900 font-medium">Luxury Cabanas</span>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.has_cabana_service && (
+                                                    <div className="flex items-center gap-3 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                                                        <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                        <span className="text-neutral-900 font-medium">Cabana Service</span>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.has_heated_pool && (
+                                                    <div className="flex items-center gap-3 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                                                        <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                        <span className="text-neutral-900 font-medium">Heated Pool</span>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.has_jacuzzi && (
+                                                    <div className="flex items-center gap-3 p-4 bg-red-50 rounded-lg border border-red-200">
+                                                        <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                        <span className="text-neutral-900 font-medium">Jacuzzi</span>
+                                                    </div>
+                                                )}
+                                                {hotel.pool_criteria.has_adult_sun_terrace && (
+                                                    <div className="flex items-center gap-3 p-4 bg-rose-50 rounded-lg border border-rose-200">
+                                                        <svg className="w-6 h-6 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                        <span className="text-neutral-900 font-medium">Adult Sun Terrace</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                </>
+                            )}
+
                             {/* Gallery */}
                             {allImages.length > 1 && (
                                 <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
