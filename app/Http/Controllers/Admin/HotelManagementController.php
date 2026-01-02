@@ -77,9 +77,9 @@ class HotelManagementController extends Controller
             'name' => 'required|string|max:255',
             'destination_id' => 'required|exists:destinations,id',
             'description' => 'nullable|string',
-            'address' => 'nullable|string',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
+            'address' => 'required|string',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'star_rating' => 'nullable|integer|min:1|max:5',
             'total_rooms' => 'nullable|integer|min:1',
             'phone' => 'nullable|string',
@@ -95,20 +95,20 @@ class HotelManagementController extends Controller
             'is_featured' => 'boolean',
             'subscription_tier' => 'nullable|in:free,enhanced,premium',
             // Images
-            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'main_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
             'gallery_images' => 'nullable|array|max:10',
             'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
             
             // Pool Criteria - 1. Sunbed Availability & Ratio
-            'sunbed_count' => 'nullable|integer|min:0',
+            'sunbed_count' => 'required|integer|min:1',
             'sunbed_types' => 'nullable|array',
             
             // Pool Criteria - 2. Sun Exposure Hours
-            'sun_exposure' => 'nullable|in:all_day,afternoon_only,morning_only,partial_shade,mostly_shaded',
+            'sun_exposure' => 'required|in:all_day,afternoon_only,morning_only,partial_shade,mostly_shaded',
             'sunny_areas' => 'nullable|array',
             
             // Pool Criteria - 3. Pool Size & Area
-            'pool_size_category' => 'nullable|in:small,medium,large,very_large',
+            'pool_size_category' => 'required|in:small,medium,large,very_large',
             'pool_size_sqm' => 'nullable|numeric|min:0',
             
             // Pool Criteria - 4. Towel & Reservation Policy
