@@ -119,13 +119,20 @@ export default function CreateHotel({ destinations, stats }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        
+        console.log('=== SUBMITTING HOTEL ===');
+        console.log('Form data:', data);
+        console.log('Route:', route('admin.hotels.store'));
+        
         post(route('admin.hotels.store'), {
             forceFormData: true,
             onSuccess: () => {
+                console.log('✓ Hotel created successfully');
                 toast.success('Hotel created successfully with Pool & Sun Score calculated!');
             },
             onError: (errors) => {
-                console.error('Validation errors:', errors);
+                console.error('✗ Validation errors:', errors);
+                console.error('Error count:', Object.keys(errors).length);
                 
                 // Scroll to top to show error messages
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -150,6 +157,9 @@ export default function CreateHotel({ destinations, stats }) {
                 } else {
                     setActiveTab('settings');
                 }
+            },
+            onFinish: () => {
+                console.log('=== REQUEST FINISHED ===');
             },
         });
     };
