@@ -25,14 +25,14 @@ export default function Login({ status, canResetPassword }) {
         <>
             <Head title="Log in" />
             
-            <div className="min-h-screen bg-neutral-50 font-sans-luxury flex flex-col">
+            <div className="min-h-screen bg-white font-sans flex flex-col">
                 {/* Header Navigation */}
-                <nav className="bg-white border-b border-neutral-200 shadow-sm">
+                <nav className="bg-white border-b-2 border-orange-200 shadow-lg">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex items-center justify-between h-16">
                             {/* Logo */}
                             <Link href="/" className="flex items-center flex-shrink-0">
-                                <span className="text-xl sm:text-2xl font-bold">
+                                <span className="text-xl sm:text-2xl font-black">
                                     <span className="text-red-500">sun</span>
                                     <span className="text-orange-500">bed</span>
                                     <span className="text-blue-500">ranker</span>
@@ -42,9 +42,12 @@ export default function Login({ status, canResetPassword }) {
                             {/* Back to Home */}
                             <Link
                                 href="/"
-                                className="text-sm text-neutral-600 hover:text-neutral-900 font-light transition-colors duration-300"
+                                className="text-sm text-orange-600 hover:text-orange-700 font-bold transition-all duration-300 flex items-center gap-1 transform hover:scale-105"
                             >
-                                ← Back to Home
+                                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                </svg>
+                                Back to Home
                             </Link>
                         </div>
                     </div>
@@ -55,28 +58,28 @@ export default function Login({ status, canResetPassword }) {
                     <div className="w-full max-w-md">
                         {/* Decorative accent */}
                         <div className="flex items-center justify-center mb-8">
-                            <div className="h-px w-12 bg-neutral-300"></div>
-                            <svg className="mx-4 text-neutral-400" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                <path d="M10 2L11.5 8.5L18 10L11.5 11.5L10 18L8.5 11.5L2 10L8.5 8.5L10 2Z" stroke="currentColor" strokeWidth="1.5"/>
+                            <div className="h-0.5 w-12 bg-gradient-to-r from-orange-500 to-orange-600"></div>
+                            <svg className="mx-4 text-orange-500" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                             </svg>
-                            <div className="h-px w-12 bg-neutral-300"></div>
+                            <div className="h-0.5 w-12 bg-gradient-to-r from-blue-500 to-blue-600"></div>
                         </div>
 
                         {/* Login Card */}
-                        <div className="bg-white rounded-xl shadow-2xl border border-neutral-100 p-8 sm:p-10">
-                            <h1 className="font-serif-luxury text-3xl sm:text-4xl font-light text-neutral-900 text-center tracking-tight mb-8">
+                        <div className="bg-white rounded-2xl shadow-2xl border-2 border-gray-100 p-8 sm:p-10">
+                            <h1 className="font-sans text-3xl sm:text-4xl font-black text-gray-900 text-center mb-8">
                                 Log in
                             </h1>
 
                             {status && (
-                                <div className="mb-6 px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-lg text-sm font-light text-emerald-800">
+                                <div className="mb-6 px-4 py-3 bg-gradient-to-r from-green-50 to-green-100 border-2 border-green-300 rounded-lg text-sm font-bold text-green-700">
                                     {status}
                                 </div>
                             )}
 
                             <form onSubmit={submit} className="space-y-6">
                                 <div>
-                                    <label htmlFor="email" className="block text-sm font-light text-neutral-700 mb-2 tracking-wide">
+                                    <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2">
                                         Email
                                     </label>
 
@@ -85,7 +88,7 @@ export default function Login({ status, canResetPassword }) {
                                         type="email"
                                         name="email"
                                         value={data.email}
-                                        className="w-full px-4 py-3 border-b-2 border-neutral-200 focus:border-neutral-900 outline-none text-neutral-900 placeholder-neutral-400 transition-all duration-300 bg-transparent font-light"
+                                        className="w-full px-4 py-3 border-2 border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-gray-900 placeholder-gray-400 transition-all duration-300 rounded-lg font-medium"
                                         autoComplete="username"
                                         autoFocus
                                         placeholder="you@example.com"
@@ -93,12 +96,12 @@ export default function Login({ status, canResetPassword }) {
                                     />
 
                                     {errors.email && (
-                                        <p className="mt-2 text-sm text-red-600 font-light">{errors.email}</p>
+                                        <p className="mt-2 text-sm text-red-600 font-semibold">{errors.email}</p>
                                     )}
                                 </div>
 
                                 <div>
-                                    <label htmlFor="password" className="block text-sm font-light text-neutral-700 mb-2 tracking-wide">
+                                    <label htmlFor="password" className="block text-sm font-bold text-gray-700 mb-2">
                                         Password
                                     </label>
 
@@ -107,14 +110,14 @@ export default function Login({ status, canResetPassword }) {
                                         type="password"
                                         name="password"
                                         value={data.password}
-                                        className="w-full px-4 py-3 border-b-2 border-neutral-200 focus:border-neutral-900 outline-none text-neutral-900 placeholder-neutral-400 transition-all duration-300 bg-transparent font-light"
+                                        className="w-full px-4 py-3 border-2 border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-gray-900 placeholder-gray-400 transition-all duration-300 rounded-lg font-medium"
                                         autoComplete="current-password"
                                         placeholder="••••••••"
                                         onChange={(e) => setData('password', e.target.value)}
                                     />
 
                                     {errors.password && (
-                                        <p className="mt-2 text-sm text-red-600 font-light">{errors.password}</p>
+                                        <p className="mt-2 text-sm text-red-600 font-semibold">{errors.password}</p>
                                     )}
                                 </div>
 
@@ -125,9 +128,9 @@ export default function Login({ status, canResetPassword }) {
                                         name="remember"
                                         checked={data.remember}
                                         onChange={(e) => setData('remember', e.target.checked)}
-                                        className="w-4 h-4 text-neutral-900 bg-neutral-100 border-neutral-300 rounded focus:ring-neutral-900 focus:ring-2"
+                                        className="w-4 h-4 text-orange-500 bg-white border-2 border-orange-300 rounded focus:ring-orange-500 focus:ring-2"
                                     />
-                                    <label htmlFor="remember" className="ml-2 text-sm text-neutral-600 font-light">
+                                    <label htmlFor="remember" className="ml-2 text-sm text-gray-700 font-semibold">
                                         Remember me
                                     </label>
                                 </div>
@@ -136,7 +139,7 @@ export default function Login({ status, canResetPassword }) {
                                     {canResetPassword && (
                                         <Link
                                             href={route('password.request')}
-                                            className="text-neutral-600 hover:text-neutral-900 font-light tracking-[0.1em] uppercase text-xs transition-colors duration-400 border-b border-neutral-300 hover:border-neutral-900 pb-1"
+                                            className="text-blue-600 hover:text-blue-700 font-bold text-sm transition-all duration-300 transform hover:scale-105"
                                         >
                                             Forgot your password?
                                         </Link>
@@ -145,7 +148,7 @@ export default function Login({ status, canResetPassword }) {
                                     <button
                                         type="submit"
                                         disabled={processing}
-                                        className="w-full sm:w-auto px-8 py-3 bg-neutral-900 text-white font-light rounded-lg hover:bg-neutral-800 transition-all duration-300 tracking-wide hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] disabled:bg-neutral-400 disabled:cursor-not-allowed disabled:transform-none"
+                                        className="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 hover:shadow-xl transform hover:scale-105 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
                                     >
                                         {processing ? 'Logging in...' : 'Log in'}
                                     </button>
@@ -153,12 +156,12 @@ export default function Login({ status, canResetPassword }) {
                             </form>
 
                             {/* Register Link */}
-                            <div className="mt-8 pt-6 border-t border-neutral-200 text-center">
-                                <p className="text-sm text-neutral-600 font-light">
+                            <div className="mt-8 pt-6 border-t-2 border-gray-200 text-center">
+                                <p className="text-sm text-gray-700 font-semibold">
                                     Don't have an account?{' '}
                                     <Link
                                         href={route('register')}
-                                        className="text-neutral-900 hover:text-neutral-700 font-normal tracking-wide transition-colors duration-300 border-b border-neutral-900 hover:border-neutral-700"
+                                        className="text-orange-600 hover:text-orange-700 font-bold transition-all duration-300 transform hover:scale-105 inline-block"
                                     >
                                         Sign up
                                     </Link>
@@ -167,13 +170,13 @@ export default function Login({ status, canResetPassword }) {
                         </div>
 
                         {/* Footer Note */}
-                        <p className="mt-8 text-center text-xs text-neutral-500 font-light">
+                        <p className="mt-8 text-center text-xs text-gray-600 font-medium">
                             By logging in, you agree to our{' '}
-                            <Link href="#" className="text-neutral-700 hover:text-neutral-900 transition-colors duration-300">
+                            <Link href="#" className="text-blue-600 hover:text-blue-700 font-bold transition-colors duration-300">
                                 Terms of Service
                             </Link>
                             {' '}and{' '}
-                            <Link href="#" className="text-neutral-700 hover:text-neutral-900 transition-colors duration-300">
+                            <Link href="#" className="text-blue-600 hover:text-blue-700 font-bold transition-colors duration-300">
                                 Privacy Policy
                             </Link>
                         </p>
