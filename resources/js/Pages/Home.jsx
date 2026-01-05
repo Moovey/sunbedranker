@@ -53,18 +53,28 @@ export default function Home({ featuredDestinations, topRatedHotels, familyFrien
                 <meta name="agd-partner-manual-verification" />
             </Head>
             
-            <div className="min-h-screen bg-white font-sans-luxury">
+            <div className="min-h-screen bg-white font-sans">
                 <Header />
 
-                {/* Hero Section - Fully Responsive */}
-                <div className="relative h-screen min-h-[500px] sm:min-h-[600px] lg:min-h-[700px] overflow-hidden">
-                    {/* Auto-rotating background images */}
+                {/* Promotional Banner - Jet2 Style */}
+                <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-4 text-center">
+                    <p className="text-sm sm:text-base font-semibold flex items-center justify-center gap-2">
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                        </svg>
+                        SPECIAL OFFER: Book now and get exclusive pool access! Limited time only. T&Cs apply.
+                    </p>
+                </div>
+
+                {/* Hero Section - Jet2 Inspired */}
+                <div className="relative h-auto min-h-[600px] sm:min-h-[700px] lg:min-h-[600px] overflow-hidden bg-gradient-to-b from-blue-50 to-white">
+                    {/* Background with lighter overlay for vibrant feel */}
                     {backgroundImages.map((image, index) => (
                         <div
                             key={index}
                             className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
                             style={{
-                                opacity: currentBgIndex === index ? 1 : 0,
+                                opacity: currentBgIndex === index ? 0.3 : 0,
                                 backgroundImage: `url(${image})`,
                                 backgroundSize: 'cover',
                                 backgroundPosition: 'center',
@@ -72,93 +82,98 @@ export default function Home({ featuredDestinations, topRatedHotels, familyFrien
                         />
                     ))}
                     
-                    {/* Dark overlay - responsive opacity */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/75 sm:from-black/60 sm:via-black/50 sm:to-black/70" />
-                    
-                    {/* Decorative luxury accents - responsive positioning */}
-                    <div className="absolute top-16 right-8 md:top-20 md:right-10 xl:top-24 xl:right-16 opacity-8 md:opacity-10 hidden lg:block">
-                        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" className="md:w-20 md:h-20 xl:w-24 xl:h-24">
-                            <path d="M30 5L32 26L53 30L32 34L30 55L28 34L7 30L28 26L30 5Z" stroke="white" strokeWidth="1" />
-                            <circle cx="30" cy="30" r="22" stroke="white" strokeWidth="0.5" opacity="0.5" />
-                        </svg>
-                    </div>
-                    
-                    <div className="relative h-full flex items-center justify-center py-20 sm:py-24 md:py-28 lg:py-32">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 w-full">
-                            <div className="text-center animate-fade-up">
-                                {/* Compact luxury icon - responsive sizing */}
-                                <div className="flex justify-center mb-3 sm:mb-4 md:mb-5">
-                                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className="sm:w-8 sm:h-8 md:w-9 md:h-9 text-white opacity-80">
-                                        <path d="M14 2L15.5 11.5L25 14L15.5 16.5L14 26L12.5 16.5L3 14L12.5 11.5L14 2Z" stroke="currentColor" strokeWidth="1.5"/>
-                                        <circle cx="14" cy="14" r="10" stroke="currentColor" strokeWidth="0.8" opacity="0.4"/>
-                                    </svg>
-                                </div>
-                                
-                                {/* Responsive heading */}
-                                <h1 className="font-serif-luxury text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light tracking-tight mb-3 sm:mb-4 md:mb-5 leading-tight text-white px-2">
+                    <div className="relative h-full flex items-center justify-center py-12 sm:py-16 md:py-20">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                            <div className="text-center">
+                                {/* Bold Heading - Jet2 Style */}
+                                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight text-gray-900">
                                     Will You Struggle to <br className="hidden sm:block" />Get a Sunbed?
                                 </h1>
                                 
-                                {/* Responsive description */}
-                                <p className="text-sm sm:text-base md:text-lg lg:text-xl mb-6 sm:mb-8 md:mb-10 text-white/90 font-light max-w-xs sm:max-w-md md:max-w-2xl lg:max-w-3xl mx-auto leading-relaxed px-4">
+                                {/* Subheading */}
+                                <p className="text-lg sm:text-xl md:text-2xl mb-8 sm:mb-10 text-gray-700 font-medium max-w-3xl mx-auto">
                                     Compare hotels by pool quality, sunbed availability, and sun exposure.
                                 </p>
                                 
-                                {/* Compact Search Bar - Fully Responsive */}
-                                <div className="max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto px-2">
-                                    <div className="bg-white/95 backdrop-blur-lg rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-6 md:p-7 lg:p-8 border border-white/30">
+                                {/* Large White Search Box - Jet2 Style */}
+                                <div className="max-w-5xl mx-auto px-2">
+                                    <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 lg:p-10 border-4 border-orange-400">
                                         <form onSubmit={handleSearch}>
                                             {/* Search input and button */}
-                                            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                                                {/* Compact Destination Input */}
+                                            <div className="flex flex-col sm:flex-row gap-4">
+                                                {/* Destination Input with Icon */}
                                                 <div className="flex-1">
+                                                    <label className="flex items-center gap-2 text-left text-sm font-semibold text-gray-700 mb-2">
+                                                        <svg className="w-4 h-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                                                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                                        </svg>
+                                                        Destination
+                                                    </label>
                                                     <input
                                                         type="text"
                                                         value={searchData.destination}
                                                         onChange={(e) => setSearchData({...searchData, destination: e.target.value})}
                                                         placeholder="Where to? (e.g., Tenerife)"
-                                                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 md:py-3.5 border-b-2 border-neutral-200 focus:border-neutral-900 outline-none text-neutral-900 placeholder-neutral-400 transition-all duration-300 bg-transparent text-sm sm:text-base"
+                                                        className="w-full px-4 py-3 sm:py-4 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-gray-900 placeholder-gray-400 transition-all duration-300 text-base sm:text-lg font-medium"
                                                     />
                                                 </div>
 
-                                                {/* Compact Search Button */}
+                                                {/* Large Orange Search Button - Jet2 Style */}
                                                 <button
                                                     type="submit"
                                                     disabled={isSearching}
-                                                    className="w-full sm:w-auto px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-3.5 bg-neutral-900 text-white font-normal rounded-lg sm:rounded-xl hover:bg-neutral-800 transition-all duration-300 disabled:bg-neutral-400 disabled:cursor-not-allowed tracking-wide uppercase text-xs sm:text-sm hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
+                                                    className="w-full sm:w-auto px-8 sm:px-12 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-lg rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
                                                 >
-                                                    {isSearching ? 'Searching...' : 'Search'}
+                                                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                                                        <circle cx="11" cy="11" r="8"/>
+                                                        <path d="M21 21l-4.35-4.35"/>
+                                                    </svg>
+                                                    {isSearching ? 'Searching...' : 'Search holidays'}
                                                 </button>
                                             </div>
 
-                                            {/* Compact Pool Filters - Responsive */}
-                                            <div className="mt-4 sm:mt-5 md:mt-6 pt-4 sm:pt-5 md:pt-6 border-t border-neutral-200">
-                                                <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 md:gap-2.5">
+                                            {/* Pool Filters - Colorful Jet2 Style */}
+                                            <div className="mt-6 sm:mt-8 pt-6 border-t-2 border-gray-200">
+                                                <p className="text-left text-sm font-semibold text-gray-700 mb-3">
+                                                    Find your perfect stay:
+                                                </p>
+                                                <div className="flex flex-wrap gap-2 sm:gap-3">
                                                     {[
-                                                        { value: 'family', label: 'Families', shortLabel: 'Family', icon: <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
-                                                        { value: 'quiet', label: 'Quiet', shortLabel: 'Quiet', icon: <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> },
-                                                        { value: 'party', label: 'Social', shortLabel: 'Social', icon: <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/></svg> },
-                                                        { value: 'luxury', label: 'Luxury', shortLabel: 'Luxury', icon: <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2l2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2z"/></svg> },
-                                                        { value: 'adults', label: 'Adults Only', shortLabel: 'Adults', icon: <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> },
-                                                    ].map((vibe) => (
-                                                        <button
-                                                            key={vibe.value}
-                                                            type="button"
-                                                            onClick={() => setSearchData({
-                                                                ...searchData, 
-                                                                poolVibe: searchData.poolVibe === vibe.value ? '' : vibe.value
-                                                            })}
-                                                            className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-xs font-normal transition-all duration-300 border ${
-                                                                searchData.poolVibe === vibe.value 
-                                                                    ? 'bg-neutral-900 text-white border-neutral-900' 
-                                                                    : 'bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border-neutral-200'
-                                                            }`}
-                                                        >
-                                                            {vibe.icon}
-                                                            <span className="hidden xs:inline sm:inline">{vibe.label}</span>
-                                                            <span className="inline xs:hidden sm:hidden">{vibe.shortLabel}</span>
-                                                        </button>
-                                                    ))}
+                                                        { value: 'family', label: 'Families', shortLabel: 'Family', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> },
+                                                        { value: 'quiet', label: 'Quiet', shortLabel: 'Quiet', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> },
+                                                        { value: 'party', label: 'Social', shortLabel: 'Social', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M7 8h10V6H7v2zm0 4h10v-2H7v2zm0 4h7v-2H7v2zm13.5-10.5v13.09c0 .45-.54.67-.85.35l-2.65-2.65-2.65 2.65c-.31.32-.85.1-.85-.35V5.5c0-.83.67-1.5 1.5-1.5h3.5c.83 0 1.5.67 1.5 1.5z"/></svg> },
+                                                        { value: 'luxury', label: 'Luxury', shortLabel: 'Luxury', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> },
+                                                        { value: 'adults', label: 'Adults Only', shortLabel: 'Adults', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> },
+                                                    ].map((vibe) => {
+                                                        const isActive = searchData.poolVibe === vibe.value;
+                                                        let buttonClasses = 'flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300 border-2 shadow-md hover:shadow-lg transform hover:scale-105';
+                                                        
+                                                        if (isActive) {
+                                                            if (vibe.value === 'family') buttonClasses += ' bg-gradient-to-r from-blue-500 to-blue-600 text-white border-blue-600';
+                                                            else if (vibe.value === 'quiet') buttonClasses += ' bg-gradient-to-r from-green-500 to-green-600 text-white border-green-600';
+                                                            else if (vibe.value === 'party') buttonClasses += ' bg-gradient-to-r from-purple-500 to-purple-600 text-white border-purple-600';
+                                                            else if (vibe.value === 'luxury') buttonClasses += ' bg-gradient-to-r from-yellow-500 to-yellow-600 text-white border-yellow-600';
+                                                            else if (vibe.value === 'adults') buttonClasses += ' bg-gradient-to-r from-red-500 to-red-600 text-white border-red-600';
+                                                        } else {
+                                                            buttonClasses += ' bg-white text-gray-700 hover:bg-gray-50 border-gray-300';
+                                                        }
+                                                        
+                                                        return (
+                                                            <button
+                                                                key={vibe.value}
+                                                                type="button"
+                                                                onClick={() => setSearchData({
+                                                                    ...searchData, 
+                                                                    poolVibe: searchData.poolVibe === vibe.value ? '' : vibe.value
+                                                                })}
+                                                                className={buttonClasses}
+                                                            >
+                                                                {vibe.icon}
+                                                                <span className="hidden xs:inline sm:inline">{vibe.label}</span>
+                                                                <span className="inline xs:hidden sm:hidden">{vibe.shortLabel}</span>
+                                                            </button>
+                                                        );
+                                                    })}
                                                 </div>
                                             </div>
                                         </form>
@@ -167,47 +182,39 @@ export default function Home({ featuredDestinations, topRatedHotels, familyFrien
                             </div>
                         </div>
                     </div>
-                    
-                    {/* Scroll indicator - responsive */}
-                    <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce hidden sm:block">
-                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                        </svg>
-                    </div>
                 </div>
 
-                {/* Featured Destinations */}
+                {/* Featured Destinations - Jet2 Style */}
                 {featuredDestinations?.length > 0 && (
-                    <section className="bg-neutral-50 py-12 sm:py-16 md:py-20">
+                    <section className="bg-gradient-to-b from-white to-blue-50 py-12 sm:py-16 md:py-20">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            {/* Section accent */}
-                            <div className="flex items-center justify-center mb-6">
-                                <div className="h-px w-12 bg-neutral-300"></div>
-                                <svg className="mx-4 text-neutral-400" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <path d="M10 2L11.5 8.5L18 10L11.5 11.5L10 18L8.5 11.5L2 10L8.5 8.5L10 2Z" stroke="currentColor" strokeWidth="1.5"/>
-                                </svg>
-                                <div className="h-px w-12 bg-neutral-300"></div>
-                            </div>
-                            <h2 className="font-serif-luxury text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-neutral-900 mb-8 sm:mb-10 md:mb-12 tracking-tight text-center">Popular Destinations</h2>
+                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-center">Popular Destinations</h2>
+                            <p className="text-center text-gray-600 text-lg mb-8 sm:mb-10 md:mb-12 font-medium">Find your perfect stay...</p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
                                 {featuredDestinations.map((destination, index) => (
                                     <Link
                                         key={destination.id}
                                         href={`/destinations/${destination.slug}`}
-                                        className="group relative overflow-hidden rounded-lg sm:rounded-none shadow-md sm:shadow-sm hover:shadow-2xl transition-all duration-500 animate-fade-up"
+                                        className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 animate-fade-up transform hover:scale-105"
                                         style={{ animationDelay: `${index * 100}ms` }}
                                     >
                                         <div className="relative overflow-hidden aspect-[4/5]">
                                             <img
                                                 src={destination.image || '/images/default-destination.jpg'}
                                                 alt={destination.name}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
                                             />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-70 transition-opacity duration-500" />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                                            <div className="absolute top-4 right-4 bg-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1">
+                                                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/>
+                                                </svg>
+                                                POPULAR
+                                            </div>
                                         </div>
                                         <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 text-white">
-                                            <h3 className="font-serif-luxury text-2xl sm:text-3xl font-light tracking-wide mb-1 sm:mb-2">{destination.name}</h3>
-                                            <p className="text-neutral-200 font-light text-xs sm:text-sm tracking-wide">{destination.hotel_count} hotels with pool ratings</p>
+                                            <h3 className="text-2xl sm:text-3xl font-bold mb-2">{destination.name}</h3>
+                                            <p className="text-white font-semibold text-sm sm:text-base">{destination.hotel_count} hotels with pool ratings</p>
                                         </div>
                                     </Link>
                                 ))}
@@ -216,14 +223,17 @@ export default function Home({ featuredDestinations, topRatedHotels, familyFrien
                     </section>
                 )}
 
-                {/* Top Rated Hotels */}
+                {/* Top Rated Hotels - Jet2 Style */}
                 {topRatedHotels?.length > 0 && (
                     <section className="bg-white py-12 sm:py-16 md:py-20">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 sm:mb-10 md:mb-12 gap-4">
-                                <h2 className="font-serif-luxury text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-neutral-900 tracking-tight">Highest Rated<br className="hidden sm:block" /> Pool Experiences</h2>
-                                <Link href="/destinations" className="text-neutral-600 hover:text-neutral-900 font-light tracking-[0.1em] uppercase text-xs transition-colors duration-400 group border-b border-neutral-300 hover:border-neutral-900 pb-1">
-                                    View all <span className="inline-block group-hover:translate-x-1 transition-transform duration-300">→</span>
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 sm:mb-10 md:mb-12 gap-4">
+                                <div>
+                                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2">Highest Rated Pool Experiences</h2>
+                                    <p className="text-gray-600 text-lg font-medium">Top picks for sun seekers</p>
+                                </div>
+                                <Link href="/destinations" className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105">
+                                    View all →
                                 </Link>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-10">
@@ -235,11 +245,17 @@ export default function Home({ featuredDestinations, topRatedHotels, familyFrien
                     </section>
                 )}
 
-                {/* Best for Families */}
+                {/* Best for Families - Jet2 Style */}
                 {familyFriendlyHotels?.length > 0 && (
-                    <section className="bg-neutral-50 py-12 sm:py-16 md:py-20">
+                    <section className="bg-gradient-to-b from-blue-50 to-white py-12 sm:py-16 md:py-20">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <h2 className="font-serif-luxury text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-neutral-900 mb-8 sm:mb-10 md:mb-12 tracking-tight">Best for Families</h2>
+                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-center flex items-center justify-center gap-3">
+                                <svg className="w-10 h-10 sm:w-12 sm:h-12 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                                </svg>
+                                Best for Families
+                            </h2>
+                            <p className="text-center text-gray-600 text-lg mb-8 sm:mb-10 md:mb-12 font-medium">Perfect pools for the whole family</p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
                                 {familyFriendlyHotels.map((hotel) => (
                                     <HotelCard key={hotel.id} hotel={hotel} scoreType="family" />
@@ -249,11 +265,17 @@ export default function Home({ featuredDestinations, topRatedHotels, familyFrien
                     </section>
                 )}
 
-                {/* Quiet Sun */}
+                {/* Quiet Sun - Jet2 Style */}
                 {quietSunHotels?.length > 0 && (
                     <section className="bg-white py-12 sm:py-16 md:py-20">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <h2 className="font-serif-luxury text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-neutral-900 mb-8 sm:mb-10 md:mb-12 tracking-tight">Best for Quiet Sun</h2>
+                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-center flex items-center justify-center gap-3">
+                                <svg className="w-10 h-10 sm:w-12 sm:h-12 text-green-500" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9c.83 0 1.5-.67 1.5-1.5S7.83 8 7 8s-1.5.67-1.5 1.5S6.17 11 7 11zm10 0c.83 0 1.5-.67 1.5-1.5S17.83 8 17 8s-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm-5 5c2.33 0 4.32-1.45 5.12-3.5H6.88c.8 2.05 2.79 3.5 5.12 3.5z"/>
+                                </svg>
+                                Best for Quiet Sun
+                            </h2>
+                            <p className="text-center text-gray-600 text-lg mb-8 sm:mb-10 md:mb-12 font-medium">Peaceful pools for relaxation</p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
                                 {quietSunHotels.map((hotel) => (
                                     <HotelCard key={hotel.id} hotel={hotel} scoreType="quiet" />
@@ -263,39 +285,40 @@ export default function Home({ featuredDestinations, topRatedHotels, familyFrien
                     </section>
                 )}
 
-                {/* Key Questions Section */}
-                <section className="bg-neutral-50 py-12 sm:py-16 md:py-20">
+                {/* Why Choose Us Section - Jet2 Style */}
+                <section className="bg-gradient-to-b from-orange-50 to-white py-12 sm:py-16 md:py-20">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <h2 className="font-serif-luxury text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-neutral-900 mb-10 sm:mb-12 md:mb-14 text-center tracking-tight px-4">
-                            We Answer the Questions<br className="hidden sm:block" /> That Really Matter
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-center">
+                            Get all this included...
                         </h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
+                        <p className="text-center text-gray-600 text-lg mb-10 sm:mb-12 md:mb-14 font-medium">We answer the questions that really matter</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
                             {[
                                 { 
-                                    icon: <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>, 
+                                    icon: <svg className="w-16 h-16 mx-auto text-orange-500" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>, 
                                     question: 'Will I struggle to get a sunbed?', 
                                     answer: 'We show sunbed-to-guest ratios' 
                                 },
                                 { 
-                                    icon: <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="5"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg>, 
+                                    icon: <svg className="w-16 h-16 mx-auto text-yellow-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>, 
                                     question: 'Is the pool sunny all day?', 
                                     answer: 'Sun exposure times and coverage' 
                                 },
                                 { 
-                                    icon: <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M11 5L6 9l5 4-5 4 5 4M13 5l5 4-5 4 5 4-5 4"/></svg>, 
+                                    icon: <svg className="w-16 h-16 mx-auto text-green-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9c.83 0 1.5-.67 1.5-1.5S7.83 8 7 8s-1.5.67-1.5 1.5S6.17 11 7 11zm10 0c.83 0 1.5-.67 1.5-1.5S17.83 8 17 8s-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm-5 5c2.33 0 4.32-1.45 5.12-3.5H6.88c.8 2.05 2.79 3.5 5.12 3.5z"/></svg>, 
                                     question: 'Is it quiet or noisy?', 
                                     answer: 'Atmosphere ratings and music levels' 
                                 },
                                 { 
-                                    icon: <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>, 
+                                    icon: <svg className="w-16 h-16 mx-auto text-blue-500" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>, 
                                     question: 'Is it good for families?', 
                                     answer: 'Kids pools, activities, and safety' 
                                 },
                             ].map((item, index) => (
-                                <div key={index} className="text-center animate-fade-up" style={{ animationDelay: `${index * 100}ms` }}>
-                                    <div className="flex justify-center mb-6 text-neutral-700">{item.icon}</div>
-                                    <h3 className="font-serif-luxury text-xl mb-4 text-neutral-900">{item.question}</h3>
-                                    <p className="text-neutral-600 font-light leading-relaxed text-sm">{item.answer}</p>
+                                <div key={index} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-gray-100 animate-fade-up" style={{ animationDelay: `${index * 100}ms` }}>
+                                    <div className="mb-4">{item.icon}</div>
+                                    <h3 className="text-lg font-bold mb-3 text-gray-900 text-center">{item.question}</h3>
+                                    <p className="text-gray-600 leading-relaxed text-sm text-center font-medium">{item.answer}</p>
                                 </div>
                             ))}
                         </div>
@@ -314,44 +337,76 @@ function HotelCard({ hotel, scoreType = 'overall' }) {
     return (
         <Link
             href={`/hotels/${hotel.slug}`}
-            className="group bg-white overflow-hidden transition-all duration-500 hover:shadow-2xl rounded-lg sm:rounded-none"
+            className="group bg-white overflow-hidden transition-all duration-300 hover:shadow-2xl rounded-2xl shadow-lg border-2 border-gray-100 transform hover:scale-105"
         >
             <div className="relative overflow-hidden aspect-[4/3]">
                 <img
                     src={hotel.main_image || '/images/default-hotel.jpg'}
                     alt={hotel.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 {score && (
-                    <div className="absolute top-3 sm:top-4 md:top-5 right-3 sm:right-4 md:right-5 bg-white/95 backdrop-blur-sm text-neutral-900 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-light tracking-wider text-xs sm:text-sm shadow-lg">
+                    <div className="absolute top-4 right-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full font-bold text-base shadow-lg flex items-center gap-1.5">
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                        </svg>
                         {score}/10
                     </div>
                 )}
                 {hotel.is_featured && (
-                    <div className="absolute top-3 sm:top-4 md:top-5 left-3 sm:left-4 md:left-5 bg-neutral-900 text-white px-3 sm:px-4 py-1 sm:py-1.5 text-[9px] sm:text-[10px] font-normal tracking-[0.15em] uppercase flex items-center gap-1.5">
-                        <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none">
-                            <path d="M6 1L7 5L11 6L7 7L6 11L5 7L1 6L5 5L6 1Z" stroke="currentColor" strokeWidth="1"/>
+                    <div className="absolute top-4 left-4 bg-blue-500 text-white px-3 py-1.5 text-xs font-bold tracking-wide uppercase rounded-full shadow-lg flex items-center gap-1">
+                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                         </svg>
                         Featured
                     </div>
                 )}
             </div>
-            <div className="p-4 sm:p-5 md:p-6 bg-white">
-                <h3 className="font-serif-luxury text-xl sm:text-2xl font-light text-neutral-900 mb-1.5 sm:mb-2">{hotel.name}</h3>
-                <p className="text-xs text-neutral-500 mb-4 sm:mb-5 font-light tracking-wide uppercase">{hotel.destination?.name}</p>
+            <div className="p-5 sm:p-6 bg-white">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">{hotel.name}</h3>
+                <p className="text-sm text-gray-600 mb-4 font-semibold uppercase tracking-wide flex items-center gap-1">
+                    <svg className="w-4 h-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    {hotel.destination?.name}
+                </p>
                 
                 {hotel.pool_criteria && (
-                    <div className="flex flex-wrap gap-2 text-[9px] sm:text-[10px] text-neutral-600 mb-4 sm:mb-5">
-                        {hotel.pool_criteria.has_infinity_pool && <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-neutral-50 text-neutral-700 border border-neutral-200 font-light tracking-wide">∞ Pool</span>}
-                        {hotel.pool_criteria.has_rooftop_pool && <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-neutral-50 text-neutral-700 border border-neutral-200 font-light tracking-wide">Rooftop</span>}
-                        {hotel.pool_criteria.is_adults_only && <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-neutral-50 text-neutral-700 border border-neutral-200 font-light tracking-wide">Adults Only</span>}
+                    <div className="flex flex-wrap gap-2 text-xs mb-4">
+                        {hotel.pool_criteria.has_infinity_pool && (
+                            <span className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-full font-semibold flex items-center gap-1">
+                                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M22 6.5c-1.1 0-2.2.3-3 .9-.8-.6-1.9-.9-3-.9s-2.2.3-3 .9c-.8-.6-1.9-.9-3-.9s-2.2.3-3 .9c-.8-.6-1.9-.9-3-.9v2c.8 0 1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8s1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8s1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8V6.5z"/>
+                                </svg>
+                                Infinity Pool
+                            </span>
+                        )}
+                        {hotel.pool_criteria.has_rooftop_pool && (
+                            <span className="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-full font-semibold flex items-center gap-1">
+                                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                                </svg>
+                                Rooftop
+                            </span>
+                        )}
+                        {hotel.pool_criteria.is_adults_only && (
+                            <span className="px-3 py-1.5 bg-pink-100 text-pink-700 rounded-full font-semibold flex items-center gap-1">
+                                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                </svg>
+                                Adults Only
+                            </span>
+                        )}
                     </div>
                 )}
                 
                 {hotel.pool_criteria?.sunbed_to_guest_ratio && (
-                    <div className="text-xs text-neutral-600 font-light tracking-wide">
-                        <span className="font-normal">Sunbed Ratio:</span> {hotel.pool_criteria.sunbed_to_guest_ratio}:1
+                    <div className="text-sm text-gray-700 font-semibold bg-orange-50 px-3 py-2 rounded-lg flex items-center gap-2">
+                        <svg className="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-6.18C11.6 5.84 10.3 5 8.86 5 6.75 5 5.06 6.69 5.06 8.8c0 1.66 1.13 3.1 2.68 3.52L3.94 18H2v3h7v-2.78c0-.38.2-.72.52-.88.79-.4 2.39-1.34 3.48-1.34 1.09 0 2.69.94 3.48 1.34.32.16.52.5.52.88V21h7v-3h-1.94l-3.8-5.68C19.87 11.9 21 10.46 21 8.8 21 6.69 19.31 5 17.2 5c-1.44 0-2.74.84-3.96 2.02L13 7.8V7z"/>
+                        </svg>
+                        Sunbed Ratio: <span className="text-orange-600">{hotel.pool_criteria.sunbed_to_guest_ratio}:1</span>
                     </div>
                 )}
             </div>
