@@ -29,10 +29,11 @@ export default function Header() {
                 <div className="flex items-center justify-between h-14 sm:h-16 md:h-18 lg:h-20">
                     {/* Logo - Responsive sizing */}
                     <Link href="/" className="flex items-center flex-shrink-0">
-                        <span className="font-serif-luxury text-xl sm:text-2xl md:text-3xl font-light tracking-tight">
-                            <span className="text-neutral-900">sunbed</span>
-                            <span className="text-neutral-500">ranker</span>
-                        </span>
+                        <img 
+                            src="/images/logo.png" 
+                            alt="Sunbed Ranker" 
+                            className="h-10 sm:h-12 md:h-16 lg:h-20 xl:h-24 w-auto object-contain"
+                        />
                     </Link>
                     
                     {/* Desktop Navigation - Hidden on mobile */}
