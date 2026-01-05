@@ -168,23 +168,23 @@ export default function CreateHotel({ destinations, stats }) {
         <>
             <Head title="Add New Hotel" />
             
-            <div className="min-h-screen bg-neutral-50 font-sans-luxury">
+            <div className="min-h-screen bg-white font-sans">
                 <AdminNav stats={stats} />
                 
                 {/* Page Header */}
-                <div className="bg-white shadow-sm border-b border-neutral-100">
+                <div className="bg-gradient-to-r from-orange-50 to-blue-50 shadow-lg border-b-2 border-orange-200">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-12">
                         {/* Decorative accent */}
                         <div className="flex items-center justify-center mb-4 sm:mb-5 md:mb-6">
-                            <div className="h-px w-8 sm:w-10 md:w-12 bg-neutral-300"></div>
-                            <svg className="mx-3 sm:mx-4 text-neutral-400" width="16" height="16" viewBox="0 0 20 20" fill="none">
-                                <path d="M10 2L11.5 8.5L18 10L11.5 11.5L10 18L8.5 11.5L2 10L8.5 8.5L10 2Z" stroke="currentColor" strokeWidth="1.5"/>
+                            <div className="h-1 w-8 sm:w-10 md:w-12 bg-orange-300 rounded-full"></div>
+                            <svg className="mx-3 sm:mx-4 text-orange-500" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                             </svg>
-                            <div className="h-px w-8 sm:w-10 md:w-12 bg-neutral-300"></div>
+                            <div className="h-1 w-8 sm:w-10 md:w-12 bg-blue-300 rounded-full"></div>
                         </div>
                         <div className="text-center sm:text-left">
-                            <h1 className="font-serif-luxury text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-neutral-900 tracking-tight">Add New Hotel</h1>
-                            <p className="text-neutral-600 mt-2 font-light tracking-wide">Create a new hotel listing</p>
+                            <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-gray-900">Add New Hotel</h1>
+                            <p className="text-gray-700 mt-2 font-semibold">Create a new hotel listing</p>
                         </div>
                     </div>
                 </div>
@@ -192,12 +192,17 @@ export default function CreateHotel({ destinations, stats }) {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12 lg:py-16">
                     {/* Validation Errors Display */}
                     {Object.keys(errors).length > 0 && (
-                        <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
-                            <h3 className="text-red-800 font-semibold mb-2">Please fix the following errors:</h3>
-                            <ul className="list-disc list-inside text-red-700 space-y-1">
+                        <div className="mb-6 bg-gradient-to-r from-red-50 to-red-100 border-2 border-red-300 rounded-2xl p-5 shadow-lg">
+                            <h3 className="text-red-800 font-bold mb-3 flex items-center gap-2">
+                                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                                </svg>
+                                Please fix the following errors:
+                            </h3>
+                            <ul className="list-disc list-inside text-red-700 space-y-2">
                                 {Object.entries(errors).map(([field, messages]) => (
                                     <li key={field}>
-                                        <span className="font-medium">{field}:</span> {Array.isArray(messages) ? messages.join(', ') : messages}
+                                        <span className="font-bold">{field}:</span> {Array.isArray(messages) ? messages.join(', ') : messages}
                                     </li>
                                 ))}
                             </ul>
@@ -206,8 +211,8 @@ export default function CreateHotel({ destinations, stats }) {
                     
                     <form onSubmit={handleSubmit}>
                         {/* Tabs */}
-                        <div className="bg-white rounded-t-xl border-b border-neutral-200 shadow-lg">
-                            <div className="flex gap-1 px-6 pt-4 overflow-x-auto">
+                        <div className="bg-gradient-to-r from-orange-50 to-blue-50 rounded-t-2xl border-b-2 border-orange-200 shadow-lg">
+                            <div className="flex gap-2 px-6 pt-5 overflow-x-auto">
                                 <TabButton active={activeTab === 'basic'} onClick={() => setActiveTab('basic')}>
                                     Basic Info
                                 </TabButton>
@@ -230,7 +235,7 @@ export default function CreateHotel({ destinations, stats }) {
                         </div>
 
                         {/* Form Content */}
-                        <div className="bg-white rounded-b-xl shadow-lg hover:shadow-2xl transition-shadow duration-500 p-5 sm:p-6 md:p-8 border border-neutral-100 border-t-0">
+                        <div className="bg-white rounded-b-2xl shadow-xl hover:shadow-2xl transition-all duration-300 p-5 sm:p-6 md:p-8 border-2 border-gray-100 border-t-0">
                             {activeTab === 'basic' && (
                                 <CreateBasicInfoTab
                                     data={data}
@@ -281,10 +286,10 @@ export default function CreateHotel({ destinations, stats }) {
                             )}
 
                             {/* Action Buttons */}
-                            <div className="mt-8 pt-6 border-t border-neutral-200 flex flex-col sm:flex-row gap-3 justify-between">
+                            <div className="mt-8 pt-6 border-t-2 border-gray-200 flex flex-col sm:flex-row gap-3 justify-between">
                                 <Link
                                     href={route('admin.hotels.index')}
-                                    className="px-4 sm:px-6 py-3 sm:py-4 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 font-light transition-all duration-300 text-center tracking-wide text-sm sm:text-base"
+                                    className="px-4 sm:px-6 py-3 sm:py-4 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-bold transition-all duration-300 text-center text-sm sm:text-base transform hover:scale-105 shadow-md hover:shadow-lg"
                                 >
                                     Cancel
                                 </Link>
@@ -294,7 +299,7 @@ export default function CreateHotel({ destinations, stats }) {
                                         <button
                                             type="button"
                                             onClick={prevTab}
-                                            className="px-4 sm:px-6 py-3 sm:py-4 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 font-light transition-all duration-300 text-center tracking-wide text-sm sm:text-base"
+                                            className="px-4 sm:px-6 py-3 sm:py-4 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-bold transition-all duration-300 text-center text-sm sm:text-base transform hover:scale-105 shadow-md hover:shadow-lg"
                                         >
                                             Previous
                                         </button>
@@ -304,7 +309,7 @@ export default function CreateHotel({ destinations, stats }) {
                                         <button
                                             type="button"
                                             onClick={nextTab}
-                                            className="px-4 sm:px-6 py-3 sm:py-4 bg-neutral-900 text-white font-light rounded-lg hover:bg-neutral-800 transition-all duration-300 text-center tracking-wide hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] text-sm sm:text-base"
+                                            className="px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 text-center shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 text-sm sm:text-base"
                                         >
                                             Next
                                         </button>
@@ -312,7 +317,7 @@ export default function CreateHotel({ destinations, stats }) {
                                         <button
                                             type="submit"
                                             disabled={processing}
-                                            className="px-4 sm:px-6 py-3 sm:py-4 bg-neutral-900 text-white font-light rounded-lg hover:bg-neutral-800 transition-all duration-300 text-center tracking-wide hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                                            className="px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 text-center shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                                         >
                                             {processing ? 'Creating...' : 'Create Hotel'}
                                         </button>
