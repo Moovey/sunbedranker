@@ -20,58 +20,57 @@ export default function HotelShow({ hotel, similarHotels }) {
         <>
             <Head title={`${hotel.name} - Pool & Sunbed Review`} />
             
-            <div className="min-h-screen bg-neutral-50">
+            <div className="min-h-screen bg-white">
                 <Header />
                 
                 {/* Breadcrumb */}
-                <div className="bg-white border-b border-neutral-200">
+                <div className="bg-gradient-to-r from-orange-50 to-blue-50 border-b-2 border-orange-200">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-3 sm:py-4 lg:py-5">
-                        <div className="text-xs sm:text-sm lg:text-base text-neutral-600 font-sans-luxury flex items-center flex-wrap gap-2">
-                            <Link href="/" className="hover:text-neutral-900 transition-colors duration-300">Home</Link>
-                            <svg className="w-3 h-3 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path d="M9 5l7 7-7 7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <div className="text-xs sm:text-sm lg:text-base text-gray-700 font-sans flex items-center flex-wrap gap-2 font-semibold">
+                            <Link href="/" className="hover:text-orange-600 transition-colors duration-300">Home</Link>
+                            <svg className="w-3 h-3 text-orange-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M9 5l7 7-7 7"/>
                             </svg>
-                            <Link href={`/destinations/${hotel.destination.slug}`} className="hover:text-neutral-900 transition-colors duration-300">
+                            <Link href={`/destinations/${hotel.destination.slug}`} className="hover:text-orange-600 transition-colors duration-300">
                                 {hotel.destination.name}
                             </Link>
-                            <svg className="w-3 h-3 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path d="M9 5l7 7-7 7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            <svg className="w-3 h-3 text-orange-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M9 5l7 7-7 7"/>
                             </svg>
-                            <span className="text-neutral-900 font-medium">{hotel.name}</span>
+                            <span className="text-gray-900 font-bold">{hotel.name}</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Above the Fold - Hero Section */}
-                <div className="bg-white border-b border-neutral-200">
+                <div className="bg-gradient-to-b from-blue-50 to-white border-b-2 border-orange-200">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-6 sm:py-8 lg:py-10 xl:py-12">
                         {/* Hotel Header */}
                         <div className="mb-6 sm:mb-8 lg:mb-10">
-                            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-serif-luxury font-semibold text-neutral-900 mb-3 sm:mb-4 lg:mb-5 xl:mb-6">{hotel.name}</h1>
+                            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-sans font-bold text-gray-900 mb-3 sm:mb-4 lg:mb-5 xl:mb-6">{hotel.name}</h1>
                             <div className="flex items-center gap-3 sm:gap-4 lg:gap-5 flex-wrap">
                                 {hotel.star_rating && (
                                     <div className="flex items-center gap-2">
                                         <div className="flex gap-0.5">
                                             {[...Array(hotel.star_rating)].map((_, i) => (
-                                                <svg key={i} className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 xl:w-7 xl:h-7 text-amber-400 fill-current" viewBox="0 0 24 24">
+                                                <svg key={i} className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 xl:w-7 xl:h-7 text-yellow-400 fill-current" viewBox="0 0 24 24">
                                                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                                                 </svg>
                                             ))}
                                         </div>
-                                        <span className="text-neutral-600 font-sans-luxury text-sm sm:text-base lg:text-lg xl:text-xl">{hotel.star_rating} Star Hotel</span>
+                                        <span className="text-gray-700 font-sans font-bold text-sm sm:text-base lg:text-lg xl:text-xl">{hotel.star_rating} Star Hotel</span>
                                     </div>
                                 )}
-                                <div className="flex items-center gap-2 text-neutral-700 font-sans-luxury text-sm sm:text-base lg:text-lg xl:text-xl">
-                                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <div className="flex items-center gap-2 text-gray-700 font-sans font-semibold text-sm sm:text-base lg:text-lg xl:text-xl">
+                                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                                     </svg>
                                     <span>{hotel.destination.name}</span>
                                 </div>
                                 {hotel.subscription_tier === 'premium' && (
-                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-800 rounded-full text-xs sm:text-sm lg:text-base font-sans-luxury font-medium">
-                                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <polyline points="20 6 9 17 4 12" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-xs sm:text-sm lg:text-base font-sans font-bold">
+                                        <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                         </svg>
                                         Verified
                                     </span>
@@ -133,26 +132,31 @@ export default function HotelShow({ hotel, similarHotels }) {
 
                                 {/* Overall Score Card */}
                                 {hotel.overall_score && (
-                                    <div className="bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 rounded-xl shadow-2xl p-5 sm:p-6 lg:p-7 xl:p-8 text-white">
-                                        <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-serif-luxury font-semibold mb-3 lg:mb-4">Pool & Sun Score</h3>
-                                        <div className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-serif-luxury font-bold mb-4 lg:mb-5">{hotel.overall_score}<span className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl text-neutral-300">/10</span></div>
+                                    <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 rounded-2xl shadow-2xl p-5 sm:p-6 lg:p-7 xl:p-8 text-white border-2 border-orange-400">
+                                        <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-sans font-bold mb-3 lg:mb-4 flex items-center gap-2">
+                                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                            </svg>
+                                            Pool & Sun Score
+                                        </h3>
+                                        <div className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-sans font-black mb-4 lg:mb-5">{hotel.overall_score}<span className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl text-orange-200">/10</span></div>
                                         <div className="space-y-2 lg:space-y-3">
                                             {hotel.family_score && (
-                                                <div className="flex justify-between text-xs sm:text-sm lg:text-base xl:text-lg font-sans-luxury">
-                                                    <span className="text-neutral-300">Family</span>
-                                                    <span className="font-semibold">{hotel.family_score}/10</span>
+                                                <div className="flex justify-between text-xs sm:text-sm lg:text-base xl:text-lg font-sans">
+                                                    <span className="text-orange-100 font-semibold">Family</span>
+                                                    <span className="font-black">{hotel.family_score}/10</span>
                                                 </div>
                                             )}
                                             {hotel.quiet_score && (
-                                                <div className="flex justify-between text-xs sm:text-sm font-sans-luxury">
-                                                    <span className="text-neutral-300">Quiet Sun</span>
-                                                    <span className="font-semibold">{hotel.quiet_score}/10</span>
+                                                <div className="flex justify-between text-xs sm:text-sm font-sans">
+                                                    <span className="text-orange-100 font-semibold">Quiet Sun</span>
+                                                    <span className="font-black">{hotel.quiet_score}/10</span>
                                                 </div>
                                             )}
                                             {hotel.party_score && (
-                                                <div className="flex justify-between text-xs sm:text-sm font-sans-luxury">
-                                                    <span className="text-neutral-300">Party Vibe</span>
-                                                    <span className="font-semibold">{hotel.party_score}/10</span>
+                                                <div className="flex justify-between text-xs sm:text-sm font-sans">
+                                                    <span className="text-orange-100 font-semibold">Party Vibe</span>
+                                                    <span className="font-black">{hotel.party_score}/10</span>
                                                 </div>
                                             )}
                                         </div>
@@ -170,10 +174,10 @@ export default function HotelShow({ hotel, similarHotels }) {
                             
                             {/* Pool Details - Metrics Table */}
                             {hotel.pool_criteria && (
-                                <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
-                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100">
+                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
+                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
                                         </svg>
                                         Pool Details
                                     </h2>
@@ -238,42 +242,47 @@ export default function HotelShow({ hotel, similarHotels }) {
 
                                     {/* Special Pool Features */}
                                     {hasPoolFeatures(hotel.pool_criteria) && (
-                                        <div className="mt-5 sm:mt-6 pt-5 sm:pt-6 border-t border-neutral-200">
-                                            <h3 className="font-serif-luxury font-semibold text-neutral-900 mb-4 text-base sm:text-lg">Special Features</h3>
+                                        <div className="mt-5 sm:mt-6 pt-5 sm:pt-6 border-t-2 border-orange-200">
+                                            <h3 className="font-sans font-bold text-gray-900 mb-4 text-base sm:text-lg flex items-center gap-2">
+                                                <svg className="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                                </svg>
+                                                Special Features
+                                            </h3>
                                             <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
                                                 {hotel.pool_criteria.has_infinity_pool && (
                                                     <FeatureBadge 
-                                                        icon={<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>} 
+                                                        icon={<svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M22 6.5c-1.1 0-2.2.3-3 .9-.8-.6-1.9-.9-3-.9s-2.2.3-3 .9c-.8-.6-1.9-.9-3-.9s-2.2.3-3 .9c-.8-.6-1.9-.9-3-.9v2c.8 0 1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8s1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8s1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8V6.5z"/></svg>} 
                                                         text="Infinity Pool" 
-                                                        color="bg-sky-50 text-sky-800 border border-sky-200" 
+                                                        color="bg-blue-100 text-blue-700 border-2 border-blue-300" 
                                                     />
                                                 )}
                                                 {hotel.pool_criteria.has_rooftop_pool && (
                                                     <FeatureBadge 
-                                                        icon={<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>} 
+                                                        icon={<svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>} 
                                                         text="Rooftop Pool" 
-                                                        color="bg-purple-50 text-purple-800 border border-purple-200" 
+                                                        color="bg-purple-100 text-purple-700 border-2 border-purple-300" 
                                                     />
                                                 )}
                                                 {hotel.pool_criteria.has_heated_pool && (
                                                     <FeatureBadge 
-                                                        icon={<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /><path d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>} 
+                                                        icon={<svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/></svg>} 
                                                         text="Heated Pool" 
-                                                        color="bg-orange-50 text-orange-800 border border-orange-200" 
+                                                        color="bg-orange-100 text-orange-700 border-2 border-orange-300" 
                                                     />
                                                 )}
                                                 {hotel.pool_criteria.has_pool_bar && (
                                                     <FeatureBadge 
-                                                        icon={<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0A2.707 2.707 0 003 15.546M12 6.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12 3v2.25m0 0l2.25 9.75H9.75L12 5.25z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>} 
+                                                        icon={<svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M3 2l2.01 18.23C5.13 21.23 5.97 22 7 22h10c1.03 0 1.87-.77 1.99-1.77L21 2H3zm9 17c-1.66 0-3-1.34-3-3 0-2 3-5.4 3-5.4s3 3.4 3 5.4c0 1.66-1.34 3-3 3z"/></svg>} 
                                                         text="Pool Bar" 
-                                                        color="bg-emerald-50 text-emerald-800 border border-emerald-200" 
+                                                        color="bg-green-100 text-green-700 border-2 border-green-300" 
                                                     />
                                                 )}
                                                 {hotel.pool_criteria.has_lazy_river && (
                                                     <FeatureBadge 
-                                                        icon={<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>} 
+                                                        icon={<svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16c.58-.45 1.27-.67 2-.67.73 0 1.42.22 2 .67.58-.45 1.27-.67 2-.67.73 0 1.42.22 2 .67.58-.45 1.27-.67 2-.67.73 0 1.42.22 2 .67V14c-.58-.45-1.27-.67-2-.67-.73 0-1.42.22-2 .67-.58-.45-1.27-.67-2-.67-.73 0-1.42.22-2 .67-.58-.45-1.27-.67-2-.67-.73 0-1.42.22-2 .67v2z"/></svg>} 
                                                         text="Lazy River" 
-                                                        color="bg-cyan-50 text-cyan-800 border border-cyan-200" 
+                                                        color="bg-cyan-100 text-cyan-700 border-2 border-cyan-300" 
                                                     />
                                                 )}
                                                 {hotel.pool_criteria.has_swim_up_bar && (
@@ -291,10 +300,10 @@ export default function HotelShow({ hotel, similarHotels }) {
 
                             {/* New Pool & Features Sections */}
                             {hotel.pool_criteria?.pool_overview && hotel.pool_criteria.pool_overview.length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
-                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100">
+                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
+                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                                         </svg>
                                         Pool & Sun Overview
                                     </h2>
@@ -312,10 +321,10 @@ export default function HotelShow({ hotel, similarHotels }) {
                             )}
 
                             {hotel.pool_criteria?.pool_details && hotel.pool_criteria.pool_details.length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
-                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100">
+                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
+                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M22 6.5c-1.1 0-2.2.3-3 .9-.8-.6-1.9-.9-3-.9s-2.2.3-3 .9c-.8-.6-1.9-.9-3-.9s-2.2.3-3 .9c-.8-.6-1.9-.9-3-.9v2c.8 0 1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8s1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8s1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8V6.5z"/>
                                         </svg>
                                         Pool Types & Details
                                     </h2>
@@ -333,10 +342,10 @@ export default function HotelShow({ hotel, similarHotels }) {
                             )}
 
                             {hotel.pool_criteria?.shade_options && hotel.pool_criteria.shade_options.length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
-                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100">
+                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
+                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M3.5 19.5L2 21l8-4-6-6-4 8 1.5 1.5zM19 3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h2z"/>
                                         </svg>
                                         Shade Options
                                     </h2>
@@ -354,10 +363,10 @@ export default function HotelShow({ hotel, similarHotels }) {
                             )}
 
                             {hotel.pool_criteria?.special_features_list && hotel.pool_criteria.special_features_list.length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
-                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100">
+                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
+                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                                         </svg>
                                         Special Features
                                     </h2>
@@ -375,10 +384,10 @@ export default function HotelShow({ hotel, similarHotels }) {
                             )}
 
                             {hotel.pool_criteria?.atmosphere_vibe && hotel.pool_criteria.atmosphere_vibe.length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
-                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 0 1-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100">
+                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
+                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-pink-500" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
                                         </svg>
                                         Pool Atmosphere & Vibe
                                     </h2>
@@ -396,10 +405,10 @@ export default function HotelShow({ hotel, similarHotels }) {
                             )}
 
                             {hotel.pool_criteria?.family_features && hotel.pool_criteria.family_features.length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
-                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100">
+                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
+                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-green-500" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
                                         </svg>
                                         Family Friendliness
                                     </h2>
@@ -417,10 +426,10 @@ export default function HotelShow({ hotel, similarHotels }) {
                             )}
 
                             {hotel.pool_criteria && (hotel.pool_criteria.has_kids_pool || hotel.pool_criteria.has_splash_area || hotel.pool_criteria.has_lifeguard) && (
-                                <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif-luxury font-semibold text-neutral-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
-                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100">
+                                    <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
+                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
                                         </svg>
                                         Family Features
                                     </h2>
