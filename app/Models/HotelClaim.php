@@ -15,14 +15,24 @@ class HotelClaim extends Model
         'user_id',
         'status',
         'claim_message',
+        'official_email',
+        'phone',
+        'phone_verified_at',
         'proof_document',
         'admin_notes',
         'reviewed_by',
         'reviewed_at',
+        'claimed_at',
+        'ip_address',
+        'last_claim_attempt_at',
+        'claim_attempts',
     ];
 
     protected $casts = [
         'reviewed_at' => 'datetime',
+        'phone_verified_at' => 'datetime',
+        'claimed_at' => 'datetime',
+        'last_claim_attempt_at' => 'datetime',
     ];
 
     public function hotel(): BelongsTo
@@ -51,10 +61,11 @@ class HotelClaim extends Model
             'status' => 'approved',
             'reviewed_by' => $admin->id,
             'reviewed_at' => now(),
+            'claimed_at' => now(),
         ]);
 
-        // Upgrade user to hotelier role
-        $this->user->update(['role' => 'hotelier']);
+        // Assign hotel ownership
+        $this->hotel->update(['owned_by' => $this->user_id]);
     }
 
     public function reject(User $admin, ?string $notes = null): void
@@ -65,5 +76,18 @@ class HotelClaim extends Model
             'reviewed_at' => now(),
             'admin_notes' => $notes,
         ]);
+    }
+
+    public function isEmailFromHotelDomain(): bool
+    {
+        if (!$this->official_email || !$this->hotel->website) {
+            return false;
+        }
+
+        $emailDomain = substr(strrchr($this->official_email, "@"), 1);
+        $websiteDomain = parse_url($this->hotel->website, PHP_URL_HOST);
+        $websiteDomain = str_replace('www.', '', $websiteDomain ?? '');
+
+        return strtolower($emailDomain) === strtolower($websiteDomain);
     }
 }

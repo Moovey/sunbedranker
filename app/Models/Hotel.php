@@ -39,6 +39,7 @@ class Hotel extends Model
         'is_active',
         'is_verified',
         'is_featured',
+        'owned_by',
         'subscription_tier',
         'subscription_expires_at',
         'overall_score',
@@ -102,6 +103,21 @@ class Hotel extends Model
     public function claims(): HasMany
     {
         return $this->hasMany(HotelClaim::class);
+    }
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owned_by');
+    }
+
+    public function hasPendingClaim(): bool
+    {
+        return $this->claims()->where('status', 'pending')->exists();
+    }
+
+    public function hasOwner(): bool
+    {
+        return $this->owned_by !== null;
     }
 
     public function analytics(): HasMany

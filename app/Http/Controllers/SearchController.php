@@ -66,6 +66,9 @@ class SearchController extends Controller
 
         // Get hotels with scores and pool criteria
         $localHotels = $query->with(['destination', 'poolCriteria'])
+            ->withExists(['claims as has_pending_claim' => function ($query) {
+                $query->where('status', 'pending');
+            }])
             ->orderByDesc('overall_score')
             ->limit(20)
             ->get();

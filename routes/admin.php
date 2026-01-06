@@ -40,6 +40,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Hotel Claims
     Route::get('/claims', [ClaimManagementController::class, 'index'])->name('claims.index');
+    Route::get('/claims/{claim}', [ClaimManagementController::class, 'show'])->name('claims.show');
     Route::post('/claims/{claim}/approve', [ClaimManagementController::class, 'approve'])->name('claims.approve');
     Route::post('/claims/{claim}/reject', [ClaimManagementController::class, 'reject'])->name('claims.reject');
 });

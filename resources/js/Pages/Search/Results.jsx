@@ -1,8 +1,9 @@
-import { Link, Head } from '@inertiajs/react';
+import { Link, Head, usePage } from '@inertiajs/react';
 import { useState, useMemo } from 'react';
 import Header from '@/Components/Header';
 
 export default function SearchResults({ searchParams, localHotels, amadeusHotels, amadeusError, hasResults }) {
+    const { auth } = usePage().props;
     const [compareList, setCompareList] = useState([]);
     const [filters, setFilters] = useState({
         poolTypes: [],
@@ -425,6 +426,7 @@ export default function SearchResults({ searchParams, localHotels, amadeusHotels
                                             hotel={hotel}
                                             isInCompare={compareList.includes(hotel.id)}
                                             onToggleCompare={(e) => toggleCompare(hotel.id, e)}
+                                            isHotelier={auth?.user?.role === 'hotelier'}
                                         />
                                     ))}
                                 </div>
@@ -451,7 +453,9 @@ export default function SearchResults({ searchParams, localHotels, amadeusHotels
     );
 }
 
-function HotelCard({ hotel, isInCompare, onToggleCompare }) {
+function HotelCard({ hotel, isInCompare, onToggleCompare, isHotelier }) {
+    const canClaim = isHotelier && !hotel.owned_by && !hotel.has_pending_claim;
+
     return (
         <div className="bg-white overflow-hidden transition-all duration-500 hover:shadow-2xl rounded-lg relative group">
             <Link href={`/hotels/${hotel.slug}`} className="block">
@@ -465,6 +469,19 @@ function HotelCard({ hotel, isInCompare, onToggleCompare }) {
                     {hotel.overall_score && (
                         <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-white/95 backdrop-blur-sm text-neutral-900 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-light tracking-wider text-xs sm:text-sm shadow-lg">
                             {hotel.overall_score}/10
+                        </div>
+                    )}
+                    {hotel.has_pending_claim && (
+                        <div className="absolute bottom-3 left-3 right-3 bg-yellow-500/90 backdrop-blur-sm text-white px-3 py-2 rounded-lg text-xs font-semibold text-center">
+                            🔒 Claim under review
+                        </div>
+                    )}
+                    {hotel.owned_by && (
+                        <div className="absolute bottom-3 left-3 right-3 bg-green-500/90 backdrop-blur-sm text-white px-3 py-2 rounded-lg text-xs font-semibold text-center flex items-center justify-center gap-1">
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            Verified Owner
                         </div>
                     )}
                 </div>
@@ -498,24 +515,41 @@ function HotelCard({ hotel, isInCompare, onToggleCompare }) {
                 </div>
             </Link>
             
-            {/* Compare Checkbox */}
-            <button
-                onClick={onToggleCompare}
-                className={`absolute top-3 sm:top-4 left-3 sm:left-4 p-2 rounded-lg transition-all duration-300 shadow-lg ${
-                    isInCompare 
-                        ? 'bg-neutral-900 text-white' 
-                        : 'bg-white/90 text-neutral-700 hover:bg-white'
-                }`}
-                title={isInCompare ? 'Remove from comparison' : 'Add to comparison'}
-            >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    {isInCompare ? (
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    ) : (
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    )}
-                </svg>
-            </button>
+            {/* Action buttons container */}
+            <div className="absolute top-3 sm:top-4 left-3 sm:left-4 flex gap-2">
+                {/* Compare Button */}
+                <button
+                    onClick={onToggleCompare}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg transition-all duration-300 shadow-lg text-sm font-semibold ${
+                        isInCompare 
+                            ? 'bg-neutral-900 text-white' 
+                            : 'bg-white/90 text-neutral-700 hover:bg-white'
+                    }`}
+                >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {isInCompare ? (
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        ) : (
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        )}
+                    </svg>
+                    Compare
+                </button>
+
+                {/* Claim Hotel Button (Hotelier Only) */}
+                {canClaim && (
+                    <Link
+                        href={`/hotelier/hotels/${hotel.slug}/claim`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex items-center gap-1.5 px-3 py-2 rounded-lg transition-all duration-300 shadow-lg bg-orange-500 text-white hover:bg-orange-600 text-sm font-semibold"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        Claim Hotel
+                    </Link>
+                )}
+            </div>
         </div>
     );
 }
