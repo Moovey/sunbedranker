@@ -1,8 +1,8 @@
 import { Link, Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
-import AdminLayout from '@/Layouts/AdminLayout';
+import AdminNav from '@/Components/AdminNav';
 
-export default function ClaimShow({ claim, userClaimHistory, hotelClaimHistory }) {
+export default function ClaimShow({ claim, userClaimHistory, hotelClaimHistory, stats }) {
     const [showRejectModal, setShowRejectModal] = useState(false);
 
     const approveForm = useForm({});
@@ -68,12 +68,33 @@ export default function ClaimShow({ claim, userClaimHistory, hotelClaimHistory }
     const domainMatches = emailDomain.toLowerCase() === hotelDomain.toLowerCase();
 
     return (
-        <AdminLayout>
+        <>
             <Head title={`Review Claim - ${claim.hotel?.name}`} />
+            
+            <div className="min-h-screen bg-white font-sans">
+                <AdminNav stats={stats} />
+                
+                {/* Page Header */}
+                <div className="bg-gradient-to-r from-orange-50 to-blue-50 shadow-lg border-b-2 border-orange-200">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-12">
+                        {/* Decorative accent */}
+                        <div className="flex items-center justify-center mb-4 sm:mb-5 md:mb-6">
+                            <div className="h-0.5 w-8 sm:w-10 md:w-12 bg-gradient-to-r from-orange-500 to-orange-600"></div>
+                            <svg className="mx-3 sm:mx-4 text-orange-500" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <div className="h-0.5 w-8 sm:w-10 md:w-12 bg-gradient-to-r from-blue-500 to-blue-600"></div>
+                        </div>
+                        <div className="text-center">
+                            <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-gray-900">Review Hotel Claim</h1>
+                            <p className="text-gray-700 mt-2 font-semibold">{claim.hotel?.name}</p>
+                        </div>
+                    </div>
+                </div>
 
             <div className="py-6 sm:py-8 md:py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Header */}
+                    {/* Back Button */}
                     <div className="mb-8">
                         <Link
                             href={route('admin.claims.index')}
@@ -329,6 +350,7 @@ export default function ClaimShow({ claim, userClaimHistory, hotelClaimHistory }
                     </div>
                 </div>
             )}
-        </AdminLayout>
+            </div>
+        </>
     );
 }
