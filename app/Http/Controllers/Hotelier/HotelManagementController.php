@@ -33,7 +33,7 @@ class HotelManagementController extends Controller
         // Get all badges
         $badges = Badge::all();
 
-        return Inertia::render('Hotelier/ManageHotel', [
+        return Inertia::render('Hotelier/Claims/ManageHotel', [
             'hotel' => $hotel,
             'destinations' => $destinations,
             'badges' => $badges,

@@ -1,20 +1,8 @@
 import { Link, Head, usePage } from '@inertiajs/react';
-import { useState, useRef, useEffect } from 'react';
+import HotelierNav from '@/Components/HotelierNav';
 
 export default function HotelierClaimsIndex({ claims }) {
     const { auth } = usePage().props;
-    const [showUserDropdown, setShowUserDropdown] = useState(false);
-    const dropdownRef = useRef(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setShowUserDropdown(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
 
     const getStatusBadge = (status) => {
         const badges = {
@@ -39,86 +27,7 @@ export default function HotelierClaimsIndex({ claims }) {
             <Head title="My Hotel Claims" />
             
             <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-                {/* Header Navigation */}
-                <nav className="bg-white border-b-4 border-orange-400 shadow-md sticky top-0 z-50">
-                    <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-                        <div className="flex justify-between items-center h-14 sm:h-16">
-                            {/* Logo and Brand */}
-                            <div className="flex items-center gap-4 sm:gap-8">
-                                <Link href="/" className="flex items-center flex-shrink-0">
-                                    <span className="text-xl sm:text-2xl font-bold">
-                                        <span className="text-red-500">sun</span>
-                                        <span className="text-orange-500">bed</span>
-                                        <span className="text-blue-500">ranker</span>
-                                    </span>
-                                    <span className="ml-2 sm:ml-3 text-xs sm:text-sm font-bold text-gray-700 border-l-2 pl-2 sm:pl-3">Hotelier</span>
-                                </Link>
-
-                                {/* Desktop Navigation Links */}
-                                <div className="hidden md:flex items-center gap-1">
-                                    <Link
-                                        href={route('hotelier.dashboard')}
-                                        className="px-3 py-2 rounded-lg text-sm font-bold transition-all duration-300 text-gray-700 hover:bg-orange-50"
-                                    >
-                                        Dashboard
-                                    </Link>
-                                    <Link
-                                        href={route('hotelier.claims.index')}
-                                        className="px-3 py-2 rounded-lg text-sm font-bold transition-all duration-300 bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md"
-                                    >
-                                        My Claims
-                                    </Link>
-                                </div>
-                            </div>
-
-                            {/* Right Side Actions */}
-                            <div className="flex items-center gap-2 sm:gap-4">
-                                {/* Back to Site */}
-                                <Link
-                                    href="/"
-                                    className="hidden sm:block text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-bold transition-colors duration-300"
-                                >
-                                    ← Back to Site
-                                </Link>
-
-                                {/* User Dropdown */}
-                                <div className="relative" ref={dropdownRef}>
-                                    <button
-                                        onClick={() => setShowUserDropdown(!showUserDropdown)}
-                                        className="flex items-center gap-2 px-2 sm:px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-orange-300 hover:shadow-md transition-all duration-300"
-                                    >
-                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white font-bold shadow-md">
-                                            {auth.user.name.charAt(0).toUpperCase()}
-                                        </div>
-                                        <span className="hidden sm:block text-sm font-bold text-gray-900">{auth.user.name}</span>
-                                        <svg className={`w-4 h-4 text-gray-600 transition-transform duration-300 ${showUserDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </button>
-
-                                    {showUserDropdown && (
-                                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border-2 border-gray-200 py-1 z-50">
-                                            <Link
-                                                href={route('profile.edit')}
-                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 font-semibold"
-                                            >
-                                                Profile
-                                            </Link>
-                                            <Link
-                                                href={route('logout')}
-                                                method="post"
-                                                as="button"
-                                                className="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-semibold"
-                                            >
-                                                Logout
-                                            </Link>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </nav>
+                <HotelierNav />
 
                 {/* Main Content */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
