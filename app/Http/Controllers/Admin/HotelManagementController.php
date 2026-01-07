@@ -46,7 +46,7 @@ class HotelManagementController extends Controller
             }
         }
 
-        $hotels = $query->latest()->paginate(20)->appends($request->query());
+        $hotels = $query->latest()->paginate(10)->appends($request->query());
 
         $destinations = Destination::orderBy('name')->get();
 
