@@ -70,6 +70,16 @@ export default function AdminNav({ stats }) {
                                     </span>
                                 )}
                             </Link>
+                            <Link
+                                href="/admin/users"
+                                className={`px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
+                                    route().current('admin.users.*')
+                                        ? 'bg-neutral-100 text-neutral-900'
+                                        : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
+                                }`}
+                            >
+                                Users
+                            </Link>
                         </div>
                     </div>
 
@@ -178,6 +188,17 @@ export default function AdminNav({ stats }) {
                                     {stats.pending_claims}
                                 </span>
                             )}
+                        </Link>
+                        <Link
+                            href="/admin/users"
+                            className={`block px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
+                                route().current('admin.users.*')
+                                    ? 'bg-neutral-100 text-neutral-900'
+                                    : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
+                            }`}
+                            onClick={() => setShowMobileMenu(false)}
+                        >
+                            Users
                         </Link>
                         <Link
                             href="/"

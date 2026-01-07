@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\HotelManagementController;
 use App\Http\Controllers\Admin\ClaimManagementController;
+use App\Http\Controllers\Admin\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -43,4 +44,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/claims/{claim}', [ClaimManagementController::class, 'show'])->name('claims.show');
     Route::post('/claims/{claim}/approve', [ClaimManagementController::class, 'approve'])->name('claims.approve');
     Route::post('/claims/{claim}/reject', [ClaimManagementController::class, 'reject'])->name('claims.reject');
+
+    // Users Management
+    Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}/edit', [UserManagementController::class, 'edit'])->name('users.edit');
+    Route::patch('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
 });
