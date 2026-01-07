@@ -78,7 +78,7 @@ class Hotel extends Model
         'override_description' => 'boolean',
     ];
 
-    protected $appends = ['main_image_url', 'gallery_images_urls'];
+    protected $appends = ['main_image_url', 'gallery_images_urls', 'has_pending_claim'];
 
     public function destination(): BelongsTo
     {
@@ -234,5 +234,13 @@ class Hotel extends Model
             // Otherwise, convert storage path to URL
             return asset('storage/' . $image);
         }, $this->images);
+    }
+
+    /**
+     * Check if hotel has a pending claim
+     */
+    public function getHasPendingClaimAttribute(): bool
+    {
+        return $this->claims()->where('status', 'pending')->exists();
     }
 }

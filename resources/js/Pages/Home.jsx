@@ -1,5 +1,6 @@
 import { Link, Head, router, usePage } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import Header from '@/Components/Header';
 
 export default function Home({ featuredDestinations, topRatedHotels, familyFriendlyHotels, quietSunHotels }) {
@@ -242,6 +243,7 @@ export default function Home({ featuredDestinations, topRatedHotels, familyFrien
                                     <HotelCard 
                                         key={hotel.id} 
                                         hotel={hotel}
+                                        isHotelier={auth.user?.role === 'hotelier'}
                                     />
                                 ))}
                             </div>
@@ -266,6 +268,7 @@ export default function Home({ featuredDestinations, topRatedHotels, familyFrien
                                         key={hotel.id} 
                                         hotel={hotel} 
                                         scoreType="family"
+                                        isHotelier={auth.user?.role === 'hotelier'}
                                     />
                                 ))}
                             </div>
@@ -290,6 +293,7 @@ export default function Home({ featuredDestinations, topRatedHotels, familyFrien
                                         key={hotel.id} 
                                         hotel={hotel} 
                                         scoreType="quiet"
+                                        isHotelier={auth.user?.role === 'hotelier'}
                                     />
                                 ))}
                             </div>
@@ -350,6 +354,30 @@ function HotelCard({ hotel, scoreType = 'overall', isInCompare = false, onToggle
                 : hotel.overall_score;
 
     const canClaim = isHotelier && !hotel.owned_by && !hotel.has_pending_claim;
+
+    const handleClaimClick = (e) => {
+        e.stopPropagation();
+        
+        // Check if hotel is already claimed or has pending claim
+        if (hotel.owned_by) {
+            toast.error('This hotel has already been claimed by another hotelier.', {
+                position: 'top-right',
+                autoClose: 4000,
+            });
+            return;
+        }
+        
+        if (hotel.has_pending_claim) {
+            toast.warning('This hotel already has a pending claim under review.', {
+                position: 'top-right',
+                autoClose: 4000,
+            });
+            return;
+        }
+        
+        // Navigate to claim form
+        router.visit(`/hotelier/hotels/${hotel.slug}/claim`);
+    };
 
     return (
         <div className="group bg-white overflow-hidden transition-all duration-300 hover:shadow-2xl rounded-2xl shadow-lg border-2 border-gray-100 transform hover:scale-105 relative">
@@ -481,9 +509,8 @@ function HotelCard({ hotel, scoreType = 'overall', isInCompare = false, onToggle
                     {/* Claim Hotel Button (Hotelier Only) */}
                     {canClaim && (
                         <div className="relative">
-                            <Link
-                                href={`/hotelier/hotels/${hotel.id}/claim`}
-                                onClick={(e) => e.stopPropagation()}
+                            <button
+                                onClick={handleClaimClick}
                                 onMouseEnter={() => setShowClaimTooltip(true)}
                                 onMouseLeave={() => setShowClaimTooltip(false)}
                                 className="flex items-center gap-1.5 px-3 py-2 rounded-lg transition-all duration-300 shadow-lg bg-orange-500 text-white hover:bg-orange-600 text-sm font-semibold"
@@ -492,7 +519,7 @@ function HotelCard({ hotel, scoreType = 'overall', isInCompare = false, onToggle
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                 </svg>
                                 Claim Hotel
-                            </Link>
+                            </button>
                             {/* Instant Tooltip */}
                             {showClaimTooltip && (
                                 <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 px-3 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg whitespace-nowrap z-50 pointer-events-none">
