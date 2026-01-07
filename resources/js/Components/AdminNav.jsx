@@ -24,13 +24,13 @@ export default function AdminNav({ stats }) {
                 <div className="flex items-center justify-between h-16">
                     {/* Logo and Brand */}
                     <div className="flex items-center gap-4 sm:gap-8">
-                        <Link href="/" className="flex items-center flex-shrink-0">
-                            <span className="text-xl sm:text-2xl font-bold">
-                                <span className="text-red-500">sun</span>
-                                <span className="text-orange-500">bed</span>
-                                <span className="text-blue-500">ranker</span>
-                            </span>
-                            <span className="ml-2 sm:ml-3 text-xs sm:text-sm font-light text-neutral-600 border-l pl-2 sm:pl-3 tracking-wide">Admin</span>
+                        <Link href="/" className="flex items-center flex-shrink-0 gap-2 sm:gap-3">
+                            <img 
+                                src="/images/logo.png" 
+                                alt="Sunbed Ranker" 
+                                className="h-10 sm:h-12 md:h-14 w-auto object-contain"
+                            />
+                            <span className="text-xs sm:text-sm font-light text-neutral-600 border-l pl-2 sm:pl-3 tracking-wide">Admin</span>
                         </Link>
 
                         {/* Desktop Navigation Links */}
