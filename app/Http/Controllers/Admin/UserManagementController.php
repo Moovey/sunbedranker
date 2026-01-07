@@ -18,7 +18,7 @@ class UserManagementController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('created_at', 'desc')->get();
+        $users = User::orderBy('created_at', 'desc')->paginate(10);
 
         $stats = [
             'total_users' => User::count(),

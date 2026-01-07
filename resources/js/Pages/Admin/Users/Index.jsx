@@ -7,7 +7,7 @@ export default function UsersIndex({ stats, users }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [roleFilter, setRoleFilter] = useState('all');
 
-    const filteredUsers = users.filter(user => {
+    const filteredUsers = users.data.filter(user => {
         const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                             user.email.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesRole = roleFilter === 'all' || user.role === roleFilter;
@@ -231,6 +231,41 @@ export default function UsersIndex({ stats, users }) {
                                 </tbody>
                             </table>
                         </div>
+
+                        {/* Pagination */}
+                        {users.links && (
+                            <div className="bg-white px-4 py-3 border-t-2 border-gray-200 sm:px-6">
+                                <div className="flex items-center justify-between">
+                                    <div className="text-sm text-gray-700 font-semibold">
+                                        Showing <span className="font-bold text-purple-600">{users.from}</span> to{' '}
+                                        <span className="font-bold text-purple-600">{users.to}</span> of{' '}
+                                        <span className="font-bold text-purple-600">{users.total}</span> results
+                                    </div>
+                                    <div className="flex gap-2">
+                                        {users.links.map((link, index) => (
+                                            link.url ? (
+                                                <Link
+                                                    key={index}
+                                                    href={link.url}
+                                                    className={`px-3 py-1 border-2 rounded-lg font-bold transition-all duration-300 transform hover:scale-105 ${
+                                                        link.active
+                                                            ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white border-purple-600 shadow-lg'
+                                                            : 'bg-white text-gray-700 border-gray-300 hover:bg-purple-50 hover:border-purple-300'
+                                                    }`}
+                                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                                />
+                                            ) : (
+                                                <span
+                                                    key={index}
+                                                    className="px-3 py-1 border-2 rounded-lg bg-gray-100 text-gray-400 border-gray-200 font-semibold"
+                                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                                />
+                                            )
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
