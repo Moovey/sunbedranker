@@ -1,5 +1,5 @@
-import { Link, Head, useForm } from '@inertiajs/react';
-import { useState } from 'react';
+import { Link, Head, useForm, usePage } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import AdminNav from '@/Components/AdminNav';
 import TabButton from '@/Components/Admin/Hotels/TabButton';
@@ -12,6 +12,7 @@ import CreateImagesTab from '@/Components/Admin/Hotels/CreateImagesTab';
 
 export default function CreateHotel({ destinations, stats }) {
     const [activeTab, setActiveTab] = useState('basic');
+    const { flash } = usePage().props;
 
     const tabs = ['basic', 'contact', 'images', 'pool', 'affiliate', 'settings'];
     
@@ -116,6 +117,22 @@ export default function CreateHotel({ destinations, stats }) {
         has_jacuzzi: false,
         has_adult_sun_terrace: false,
     });
+
+    // Show flash messages from session
+    useEffect(() => {
+        if (flash?.success) {
+            toast.success(flash.success);
+        }
+        if (flash?.error) {
+            toast.error(flash.error);
+        }
+        if (flash?.warning) {
+            toast.warning(flash.warning);
+        }
+        if (flash?.info) {
+            toast.info(flash.info);
+        }
+    }, [flash]);
 
     const handleSubmit = (e) => {
         e.preventDefault();

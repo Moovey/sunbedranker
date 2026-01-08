@@ -92,8 +92,8 @@ class HotelManagementController extends Controller
                 'destination_id' => 'required|exists:destinations,id',
                 'description' => 'nullable|string',
                 'address' => 'required|string',
-                'latitude' => 'required|numeric|between:-90,90',
-                'longitude' => 'required|numeric|between:-180,180',
+                'latitude' => 'nullable|numeric|between:-90,90',
+                'longitude' => 'nullable|numeric|between:-180,180',
                 'star_rating' => 'nullable|integer|min:1|max:5',
                 'total_rooms' => 'nullable|integer|min:1',
                 'phone' => 'nullable|string',
@@ -264,10 +264,9 @@ class HotelManagementController extends Controller
                 'request_data' => $request->except(['main_image', 'gallery_images']),
             ]);
             
-            // Make sure errors are returned to Inertia
-            return back()
-                ->withErrors($e->errors())
-                ->withInput();
+            // Re-throw the validation exception to let Inertia handle it
+            throw $e;
+            
         } catch (\Exception $e) {
             // Log the error for debugging
             Log::error('Hotel creation failed', [
@@ -275,12 +274,14 @@ class HotelManagementController extends Controller
                 'message' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
                 'user_id' => Auth::id(),
             ]);
             
+            // Return with error message
             return back()
                 ->withInput()
-                ->withErrors(['error' => 'Failed to create hotel: ' . $e->getMessage()]);
+                ->with('error', 'Failed to create hotel: ' . $e->getMessage());
         }
     }
 
