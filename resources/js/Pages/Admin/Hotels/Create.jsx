@@ -134,6 +134,35 @@ export default function CreateHotel({ destinations, stats }) {
         }
     }, [flash]);
 
+    const handleValidationErrors = (validationErrors) => {
+        console.error('✗ Validation errors:', validationErrors);
+        console.error('Error count:', Object.keys(validationErrors || {}).length);
+
+        // Scroll to top to show error messages
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Show first error in toast
+        const firstError = Object.values(validationErrors || {})[0];
+        const errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
+        toast.error(errorMessage || 'Please fix the validation errors and try again.');
+
+        // Switch to the first tab with errors
+        const errorFields = Object.keys(validationErrors || {});
+        if (errorFields.includes('name') || errorFields.includes('destination_id') || errorFields.includes('description')) {
+            setActiveTab('basic');
+        } else if (errorFields.includes('address') || errorFields.includes('latitude') || errorFields.includes('longitude') || errorFields.includes('email')) {
+            setActiveTab('contact');
+        } else if (errorFields.includes('main_image') || errorFields.includes('gallery_images')) {
+            setActiveTab('images');
+        } else if (errorFields.includes('sunbed_count') || errorFields.includes('sun_exposure') || errorFields.includes('pool_size_category')) {
+            setActiveTab('pool');
+        } else if (errorFields.some(field => field.includes('affiliate'))) {
+            setActiveTab('affiliate');
+        } else {
+            setActiveTab('settings');
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         
@@ -143,37 +172,20 @@ export default function CreateHotel({ destinations, stats }) {
         
         post(route('admin.hotels.store'), {
             forceFormData: true,
-            onSuccess: () => {
+            onSuccess: (page) => {
+                // In production, Laravel validation can come back as a redirect with errors in props,
+                // which still triggers Inertia's onSuccess. Guard against false "success" toasts.
+                const serverErrors = page?.props?.errors || {};
+                if (Object.keys(serverErrors).length > 0) {
+                    handleValidationErrors(serverErrors);
+                    return;
+                }
+
                 console.log('✓ Hotel created successfully');
                 toast.success('Hotel created successfully with Pool & Sun Score calculated!');
             },
-            onError: (errors) => {
-                console.error('✗ Validation errors:', errors);
-                console.error('Error count:', Object.keys(errors).length);
-                
-                // Scroll to top to show error messages
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                
-                // Show first error in toast
-                const firstError = Object.values(errors)[0];
-                const errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
-                toast.error(errorMessage || 'Please fix the validation errors and try again.');
-                
-                // Switch to the first tab with errors
-                const errorFields = Object.keys(errors);
-                if (errorFields.includes('name') || errorFields.includes('destination_id') || errorFields.includes('description')) {
-                    setActiveTab('basic');
-                } else if (errorFields.includes('address') || errorFields.includes('latitude') || errorFields.includes('longitude') || errorFields.includes('email')) {
-                    setActiveTab('contact');
-                } else if (errorFields.includes('main_image') || errorFields.includes('gallery_images')) {
-                    setActiveTab('images');
-                } else if (errorFields.includes('sunbed_count') || errorFields.includes('sun_exposure') || errorFields.includes('pool_size_category')) {
-                    setActiveTab('pool');
-                } else if (errorFields.some(field => field.includes('affiliate'))) {
-                    setActiveTab('affiliate');
-                } else {
-                    setActiveTab('settings');
-                }
+            onError: (validationErrors) => {
+                handleValidationErrors(validationErrors);
             },
             onFinish: () => {
                 console.log('=== REQUEST FINISHED ===');
