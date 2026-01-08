@@ -14,6 +14,7 @@ import BadgesTab from '@/Components/Admin/Hotels/BadgesTab';
 
 export default function EditHotel({ hotel, destinations, badges, flash, stats }) {
     const [activeTab, setActiveTab] = useState('basic');
+    const [justSubmitted, setJustSubmitted] = useState(false);
 
     useEffect(() => {
         if (flash?.success) {
@@ -23,6 +24,32 @@ export default function EditHotel({ hotel, destinations, badges, flash, stats })
             toast.error(flash.error);
         }
     }, [flash]);
+
+    const handleValidationErrors = (validationErrors) => {
+        // Scroll to top to show error messages
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Show first error in toast
+        const firstError = Object.values(validationErrors || {})[0];
+        const errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
+        toast.error(errorMessage || 'Please fix the validation errors and try again.');
+
+        // Switch to the first tab with errors
+        const errorFields = Object.keys(validationErrors || {});
+        if (errorFields.includes('name') || errorFields.includes('destination_id') || errorFields.includes('description')) {
+            setActiveTab('basic');
+        } else if (errorFields.includes('address') || errorFields.includes('latitude') || errorFields.includes('longitude') || errorFields.includes('email')) {
+            setActiveTab('contact');
+        } else if (errorFields.includes('main_image') || errorFields.includes('gallery_images')) {
+            setActiveTab('images');
+        } else if (errorFields.includes('sunbed_count') || errorFields.includes('sun_exposure') || errorFields.includes('pool_size_category')) {
+            setActiveTab('pool');
+        } else if (errorFields.some(field => field.includes('affiliate'))) {
+            setActiveTab('affiliate');
+        } else {
+            setActiveTab('settings');
+        }
+    };
 
     const { data, setData, post, patch, processing, errors } = useForm({
         name: hotel.name || '',
@@ -117,20 +144,56 @@ export default function EditHotel({ hotel, destinations, badges, flash, stats })
         has_adult_sun_terrace: hotel.pool_criteria?.has_adult_sun_terrace || false,
     });
 
+    // If validation errors arrive via redirect, `errors` updates without `onError`.
+    useEffect(() => {
+        if (!justSubmitted) return;
+        if (Object.keys(errors).length === 0) return;
+
+        handleValidationErrors(errors);
+        setJustSubmitted(false);
+    }, [errors, justSubmitted]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Submitting data:', data);
-        data._method = 'PATCH';
-        post(route('admin.hotels.update', hotel.id), {
+
+        // Client-side required checks (helps production UX if server errors aren't returned as expected)
+        const clientErrors = {};
+        if (!String(data.name || '').trim()) clientErrors.name = 'The name field is required.';
+        if (!String(data.destination_id || '').trim()) clientErrors.destination_id = 'Please select a destination.';
+
+        if (Object.keys(clientErrors).length > 0) {
+            setJustSubmitted(false);
+            handleValidationErrors(clientErrors);
+            return;
+        }
+
+        setJustSubmitted(true);
+
+        patch(route('admin.hotels.update', hotel.id), {
             forceFormData: true,
             preserveScroll: true,
-            onSuccess: () => {
-                toast.success('Hotel updated successfully with Pool & Sun Score recalculated!');
+            onSuccess: (page) => {
+                const serverErrors = page?.props?.errors || {};
+                if (Object.keys(serverErrors).length > 0) {
+                    handleValidationErrors(serverErrors);
+                    setJustSubmitted(false);
+                    return;
+                }
+
+                const successMessage = page?.props?.flash?.success;
+                if (successMessage) {
+                    toast.success(successMessage);
+                }
+
+                setJustSubmitted(false);
             },
-            onError: (errors) => {
-                console.error('Validation errors:', errors);
-                const errorMessages = Object.values(errors).flat();
-                toast.error(errorMessages[0] || 'Failed to update hotel. Please check the form.');
+            onError: (validationErrors) => {
+                if (!validationErrors || Object.keys(validationErrors).length === 0) {
+                    toast.error('Something went wrong. Please try again.');
+                } else {
+                    handleValidationErrors(validationErrors);
+                }
+                setJustSubmitted(false);
             },
         });
     };
