@@ -145,9 +145,6 @@ export default function CreateHotel({ destinations, stats }) {
     }, [errors, justSubmitted]);
 
     const handleValidationErrors = (validationErrors) => {
-        console.error('✗ Validation errors:', validationErrors);
-        console.error('Error count:', Object.keys(validationErrors || {}).length);
-
         // Scroll to top to show error messages
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -175,11 +172,25 @@ export default function CreateHotel({ destinations, stats }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Client-side required checks (ensures validation toasts even if production
+        // environment doesn't return a validation error bag as expected).
+        const clientErrors = {};
+        if (!String(data.name || '').trim()) clientErrors.name = 'The name field is required.';
+        if (!String(data.destination_id || '').trim()) clientErrors.destination_id = 'Please select a destination.';
+        if (!String(data.address || '').trim()) clientErrors.address = 'The address field is required.';
+        if (!data.main_image) clientErrors.main_image = 'Please upload a main image.';
+        if (!String(data.sunbed_count || '').trim()) clientErrors.sunbed_count = 'The sunbed count field is required.';
+        if (!String(data.sun_exposure || '').trim()) clientErrors.sun_exposure = 'Please choose a sun exposure option.';
+        if (!String(data.pool_size_category || '').trim()) clientErrors.pool_size_category = 'Please choose a pool size category.';
+
+        if (Object.keys(clientErrors).length > 0) {
+            setJustSubmitted(false);
+            handleValidationErrors(clientErrors);
+            return;
+        }
+
         setJustSubmitted(true);
-        
-        console.log('=== SUBMITTING HOTEL ===');
-        console.log('Form data:', data);
-        console.log('Route:', route('admin.hotels.store'));
         
         post(route('admin.hotels.store'), {
             forceFormData: true,
@@ -203,11 +214,15 @@ export default function CreateHotel({ destinations, stats }) {
                 setJustSubmitted(false);
             },
             onError: (validationErrors) => {
-                handleValidationErrors(validationErrors);
+                if (!validationErrors || Object.keys(validationErrors).length === 0) {
+                    toast.error('Something went wrong. Please try again.');
+                } else {
+                    handleValidationErrors(validationErrors);
+                }
                 setJustSubmitted(false);
             },
             onFinish: () => {
-                console.log('=== REQUEST FINISHED ===');
+                // no-op
             },
         });
     };
