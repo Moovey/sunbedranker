@@ -12,6 +12,7 @@ import CreateImagesTab from '@/Components/Admin/Hotels/CreateImagesTab';
 
 export default function CreateHotel({ destinations, stats }) {
     const [activeTab, setActiveTab] = useState('basic');
+    const [justSubmitted, setJustSubmitted] = useState(false);
     const { flash } = usePage().props;
 
     const tabs = ['basic', 'contact', 'images', 'pool', 'affiliate', 'settings'];
@@ -134,6 +135,15 @@ export default function CreateHotel({ destinations, stats }) {
         }
     }, [flash]);
 
+    // If validation errors arrive via redirect (common in production), `errors` updates without `onError`.
+    useEffect(() => {
+        if (!justSubmitted) return;
+        if (Object.keys(errors).length === 0) return;
+
+        handleValidationErrors(errors);
+        setJustSubmitted(false);
+    }, [errors, justSubmitted]);
+
     const handleValidationErrors = (validationErrors) => {
         console.error('✗ Validation errors:', validationErrors);
         console.error('Error count:', Object.keys(validationErrors || {}).length);
@@ -165,6 +175,7 @@ export default function CreateHotel({ destinations, stats }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setJustSubmitted(true);
         
         console.log('=== SUBMITTING HOTEL ===');
         console.log('Form data:', data);
@@ -178,14 +189,22 @@ export default function CreateHotel({ destinations, stats }) {
                 const serverErrors = page?.props?.errors || {};
                 if (Object.keys(serverErrors).length > 0) {
                     handleValidationErrors(serverErrors);
+                    setJustSubmitted(false);
                     return;
                 }
 
-                console.log('✓ Hotel created successfully');
-                toast.success('Hotel created successfully with Pool & Sun Score calculated!');
+                // Only show a success toast when the server explicitly sent a flash success message.
+                // This prevents false positives (e.g., auth redirects, non-validation redirects).
+                const successMessage = page?.props?.flash?.success;
+                if (successMessage) {
+                    toast.success(successMessage);
+                }
+
+                setJustSubmitted(false);
             },
             onError: (validationErrors) => {
                 handleValidationErrors(validationErrors);
+                setJustSubmitted(false);
             },
             onFinish: () => {
                 console.log('=== REQUEST FINISHED ===');
