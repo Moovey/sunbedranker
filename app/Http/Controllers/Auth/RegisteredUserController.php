@@ -34,13 +34,14 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'user_type' => 'required|string|in:user,hotelier',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user', // Default role for new registrations
+            'role' => $request->user_type, // Use the selected user type
         ]);
 
         event(new Registered($user));

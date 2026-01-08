@@ -7,6 +7,7 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
+        user_type: 'user', // default to regular user
     });
 
     const submit = (e) => {
@@ -83,6 +84,50 @@ export default function Register() {
                                 />
                                 {errors.name && (
                                     <p className="mt-2 text-sm text-red-600 font-semibold">{errors.name}</p>
+                                )}
+                            </div>
+
+                            {/* User Type Selection */}
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-3">
+                                    I AM REGISTERING AS
+                                </label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setData('user_type', 'user')}
+                                        className={`px-4 py-3 border-2 rounded-lg font-bold transition-all duration-300 ${
+                                            data.user_type === 'user'
+                                                ? 'border-orange-500 bg-orange-50 text-orange-700'
+                                                : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                                        }`}
+                                    >
+                                        <div className="flex flex-col items-center gap-1">
+                                            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                            </svg>
+                                            <span className="text-sm">User</span>
+                                        </div>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setData('user_type', 'hotelier')}
+                                        className={`px-4 py-3 border-2 rounded-lg font-bold transition-all duration-300 ${
+                                            data.user_type === 'hotelier'
+                                                ? 'border-blue-500 bg-blue-50 text-blue-700'
+                                                : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                                        }`}
+                                    >
+                                        <div className="flex flex-col items-center gap-1">
+                                            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V6H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/>
+                                            </svg>
+                                            <span className="text-sm">Hotelier</span>
+                                        </div>
+                                    </button>
+                                </div>
+                                {errors.user_type && (
+                                    <p className="mt-2 text-sm text-red-600 font-semibold">{errors.user_type}</p>
                                 )}
                             </div>
 
