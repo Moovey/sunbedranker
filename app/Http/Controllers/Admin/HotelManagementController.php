@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\FilterHotelsRequest;
+use App\Http\Requests\Admin\StoreHotelRequest;
+use App\Http\Requests\Admin\UpdateHotelRequest;
 use App\Models\Hotel;
 use App\Models\Destination;
 use App\Models\PoolCriteria;
@@ -18,6 +21,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\Builder;
 
 class HotelManagementController extends Controller
 {
@@ -26,35 +30,46 @@ class HotelManagementController extends Controller
         protected AmadeusService $amadeusService
     ) {}
 
-    public function index(Request $request): Response
+    /**
+     * Display a listing of hotels with filtering.
+     */
+    public function index(FilterHotelsRequest $request): Response
     {
-        $query = Hotel::with('destination');
-
-        if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        }
-
-        if ($request->has('destination_id')) {
-            $query->where('destination_id', $request->destination_id);
-        }
-
-        if ($request->has('status')) {
-            if ($request->status === 'active') {
-                $query->where('is_active', true);
-            } elseif ($request->status === 'inactive') {
-                $query->where('is_active', false);
-            }
-        }
-
-        $hotels = $query->latest()->paginate(10)->appends($request->query());
-
-        $destinations = Destination::orderBy('name')->get();
+        $hotels = $this->buildFilteredHotelQuery($request)
+            ->latest()
+            ->paginate($request->perPage())
+            ->appends($request->query());
 
         return Inertia::render('Admin/Hotels/Index', [
             'hotels' => $hotels,
-            'destinations' => $destinations,
-            'filters' => $request->only(['search', 'destination_id', 'status']),
+            'destinations' => $this->getActiveDestinations(),
+            'filters' => $request->filters(),
         ]);
+    }
+
+    /**
+     * Build filtered query for hotels.
+     */
+    private function buildFilteredHotelQuery(FilterHotelsRequest $request): Builder
+    {
+        return Hotel::with('destination')
+            ->when($request->searchTerm(), fn (Builder $q, string $search) => 
+                $q->where('name', 'like', "%{$search}%")
+            )
+            ->when($request->destinationId(), fn (Builder $q, int $destinationId) => 
+                $q->where('destination_id', $destinationId)
+            )
+            ->when($request->status(), fn (Builder $q, string $status) => 
+                $q->where('is_active', $status === 'active')
+            );
+    }
+
+    /**
+     * Get active destinations for dropdown.
+     */
+    private function getActiveDestinations()
+    {
+        return Destination::orderBy('name')->get();
     }
 
     public function create(): Response
@@ -66,223 +81,108 @@ class HotelManagementController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    /**
+     * Store a newly created hotel.
+     */
+    public function store(StoreHotelRequest $request): RedirectResponse
     {
         try {
-            // Log incoming request for debugging
-            Log::info('Hotel creation attempt', [
+            $validated = $request->validated();
+            
+            // Generate slug
+            $validated['slug'] = Str::slug($validated['name']);
+            $validated['is_active'] = $validated['is_active'] ?? true;
+
+            // Handle image uploads
+            $validated = $this->handleImageUploads($request, $validated);
+
+            // Separate pool criteria from hotel data
+            $poolCriteriaData = $this->extractPoolCriteriaData($validated);
+
+            // Calculate sunbed to guest ratio
+            if (!empty($poolCriteriaData['sunbed_count']) && !empty($validated['total_rooms'])) {
+                $poolCriteriaData['sunbed_to_guest_ratio'] = round(
+                    $poolCriteriaData['sunbed_count'] / $validated['total_rooms'],
+                    2
+                );
+            }
+
+            // Remove gallery_images key from hotel data
+            unset($validated['gallery_images']);
+
+            // Create hotel
+            $hotel = Hotel::create($validated);
+
+            // Create pool criteria and calculate scores
+            if (!empty($poolCriteriaData)) {
+                PoolCriteria::create(array_merge(['hotel_id' => $hotel->id], $poolCriteriaData));
+                $this->scoringService->calculateAndUpdateScores($hotel->fresh());
+            }
+
+            return redirect()->route('admin.hotels.index')
+                ->with('success', 'Hotel created successfully with pool criteria scores calculated.');
+
+        } catch (\Exception $e) {
+            Log::error('Hotel creation failed', [
+                'message' => $e->getMessage(),
                 'user_id' => Auth::id(),
-                'has_main_image' => $request->hasFile('main_image'),
-                'has_gallery' => $request->hasFile('gallery_images'),
             ]);
-            
-            // Convert empty strings to null for all nullable numeric fields
-            $request->merge([
-                'latitude' => $request->latitude === '' ? null : $request->latitude,
-                'longitude' => $request->longitude === '' ? null : $request->longitude,
-                'cleanliness_rating' => $request->cleanliness_rating ?: null,
-                'sunbed_condition_rating' => ($request->sunbed_condition_rating === '0' || $request->sunbed_condition_rating === 0) ? null : ($request->sunbed_condition_rating ?: null),
-                'tiling_condition_rating' => $request->tiling_condition_rating ?: null,
-                'pool_size_sqm' => $request->pool_size_sqm === '' ? null : $request->pool_size_sqm,
-                'kids_pool_depth_m' => $request->kids_pool_depth_m === '' ? null : $request->kids_pool_depth_m,
-            ]);
-            
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'destination_id' => 'required|exists:destinations,id',
-                'description' => 'nullable|string',
-                'address' => 'required|string',
-                'latitude' => 'nullable|numeric|between:-90,90',
-                'longitude' => 'nullable|numeric|between:-180,180',
-                'star_rating' => 'nullable|integer|min:1|max:5',
-                'total_rooms' => 'nullable|integer|min:1',
-                'phone' => 'nullable|string',
-                'email' => 'nullable|email',
-                'website' => 'nullable|url',
-                'booking_affiliate_url' => 'nullable|url',
-                'expedia_affiliate_url' => 'nullable|url',
-                'direct_booking_url' => 'nullable|url',
-                'affiliate_provider' => 'nullable|string|max:255',
-                'affiliate_tracking_code' => 'nullable|string|max:255',
-                'is_active' => 'boolean',
-                'is_verified' => 'boolean',
-                'is_featured' => 'boolean',
-                'subscription_tier' => 'nullable|in:free,enhanced,premium',
-                // Images
-                'main_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
-                'gallery_images' => 'nullable|array|max:10',
-                'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
-                
-                // Pool Criteria - 1. Sunbed Availability & Ratio
-                'sunbed_count' => 'required|integer|min:1',
-                'sunbed_types' => 'nullable|array',
-                
-                // Pool Criteria - 2. Sun Exposure Hours
-                'sun_exposure' => 'required|in:all_day,afternoon_only,morning_only,partial_shade,mostly_shaded',
-                'sunny_areas' => 'nullable|array',
-                
-                // Pool Criteria - 3. Pool Size & Area
-                'pool_size_category' => 'required|in:small,medium,large,very_large',
-                'pool_size_sqm' => 'nullable|numeric|min:0',
-                
-                // Pool Criteria - 4. Towel & Reservation Policy
-                'towel_reservation_policy' => 'nullable|in:enforced,tolerated,free_for_all',
-                'towel_service_cost' => 'nullable|in:included,extra_cost,deposit_required',
-                'pool_opening_hours' => 'nullable|string',
-                
-                // Pool Criteria - 5. Pool Types & Variety
-                'number_of_pools' => 'nullable|integer|min:0',
-                'pool_types' => 'nullable|array',
-                
-                // Pool Criteria - 6. Facilities & Amenities
-                'has_pool_bar' => 'boolean',
-                'has_waiter_service' => 'boolean',
-                'shade_options' => 'nullable|array',
-                'bar_distance' => 'nullable|in:poolside,close,moderate,far',
-                'toilet_distance' => 'nullable|in:adjacent,close,moderate,far',
-                
-                // Pool Criteria - 7. Atmosphere & Vibe
-                'atmosphere' => 'nullable|in:quiet,relaxed,family,lively,party',
-                'music_level' => 'nullable|in:none,low,moderate,loud,dj',
-                'has_entertainment' => 'boolean',
-                'entertainment_types' => 'nullable|array',
-                
-                // Pool Criteria - 8. Cleanliness & Maintenance
-                'cleanliness_rating' => 'nullable|integer|min:1|max:5',
-                'sunbed_condition_rating' => 'nullable|integer|min:1|max:5',
-                'tiling_condition_rating' => 'nullable|integer|min:1|max:5',
-                
-                // Pool Criteria - 9. Accessibility Features
-                'has_accessibility_ramp' => 'boolean',
-                'has_pool_hoist' => 'boolean',
-                'has_step_free_access' => 'boolean',
-                'has_elevator_to_rooftop' => 'boolean',
-                
-                // Pool Criteria - 10. Family & Kids Features
-                'has_kids_pool' => 'boolean',
-                'kids_pool_depth_m' => 'nullable|numeric|min:0',
-                'has_splash_park' => 'boolean',
-                'has_waterslide' => 'boolean',
-                'has_lifeguard' => 'boolean',
-                'lifeguard_hours' => 'nullable|string',
-                
-                // Pool Criteria - 11. Luxury & Premium Features
-                'has_luxury_cabanas' => 'boolean',
-                'has_cabana_service' => 'boolean',
-                'has_heated_pool' => 'boolean',
-                'has_jacuzzi' => 'boolean',
-                'has_adult_sun_terrace' => 'boolean',
-                
-                // Additional criteria
-                'music_level' => 'nullable|in:none,low,moderate,loud,dj',
-            ]);
-        
-        Log::info('Validation passed successfully');
 
-        $validated['slug'] = Str::slug($validated['name']);
-        $validated['is_active'] = $validated['is_active'] ?? true;
+            return back()
+                ->withInput()
+                ->with('error', 'Failed to create hotel. Please try again.');
+        }
+    }
 
-        // Handle main image upload
+    /**
+     * Handle image uploads for hotel creation/update.
+     */
+    private function handleImageUploads(Request $request, array $validated): array
+    {
         if ($request->hasFile('main_image')) {
-            Log::info('Uploading main image...');
             $validated['main_image'] = $request->file('main_image')->store('hotels/main', 'public');
-            Log::info('Main image uploaded', ['path' => $validated['main_image']]);
         }
 
-        // Handle gallery images upload
         if ($request->hasFile('gallery_images')) {
-            Log::info('Uploading gallery images...');
             $galleryPaths = [];
             foreach ($request->file('gallery_images') as $image) {
                 $galleryPaths[] = $image->store('hotels/gallery', 'public');
             }
             $validated['images'] = $galleryPaths;
-            Log::info('Gallery images uploaded', ['count' => count($galleryPaths)]);
         }
 
-        // Extract all pool criteria data
+        return $validated;
+    }
+
+    /**
+     * Extract pool criteria fields from validated data.
+     */
+    private function extractPoolCriteriaData(array &$validated): array
+    {
         $poolCriteriaFields = [
-            'sunbed_count', 'sunbed_types', 'sun_exposure', 'sunny_areas', 'pool_size_category', 'pool_size_sqm',
-            'towel_reservation_policy', 'towel_service_cost', 'pool_opening_hours',
-            'number_of_pools', 'pool_types', 'has_pool_bar', 'has_waiter_service', 'shade_options',
-            'bar_distance', 'toilet_distance',
-            'atmosphere', 'music_level', 'has_entertainment', 'entertainment_types',
-            'cleanliness_rating', 'sunbed_condition_rating', 'tiling_condition_rating',
-            'has_accessibility_ramp', 'has_pool_hoist', 'has_step_free_access', 'has_elevator_to_rooftop',
-            'has_kids_pool', 'kids_pool_depth_m', 'has_splash_park', 'has_waterslide', 'has_lifeguard', 'lifeguard_hours',
-            'has_luxury_cabanas', 'has_cabana_service', 'has_heated_pool', 'has_jacuzzi', 'has_adult_sun_terrace'
+            'sunbed_count', 'sunbed_types', 'sun_exposure', 'sunny_areas', 
+            'pool_size_category', 'pool_size_sqm', 'towel_reservation_policy', 
+            'towel_service_cost', 'pool_opening_hours', 'number_of_pools', 
+            'pool_types', 'has_pool_bar', 'has_waiter_service', 'shade_options',
+            'bar_distance', 'toilet_distance', 'atmosphere', 'music_level', 
+            'has_entertainment', 'entertainment_types', 'cleanliness_rating', 
+            'sunbed_condition_rating', 'tiling_condition_rating',
+            'has_accessibility_ramp', 'has_pool_hoist', 'has_step_free_access', 
+            'has_elevator_to_rooftop', 'has_kids_pool', 'kids_pool_depth_m', 
+            'has_splash_park', 'has_waterslide', 'has_lifeguard', 'lifeguard_hours',
+            'has_luxury_cabanas', 'has_cabana_service', 'has_heated_pool', 
+            'has_jacuzzi', 'has_adult_sun_terrace'
         ];
 
         $poolCriteriaData = [];
         foreach ($poolCriteriaFields as $field) {
-            if (isset($validated[$field])) {
+            if (array_key_exists($field, $validated)) {
                 $poolCriteriaData[$field] = $validated[$field];
                 unset($validated[$field]);
             }
         }
 
-        // Calculate sunbed to guest ratio
-        if (isset($poolCriteriaData['sunbed_count']) && isset($validated['total_rooms'])) {
-            $poolCriteriaData['sunbed_to_guest_ratio'] = round(
-                $poolCriteriaData['sunbed_count'] / $validated['total_rooms'],
-                2
-            );
-        }
-
-        // Remove gallery_images from hotel data
-        unset($validated['gallery_images']);
-
-        Log::info('Creating hotel record...');
-        $hotel = Hotel::create($validated);
-        Log::info('Hotel created', ['hotel_id' => $hotel->id]);
-
-        // Create pool criteria if we have any data
-        if (!empty($poolCriteriaData)) {
-            Log::info('Creating pool criteria...');
-            $poolCriteria = PoolCriteria::create(array_merge(
-                ['hotel_id' => $hotel->id],
-                $poolCriteriaData
-            ));
-            Log::info('Pool criteria created', ['criteria_id' => $poolCriteria->id]);
-
-            // Calculate and update scores
-            Log::info('Calculating scores...');
-            $this->scoringService->calculateAndUpdateScores($hotel->fresh());
-            Log::info('Scores calculated successfully');
-        }
-
-        Log::info('Hotel creation completed successfully', ['hotel_id' => $hotel->id]);
-        
-        return redirect()->route('admin.hotels.index')
-            ->with('success', 'Hotel created successfully with pool criteria scores calculated.');
-            
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            // Log validation errors
-            Log::warning('Validation failed', [
-                'errors' => $e->errors(),
-                'user_id' => Auth::id(),
-                'request_data' => $request->except(['main_image', 'gallery_images']),
-            ]);
-            
-            // Re-throw the validation exception to let Inertia handle it
-            throw $e;
-            
-        } catch (\Exception $e) {
-            // Log the error for debugging
-            Log::error('Hotel creation failed', [
-                'exception' => get_class($e),
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
-                'user_id' => Auth::id(),
-            ]);
-            
-            // Return with error message
-            return back()
-                ->withInput()
-                ->with('error', 'Failed to create hotel: ' . $e->getMessage());
-        }
+        return $poolCriteriaData;
     }
 
     public function edit(Hotel $hotel): Response
@@ -299,112 +199,64 @@ class HotelManagementController extends Controller
         ]);
     }
 
-    public function update(Request $request, Hotel $hotel): RedirectResponse
+    public function update(UpdateHotelRequest $request, Hotel $hotel): RedirectResponse
     {
-        // Convert empty strings to null for rating fields
-        $request->merge([
-            'cleanliness_rating' => $request->cleanliness_rating ?: null,
-            'sunbed_condition_rating' => $request->sunbed_condition_rating ?: null,
-            'tiling_condition_rating' => $request->tiling_condition_rating ?: null,
-        ]);
-        
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'destination_id' => 'required|exists:destinations,id',
-            'description' => 'nullable|string',
-            'address' => 'nullable|string',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-            'star_rating' => 'nullable|integer|min:1|max:5',
-            'total_rooms' => 'nullable|integer|min:1',
-            'phone' => 'nullable|string',
-            'email' => 'nullable|email',
-            'website' => 'nullable|url',
-            'booking_affiliate_url' => 'nullable|url',
-            'expedia_affiliate_url' => 'nullable|url',
-            'direct_booking_url' => 'nullable|url',
-            'affiliate_provider' => 'nullable|string|max:255',
-            'affiliate_tracking_code' => 'nullable|string|max:255',
-            'is_active' => 'boolean',
-            'is_verified' => 'boolean',
-            'is_featured' => 'boolean',
-            'subscription_tier' => 'nullable|in:free,enhanced,premium',
-            'subscription_expires_at' => 'nullable|date',
-            'override_name' => 'boolean',
-            'override_images' => 'boolean',
-            'override_description' => 'boolean',
-            // Images
-            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'gallery_images' => 'nullable|array|max:10',
-            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
-            
-            // Pool Criteria - 1. Sunbed Availability & Ratio
-            'sunbed_count' => 'nullable|integer|min:0',
-            'sunbed_types' => 'nullable|array',
-            
-            // Pool Criteria - 2. Sun Exposure Hours
-            'sun_exposure' => 'nullable|in:all_day,afternoon_only,morning_only,partial_shade,mostly_shaded',
-            'sunny_areas' => 'nullable|array',
-            
-            // Pool Criteria - 3. Pool Size & Area
-            'pool_size_category' => 'nullable|in:small,medium,large,very_large',
-            'pool_size_sqm' => 'nullable|numeric|min:0',
-            
-            // Pool Criteria - 4. Towel & Reservation Policy
-            'towel_reservation_policy' => 'nullable|in:enforced,tolerated,free_for_all',
-            'towel_service_cost' => 'nullable|in:included,extra_cost,deposit_required',
-            'pool_opening_hours' => 'nullable|string',
-            
-            // Pool Criteria - 5. Pool Types & Variety
-            'number_of_pools' => 'nullable|integer|min:0',
-            'pool_types' => 'nullable|array',
-            
-            // Pool Criteria - 6. Facilities & Amenities
-            'has_pool_bar' => 'boolean',
-            'has_waiter_service' => 'boolean',
-            'shade_options' => 'nullable|array',
-            'bar_distance' => 'nullable|in:poolside,close,moderate,far',
-            'toilet_distance' => 'nullable|in:adjacent,close,moderate,far',
-            
-            // Pool Criteria - 7. Atmosphere & Vibe
-            'atmosphere' => 'nullable|in:quiet,relaxed,family,lively,party',
-            'music_level' => 'nullable|in:none,low,moderate,loud,dj',
-            'has_entertainment' => 'boolean',
-            'entertainment_types' => 'nullable|array',
-            
-            // Pool Criteria - 8. Cleanliness & Maintenance
-            'cleanliness_rating' => 'nullable|sometimes|integer|min:1|max:5',
-            'sunbed_condition_rating' => 'nullable|sometimes|integer|min:1|max:5',
-            'tiling_condition_rating' => 'nullable|sometimes|integer|min:1|max:5',
-            
-            // Pool Criteria - 8. Accessibility Features
-            'has_accessibility_ramp' => 'boolean',
-            'has_pool_hoist' => 'boolean',
-            'has_step_free_access' => 'boolean',
-            'has_elevator_to_rooftop' => 'boolean',
-            
-            // Pool Criteria - 9. Family & Kids Features
-            'has_kids_pool' => 'boolean',
-            'kids_pool_depth_m' => 'nullable|numeric|min:0',
-            'has_splash_park' => 'boolean',
-            'has_waterslide' => 'boolean',
-            'has_lifeguard' => 'boolean',
-            'lifeguard_hours' => 'nullable|string',
-            
-            // Pool Criteria - 10. Luxury & Premium Features
-            'has_luxury_cabanas' => 'boolean',
-            'has_cabana_service' => 'boolean',
-            'has_heated_pool' => 'boolean',
-            'has_jacuzzi' => 'boolean',
-            'has_adult_sun_terrace' => 'boolean',
-        ]);
+        try {
+            $validated = $request->validated();
 
-        // Handle slug update if name changed
-        if ($hotel->name !== $validated['name']) {
-            $validated['slug'] = Str::slug($validated['name']);
+            // Handle slug update if name changed
+            if ($hotel->name !== $validated['name']) {
+                $validated['slug'] = Str::slug($validated['name']);
+            }
+
+            // Handle image uploads
+            $validated = $this->handleImageUploadsForUpdate($request, $validated, $hotel);
+
+            // Extract pool criteria from validated data
+            $poolCriteriaData = $this->extractPoolCriteriaData($validated);
+
+            // Update hotel
+            $hotel->update($validated);
+
+            // Update or create pool criteria
+            if (!empty($poolCriteriaData)) {
+                // Calculate sunbed-to-guest ratio
+                if (isset($poolCriteriaData['sunbed_count']) && $hotel->total_rooms) {
+                    $poolCriteriaData['sunbed_to_guest_ratio'] = round(
+                        $poolCriteriaData['sunbed_count'] / ($hotel->total_rooms * 2),
+                        2
+                    );
+                }
+
+                $hotel->poolCriteria()->updateOrCreate(
+                    ['hotel_id' => $hotel->id],
+                    $poolCriteriaData
+                );
+
+                // Recalculate scores
+                $this->scoringService->calculateAndUpdateScores($hotel->fresh());
+            }
+
+            return back()->with('success', 'Hotel updated successfully!');
+
+        } catch (\Exception $e) {
+            Log::error('Hotel update failed', [
+                'hotel_id' => $hotel->id,
+                'message' => $e->getMessage(),
+                'user_id' => Auth::id(),
+            ]);
+
+            return back()
+                ->withInput()
+                ->with('error', 'Failed to update hotel. Please try again.');
         }
+    }
 
-        // Handle main image upload
+    /**
+     * Handle image uploads for hotel update.
+     */
+    private function handleImageUploadsForUpdate(Request $request, array $validated, Hotel $hotel): array
+    {
         if ($request->hasFile('main_image')) {
             // Delete old image if exists
             if ($hotel->main_image) {
@@ -413,65 +265,19 @@ class HotelManagementController extends Controller
             $validated['main_image'] = $request->file('main_image')->store('hotels/main', 'public');
         }
 
-        // Handle gallery images upload
         if ($request->hasFile('gallery_images')) {
             $galleryPaths = [];
             foreach ($request->file('gallery_images') as $image) {
                 $galleryPaths[] = $image->store('hotels/gallery', 'public');
             }
-            $currentGallery = $hotel->gallery_images ?? [];
-            $validated['gallery_images'] = array_merge($currentGallery, $galleryPaths);
+            $currentGallery = $hotel->images ?? [];
+            $validated['images'] = array_merge($currentGallery, $galleryPaths);
         }
 
-        // Extract pool criteria data
-        $poolCriteriaFields = [
-            'sunbed_count', 'sunbed_types', 'sun_exposure', 'sunny_areas', 'pool_size_category', 'pool_size_sqm',
-            'towel_reservation_policy', 'towel_service_cost', 'pool_opening_hours',
-            'number_of_pools', 'pool_types', 'has_pool_bar', 'has_waiter_service', 'shade_options',
-            'bar_distance', 'toilet_distance',
-            'atmosphere', 'music_level', 'has_entertainment', 'entertainment_types',
-            'cleanliness_rating', 'sunbed_condition_rating', 
-            'tiling_condition_rating', 'has_accessibility_ramp', 'has_pool_hoist', 
-            'has_step_free_access', 'has_elevator_to_rooftop', 'has_kids_pool', 'kids_pool_depth_m',
-            'has_splash_park', 'has_waterslide', 'has_lifeguard', 'lifeguard_hours',
-            'has_luxury_cabanas', 'has_cabana_service',
-            'has_splash_park', 'has_waterslide', 'has_lifeguard', 'lifeguard_hours',
-            'has_luxury_cabanas', 'has_cabana_service',
-            'has_heated_pool', 'has_jacuzzi', 'has_adult_sun_terrace'
-        ];
+        // Remove gallery_images key from hotel data
+        unset($validated['gallery_images']);
 
-        $poolCriteriaData = [];
-        foreach ($poolCriteriaFields as $field) {
-            if (isset($validated[$field])) {
-                $poolCriteriaData[$field] = $validated[$field];
-                unset($validated[$field]);
-            }
-        }
-
-        // Update hotel basic data
-        $hotel->update($validated);
-
-        // Update or create pool criteria if data was provided
-        if (!empty($poolCriteriaData)) {
-            // Calculate sunbed-to-guest ratio if we have the data
-            if (isset($poolCriteriaData['sunbed_count']) && $hotel->total_rooms) {
-                $poolCriteriaData['sunbed_to_guest_ratio'] = round(
-                    $poolCriteriaData['sunbed_count'] / ($hotel->total_rooms * 2),
-                    2
-                );
-            }
-            
-            $hotel->poolCriteria()->updateOrCreate(
-                ['hotel_id' => $hotel->id],
-                $poolCriteriaData
-            );
-
-            // Recalculate scores using the HotelScoringService
-            $scoringService = new \App\Services\HotelScoringService();
-            $scoringService->calculateAndUpdateScores($hotel->fresh());
-        }
-
-        return back()->with('success', 'Hotel updated successfully with Pool & Sun Score recalculated!');
+        return $validated;
     }
 
     public function updatePoolCriteria(Request $request, Hotel $hotel): RedirectResponse

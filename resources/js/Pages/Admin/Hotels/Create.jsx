@@ -1,5 +1,5 @@
-import { Link, Head, useForm, usePage } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
+import { Link, Head, useForm } from '@inertiajs/react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 import AdminNav from '@/Components/AdminNav';
 import TabButton from '@/Components/Admin/Hotels/TabButton';
@@ -10,222 +10,162 @@ import CreateAffiliateTab from '@/Components/Admin/Hotels/CreateAffiliateTab';
 import SettingsTab from '@/Components/Admin/Hotels/SettingsTab';
 import CreateImagesTab from '@/Components/Admin/Hotels/CreateImagesTab';
 
+// Form field groupings for tab switching on validation errors
+const TAB_FIELDS = {
+    basic: ['name', 'destination_id', 'description', 'star_rating', 'total_rooms'],
+    contact: ['address', 'latitude', 'longitude', 'phone', 'email', 'website'],
+    images: ['main_image', 'gallery_images'],
+    pool: ['sunbed_count', 'sun_exposure', 'pool_size_category', 'pool_size_sqm', 'number_of_pools'],
+    affiliate: ['booking_affiliate_url', 'expedia_affiliate_url', 'direct_booking_url', 'affiliate_provider', 'affiliate_tracking_code'],
+    settings: ['is_active', 'is_verified', 'is_featured', 'subscription_tier'],
+};
+
+// Initial form state
+const INITIAL_FORM_DATA = {
+    // Basic Info
+    name: '',
+    destination_id: '',
+    description: '',
+    star_rating: '',
+    total_rooms: '',
+    
+    // Contact & Location
+    address: '',
+    latitude: '',
+    longitude: '',
+    phone: '',
+    email: '',
+    website: '',
+    
+    // Images
+    main_image: null,
+    gallery_images: [],
+    
+    // Affiliate Links
+    booking_affiliate_url: '',
+    expedia_affiliate_url: '',
+    direct_booking_url: '',
+    affiliate_provider: '',
+    affiliate_tracking_code: '',
+    
+    // Settings
+    is_active: true,
+    is_verified: false,
+    is_featured: false,
+    subscription_tier: 'free',
+    
+    // Pool Criteria - Required
+    sunbed_count: '',
+    sun_exposure: '',
+    pool_size_category: '',
+    
+    // Pool Criteria - Optional
+    pool_size_sqm: '',
+    number_of_pools: 1,
+    pool_types: [],
+    sunbed_types: [],
+    sunny_areas: [],
+    towel_reservation_policy: '',
+    towel_service_cost: '',
+    pool_opening_hours: '',
+    shade_options: [],
+    bar_distance: '',
+    toilet_distance: '',
+    atmosphere: '',
+    music_level: '',
+    entertainment_types: [],
+    cleanliness_rating: '',
+    sunbed_condition_rating: '',
+    tiling_condition_rating: '',
+    lifeguard_hours: '',
+    kids_pool_depth_m: '',
+    
+    // Pool Criteria - Boolean flags
+    has_pool_bar: false,
+    has_waiter_service: false,
+    has_entertainment: false,
+    has_accessibility_ramp: false,
+    has_pool_hoist: false,
+    has_step_free_access: false,
+    has_elevator_to_rooftop: false,
+    has_kids_pool: false,
+    has_splash_park: false,
+    has_waterslide: false,
+    has_lifeguard: false,
+    has_luxury_cabanas: false,
+    has_cabana_service: false,
+    has_heated_pool: false,
+    has_jacuzzi: false,
+    has_adult_sun_terrace: false,
+};
+
 export default function CreateHotel({ destinations, stats }) {
     const [activeTab, setActiveTab] = useState('basic');
-    const [justSubmitted, setJustSubmitted] = useState(false);
-    const { flash } = usePage().props;
+    const { data, setData, post, processing, errors } = useForm(INITIAL_FORM_DATA);
 
     const tabs = ['basic', 'contact', 'images', 'pool', 'affiliate', 'settings'];
-    
-    const nextTab = () => {
+
+    // Navigation helpers
+    const goToNextTab = () => {
         const currentIndex = tabs.indexOf(activeTab);
         if (currentIndex < tabs.length - 1) {
             setActiveTab(tabs[currentIndex + 1]);
         }
     };
 
-    const prevTab = () => {
+    const goToPrevTab = () => {
         const currentIndex = tabs.indexOf(activeTab);
         if (currentIndex > 0) {
             setActiveTab(tabs[currentIndex - 1]);
         }
     };
 
-    const { data, setData, post, processing, errors } = useForm({
-        name: '',
-        destination_id: '',
-        description: '',
-        address: '',
-        latitude: '',
-        longitude: '',
-        star_rating: '',
-        total_rooms: '',
-        phone: '',
-        email: '',
-        website: '',
-        booking_affiliate_url: '',
-        expedia_affiliate_url: '',
-        direct_booking_url: '',
-        affiliate_provider: '',
-        affiliate_tracking_code: '',
-        is_active: true,
-        is_verified: false,
-        is_featured: false,
-        subscription_tier: 'free',
-        // Images
-        main_image: null,
-        gallery_images: [],
-        
-        // ============================================
-        // POOL CRITERIA - 10 Core Metrics for Ranking
-        // ============================================
-        
-        // 1. Sunbed-to-Guest Ratio
-        sunbed_count: '',
-        
-        // 2. Sun Exposure & Orientation
-        sun_exposure: '',
-        sunny_areas: [],
-        
-        // 3. Pool Area Size & Variety
-        pool_size_sqm: '',
-        pool_size_category: '',
-        number_of_pools: 1,
-        pool_types: [],
-        
-        // 4. Towel & Reservation Policy
-        towel_reservation_policy: '',
-        towel_service_cost: '',
-        pool_opening_hours: '',
-        
-        // 5. Pool Facilities & Comfort
-        sunbed_types: [],
-        shade_options: [],
-        has_pool_bar: false,
-        has_waiter_service: false,
-        bar_distance: '',
-        toilet_distance: '',
-        
-        // 6. Noise & Atmosphere
-        atmosphere: '',
-        music_level: '',
-        has_entertainment: false,
-        entertainment_types: [],
-        
-        // 7. Cleanliness & Maintenance
-        cleanliness_rating: '',
-        sunbed_condition_rating: '',
-        tiling_condition_rating: '',
-        
-        // 8. Accessibility
-        has_accessibility_ramp: false,
-        has_pool_hoist: false,
-        has_step_free_access: false,
-        has_elevator_to_rooftop: false,
-        
-        // 9. Kids & Family Facilities
-        has_kids_pool: false,
-        kids_pool_depth_m: '',
-        has_splash_park: false,
-        has_waterslide: false,
-        has_lifeguard: false,
-        lifeguard_hours: '',
-        
-        // 10. Extras & Luxury Touches
-        has_luxury_cabanas: false,
-        has_cabana_service: false,
-        has_heated_pool: false,
-        has_jacuzzi: false,
-        has_adult_sun_terrace: false,
-    });
-
-    // Show flash messages from session
-    useEffect(() => {
-        if (flash?.success) {
-            toast.success(flash.success);
+    // Find which tab contains the first error
+    const getTabWithError = (errorFields) => {
+        for (const [tab, fields] of Object.entries(TAB_FIELDS)) {
+            if (errorFields.some(field => fields.includes(field) || field.includes(tab))) {
+                return tab;
+            }
         }
-        if (flash?.error) {
-            toast.error(flash.error);
-        }
-        if (flash?.warning) {
-            toast.warning(flash.warning);
-        }
-        if (flash?.info) {
-            toast.info(flash.info);
-        }
-    }, [flash]);
-
-    // If validation errors arrive via redirect (common in production), `errors` updates without `onError`.
-    useEffect(() => {
-        if (!justSubmitted) return;
-        if (Object.keys(errors).length === 0) return;
-
-        handleValidationErrors(errors);
-        setJustSubmitted(false);
-    }, [errors, justSubmitted]);
-
-    const handleValidationErrors = (validationErrors) => {
-        // Scroll to top to show error messages
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        // Show first error in toast
-        const firstError = Object.values(validationErrors || {})[0];
-        const errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
-        toast.error(errorMessage || 'Please fix the validation errors and try again.');
-
-        // Switch to the first tab with errors
-        const errorFields = Object.keys(validationErrors || {});
-        if (errorFields.includes('name') || errorFields.includes('destination_id') || errorFields.includes('description')) {
-            setActiveTab('basic');
-        } else if (errorFields.includes('address') || errorFields.includes('latitude') || errorFields.includes('longitude') || errorFields.includes('email')) {
-            setActiveTab('contact');
-        } else if (errorFields.includes('main_image') || errorFields.includes('gallery_images')) {
-            setActiveTab('images');
-        } else if (errorFields.includes('sunbed_count') || errorFields.includes('sun_exposure') || errorFields.includes('pool_size_category')) {
-            setActiveTab('pool');
-        } else if (errorFields.some(field => field.includes('affiliate'))) {
-            setActiveTab('affiliate');
-        } else {
-            setActiveTab('settings');
-        }
+        return 'basic';
     };
 
+    // Handle validation errors - show toast and switch to relevant tab
+    const handleValidationErrors = (validationErrors) => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        const errorFields = Object.keys(validationErrors || {});
+        const firstError = Object.values(validationErrors || {})[0];
+        const errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
+        
+        toast.error(errorMessage || 'Please fix the validation errors and try again.');
+        setActiveTab(getTabWithError(errorFields));
+    };
+
+    // Form submission
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Client-side required checks (ensures validation toasts even if production
-        // environment doesn't return a validation error bag as expected).
-        const clientErrors = {};
-        if (!String(data.name || '').trim()) clientErrors.name = 'The name field is required.';
-        if (!String(data.destination_id || '').trim()) clientErrors.destination_id = 'Please select a destination.';
-        if (!String(data.address || '').trim()) clientErrors.address = 'The address field is required.';
-        if (!data.main_image) clientErrors.main_image = 'Please upload a main image.';
-        if (!String(data.sunbed_count || '').trim()) clientErrors.sunbed_count = 'The sunbed count field is required.';
-        if (!String(data.sun_exposure || '').trim()) clientErrors.sun_exposure = 'Please choose a sun exposure option.';
-        if (!String(data.pool_size_category || '').trim()) clientErrors.pool_size_category = 'Please choose a pool size category.';
-
-        if (Object.keys(clientErrors).length > 0) {
-            setJustSubmitted(false);
-            handleValidationErrors(clientErrors);
-            return;
-        }
-
-        setJustSubmitted(true);
-        
         post(route('admin.hotels.store'), {
             forceFormData: true,
             onSuccess: (page) => {
-                // In production, Laravel validation can come back as a redirect with errors in props,
-                // which still triggers Inertia's onSuccess. Guard against false "success" toasts.
+                // Check for server errors in page props (redirect-based validation)
                 const serverErrors = page?.props?.errors || {};
                 if (Object.keys(serverErrors).length > 0) {
                     handleValidationErrors(serverErrors);
-                    setJustSubmitted(false);
                     return;
                 }
-
-                // Only show a success toast when the server explicitly sent a flash success message.
-                // This prevents false positives (e.g., auth redirects, non-validation redirects).
-                const successMessage = page?.props?.flash?.success;
-                if (successMessage) {
-                    toast.success(successMessage);
-                }
-
-                setJustSubmitted(false);
+                toast.success('Hotel created successfully!');
             },
             onError: (validationErrors) => {
-                if (!validationErrors || Object.keys(validationErrors).length === 0) {
-                    toast.error('Something went wrong. Please try again.');
-                } else {
-                    handleValidationErrors(validationErrors);
-                }
-                setJustSubmitted(false);
-            },
-            onFinish: () => {
-                // no-op
+                handleValidationErrors(validationErrors);
             },
         });
     };
+
+    const isLastTab = activeTab === 'settings';
+    const isFirstTab = activeTab === 'basic';
+    const hasErrors = Object.keys(errors).length > 0;
 
     return (
         <>
@@ -235,162 +175,165 @@ export default function CreateHotel({ destinations, stats }) {
                 <AdminNav stats={stats} />
                 
                 {/* Page Header */}
-                <div className="bg-gradient-to-r from-orange-50 to-blue-50 shadow-lg border-b-2 border-orange-200">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-12">
-                        {/* Decorative accent */}
-                        <div className="flex items-center justify-center mb-4 sm:mb-5 md:mb-6">
-                            <div className="h-1 w-8 sm:w-10 md:w-12 bg-orange-300 rounded-full"></div>
-                            <svg className="mx-3 sm:mx-4 text-orange-500" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                            </svg>
-                            <div className="h-1 w-8 sm:w-10 md:w-12 bg-blue-300 rounded-full"></div>
-                        </div>
-                        <div className="text-center sm:text-left">
-                            <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-gray-900">Add New Hotel</h1>
-                            <p className="text-gray-700 mt-2 font-semibold">Create a new hotel listing</p>
-                        </div>
-                    </div>
-                </div>
+                <PageHeader />
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12 lg:py-16">
                     {/* Validation Errors Display */}
-                    {Object.keys(errors).length > 0 && (
-                        <div className="mb-6 bg-gradient-to-r from-red-50 to-red-100 border-2 border-red-300 rounded-2xl p-5 shadow-lg">
-                            <h3 className="text-red-800 font-bold mb-3 flex items-center gap-2">
-                                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-                                </svg>
-                                Please fix the following errors:
-                            </h3>
-                            <ul className="list-disc list-inside text-red-700 space-y-2">
-                                {Object.entries(errors).map(([field, messages]) => (
-                                    <li key={field}>
-                                        <span className="font-bold">{field}:</span> {Array.isArray(messages) ? messages.join(', ') : messages}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
+                    {hasErrors && <ValidationErrorsBox errors={errors} />}
                     
-                    <form onSubmit={handleSubmit}>
-                        {/* Tabs */}
-                        <div className="bg-gradient-to-r from-orange-50 to-blue-50 rounded-t-2xl border-b-2 border-orange-200 shadow-lg">
-                            <div className="flex gap-2 px-6 pt-5 overflow-x-auto">
-                                <TabButton active={activeTab === 'basic'} onClick={() => setActiveTab('basic')}>
-                                    Basic Info
-                                </TabButton>
-                                <TabButton active={activeTab === 'contact'} onClick={() => setActiveTab('contact')}>
-                                    Contact & Location
-                                </TabButton>
-                                <TabButton active={activeTab === 'images'} onClick={() => setActiveTab('images')}>
-                                    Images
-                                </TabButton>
-                                <TabButton active={activeTab === 'pool'} onClick={() => setActiveTab('pool')}>
-                                    Pool Scoring
-                                </TabButton>
-                                <TabButton active={activeTab === 'affiliate'} onClick={() => setActiveTab('affiliate')}>
-                                    Affiliate Links
-                                </TabButton>
-                                <TabButton active={activeTab === 'settings'} onClick={() => setActiveTab('settings')}>
-                                    Settings
-                                </TabButton>
-                            </div>
-                        </div>
+                    <form onSubmit={handleSubmit} noValidate>
+                        {/* Tab Navigation */}
+                        <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
-                        {/* Form Content */}
+                        {/* Tab Content */}
                         <div className="bg-white rounded-b-2xl shadow-xl hover:shadow-2xl transition-all duration-300 p-5 sm:p-6 md:p-8 border-2 border-gray-100 border-t-0">
-                            {activeTab === 'basic' && (
-                                <CreateBasicInfoTab
-                                    data={data}
-                                    setData={setData}
-                                    errors={errors}
-                                    destinations={destinations}
-                                />
-                            )}
-
-                            {activeTab === 'contact' && (
-                                <ContactLocationTab
-                                    data={data}
-                                    setData={setData}
-                                    errors={errors}
-                                />
-                            )}
-
-                            {activeTab === 'images' && (
-                                <CreateImagesTab
-                                    data={data}
-                                    setData={setData}
-                                    errors={errors}
-                                />
-                            )}
-
-                            {activeTab === 'pool' && (
-                                <PoolCriteriaTab
-                                    data={data}
-                                    setData={setData}
-                                    errors={errors}
-                                />
-                            )}
-
-                            {activeTab === 'affiliate' && (
-                                <CreateAffiliateTab
-                                    data={data}
-                                    setData={setData}
-                                    errors={errors}
-                                />
-                            )}
-
-                            {activeTab === 'settings' && (
-                                <SettingsTab
-                                    data={data}
-                                    setData={setData}
-                                    errors={errors}
-                                />
-                            )}
+                            <TabContent 
+                                activeTab={activeTab}
+                                data={data}
+                                setData={setData}
+                                errors={errors}
+                                destinations={destinations}
+                            />
 
                             {/* Action Buttons */}
-                            <div className="mt-8 pt-6 border-t-2 border-gray-200 flex flex-col sm:flex-row gap-3 justify-between">
-                                <Link
-                                    href={route('admin.hotels.index')}
-                                    className="px-4 sm:px-6 py-3 sm:py-4 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-bold transition-all duration-300 text-center text-sm sm:text-base transform hover:scale-105 shadow-md hover:shadow-lg"
-                                >
-                                    Cancel
-                                </Link>
-                                
-                                <div className="flex flex-col sm:flex-row gap-3">
-                                    {activeTab !== 'basic' && (
-                                        <button
-                                            type="button"
-                                            onClick={prevTab}
-                                            className="px-4 sm:px-6 py-3 sm:py-4 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-bold transition-all duration-300 text-center text-sm sm:text-base transform hover:scale-105 shadow-md hover:shadow-lg"
-                                        >
-                                            Previous
-                                        </button>
-                                    )}
-                                    
-                                    {activeTab !== 'settings' ? (
-                                        <button
-                                            type="button"
-                                            onClick={nextTab}
-                                            className="px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 text-center shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 text-sm sm:text-base"
-                                        >
-                                            Next
-                                        </button>
-                                    ) : (
-                                        <button
-                                            type="submit"
-                                            disabled={processing}
-                                            className="px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 text-center shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
-                                        >
-                                            {processing ? 'Creating...' : 'Create Hotel'}
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
+                            <ActionButtons
+                                isFirstTab={isFirstTab}
+                                isLastTab={isLastTab}
+                                processing={processing}
+                                onPrevTab={goToPrevTab}
+                                onNextTab={goToNextTab}
+                            />
                         </div>
                     </form>
                 </div>
             </div>
         </>
+    );
+}
+
+// Sub-components for cleaner code
+function PageHeader() {
+    return (
+        <div className="bg-gradient-to-r from-orange-50 to-blue-50 shadow-lg border-b-2 border-orange-200">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-12">
+                <div className="flex items-center justify-center mb-4 sm:mb-5 md:mb-6">
+                    <div className="h-1 w-8 sm:w-10 md:w-12 bg-orange-300 rounded-full"></div>
+                    <svg className="mx-3 sm:mx-4 text-orange-500" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                    </svg>
+                    <div className="h-1 w-8 sm:w-10 md:w-12 bg-blue-300 rounded-full"></div>
+                </div>
+                <div className="text-center sm:text-left">
+                    <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-gray-900">
+                        Add New Hotel
+                    </h1>
+                    <p className="text-gray-700 mt-2 font-semibold">Create a new hotel listing</p>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function ValidationErrorsBox({ errors }) {
+    return (
+        <div className="mb-6 bg-gradient-to-r from-red-50 to-red-100 border-2 border-red-300 rounded-2xl p-5 shadow-lg">
+            <h3 className="text-red-800 font-bold mb-3 flex items-center gap-2">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+                Please fix the following errors:
+            </h3>
+            <ul className="list-disc list-inside text-red-700 space-y-2">
+                {Object.entries(errors).map(([field, messages]) => (
+                    <li key={field}>
+                        <span className="font-bold capitalize">{field.replace(/_/g, ' ')}:</span>{' '}
+                        {Array.isArray(messages) ? messages.join(', ') : messages}
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+
+function TabNavigation({ activeTab, setActiveTab }) {
+    const tabConfig = [
+        { id: 'basic', label: 'Basic Info' },
+        { id: 'contact', label: 'Contact & Location' },
+        { id: 'images', label: 'Images' },
+        { id: 'pool', label: 'Pool Scoring' },
+        { id: 'affiliate', label: 'Affiliate Links' },
+        { id: 'settings', label: 'Settings' },
+    ];
+
+    return (
+        <div className="bg-gradient-to-r from-orange-50 to-blue-50 rounded-t-2xl border-b-2 border-orange-200 shadow-lg">
+            <div className="flex gap-2 px-6 pt-5 overflow-x-auto">
+                {tabConfig.map(tab => (
+                    <TabButton 
+                        key={tab.id}
+                        active={activeTab === tab.id} 
+                        onClick={() => setActiveTab(tab.id)}
+                    >
+                        {tab.label}
+                    </TabButton>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function TabContent({ activeTab, data, setData, errors, destinations }) {
+    const tabComponents = {
+        basic: <CreateBasicInfoTab data={data} setData={setData} errors={errors} destinations={destinations} />,
+        contact: <ContactLocationTab data={data} setData={setData} errors={errors} />,
+        images: <CreateImagesTab data={data} setData={setData} errors={errors} />,
+        pool: <PoolCriteriaTab data={data} setData={setData} errors={errors} />,
+        affiliate: <CreateAffiliateTab data={data} setData={setData} errors={errors} />,
+        settings: <SettingsTab data={data} setData={setData} errors={errors} />,
+    };
+
+    return tabComponents[activeTab] || null;
+}
+
+function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab }) {
+    return (
+        <div className="mt-8 pt-6 border-t-2 border-gray-200 flex flex-col sm:flex-row gap-3 justify-between">
+            <Link
+                href={route('admin.hotels.index')}
+                className="px-4 sm:px-6 py-3 sm:py-4 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-bold transition-all duration-300 text-center text-sm sm:text-base transform hover:scale-105 shadow-md hover:shadow-lg"
+            >
+                Cancel
+            </Link>
+            
+            <div className="flex flex-col sm:flex-row gap-3">
+                {!isFirstTab && (
+                    <button
+                        type="button"
+                        onClick={onPrevTab}
+                        className="px-4 sm:px-6 py-3 sm:py-4 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-bold transition-all duration-300 text-center text-sm sm:text-base transform hover:scale-105 shadow-md hover:shadow-lg"
+                    >
+                        Previous
+                    </button>
+                )}
+                
+                {!isLastTab ? (
+                    <button
+                        type="button"
+                        onClick={onNextTab}
+                        className="px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 text-center shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 text-sm sm:text-base"
+                    >
+                        Next
+                    </button>
+                ) : (
+                    <button
+                        type="submit"
+                        disabled={processing}
+                        className="px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 text-center shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                    >
+                        {processing ? 'Creating...' : 'Create Hotel'}
+                    </button>
+                )}
+            </div>
+        </div>
     );
 }
