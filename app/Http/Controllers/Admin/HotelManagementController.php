@@ -86,9 +86,10 @@ class HotelManagementController extends Controller
      */
     public function store(StoreHotelRequest $request): RedirectResponse
     {
+        // Validation is handled by StoreHotelRequest - if we reach here, validation passed
+        $validated = $request->validated();
+        
         try {
-            $validated = $request->validated();
-            
             // Generate slug
             $validated['slug'] = Str::slug($validated['name']);
             $validated['is_active'] = $validated['is_active'] ?? true;
@@ -122,15 +123,16 @@ class HotelManagementController extends Controller
             return redirect()->route('admin.hotels.index')
                 ->with('success', 'Hotel created successfully with pool criteria scores calculated.');
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Hotel creation failed', [
                 'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
                 'user_id' => Auth::id(),
             ]);
 
             return back()
                 ->withInput()
-                ->with('error', 'Failed to create hotel. Please try again.');
+                ->withErrors(['error' => 'Failed to create hotel: ' . $e->getMessage()]);
         }
     }
 
@@ -201,9 +203,10 @@ class HotelManagementController extends Controller
 
     public function update(UpdateHotelRequest $request, Hotel $hotel): RedirectResponse
     {
-        try {
-            $validated = $request->validated();
+        // Validation is handled by UpdateHotelRequest - if we reach here, validation passed
+        $validated = $request->validated();
 
+        try {
             // Handle slug update if name changed
             if ($hotel->name !== $validated['name']) {
                 $validated['slug'] = Str::slug($validated['name']);
@@ -239,16 +242,17 @@ class HotelManagementController extends Controller
 
             return back()->with('success', 'Hotel updated successfully!');
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Hotel update failed', [
                 'hotel_id' => $hotel->id,
                 'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
                 'user_id' => Auth::id(),
             ]);
 
             return back()
                 ->withInput()
-                ->with('error', 'Failed to update hotel. Please try again.');
+                ->withErrors(['error' => 'Failed to update hotel: ' . $e->getMessage()]);
         }
     }
 

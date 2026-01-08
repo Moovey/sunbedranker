@@ -19,15 +19,19 @@ class StoreHotelRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        // Convert empty strings to null for nullable numeric fields
+        // Only convert empty strings to null for OPTIONAL numeric fields
+        // Do NOT touch required fields like sunbed_count
         $this->merge([
             'latitude' => $this->latitude === '' ? null : $this->latitude,
             'longitude' => $this->longitude === '' ? null : $this->longitude,
-            'cleanliness_rating' => $this->cleanliness_rating ?: null,
-            'sunbed_condition_rating' => $this->sunbed_condition_rating ?: null,
-            'tiling_condition_rating' => $this->tiling_condition_rating ?: null,
+            'cleanliness_rating' => $this->cleanliness_rating === '' ? null : $this->cleanliness_rating,
+            'sunbed_condition_rating' => $this->sunbed_condition_rating === '' ? null : $this->sunbed_condition_rating,
+            'tiling_condition_rating' => $this->tiling_condition_rating === '' ? null : $this->tiling_condition_rating,
             'pool_size_sqm' => $this->pool_size_sqm === '' ? null : $this->pool_size_sqm,
             'kids_pool_depth_m' => $this->kids_pool_depth_m === '' ? null : $this->kids_pool_depth_m,
+            'star_rating' => $this->star_rating === '' ? null : $this->star_rating,
+            'total_rooms' => $this->total_rooms === '' ? null : $this->total_rooms,
+            'number_of_pools' => $this->number_of_pools === '' ? null : $this->number_of_pools,
         ]);
     }
 
