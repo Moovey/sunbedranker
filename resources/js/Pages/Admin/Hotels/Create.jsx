@@ -107,6 +107,14 @@ export default function CreateHotel({ destinations, stats, errors: serverErrors 
 
     const tabs = ['basic', 'contact', 'images', 'pool', 'affiliate', 'settings'];
 
+    // DEBUG: Log all error sources
+    console.log('=== VALIDATION DEBUG ===');
+    console.log('serverErrors (prop):', serverErrors);
+    console.log('formErrors (useForm):', formErrors);
+    console.log('props.errors:', props?.errors);
+    console.log('validationErrors (state):', validationErrors);
+    console.log('Full props:', props);
+
     // Combine all error sources - server errors, form errors, page props errors, and local state
     const pageErrors = props?.errors || {};
     const allErrors = { 
@@ -116,6 +124,11 @@ export default function CreateHotel({ destinations, stats, errors: serverErrors 
         ...validationErrors 
     };
     const hasErrors = Object.keys(allErrors).length > 0;
+
+    // DEBUG: Log combined errors
+    console.log('allErrors (combined):', allErrors);
+    console.log('hasErrors:', hasErrors);
+    console.log('========================');
 
     // Navigation helpers
     const goToNextTab = () => {
@@ -147,13 +160,26 @@ export default function CreateHotel({ destinations, stats, errors: serverErrors 
         e.preventDefault();
         setValidationErrors({}); // Clear previous errors
 
+        console.log('=== FORM SUBMISSION ===');
+        console.log('Submitting form data...');
+
         post(route('admin.hotels.store'), {
             forceFormData: true,
             preserveScroll: true,
             onSuccess: (page) => {
+                console.log('=== ON SUCCESS CALLBACK ===');
+                console.log('page object:', page);
+                console.log('page.props:', page?.props);
+                console.log('page.props.errors:', page?.props?.errors);
+                console.log('page.props.flash:', page?.props?.flash);
+                
                 // Check if there are validation errors in the response
                 const responseErrors = page?.props?.errors || {};
+                console.log('responseErrors:', responseErrors);
+                console.log('responseErrors keys:', Object.keys(responseErrors));
+                
                 if (Object.keys(responseErrors).length > 0) {
+                    console.log('Errors found in response, storing in state...');
                     // Store errors in local state to ensure they display
                     setValidationErrors(responseErrors);
                     const errorKeys = Object.keys(responseErrors);
@@ -163,10 +189,16 @@ export default function CreateHotel({ destinations, stats, errors: serverErrors 
                 }
                 // Only show success if there's a success flash message
                 if (page?.props?.flash?.success) {
+                    console.log('Success flash found:', page.props.flash.success);
                     toast.success(page.props.flash.success);
                 }
             },
             onError: (errors) => {
+                console.log('=== ON ERROR CALLBACK ===');
+                console.log('errors received:', errors);
+                console.log('errors type:', typeof errors);
+                console.log('errors keys:', Object.keys(errors || {}));
+                
                 // Store errors in local state to ensure they display
                 setValidationErrors(errors || {});
                 const errorKeys = Object.keys(errors || {});
@@ -174,6 +206,10 @@ export default function CreateHotel({ destinations, stats, errors: serverErrors 
                     setActiveTab(getTabWithError(errorKeys));
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
+            },
+            onFinish: () => {
+                console.log('=== ON FINISH CALLBACK ===');
+                console.log('Request finished');
             },
         });
     };
