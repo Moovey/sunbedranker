@@ -99,17 +99,22 @@ const INITIAL_FORM_DATA = {
     has_adult_sun_terrace: false,
 };
 
-export default function CreateHotel({ destinations, stats }) {
+export default function CreateHotel({ destinations, stats, errors: serverErrors = {} }) {
     const [activeTab, setActiveTab] = useState('basic');
-    const [submissionError, setSubmissionError] = useState(null);
-    const { data, setData, post, processing, errors, clearErrors } = useForm(INITIAL_FORM_DATA);
+    const [validationErrors, setValidationErrors] = useState({});
+    const { data, setData, post, processing, errors: formErrors } = useForm(INITIAL_FORM_DATA);
     const { props } = usePage();
 
     const tabs = ['basic', 'contact', 'images', 'pool', 'affiliate', 'settings'];
 
-    // Combine all errors for display
-    const pageErrors = props.errors || {};
-    const allErrors = { ...pageErrors, ...errors };
+    // Combine all error sources - server errors, form errors, page props errors, and local state
+    const pageErrors = props?.errors || {};
+    const allErrors = { 
+        ...serverErrors,
+        ...pageErrors, 
+        ...formErrors,
+        ...validationErrors 
+    };
     const hasErrors = Object.keys(allErrors).length > 0;
 
     // Navigation helpers
@@ -140,7 +145,7 @@ export default function CreateHotel({ destinations, stats }) {
     // Form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        setSubmissionError(null);
+        setValidationErrors({}); // Clear previous errors
 
         post(route('admin.hotels.store'), {
             forceFormData: true,
@@ -149,21 +154,22 @@ export default function CreateHotel({ destinations, stats }) {
                 // Check if there are validation errors in the response
                 const responseErrors = page?.props?.errors || {};
                 if (Object.keys(responseErrors).length > 0) {
-                    // Don't show success - errors will be displayed
+                    // Store errors in local state to ensure they display
+                    setValidationErrors(responseErrors);
                     const errorKeys = Object.keys(responseErrors);
                     setActiveTab(getTabWithError(errorKeys));
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     return;
                 }
-                // Only show success if we're redirected to a different page (hotels.index)
-                // or if there's a success flash message
+                // Only show success if there's a success flash message
                 if (page?.props?.flash?.success) {
                     toast.success(page.props.flash.success);
                 }
             },
-            onError: (validationErrors) => {
-                // Handle validation errors
-                const errorKeys = Object.keys(validationErrors || {});
+            onError: (errors) => {
+                // Store errors in local state to ensure they display
+                setValidationErrors(errors || {});
+                const errorKeys = Object.keys(errors || {});
                 if (errorKeys.length > 0) {
                     setActiveTab(getTabWithError(errorKeys));
                     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -243,32 +249,54 @@ function PageHeader() {
 }
 
 function ValidationErrorsBox({ errors }) {
-    const errorCount = Object.keys(errors).length;
+    // Normalize errors - handle both string and array formats
+    const normalizedErrors = {};
+    Object.entries(errors).forEach(([field, messages]) => {
+        if (Array.isArray(messages)) {
+            normalizedErrors[field] = messages[0]; // Take first error message
+        } else if (typeof messages === 'string') {
+            normalizedErrors[field] = messages;
+        } else if (messages && typeof messages === 'object') {
+            normalizedErrors[field] = JSON.stringify(messages);
+        }
+    });
+    
+    const errorCount = Object.keys(normalizedErrors).length;
+    
+    if (errorCount === 0) return null;
     
     return (
-        <div className="mb-6 bg-red-50 border-l-4 border-red-500 rounded-lg p-6 shadow-lg animate-pulse">
+        <div className="mb-6 bg-red-50 border-2 border-red-400 rounded-xl p-6 shadow-xl" style={{ animation: 'pulse 2s infinite' }}>
+            <style>{`
+                @keyframes pulse {
+                    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+                    50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+                }
+            `}</style>
             <div className="flex items-start">
                 <div className="flex-shrink-0">
-                    <svg className="h-8 w-8 text-red-500" viewBox="0 0 24 24" fill="currentColor">
-                        <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clipRule="evenodd" />
+                    <svg className="h-10 w-10 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+                        <path fillRule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
                     </svg>
                 </div>
                 <div className="ml-4 flex-1">
-                    <h3 className="text-lg font-bold text-red-800 mb-2">
-                        ⚠️ Validation Failed - {errorCount} error{errorCount > 1 ? 's' : ''} found
+                    <h3 className="text-xl font-bold text-red-800 mb-3">
+                        ❌ Validation Failed - {errorCount} error{errorCount > 1 ? 's' : ''} found
                     </h3>
-                    <p className="text-red-700 mb-3 text-sm">Please fix the following errors before submitting:</p>
-                    <ul className="space-y-2">
-                        {Object.entries(errors).map(([field, messages]) => (
-                            <li key={field} className="flex items-start gap-2 text-red-700">
-                                <span className="text-red-500 mt-1">•</span>
-                                <span>
-                                    <span className="font-semibold capitalize">{field.replace(/_/g, ' ')}:</span>{' '}
-                                    <span className="text-red-600">{Array.isArray(messages) ? messages.join(', ') : messages}</span>
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
+                    <p className="text-red-700 mb-4 font-medium">Please fix the following errors before submitting:</p>
+                    <div className="bg-white rounded-lg p-4 border border-red-200">
+                        <ul className="space-y-3">
+                            {Object.entries(normalizedErrors).map(([field, message]) => (
+                                <li key={field} className="flex items-start gap-3 text-red-700">
+                                    <span className="text-red-500 font-bold text-lg">•</span>
+                                    <span className="text-base">
+                                        <span className="font-bold capitalize text-red-800">{field.replace(/_/g, ' ')}:</span>{' '}
+                                        <span className="text-red-600">{message}</span>
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
