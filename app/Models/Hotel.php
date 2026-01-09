@@ -215,7 +215,9 @@ class Hotel extends Model
 
         // Otherwise, convert storage path to URL using configured disk
         $disk = config('filesystems.public_uploads', 'public');
-        return \Illuminate\Support\Facades\Storage::disk($disk)->url($this->main_image);
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
+        $storage = \Illuminate\Support\Facades\Storage::disk($disk);
+        return $storage->url($this->main_image);
     }
 
     /**
@@ -228,14 +230,16 @@ class Hotel extends Model
         }
 
         $disk = config('filesystems.public_uploads', 'public');
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
+        $storage = \Illuminate\Support\Facades\Storage::disk($disk);
         
-        return array_map(function ($image) use ($disk) {
+        return array_map(function ($image) use ($storage) {
             // If it's already a full URL, return as is
             if (filter_var($image, FILTER_VALIDATE_URL)) {
                 return $image;
             }
             // Otherwise, convert storage path to URL using configured disk
-            return \Illuminate\Support\Facades\Storage::disk($disk)->url($image);
+            return $storage->url($image);
         }, $this->images);
     }
 

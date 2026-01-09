@@ -13,39 +13,6 @@ use Inertia\Inertia;
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// TEMPORARY: Test S3 upload - DELETE AFTER TESTING
-Route::get('/test-s3', function () {
-    try {
-        $disk = config('filesystems.public_uploads', 'public');
-        $testContent = 'Test file created at ' . now();
-        
-        // Try to write a test file
-        $result = \Illuminate\Support\Facades\Storage::disk($disk)->put('test.txt', $testContent);
-        
-        if ($result) {
-            $url = \Illuminate\Support\Facades\Storage::disk($disk)->url('test.txt');
-            return response()->json([
-                'success' => true,
-                'message' => 'S3 write successful!',
-                'disk' => $disk,
-                'url' => $url,
-            ]);
-        }
-        
-        return response()->json([
-            'success' => false,
-            'message' => 'S3 write returned false',
-            'disk' => $disk,
-        ]);
-    } catch (\Throwable $e) {
-        return response()->json([
-            'success' => false,
-            'error' => $e->getMessage(),
-            'disk' => config('filesystems.public_uploads', 'public'),
-        ]);
-    }
-});
-
 // Search
 Route::get('/search', [SearchController::class, 'search'])->name('search');
 
