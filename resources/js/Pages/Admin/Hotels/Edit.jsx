@@ -23,8 +23,6 @@ const TAB_FIELDS = {
 
 // Build initial form data from hotel object
 const buildFormData = (hotel) => ({
-    _method: 'PATCH',
-    
     // Basic Info
     name: hotel.name || '',
     destination_id: hotel.destination_id || '',

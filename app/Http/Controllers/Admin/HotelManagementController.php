@@ -93,8 +93,8 @@ class HotelManagementController extends Controller
             'name' => 'required|string|max:255',
             'destination_id' => 'required|exists:destinations,id',
             'description' => 'nullable|string|max:5000',
-            'star_rating' => 'nullable|integer|min:1|max:5',
-            'total_rooms' => 'nullable|integer|min:1',
+            'star_rating' => 'required|integer|min:1|max:5',
+            'total_rooms' => 'required|integer|min:1',
             
             // Contact & Location
             'address' => 'required|string|max:500',
@@ -304,8 +304,8 @@ class HotelManagementController extends Controller
             'name' => 'required|string|max:255',
             'destination_id' => 'required|exists:destinations,id',
             'description' => 'nullable|string|max:5000',
-            'star_rating' => 'nullable|integer|min:1|max:5',
-            'total_rooms' => 'nullable|integer|min:1',
+            'star_rating' => 'required|integer|min:1|max:5',
+            'total_rooms' => 'required|integer|min:1',
             
             // Contact & Location
             'address' => 'required|string|max:500',
@@ -433,7 +433,7 @@ class HotelManagementController extends Controller
                 $this->scoringService->calculateAndUpdateScores($hotel->fresh());
             }
 
-            return back()->with('success', 'Hotel updated successfully!');
+            return redirect()->route('admin.hotels.edit', $hotel->id)->with('success', 'Hotel updated successfully!');
 
         } catch (\Throwable $e) {
             Log::error('Hotel update failed', [
@@ -443,9 +443,18 @@ class HotelManagementController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            return back()
-                ->withInput()
-                ->withErrors(['error' => 'Failed to update hotel: ' . $e->getMessage()]);
+            // Render the edit page with error
+            $hotel->load('poolCriteria', 'badges', 'destination');
+            $destinations = Destination::where('is_active', true)->orderBy('name')->get();
+            $badges = Badge::orderBy('name')->get();
+            
+            return Inertia::render('Admin/Hotels/Edit', [
+                'hotel' => $hotel,
+                'destinations' => $destinations,
+                'badges' => $badges,
+                'errors' => ['error' => 'Failed to update hotel: ' . $e->getMessage()],
+                'oldInput' => $request->except(['main_image', 'gallery_images', '_method']),
+            ]);
         }
     }
 

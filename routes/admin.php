@@ -15,7 +15,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/hotels/create', [HotelManagementController::class, 'create'])->name('hotels.create');
     Route::post('/hotels', [HotelManagementController::class, 'store'])->name('hotels.store');
     Route::get('/hotels/{hotel:id}/edit', [HotelManagementController::class, 'edit'])->name('hotels.edit');
-    Route::patch('/hotels/{hotel:id}', [HotelManagementController::class, 'update'])->name('hotels.update');
+    Route::post('/hotels/{hotel:id}', [HotelManagementController::class, 'update'])->name('hotels.update');
     Route::delete('/hotels/{hotel:id}', [HotelManagementController::class, 'destroy'])->name('hotels.destroy');
     
     // Hotel Pool Criteria & Scoring
