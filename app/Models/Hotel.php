@@ -213,8 +213,9 @@ class Hotel extends Model
             return $this->main_image;
         }
 
-        // Otherwise, convert storage path to URL
-        return asset('storage/' . $this->main_image);
+        // Otherwise, convert storage path to URL using configured disk
+        $disk = config('filesystems.public_uploads', 'public');
+        return \Illuminate\Support\Facades\Storage::disk($disk)->url($this->main_image);
     }
 
     /**
@@ -226,13 +227,15 @@ class Hotel extends Model
             return [];
         }
 
-        return array_map(function ($image) {
+        $disk = config('filesystems.public_uploads', 'public');
+        
+        return array_map(function ($image) use ($disk) {
             // If it's already a full URL, return as is
             if (filter_var($image, FILTER_VALIDATE_URL)) {
                 return $image;
             }
-            // Otherwise, convert storage path to URL
-            return asset('storage/' . $image);
+            // Otherwise, convert storage path to URL using configured disk
+            return \Illuminate\Support\Facades\Storage::disk($disk)->url($image);
         }, $this->images);
     }
 

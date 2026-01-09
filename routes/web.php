@@ -13,6 +13,21 @@ use Inertia\Inertia;
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// TEMPORARY: Debug route to verify Laravel Cloud Object Storage credentials
+// DELETE THIS ROUTE AFTER TESTING!
+Route::get('/debug-env', function () {
+    return response()->json([
+        'FILESYSTEM_PUBLIC_DISK' => env('FILESYSTEM_PUBLIC_DISK'),
+        'AWS_BUCKET' => env('AWS_BUCKET'),
+        'AWS_DEFAULT_REGION' => env('AWS_DEFAULT_REGION'),
+        'AWS_ENDPOINT' => env('AWS_ENDPOINT'),
+        'AWS_URL' => env('AWS_URL'),
+        'AWS_USE_PATH_STYLE_ENDPOINT' => env('AWS_USE_PATH_STYLE_ENDPOINT'),
+        'AWS_ACCESS_KEY_ID' => env('AWS_ACCESS_KEY_ID') ? 'SET ✓' : 'NOT SET ✗',
+        'AWS_SECRET_ACCESS_KEY' => env('AWS_SECRET_ACCESS_KEY') ? 'SET ✓' : 'NOT SET ✗',
+    ]);
+});
+
 // Search
 Route::get('/search', [SearchController::class, 'search'])->name('search');
 

@@ -22,9 +22,17 @@ export default function CreateImagesTab({ data, setData, errors, hotel }) {
 
     // Check if we have a new uploaded image or an existing one
     const hasMainImage = data.main_image || (hotel && hotel.main_image);
-    const mainImageUrl = data.main_image 
-        ? URL.createObjectURL(data.main_image) 
-        : (hotel && hotel.main_image ? `/storage/${hotel.main_image}` : null);
+    const getMainImageUrl = () => {
+        if (data.main_image) {
+            return URL.createObjectURL(data.main_image);
+        }
+        if (hotel && hotel.main_image) {
+            // Handle both full URLs and storage paths
+            return hotel.main_image.startsWith('http') ? hotel.main_image : `/storage/${hotel.main_image}`;
+        }
+        return null;
+    };
+    const mainImageUrl = getMainImageUrl();
 
     return (
         <div className="space-y-8">
@@ -105,22 +113,26 @@ export default function CreateImagesTab({ data, setData, errors, hotel }) {
                 </p>
 
                 {/* Existing Hotel Gallery Images */}
-                {hotel && hotel.gallery_images && hotel.gallery_images.length > 0 && (
+                {hotel && hotel.images && hotel.images.length > 0 && (
                     <div className="mb-6">
                         <h4 className="text-sm font-medium text-neutral-700 mb-3">Current Gallery Images</h4>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            {hotel.gallery_images.map((imagePath, index) => (
-                                <div key={`existing-${index}`} className="relative group">
-                                    <img
-                                        src={`/storage/${imagePath}`}
-                                        alt={`Gallery image ${index + 1}`}
-                                        className="w-full h-32 object-cover rounded-lg border border-neutral-200"
-                                    />
-                                    <div className="absolute bottom-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-xs">
-                                        {index + 1}
+                            {hotel.images.map((imagePath, index) => {
+                                // Handle both full URLs and storage paths
+                                const imageUrl = imagePath.startsWith('http') ? imagePath : `/storage/${imagePath}`;
+                                return (
+                                    <div key={`existing-${index}`} className="relative group">
+                                        <img
+                                            src={imageUrl}
+                                            alt={`Gallery image ${index + 1}`}
+                                            className="w-full h-32 object-cover rounded-lg border border-neutral-200"
+                                        />
+                                        <div className="absolute bottom-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-xs">
+                                            {index + 1}
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
                 )}

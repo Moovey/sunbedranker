@@ -233,14 +233,16 @@ class HotelManagementController extends Controller
      */
     private function handleImageUploads(Request $request, array $validated): array
     {
+        $disk = config('filesystems.public_uploads', 'public');
+        
         if ($request->hasFile('main_image')) {
-            $validated['main_image'] = $request->file('main_image')->store('hotels/main', 'public');
+            $validated['main_image'] = $request->file('main_image')->store('hotels/main', $disk);
         }
 
         if ($request->hasFile('gallery_images')) {
             $galleryPaths = [];
             foreach ($request->file('gallery_images') as $image) {
-                $galleryPaths[] = $image->store('hotels/gallery', 'public');
+                $galleryPaths[] = $image->store('hotels/gallery', $disk);
             }
             $validated['images'] = $galleryPaths;
         }
@@ -463,24 +465,29 @@ class HotelManagementController extends Controller
      */
     private function handleImageUploadsForUpdate(Request $request, array $validated, Hotel $hotel): array
     {
+        $disk = config('filesystems.public_uploads', 'public');
+        
         if ($request->hasFile('main_image')) {
-            // Delete old image if exists
-            if ($hotel->main_image) {
-                Storage::disk('public')->delete($hotel->main_image);
+            // Delete old image if exists and it's a local storage path (not a URL)
+            if ($hotel->main_image && !filter_var($hotel->main_image, FILTER_VALIDATE_URL)) {
+                Storage::disk($disk)->delete($hotel->main_image);
             }
-            $validated['main_image'] = $request->file('main_image')->store('hotels/main', 'public');
+            $validated['main_image'] = $request->file('main_image')->store('hotels/main', $disk);
+        } else {
+            // Remove from validated to preserve existing image
+            unset($validated['main_image']);
         }
 
         if ($request->hasFile('gallery_images')) {
             $galleryPaths = [];
             foreach ($request->file('gallery_images') as $image) {
-                $galleryPaths[] = $image->store('hotels/gallery', 'public');
+                $galleryPaths[] = $image->store('hotels/gallery', $disk);
             }
             $currentGallery = $hotel->images ?? [];
             $validated['images'] = array_merge($currentGallery, $galleryPaths);
         }
 
-        // Remove gallery_images key from hotel data
+        // Remove gallery_images key from hotel data (it's not a model field)
         unset($validated['gallery_images']);
 
         return $validated;
