@@ -1,5 +1,5 @@
-import { Link, Head, useForm } from '@inertiajs/react';
-import { useState } from 'react';
+import { Link, Head, useForm, usePage } from '@inertiajs/react';
+import { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 import AdminNav from '@/Components/AdminNav';
 import TabButton from '@/Components/Admin/Hotels/TabButton';
@@ -101,9 +101,41 @@ const INITIAL_FORM_DATA = {
 
 export default function CreateHotel({ destinations, stats }) {
     const [activeTab, setActiveTab] = useState('basic');
-    const { data, setData, post, processing, errors } = useForm(INITIAL_FORM_DATA);
+    const { data, setData, post, processing, errors, clearErrors } = useForm(INITIAL_FORM_DATA);
+    const { props } = usePage();
+    const hasShownErrorToast = useRef(false);
 
     const tabs = ['basic', 'contact', 'images', 'pool', 'affiliate', 'settings'];
+
+    // Watch for validation errors and show toast - works reliably in production
+    useEffect(() => {
+        // Combine useForm errors with page props errors (for redirect-based validation)
+        const pageErrors = props.errors || {};
+        const allErrors = { ...pageErrors, ...errors };
+        const errorKeys = Object.keys(allErrors);
+        
+        if (errorKeys.length > 0 && !hasShownErrorToast.current) {
+            hasShownErrorToast.current = true;
+            
+            // Get the first error message
+            const firstError = Object.values(allErrors)[0];
+            const errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
+            
+            // Show toast notification
+            toast.error(errorMessage || 'Please fix the validation errors and try again.');
+            
+            // Switch to the tab containing the first error
+            setActiveTab(getTabWithError(errorKeys));
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Reset the flag when errors are cleared
+        if (errorKeys.length === 0) {
+            hasShownErrorToast.current = false;
+        }
+    }, [errors, props.errors]);
 
     // Navigation helpers
     const goToNextTab = () => {
@@ -130,35 +162,21 @@ export default function CreateHotel({ destinations, stats }) {
         return 'basic';
     };
 
-    // Handle validation errors - show toast and switch to relevant tab
-    const handleValidationErrors = (validationErrors) => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        const errorFields = Object.keys(validationErrors || {});
-        const firstError = Object.values(validationErrors || {})[0];
-        const errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
-        
-        toast.error(errorMessage || 'Please fix the validation errors and try again.');
-        setActiveTab(getTabWithError(errorFields));
-    };
-
     // Form submission
     const handleSubmit = (e) => {
         e.preventDefault();
+        
+        // Reset the toast flag before submission to allow new errors to show
+        hasShownErrorToast.current = false;
 
         post(route('admin.hotels.store'), {
             forceFormData: true,
-            onSuccess: (page) => {
-                // Check for server errors in page props (redirect-based validation)
-                const serverErrors = page?.props?.errors || {};
-                if (Object.keys(serverErrors).length > 0) {
-                    handleValidationErrors(serverErrors);
-                    return;
-                }
+            onSuccess: () => {
                 toast.success('Hotel created successfully!');
             },
-            onError: (validationErrors) => {
-                handleValidationErrors(validationErrors);
+            onError: () => {
+                // Errors will be handled by the useEffect hook
+                // This callback is kept for any additional error handling if needed
             },
         });
     };
