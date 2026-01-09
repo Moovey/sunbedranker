@@ -21,13 +21,17 @@ export default function CreateImagesTab({ data, setData, errors, hotel }) {
     };
 
     // Check if we have a new uploaded image or an existing one
-    const hasMainImage = data.main_image || (hotel && hotel.main_image);
+    const hasMainImage = data.main_image || (hotel && (hotel.main_image_url || hotel.main_image));
     const getMainImageUrl = () => {
         if (data.main_image) {
             return URL.createObjectURL(data.main_image);
         }
+        // Use main_image_url accessor if available (includes full URL for S3/cloud storage)
+        if (hotel && hotel.main_image_url) {
+            return hotel.main_image_url;
+        }
+        // Fallback to raw main_image path
         if (hotel && hotel.main_image) {
-            // Handle both full URLs and storage paths
             return hotel.main_image.startsWith('http') ? hotel.main_image : `/storage/${hotel.main_image}`;
         }
         return null;
@@ -113,13 +117,15 @@ export default function CreateImagesTab({ data, setData, errors, hotel }) {
                 </p>
 
                 {/* Existing Hotel Gallery Images */}
-                {hotel && hotel.images && hotel.images.length > 0 && (
+                {hotel && ((hotel.gallery_images_urls && hotel.gallery_images_urls.length > 0) || (hotel.images && hotel.images.length > 0)) && (
                     <div className="mb-6">
                         <h4 className="text-sm font-medium text-neutral-700 mb-3">Current Gallery Images</h4>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            {hotel.images.map((imagePath, index) => {
-                                // Handle both full URLs and storage paths
-                                const imageUrl = imagePath.startsWith('http') ? imagePath : `/storage/${imagePath}`;
+                            {(hotel.gallery_images_urls || hotel.images || []).map((imageUrlOrPath, index) => {
+                                // Use gallery_images_urls accessor if available, otherwise fallback to manual URL building
+                                const imageUrl = hotel.gallery_images_urls 
+                                    ? imageUrlOrPath 
+                                    : (imageUrlOrPath.startsWith('http') ? imageUrlOrPath : `/storage/${imageUrlOrPath}`);
                                 return (
                                     <div key={`existing-${index}`} className="relative group">
                                         <img

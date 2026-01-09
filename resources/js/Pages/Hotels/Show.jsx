@@ -2,12 +2,44 @@ import { Link, Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import Header from '@/Components/Header';
 
+// FAQ Accordion Item Component
+function FaqItem({ question, answer, isOpen, onClick }) {
+    return (
+        <div className="border-b border-orange-200 last:border-b-0">
+            <button
+                onClick={onClick}
+                className="w-full py-4 sm:py-5 flex items-center justify-between text-left hover:bg-orange-50/50 transition-colors px-1"
+            >
+                <span className="font-sans font-bold text-gray-900 pr-4 text-sm sm:text-base lg:text-lg">{question}</span>
+                <svg 
+                    className={`w-5 h-5 sm:w-6 sm:h-6 text-orange-500 flex-shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+            <div className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-96 pb-4 sm:pb-5' : 'max-h-0'}`}>
+                <div className="text-gray-700 font-sans leading-relaxed px-1 text-sm sm:text-base">
+                    {answer}
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function HotelShow({ hotel, similarHotels }) {
     const [activeTab, setActiveTab] = useState('overview');
     const [activeImageIndex, setActiveImageIndex] = useState(0);
+    const [openFaqIndex, setOpenFaqIndex] = useState(null);
 
     const handleBookingClick = (type) => {
         router.get(`/hotels/${hotel.slug}/click?type=${type}`);
+    };
+
+    const toggleFaq = (index) => {
+        setOpenFaqIndex(openFaqIndex === index ? null : index);
     };
 
     // Get all images (main + gallery)
@@ -851,6 +883,121 @@ export default function HotelShow({ hotel, similarHotels }) {
                                     )}
                                 </>
                             )}
+
+                            {/* ============================================ */}
+                            {/* HOTELIER-PROVIDED CONTENT SECTIONS */}
+                            {/* ============================================ */}
+
+                            {/* Pool Area Description (from Hotelier) */}
+                            {hotel.pool_description && (
+                                <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-blue-200">
+                                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-bold text-gray-900 mb-4 sm:mb-5 flex items-center gap-2 lg:gap-3">
+                                        <svg className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M22 6.5c-1.1 0-2.2.3-3 .9-.8-.6-1.9-.9-3-.9s-2.2.3-3 .9c-.8-.6-1.9-.9-3-.9s-2.2.3-3 .9c-.8-.6-1.9-.9-3-.9v2c.8 0 1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8s1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8s1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8V6.5z"/>
+                                        </svg>
+                                        About Our Pool Area
+                                    </h2>
+                                    <div className="prose prose-lg max-w-none text-gray-700 font-sans leading-relaxed whitespace-pre-line">
+                                        {hotel.pool_description}
+                                    </div>
+                                    {hotel.is_verified && (
+                                        <div className="mt-4 pt-4 border-t border-blue-200 flex items-center gap-2 text-blue-700 text-sm font-semibold">
+                                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                                            </svg>
+                                            Verified by hotel management
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Amenities Description (from Hotelier) */}
+                            {hotel.amenities_description && (
+                                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-green-200">
+                                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-bold text-gray-900 mb-4 sm:mb-5 flex items-center gap-2 lg:gap-3">
+                                        <svg className="w-6 h-6 sm:w-7 sm:h-7 text-green-600" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M7.5 21H2V9l10-7 10 7v12h-5.5M7.5 21v-6.5a2.5 2.5 0 015 0V21M7.5 21h5"/>
+                                        </svg>
+                                        Pool Amenities & Services
+                                    </h2>
+                                    <div className="prose prose-lg max-w-none text-gray-700 font-sans leading-relaxed whitespace-pre-line">
+                                        {hotel.amenities_description}
+                                    </div>
+                                    {hotel.is_verified && (
+                                        <div className="mt-4 pt-4 border-t border-green-200 flex items-center gap-2 text-green-700 text-sm font-semibold">
+                                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                                            </svg>
+                                            Verified by hotel management
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* House Rules (from Hotelier) */}
+                            {hotel.house_rules && (
+                                <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-red-200">
+                                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-bold text-gray-900 mb-4 sm:mb-5 flex items-center gap-2 lg:gap-3">
+                                        <svg className="w-6 h-6 sm:w-7 sm:h-7 text-red-600" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                                        </svg>
+                                        Pool House Rules
+                                    </h2>
+                                    <div className="prose prose-lg max-w-none text-gray-700 font-sans leading-relaxed whitespace-pre-line">
+                                        {hotel.house_rules}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Towel Policy (from Hotelier) */}
+                            {hotel.towel_policy && (
+                                <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-purple-200">
+                                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-bold text-gray-900 mb-4 sm:mb-5 flex items-center gap-2 lg:gap-3">
+                                        <svg className="w-6 h-6 sm:w-7 sm:h-7 text-purple-600" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2V9h-2V7h4v10z"/>
+                                        </svg>
+                                        Towel & Sunbed Policy
+                                    </h2>
+                                    <div className="prose prose-lg max-w-none text-gray-700 font-sans leading-relaxed whitespace-pre-line">
+                                        {hotel.towel_policy}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* FAQs (from Hotelier) */}
+                            {hotel.faqs && hotel.faqs.length > 0 && (
+                                <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100">
+                                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                                        <svg className="w-6 h-6 sm:w-7 sm:h-7 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+                                        </svg>
+                                        Frequently Asked Questions
+                                    </h2>
+                                    <div className="divide-y divide-orange-100 border-t border-orange-200">
+                                        {hotel.faqs.map((faq, index) => (
+                                            <FaqItem
+                                                key={index}
+                                                question={faq.question}
+                                                answer={faq.answer}
+                                                isOpen={openFaqIndex === index}
+                                                onClick={() => toggleFaq(index)}
+                                            />
+                                        ))}
+                                    </div>
+                                    {hotel.is_verified && (
+                                        <div className="mt-5 pt-4 border-t border-gray-200 flex items-center gap-2 text-blue-600 text-sm font-semibold">
+                                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                                            </svg>
+                                            Answers provided by hotel management
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* ============================================ */}
+                            {/* END HOTELIER-PROVIDED CONTENT SECTIONS */}
+                            {/* ============================================ */}
 
                             {/* Gallery */}
                             {allImages.length > 1 && (
