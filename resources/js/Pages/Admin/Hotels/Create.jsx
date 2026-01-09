@@ -1,5 +1,5 @@
 import { Link, Head, useForm, usePage } from '@inertiajs/react';
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 import AdminNav from '@/Components/AdminNav';
 import TabButton from '@/Components/Admin/Hotels/TabButton';
@@ -101,41 +101,16 @@ const INITIAL_FORM_DATA = {
 
 export default function CreateHotel({ destinations, stats }) {
     const [activeTab, setActiveTab] = useState('basic');
+    const [submissionError, setSubmissionError] = useState(null);
     const { data, setData, post, processing, errors, clearErrors } = useForm(INITIAL_FORM_DATA);
     const { props } = usePage();
-    const hasShownErrorToast = useRef(false);
 
     const tabs = ['basic', 'contact', 'images', 'pool', 'affiliate', 'settings'];
 
-    // Watch for validation errors and show toast - works reliably in production
-    useEffect(() => {
-        // Combine useForm errors with page props errors (for redirect-based validation)
-        const pageErrors = props.errors || {};
-        const allErrors = { ...pageErrors, ...errors };
-        const errorKeys = Object.keys(allErrors);
-        
-        if (errorKeys.length > 0 && !hasShownErrorToast.current) {
-            hasShownErrorToast.current = true;
-            
-            // Get the first error message
-            const firstError = Object.values(allErrors)[0];
-            const errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
-            
-            // Show toast notification
-            toast.error(errorMessage || 'Please fix the validation errors and try again.');
-            
-            // Switch to the tab containing the first error
-            setActiveTab(getTabWithError(errorKeys));
-            
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        
-        // Reset the flag when errors are cleared
-        if (errorKeys.length === 0) {
-            hasShownErrorToast.current = false;
-        }
-    }, [errors, props.errors]);
+    // Combine all errors for display
+    const pageErrors = props.errors || {};
+    const allErrors = { ...pageErrors, ...errors };
+    const hasErrors = Object.keys(allErrors).length > 0;
 
     // Navigation helpers
     const goToNextTab = () => {
@@ -165,25 +140,40 @@ export default function CreateHotel({ destinations, stats }) {
     // Form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        
-        // Reset the toast flag before submission to allow new errors to show
-        hasShownErrorToast.current = false;
+        setSubmissionError(null);
 
         post(route('admin.hotels.store'), {
             forceFormData: true,
-            onSuccess: () => {
-                toast.success('Hotel created successfully!');
+            preserveScroll: true,
+            onSuccess: (page) => {
+                // Check if there are validation errors in the response
+                const responseErrors = page?.props?.errors || {};
+                if (Object.keys(responseErrors).length > 0) {
+                    // Don't show success - errors will be displayed
+                    const errorKeys = Object.keys(responseErrors);
+                    setActiveTab(getTabWithError(errorKeys));
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    return;
+                }
+                // Only show success if we're redirected to a different page (hotels.index)
+                // or if there's a success flash message
+                if (page?.props?.flash?.success) {
+                    toast.success(page.props.flash.success);
+                }
             },
-            onError: () => {
-                // Errors will be handled by the useEffect hook
-                // This callback is kept for any additional error handling if needed
+            onError: (validationErrors) => {
+                // Handle validation errors
+                const errorKeys = Object.keys(validationErrors || {});
+                if (errorKeys.length > 0) {
+                    setActiveTab(getTabWithError(errorKeys));
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
             },
         });
     };
 
     const isLastTab = activeTab === 'settings';
     const isFirstTab = activeTab === 'basic';
-    const hasErrors = Object.keys(errors).length > 0;
 
     return (
         <>
@@ -196,8 +186,8 @@ export default function CreateHotel({ destinations, stats }) {
                 <PageHeader />
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12 lg:py-16">
-                    {/* Validation Errors Display */}
-                    {hasErrors && <ValidationErrorsBox errors={errors} />}
+                    {/* Validation Errors Display - prominent box that's always visible when there are errors */}
+                    {hasErrors && <ValidationErrorsBox errors={allErrors} />}
                     
                     <form onSubmit={handleSubmit} noValidate>
                         {/* Tab Navigation */}
@@ -209,7 +199,7 @@ export default function CreateHotel({ destinations, stats }) {
                                 activeTab={activeTab}
                                 data={data}
                                 setData={setData}
-                                errors={errors}
+                                errors={allErrors}
                                 destinations={destinations}
                             />
 
@@ -253,22 +243,34 @@ function PageHeader() {
 }
 
 function ValidationErrorsBox({ errors }) {
+    const errorCount = Object.keys(errors).length;
+    
     return (
-        <div className="mb-6 bg-gradient-to-r from-red-50 to-red-100 border-2 border-red-300 rounded-2xl p-5 shadow-lg">
-            <h3 className="text-red-800 font-bold mb-3 flex items-center gap-2">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-                </svg>
-                Please fix the following errors:
-            </h3>
-            <ul className="list-disc list-inside text-red-700 space-y-2">
-                {Object.entries(errors).map(([field, messages]) => (
-                    <li key={field}>
-                        <span className="font-bold capitalize">{field.replace(/_/g, ' ')}:</span>{' '}
-                        {Array.isArray(messages) ? messages.join(', ') : messages}
-                    </li>
-                ))}
-            </ul>
+        <div className="mb-6 bg-red-50 border-l-4 border-red-500 rounded-lg p-6 shadow-lg animate-pulse">
+            <div className="flex items-start">
+                <div className="flex-shrink-0">
+                    <svg className="h-8 w-8 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+                        <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clipRule="evenodd" />
+                    </svg>
+                </div>
+                <div className="ml-4 flex-1">
+                    <h3 className="text-lg font-bold text-red-800 mb-2">
+                        ⚠️ Validation Failed - {errorCount} error{errorCount > 1 ? 's' : ''} found
+                    </h3>
+                    <p className="text-red-700 mb-3 text-sm">Please fix the following errors before submitting:</p>
+                    <ul className="space-y-2">
+                        {Object.entries(errors).map(([field, messages]) => (
+                            <li key={field} className="flex items-start gap-2 text-red-700">
+                                <span className="text-red-500 mt-1">•</span>
+                                <span>
+                                    <span className="font-semibold capitalize">{field.replace(/_/g, ' ')}:</span>{' '}
+                                    <span className="text-red-600">{Array.isArray(messages) ? messages.join(', ') : messages}</span>
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
         </div>
     );
 }
