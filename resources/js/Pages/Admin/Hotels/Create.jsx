@@ -99,21 +99,24 @@ const INITIAL_FORM_DATA = {
     has_adult_sun_terrace: false,
 };
 
-export default function CreateHotel({ destinations, stats, errors: serverErrors = {} }) {
+export default function CreateHotel({ destinations, stats, errors: serverErrors = {}, oldInput = {} }) {
     const [activeTab, setActiveTab] = useState('basic');
     const [validationErrors, setValidationErrors] = useState({});
-    const { data, setData, post, processing, errors: formErrors } = useForm(INITIAL_FORM_DATA);
+    const { data, setData, post, processing, errors: formErrors } = useForm({
+        ...INITIAL_FORM_DATA,
+        ...oldInput, // Restore old input if validation failed
+    });
     const { props } = usePage();
 
     const tabs = ['basic', 'contact', 'images', 'pool', 'affiliate', 'settings'];
 
     // DEBUG: Log all error sources
     console.log('=== VALIDATION DEBUG ===');
-    console.log('serverErrors (prop):', serverErrors);
-    console.log('formErrors (useForm):', formErrors);
-    console.log('props.errors:', props?.errors);
-    console.log('validationErrors (state):', validationErrors);
-    console.log('Full props:', props);
+    console.log('serverErrors (prop):', JSON.stringify(serverErrors));
+    console.log('formErrors (useForm):', JSON.stringify(formErrors));
+    console.log('props.errors:', JSON.stringify(props?.errors));
+    console.log('validationErrors (state):', JSON.stringify(validationErrors));
+    console.log('oldInput:', JSON.stringify(oldInput));
 
     // Combine all error sources - server errors, form errors, page props errors, and local state
     const pageErrors = props?.errors || {};
@@ -126,7 +129,7 @@ export default function CreateHotel({ destinations, stats, errors: serverErrors 
     const hasErrors = Object.keys(allErrors).length > 0;
 
     // DEBUG: Log combined errors
-    console.log('allErrors (combined):', allErrors);
+    console.log('allErrors (combined):', JSON.stringify(allErrors));
     console.log('hasErrors:', hasErrors);
     console.log('========================');
 

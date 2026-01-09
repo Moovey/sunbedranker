@@ -40,10 +40,7 @@ class HandleInertiaRequests extends Middleware
                 'warning' => fn () => $request->session()->get('warning'),
                 'info' => fn () => $request->session()->get('info'),
             ],
-            // Explicitly share validation errors for production compatibility
-            'errors' => fn () => $request->session()->get('errors')
-                ? $request->session()->get('errors')->getBag('default')->getMessages()
-                : (object) [],
+            // Let Inertia handle errors through parent::share() which includes default error handling
         ];
     }
 }

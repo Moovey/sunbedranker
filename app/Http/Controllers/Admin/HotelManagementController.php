@@ -20,6 +20,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -84,10 +85,101 @@ class HotelManagementController extends Controller
     /**
      * Store a newly created hotel.
      */
-    public function store(StoreHotelRequest $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|Response
     {
-        // Validation is handled by StoreHotelRequest - if we reach here, validation passed
-        $validated = $request->validated();
+        // Manual validation to ensure errors are properly returned for Inertia
+        $rules = [
+            // Basic Information
+            'name' => 'required|string|max:255',
+            'destination_id' => 'required|exists:destinations,id',
+            'description' => 'nullable|string|max:5000',
+            'star_rating' => 'nullable|integer|min:1|max:5',
+            'total_rooms' => 'nullable|integer|min:1',
+            
+            // Contact & Location
+            'address' => 'required|string|max:500',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
+            'phone' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+            'website' => 'nullable|url|max:500',
+            
+            // Images
+            'main_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'gallery_images' => 'nullable|array|max:10',
+            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
+            
+            // Affiliate Links
+            'booking_affiliate_url' => 'nullable|url|max:500',
+            'expedia_affiliate_url' => 'nullable|url|max:500',
+            'direct_booking_url' => 'nullable|url|max:500',
+            'affiliate_provider' => 'nullable|string|max:255',
+            'affiliate_tracking_code' => 'nullable|string|max:255',
+            
+            // Settings
+            'is_active' => 'boolean',
+            'is_verified' => 'boolean',
+            'is_featured' => 'boolean',
+            'subscription_tier' => 'nullable|in:free,enhanced,premium',
+            
+            // Pool Criteria - Required
+            'sunbed_count' => 'required|integer|min:1',
+            'sun_exposure' => 'required|in:all_day,afternoon_only,morning_only,partial_shade,mostly_shaded',
+            'pool_size_category' => 'required|in:small,medium,large,very_large',
+            
+            // Pool Criteria - Optional
+            'sunbed_types' => 'nullable|array',
+            'sunny_areas' => 'nullable|array',
+            'pool_size_sqm' => 'nullable|numeric|min:0',
+            'number_of_pools' => 'nullable|integer|min:1',
+            'pool_types' => 'nullable|array',
+            'towel_reservation_policy' => 'nullable|in:enforced,tolerated,free_for_all',
+            'towel_service_cost' => 'nullable|in:included,extra_cost,deposit_required',
+            'pool_opening_hours' => 'nullable|string|max:100',
+            'has_pool_bar' => 'boolean',
+            'has_waiter_service' => 'boolean',
+            'shade_options' => 'nullable|array',
+            'bar_distance' => 'nullable|in:poolside,close,moderate,far',
+            'toilet_distance' => 'nullable|in:adjacent,close,moderate,far',
+            'atmosphere' => 'nullable|in:quiet,relaxed,family,lively,party',
+            'music_level' => 'nullable|in:none,soft,moderate,loud',
+            'has_entertainment' => 'boolean',
+            'entertainment_types' => 'nullable|array',
+            'cleanliness_rating' => 'nullable|numeric|min:1|max:10',
+            'sunbed_condition_rating' => 'nullable|numeric|min:1|max:10',
+            'tiling_condition_rating' => 'nullable|numeric|min:1|max:10',
+            'has_lifeguard' => 'boolean',
+            'lifeguard_hours' => 'nullable|string|max:100',
+            'has_kids_pool' => 'boolean',
+            'kids_pool_depth_m' => 'nullable|numeric|min:0',
+            'has_splash_park' => 'boolean',
+            'has_waterslide' => 'boolean',
+            'has_accessibility_ramp' => 'boolean',
+            'has_pool_hoist' => 'boolean',
+            'has_step_free_access' => 'boolean',
+            'has_elevator_to_rooftop' => 'boolean',
+            'has_luxury_cabanas' => 'boolean',
+            'has_cabana_service' => 'boolean',
+            'has_heated_pool' => 'boolean',
+            'has_jacuzzi' => 'boolean',
+            'has_adult_sun_terrace' => 'boolean',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            // Instead of redirecting, render the page directly with errors as props
+            // This bypasses any session issues in production
+            $destinations = Destination::where('is_active', true)->orderBy('name')->get();
+            
+            return Inertia::render('Admin/Hotels/Create', [
+                'destinations' => $destinations,
+                'errors' => $validator->errors()->toArray(),
+                'oldInput' => $request->except(['main_image', 'gallery_images']),
+            ]);
+        }
+
+        $validated = $validator->validated();
         
         try {
             // Generate slug

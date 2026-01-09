@@ -3,6 +3,9 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\ValidationException;
 
 class StoreHotelRequest extends FormRequest
 {
@@ -12,6 +15,24 @@ class StoreHotelRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     * This ensures Inertia requests get proper 422 responses in production.
+     */
+    protected function failedValidation(Validator $validator): void
+    {
+        // For Inertia requests, we need to ensure proper error handling
+        if ($this->header('X-Inertia') || $this->wantsJson()) {
+            throw new HttpResponseException(
+                back()->withErrors($validator)->withInput()
+            );
+        }
+
+        throw (new ValidationException($validator))
+            ->errorBag($this->errorBag)
+            ->redirectTo($this->getRedirectUrl());
     }
 
     /**
