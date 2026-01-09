@@ -107,7 +107,8 @@ const buildFormData = (hotel) => ({
 export default function EditHotel({ hotel, destinations, badges, stats, errors: serverErrors = {}, oldInput = {} }) {
     const [activeTab, setActiveTab] = useState('basic');
     const [validationErrors, setValidationErrors] = useState({});
-    const { data, setData, post, processing, errors: formErrors } = useForm({
+    const [processing, setProcessing] = useState(false);
+    const { data, setData, errors: formErrors } = useForm({
         ...buildFormData(hotel),
         ...oldInput, // Restore old input if validation failed
     });
@@ -139,12 +140,14 @@ export default function EditHotel({ hotel, destinations, badges, stats, errors: 
     const handleSubmit = (e) => {
         e.preventDefault();
         setValidationErrors({}); // Clear previous errors
+        setProcessing(true);
 
-        // Use transform to add _method to the form data for proper PATCH with multipart
-        post(route('admin.hotels.update', hotel.id), {
+        // Use router.post with _method for proper PATCH with multipart/form-data
+        router.post(route('admin.hotels.update', hotel.id), data, {
             forceFormData: true,
             preserveScroll: true,
             onSuccess: (page) => {
+                setProcessing(false);
                 const responseErrors = page?.props?.errors || {};
                 if (Object.keys(responseErrors).length > 0) {
                     setValidationErrors(responseErrors);
@@ -158,12 +161,16 @@ export default function EditHotel({ hotel, destinations, badges, stats, errors: 
                 }
             },
             onError: (errors) => {
+                setProcessing(false);
                 setValidationErrors(errors || {});
                 const errorKeys = Object.keys(errors || {});
                 if (errorKeys.length > 0) {
                     setActiveTab(getTabWithError(errorKeys));
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
+            },
+            onFinish: () => {
+                setProcessing(false);
             },
         });
     };
