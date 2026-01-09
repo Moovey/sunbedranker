@@ -1,4 +1,4 @@
-import { Link, Head, useForm, router } from '@inertiajs/react';
+import { Link, Head, useForm, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import AdminNav from '@/Components/AdminNav';
@@ -104,11 +104,26 @@ const buildFormData = (hotel) => ({
     has_adult_sun_terrace: hotel.pool_criteria?.has_adult_sun_terrace || false,
 });
 
-export default function EditHotel({ hotel, destinations, badges, stats }) {
+export default function EditHotel({ hotel, destinations, badges, stats, errors: serverErrors = {}, oldInput = {} }) {
     const [activeTab, setActiveTab] = useState('basic');
-    const { data, setData, post, processing, errors } = useForm(buildFormData(hotel));
+    const [validationErrors, setValidationErrors] = useState({});
+    const { data, setData, post, processing, errors: formErrors } = useForm({
+        ...buildFormData(hotel),
+        ...oldInput, // Restore old input if validation failed
+    });
+    const { props } = usePage();
 
     const tabs = ['basic', 'contact', 'images', 'pool', 'affiliate', 'settings', 'badges'];
+
+    // Combine all error sources - server errors, form errors, page props errors, and local state
+    const pageErrors = props?.errors || {};
+    const allErrors = { 
+        ...serverErrors,
+        ...pageErrors, 
+        ...formErrors,
+        ...validationErrors 
+    };
+    const hasErrors = Object.keys(allErrors).length > 0;
 
     // Find which tab contains the first error
     const getTabWithError = (errorFields) => {
@@ -120,36 +135,35 @@ export default function EditHotel({ hotel, destinations, badges, stats }) {
         return 'basic';
     };
 
-    // Handle validation errors - show toast and switch to relevant tab
-    const handleValidationErrors = (validationErrors) => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        const errorFields = Object.keys(validationErrors || {});
-        const firstError = Object.values(validationErrors || {})[0];
-        const errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
-        
-        toast.error(errorMessage || 'Please fix the validation errors and try again.');
-        setActiveTab(getTabWithError(errorFields));
-    };
-
     // Form submission
     const handleSubmit = (e) => {
         e.preventDefault();
+        setValidationErrors({}); // Clear previous errors
 
         // Use transform to add _method to the form data for proper PATCH with multipart
         post(route('admin.hotels.update', hotel.id), {
             forceFormData: true,
             preserveScroll: true,
             onSuccess: (page) => {
-                const serverErrors = page?.props?.errors || {};
-                if (Object.keys(serverErrors).length > 0) {
-                    handleValidationErrors(serverErrors);
+                const responseErrors = page?.props?.errors || {};
+                if (Object.keys(responseErrors).length > 0) {
+                    setValidationErrors(responseErrors);
+                    const errorKeys = Object.keys(responseErrors);
+                    setActiveTab(getTabWithError(errorKeys));
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                     return;
                 }
-                toast.success('Hotel updated successfully!');
+                if (page?.props?.flash?.success) {
+                    toast.success(page.props.flash.success);
+                }
             },
-            onError: (validationErrors) => {
-                handleValidationErrors(validationErrors);
+            onError: (errors) => {
+                setValidationErrors(errors || {});
+                const errorKeys = Object.keys(errors || {});
+                if (errorKeys.length > 0) {
+                    setActiveTab(getTabWithError(errorKeys));
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
             },
         });
     };
@@ -162,8 +176,6 @@ export default function EditHotel({ hotel, destinations, badges, stats }) {
         });
     };
 
-    const hasErrors = Object.keys(errors).length > 0;
-
     return (
         <>
             <Head title={`Edit ${hotel.name}`} />
@@ -175,8 +187,8 @@ export default function EditHotel({ hotel, destinations, badges, stats }) {
                 <PageHeader hotel={hotel} autoAssignBadges={autoAssignBadges} />
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12 lg:py-16">
-                    {/* Validation Errors Display */}
-                    {hasErrors && <ValidationErrorsBox errors={errors} />}
+                    {/* Validation Errors Display - prominent box that's always visible when there are errors */}
+                    {hasErrors && <ValidationErrorsBox errors={allErrors} />}
                     
                     <form onSubmit={handleSubmit} noValidate>
                         {/* Tab Navigation */}
@@ -188,7 +200,7 @@ export default function EditHotel({ hotel, destinations, badges, stats }) {
                                 activeTab={activeTab}
                                 data={data}
                                 setData={setData}
-                                errors={errors}
+                                errors={allErrors}
                                 destinations={destinations}
                                 hotel={hotel}
                                 autoAssignBadges={autoAssignBadges}
@@ -286,22 +298,56 @@ function HotelStatusBadges({ hotel }) {
 }
 
 function ValidationErrorsBox({ errors }) {
+    // Normalize errors - handle both string and array formats
+    const normalizedErrors = {};
+    Object.entries(errors).forEach(([field, messages]) => {
+        if (Array.isArray(messages)) {
+            normalizedErrors[field] = messages[0]; // Take first error message
+        } else if (typeof messages === 'string') {
+            normalizedErrors[field] = messages;
+        } else if (messages && typeof messages === 'object') {
+            normalizedErrors[field] = JSON.stringify(messages);
+        }
+    });
+    
+    const errorCount = Object.keys(normalizedErrors).length;
+    
+    if (errorCount === 0) return null;
+    
     return (
-        <div className="mb-6 bg-gradient-to-r from-red-50 to-red-100 border-2 border-red-300 rounded-2xl p-5 shadow-lg">
-            <h3 className="text-red-800 font-bold mb-3 flex items-center gap-2">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-                </svg>
-                Please fix the following errors:
-            </h3>
-            <ul className="list-disc list-inside text-red-700 space-y-2">
-                {Object.entries(errors).map(([field, messages]) => (
-                    <li key={field}>
-                        <span className="font-bold capitalize">{field.replace(/_/g, ' ')}:</span>{' '}
-                        {Array.isArray(messages) ? messages.join(', ') : messages}
-                    </li>
-                ))}
-            </ul>
+        <div className="mb-6 bg-red-50 border-2 border-red-400 rounded-xl p-6 shadow-xl" style={{ animation: 'pulse 2s infinite' }}>
+            <style>{`
+                @keyframes pulse {
+                    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+                    50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+                }
+            `}</style>
+            <div className="flex items-start">
+                <div className="flex-shrink-0">
+                    <svg className="h-10 w-10 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+                        <path fillRule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
+                    </svg>
+                </div>
+                <div className="ml-4 flex-1">
+                    <h3 className="text-xl font-bold text-red-800 mb-3">
+                        ❌ Validation Failed - {errorCount} error{errorCount > 1 ? 's' : ''} found
+                    </h3>
+                    <p className="text-red-700 mb-4 font-medium">Please fix the following errors before submitting:</p>
+                    <div className="bg-white rounded-lg p-4 border border-red-200">
+                        <ul className="space-y-3">
+                            {Object.entries(normalizedErrors).map(([field, message]) => (
+                                <li key={field} className="flex items-start gap-3 text-red-700">
+                                    <span className="text-red-500 font-bold text-lg">•</span>
+                                    <span className="text-base">
+                                        <span className="font-bold capitalize text-red-800">{field.replace(/_/g, ' ')}:</span>{' '}
+                                        <span className="text-red-600">{message}</span>
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
