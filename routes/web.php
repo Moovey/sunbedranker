@@ -13,19 +13,37 @@ use Inertia\Inertia;
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// TEMPORARY: Debug route to verify Laravel Cloud Object Storage credentials
-// DELETE THIS ROUTE AFTER TESTING!
-Route::get('/debug-env', function () {
-    return response()->json([
-        'FILESYSTEM_PUBLIC_DISK' => env('FILESYSTEM_PUBLIC_DISK'),
-        'AWS_BUCKET' => env('AWS_BUCKET'),
-        'AWS_DEFAULT_REGION' => env('AWS_DEFAULT_REGION'),
-        'AWS_ENDPOINT' => env('AWS_ENDPOINT'),
-        'AWS_URL' => env('AWS_URL'),
-        'AWS_USE_PATH_STYLE_ENDPOINT' => env('AWS_USE_PATH_STYLE_ENDPOINT'),
-        'AWS_ACCESS_KEY_ID' => env('AWS_ACCESS_KEY_ID') ? 'SET ✓' : 'NOT SET ✗',
-        'AWS_SECRET_ACCESS_KEY' => env('AWS_SECRET_ACCESS_KEY') ? 'SET ✓' : 'NOT SET ✗',
-    ]);
+// TEMPORARY: Test S3 upload - DELETE AFTER TESTING
+Route::get('/test-s3', function () {
+    try {
+        $disk = config('filesystems.public_uploads', 'public');
+        $testContent = 'Test file created at ' . now();
+        
+        // Try to write a test file
+        $result = \Illuminate\Support\Facades\Storage::disk($disk)->put('test.txt', $testContent);
+        
+        if ($result) {
+            $url = \Illuminate\Support\Facades\Storage::disk($disk)->url('test.txt');
+            return response()->json([
+                'success' => true,
+                'message' => 'S3 write successful!',
+                'disk' => $disk,
+                'url' => $url,
+            ]);
+        }
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'S3 write returned false',
+            'disk' => $disk,
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'disk' => config('filesystems.public_uploads', 'public'),
+        ]);
+    }
 });
 
 // Search

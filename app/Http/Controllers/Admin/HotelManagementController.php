@@ -222,9 +222,14 @@ class HotelManagementController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            return back()
-                ->withInput()
-                ->withErrors(['error' => 'Failed to create hotel: ' . $e->getMessage()]);
+            // Render the page directly with errors - bypasses session issues in production
+            $destinations = Destination::where('is_active', true)->orderBy('name')->get();
+            
+            return Inertia::render('Admin/Hotels/Create', [
+                'destinations' => $destinations,
+                'errors' => ['error' => 'Failed to create hotel: ' . $e->getMessage()],
+                'oldInput' => $request->except(['main_image', 'gallery_images']),
+            ]);
         }
     }
 
