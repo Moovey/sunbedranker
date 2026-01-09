@@ -74,9 +74,17 @@ export default function HotelierNav() {
                                 onClick={() => setShowUserDropdown(!showUserDropdown)}
                                 className="flex items-center gap-2 px-2 sm:px-3 py-2 border-2 border-gray-300 rounded-lg hover:border-orange-300 hover:shadow-md transition-all duration-300"
                             >
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white font-bold shadow-md">
-                                    {auth.user.name.charAt(0).toUpperCase()}
-                                </div>
+                                {auth.user.profile_picture_url ? (
+                                    <img 
+                                        src={auth.user.profile_picture_url} 
+                                        alt={auth.user.name}
+                                        className="w-8 h-8 rounded-full object-cover shadow-md"
+                                    />
+                                ) : (
+                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white font-bold shadow-md">
+                                        {auth.user.name.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
                                 <span className="hidden sm:block text-sm font-bold text-gray-900 max-w-[100px] truncate">{auth.user.name}</span>
                                 <svg className={`w-4 h-4 text-gray-600 transition-transform duration-300 ${showUserDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
@@ -90,7 +98,7 @@ export default function HotelierNav() {
                                         <p className="text-xs text-gray-600 font-semibold truncate">{auth.user.email}</p>
                                     </div>
                                     <Link
-                                        href={route('profile.edit')}
+                                        href={route('hotelier.profile')}
                                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 font-semibold transition-colors duration-300"
                                     >
                                         Profile Settings

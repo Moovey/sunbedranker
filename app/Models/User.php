@@ -6,12 +6,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
  * @method bool isAdmin()
  * @method bool isHotelier()
  * @method bool isUser()
  * @method string getRedirectPath()
+ * @property string|null $profile_picture_url
  */
 class User extends Authenticatable
 {
@@ -29,6 +32,7 @@ class User extends Authenticatable
         'password',
         'role',
         'last_login_at',
+        'profile_picture',
     ];
 
     /**
@@ -42,6 +46,13 @@ class User extends Authenticatable
     ];
 
     /**
+     * The attributes to append to the model's array form.
+     *
+     * @var list<string>
+     */
+    protected $appends = ['profile_picture_url'];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -52,6 +63,33 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the profile picture URL.
+     */
+    protected function profilePictureUrl(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if (!$this->profile_picture) {
+                    return null;
+                }
+
+                // If it's already a full URL (like from Unsplash or external source)
+                if (str_starts_with($this->profile_picture, 'http://') || str_starts_with($this->profile_picture, 'https://')) {
+                    return $this->profile_picture;
+                }
+
+                // Get the configured disk for public uploads
+                $disk = config('filesystems.public_uploads', 'public');
+
+                /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
+                $storage = Storage::disk($disk);
+
+                return $storage->url($this->profile_picture);
+            }
+        );
     }
 
     /**

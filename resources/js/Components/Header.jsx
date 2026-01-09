@@ -53,9 +53,17 @@ export default function Header() {
                                     onClick={() => setShowDropdown(!showDropdown)}
                                     className="flex items-center gap-2 px-3 lg:px-4 py-2 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:bg-neutral-50 transition-all duration-300"
                                 >
-                                    <div className="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-gradient-to-br from-neutral-700 to-neutral-900 flex items-center justify-center text-white font-medium text-sm">
-                                        {auth.user.name.charAt(0).toUpperCase()}
-                                    </div>
+                                    {auth.user.profile_picture_url ? (
+                                        <img 
+                                            src={auth.user.profile_picture_url} 
+                                            alt={auth.user.name}
+                                            className="w-7 h-7 lg:w-8 lg:h-8 rounded-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-gradient-to-br from-neutral-700 to-neutral-900 flex items-center justify-center text-white font-medium text-sm">
+                                            {auth.user.name.charAt(0).toUpperCase()}
+                                        </div>
+                                    )}
                                     <span className="hidden lg:block text-xs lg:text-sm font-medium text-neutral-700 max-w-[120px] truncate">{auth.user.name}</span>
                                     <svg className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -103,7 +111,7 @@ export default function Header() {
                                         )}
                                         
                                         <Link
-                                            href={route('profile.edit')}
+                                            href={route('user.profile')}
                                             className="block px-4 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50 transition-colors duration-200"
                                         >
                                             <div className="flex items-center gap-2">
@@ -154,9 +162,17 @@ export default function Header() {
                     {/* Mobile Menu Button - Visible on mobile/tablet */}
                     <div className="flex md:hidden items-center gap-2" ref={mobileMenuRef}>
                         {auth.user && (
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neutral-700 to-neutral-900 flex items-center justify-center text-white font-medium text-xs">
-                                {auth.user.name.charAt(0).toUpperCase()}
-                            </div>
+                            auth.user.profile_picture_url ? (
+                                <img 
+                                    src={auth.user.profile_picture_url} 
+                                    alt={auth.user.name}
+                                    className="w-8 h-8 rounded-full object-cover"
+                                />
+                            ) : (
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neutral-700 to-neutral-900 flex items-center justify-center text-white font-medium text-xs">
+                                    {auth.user.name.charAt(0).toUpperCase()}
+                                </div>
+                            )
                         )}
                         <button 
                             onClick={() => setShowMobileMenu(!showMobileMenu)}
@@ -211,7 +227,7 @@ export default function Header() {
                                         )}
                                         
                                         <Link
-                                            href={route('profile.edit')}
+                                            href={route('user.profile')}
                                             className="block px-4 py-3 text-sm text-neutral-700 hover:bg-neutral-50"
                                         >
                                             <div className="flex items-center gap-3">

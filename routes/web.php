@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\HotelController;
@@ -30,12 +31,19 @@ Route::post('/compare/add/{hotel}', [ComparisonController::class, 'add'])->name(
 Route::delete('/compare/remove/{hotel}', [ComparisonController::class, 'remove'])->name('compare.remove');
 Route::delete('/compare/clear', [ComparisonController::class, 'clear'])->name('compare.clear');
 
-// Authenticated routes
+// Authenticated routes (regular users)
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
+    // User Profile (new branded profile page)
+    Route::get('/my-profile', [UserProfileController::class, 'index'])->name('user.profile');
+    Route::post('/my-profile', [UserProfileController::class, 'update'])->name('user.profile.update');
+    Route::put('/my-profile/password', [UserProfileController::class, 'updatePassword'])->name('user.profile.password');
+    Route::delete('/my-profile/picture', [UserProfileController::class, 'removeProfilePicture'])->name('user.profile.picture.remove');
+    
+    // Keep old profile routes for password/email updates (used by Breeze)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -99,9 +99,17 @@ export default function AdminNav({ stats }) {
                                 onClick={() => setShowUserDropdown(!showUserDropdown)}
                                 className="flex items-center gap-2 px-2 sm:px-3 py-2 border border-neutral-200 rounded-lg hover:border-neutral-300 transition-all duration-300"
                             >
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center text-white font-light">
-                                    {auth.user.name.charAt(0).toUpperCase()}
-                                </div>
+                                {auth.user.profile_picture_url ? (
+                                    <img 
+                                        src={auth.user.profile_picture_url} 
+                                        alt={auth.user.name}
+                                        className="w-8 h-8 rounded-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center text-white font-light">
+                                        {auth.user.name.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
                                 <span className="hidden sm:block text-sm font-light text-neutral-700 max-w-[100px] truncate">{auth.user.name}</span>
                                 <svg className={`w-4 h-4 text-neutral-600 transition-transform duration-300 ${showUserDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -115,7 +123,7 @@ export default function AdminNav({ stats }) {
                                         <p className="text-xs text-neutral-500 font-light truncate">{auth.user.email}</p>
                                     </div>
                                     <Link
-                                        href={route('profile.edit')}
+                                        href={route('admin.profile')}
                                         className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 font-light transition-colors duration-300"
                                     >
                                         Profile Settings

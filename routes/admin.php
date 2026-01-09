@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminProfileController;
 use App\Http\Controllers\Admin\HotelManagementController;
 use App\Http\Controllers\Admin\ClaimManagementController;
 use App\Http\Controllers\Admin\UserManagementController;
@@ -9,6 +10,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+    // Admin Profile
+    Route::get('/profile', [AdminProfileController::class, 'index'])->name('profile');
+    Route::post('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [AdminProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::delete('/profile/picture', [AdminProfileController::class, 'removeProfilePicture'])->name('profile.picture.remove');
 
     // Hotels Management
     Route::get('/hotels', [HotelManagementController::class, 'index'])->name('hotels.index');

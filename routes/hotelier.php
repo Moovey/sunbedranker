@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Hotelier\HotelierDashboardController;
+use App\Http\Controllers\Hotelier\HotelierProfileController;
 use App\Http\Controllers\Hotelier\HotelManagementController;
 use App\Http\Controllers\ClaimController;
 use Illuminate\Support\Facades\Route;
@@ -8,6 +9,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'hotelier'])->prefix('hotelier')->name('hotelier.')->group(function () {
     // Dashboard
     Route::get('/', [HotelierDashboardController::class, 'index'])->name('dashboard');
+
+    // Hotelier Profile
+    Route::get('/profile', [HotelierProfileController::class, 'index'])->name('profile');
+    Route::post('/profile', [HotelierProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [HotelierProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::delete('/profile/picture', [HotelierProfileController::class, 'removeProfilePicture'])->name('profile.picture.remove');
 
     // Hotel Claims
     Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
