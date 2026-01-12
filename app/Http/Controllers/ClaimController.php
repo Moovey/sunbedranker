@@ -47,6 +47,14 @@ class ClaimController extends Controller
             abort(403, 'Only hoteliers can claim hotels');
         }
 
+        // Check subscription tier - only Enhanced and Premium can claim
+        if (!$user->canClaimHotels()) {
+            // Redirect to subscription page with the intended claim URL
+            return redirect()->route('hotelier.subscription', [
+                'redirect' => route('hotelier.hotels.claim', $hotel->slug),
+            ]);
+        }
+
         // Check anti-fraud conditions
         $this->checkAntifraudConditions($hotel, Auth::user());
 
@@ -65,6 +73,13 @@ class ClaimController extends Controller
         $user = Auth::user();
         if (!Auth::check() || !$user->isHotelier()) {
             abort(403, 'Only hoteliers can claim hotels');
+        }
+
+        // Check subscription tier - only Enhanced and Premium can claim
+        if (!$user->canClaimHotels()) {
+            return redirect()->route('hotelier.subscription', [
+                'redirect' => route('hotelier.hotels.claim', $hotel->slug),
+            ]);
         }
 
         // Check anti-fraud conditions

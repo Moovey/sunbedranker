@@ -1,7 +1,7 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import HotelierNav from '@/Components/HotelierNav';
 
-export default function HotelierDashboard({ hotels, pendingClaim, recentReviews, stats }) {
+export default function HotelierDashboard({ hotels, pendingClaim, recentReviews, stats, subscription }) {
     const { auth } = usePage().props;
 
     return (
@@ -27,6 +27,51 @@ export default function HotelierDashboard({ hotels, pendingClaim, recentReviews,
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-8 sm:py-10 md:py-12 lg:py-16 xl:py-20 2xl:py-24">
+                    {/* Free Tier Upgrade Banner */}
+                    {subscription?.tier === 'free' && (
+                        <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-16 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 shadow-lg">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                                <div className="flex-shrink-0">
+                                    <svg className="w-8 h-8 sm:w-10 sm:h-10 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                                    </svg>
+                                </div>
+                                <div className="flex-1">
+                                    <h3 className="font-sans text-lg sm:text-xl md:text-2xl font-bold text-blue-900 mb-2">Upgrade Your Subscription</h3>
+                                    <p className="text-sm sm:text-base text-blue-800 font-medium leading-relaxed mb-3">
+                                        You're currently on the <span className="font-bold">Free</span> plan. Upgrade to <span className="font-bold text-blue-600">Enhanced</span> or <span className="font-bold text-purple-600">Premium</span> to claim and manage your hotel profiles.
+                                    </p>
+                                    <div className="flex flex-wrap gap-2 text-xs sm:text-sm text-blue-700">
+                                        <span className="inline-flex items-center gap-1">
+                                            <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                            Claim Hotel Ownership
+                                        </span>
+                                        <span className="inline-flex items-center gap-1">
+                                            <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                            Edit Hotel Profiles
+                                        </span>
+                                        <span className="inline-flex items-center gap-1">
+                                            <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                            Upload Images
+                                        </span>
+                                    </div>
+                                </div>
+                                <Link
+                                    href="/hotelier/upgrade"
+                                    className="flex-shrink-0 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                >
+                                    Upgrade Now
+                                </Link>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Stats Overview */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12 mb-8 sm:mb-10 md:mb-12 lg:mb-16 xl:mb-20">
                         <StatCard
@@ -234,3 +279,5 @@ function StatCard({ title, value, subtitle, icon, link }) {
         </Link>
     ) : card;
 }
+
+

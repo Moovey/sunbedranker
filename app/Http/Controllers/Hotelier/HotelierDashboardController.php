@@ -58,6 +58,14 @@ class HotelierDashboardController extends Controller
                 'total_reviews' => $recentReviews->count(),
                 'average_score' => $hotels->avg('score') ?? 0,
             ],
+            'subscription' => [
+                'tier' => $user->subscription_tier ?? 'free',
+                'tierName' => $user->getSubscriptionTierName(),
+                'canClaimHotels' => $user->canClaimHotels(),
+                'canEditHotels' => $user->canEditHotels(),
+                'expiresAt' => $user->subscription_expires_at?->format('M d, Y'),
+                'isActive' => $user->hasActiveSubscription(),
+            ],
         ]);
     }
 }

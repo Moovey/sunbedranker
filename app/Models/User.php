@@ -14,12 +14,25 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
  * @method bool isHotelier()
  * @method bool isUser()
  * @method string getRedirectPath()
+ * @method bool canClaimHotels()
+ * @method bool canEditHotels()
+ * @method bool hasFreeTier()
+ * @method bool hasEnhancedTier()
+ * @method bool hasPremiumTier()
  * @property string|null $profile_picture_url
+ * @property string $subscription_tier
  */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    /**
+     * Subscription tier constants
+     */
+    public const TIER_FREE = 'free';
+    public const TIER_ENHANCED = 'enhanced';
+    public const TIER_PREMIUM = 'premium';
 
     /**
      * The attributes that are mass assignable.
@@ -33,6 +46,8 @@ class User extends Authenticatable
         'role',
         'last_login_at',
         'profile_picture',
+        'subscription_tier',
+        'subscription_expires_at',
     ];
 
     /**
@@ -62,6 +77,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'subscription_expires_at' => 'datetime',
         ];
     }
 
@@ -125,6 +141,84 @@ class User extends Authenticatable
             'admin' => '/admin',
             'hotelier' => '/hotelier',
             default => '/',
+        };
+    }
+
+    /**
+     * Check if user has free tier subscription.
+     */
+    public function hasFreeTier(): bool
+    {
+        return $this->subscription_tier === self::TIER_FREE || $this->subscription_tier === null;
+    }
+
+    /**
+     * Check if user has enhanced tier subscription.
+     */
+    public function hasEnhancedTier(): bool
+    {
+        return $this->subscription_tier === self::TIER_ENHANCED;
+    }
+
+    /**
+     * Check if user has premium tier subscription.
+     */
+    public function hasPremiumTier(): bool
+    {
+        return $this->subscription_tier === self::TIER_PREMIUM;
+    }
+
+    /**
+     * Check if user has at least enhanced tier (enhanced or premium).
+     */
+    public function hasAtLeastEnhancedTier(): bool
+    {
+        return in_array($this->subscription_tier, [self::TIER_ENHANCED, self::TIER_PREMIUM]);
+    }
+
+    /**
+     * Check if user can claim hotels (requires at least enhanced tier).
+     */
+    public function canClaimHotels(): bool
+    {
+        return $this->isHotelier() && $this->hasAtLeastEnhancedTier();
+    }
+
+    /**
+     * Check if user can edit hotel profiles (requires at least enhanced tier).
+     */
+    public function canEditHotels(): bool
+    {
+        return $this->isHotelier() && $this->hasAtLeastEnhancedTier();
+    }
+
+    /**
+     * Check if subscription is active (not expired).
+     */
+    public function hasActiveSubscription(): bool
+    {
+        // Free tier is always active
+        if ($this->hasFreeTier()) {
+            return true;
+        }
+
+        // For paid tiers, check expiration
+        if ($this->subscription_expires_at === null) {
+            return true; // No expiration set means lifetime
+        }
+
+        return $this->subscription_expires_at->isFuture();
+    }
+
+    /**
+     * Get the subscription tier display name.
+     */
+    public function getSubscriptionTierName(): string
+    {
+        return match($this->subscription_tier) {
+            self::TIER_PREMIUM => 'Premium',
+            self::TIER_ENHANCED => 'Enhanced',
+            default => 'Free',
         };
     }
 }

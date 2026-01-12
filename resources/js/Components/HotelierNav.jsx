@@ -55,6 +55,16 @@ export default function HotelierNav() {
                             >
                                 My Claims
                             </Link>
+                            <Link
+                                href={route('hotelier.subscription')}
+                                className={`px-3 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${
+                                    route().current('hotelier.subscription')
+                                        ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
+                                        : 'text-gray-700 hover:bg-orange-50'
+                                }`}
+                            >
+                                Subscription
+                            </Link>
                         </div>
                     </div>
 
@@ -155,6 +165,17 @@ export default function HotelierNav() {
                             onClick={() => setShowMobileMenu(false)}
                         >
                             My Claims
+                        </Link>
+                        <Link
+                            href={route('hotelier.subscription')}
+                            className={`block px-3 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${
+                                route().current('hotelier.subscription')
+                                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
+                                    : 'text-gray-700 hover:bg-orange-50'
+                            }`}
+                            onClick={() => setShowMobileMenu(false)}
+                        >
+                            Subscription
                         </Link>
                         <Link
                             href="/"

@@ -3,12 +3,18 @@
 use App\Http\Controllers\Hotelier\HotelierDashboardController;
 use App\Http\Controllers\Hotelier\HotelierProfileController;
 use App\Http\Controllers\Hotelier\HotelManagementController;
+use App\Http\Controllers\Hotelier\SubscriptionController;
 use App\Http\Controllers\ClaimController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'hotelier'])->prefix('hotelier')->name('hotelier.')->group(function () {
     // Dashboard
     Route::get('/', [HotelierDashboardController::class, 'index'])->name('dashboard');
+
+    // Subscription
+    Route::get('/subscription', [SubscriptionController::class, 'index'])->name('subscription');
+    Route::get('/upgrade', [SubscriptionController::class, 'index'])->name('upgrade'); // Alias for subscription
+    Route::get('/subscribe/{plan}', [SubscriptionController::class, 'subscribe'])->name('subscribe');
 
     // Hotelier Profile
     Route::get('/profile', [HotelierProfileController::class, 'index'])->name('profile');

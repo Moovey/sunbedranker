@@ -18,6 +18,7 @@ class HotelManagementController extends Controller
     public function edit(Hotel $hotel)
     {
         $this->authorizeOwnership($hotel);
+        $this->checkSubscriptionTier();
 
         $hotel->load(['destination', 'poolCriteria', 'badges']);
 
@@ -32,6 +33,7 @@ class HotelManagementController extends Controller
     public function update(Request $request, Hotel $hotel)
     {
         $this->authorizeOwnership($hotel);
+        $this->checkSubscriptionTier();
         $this->sanitizeNumericFields($request);
 
         $validated = $request->validate($this->getValidationRules());
@@ -50,6 +52,7 @@ class HotelManagementController extends Controller
     public function uploadImage(Request $request, Hotel $hotel)
     {
         $this->authorizeOwnership($hotel);
+        $this->checkSubscriptionTier();
 
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
@@ -77,6 +80,7 @@ class HotelManagementController extends Controller
     public function deleteImage(Request $request, Hotel $hotel, $image)
     {
         $this->authorizeOwnership($hotel);
+        $this->checkSubscriptionTier();
 
         $images = $hotel->images ?? [];
         $imageToDelete = urldecode($image);
@@ -95,6 +99,19 @@ class HotelManagementController extends Controller
     // =========================================================================
     // Private Helper Methods
     // =========================================================================
+
+    /**
+     * Check if user has required subscription tier to edit hotels.
+     */
+    private function checkSubscriptionTier(): void
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!$user->canEditHotels()) {
+            abort(403, 'Upgrade to Enhanced or Premium subscription to edit hotel profiles.');
+        }
+    }
 
     /**
      * Verify the current user owns the hotel.
