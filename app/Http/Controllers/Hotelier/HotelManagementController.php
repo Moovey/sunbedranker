@@ -8,6 +8,7 @@ use App\Services\HotelScoringService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class HotelManagementController extends Controller
@@ -45,7 +46,31 @@ class HotelManagementController extends Controller
         $this->checkSubscriptionTier();
         $this->sanitizeNumericFields($request);
 
-        $validated = $request->validate($this->getValidationRules());
+        // Use manual validator to ensure errors are properly returned for Inertia
+        // This bypasses any session issues in production (Laravel Cloud)
+        $validator = Validator::make($request->all(), $this->getValidationRules());
+
+        if ($validator->fails()) {
+            // Load hotel relationships needed for the page
+            $hotel->load(['destination', 'poolCriteria', 'badges']);
+            
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
+            $subscription = [
+                'tier' => $user->subscription_tier ?? 'free',
+                'hasEnhanced' => $user->hasAtLeastEnhancedTier(),
+                'hasPremium' => $user->hasPremiumTier(),
+            ];
+
+            // Return the page with errors as props instead of relying on session
+            return Inertia::render('Hotelier/Claims/ManageHotel', [
+                'hotel' => $hotel,
+                'subscription' => $subscription,
+                'errors' => $validator->errors()->toArray(),
+            ]);
+        }
+
+        $validated = $validator->validated();
 
         $this->handleImageUploads($request, $hotel);
         $this->updateHotelDescriptions($hotel, $validated);
