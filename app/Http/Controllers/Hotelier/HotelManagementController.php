@@ -21,9 +21,18 @@ class HotelManagementController extends Controller
         $this->checkSubscriptionTier();
 
         $hotel->load(['destination', 'poolCriteria', 'badges']);
+        
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $subscription = [
+            'tier' => $user->subscription_tier ?? 'free',
+            'hasEnhanced' => $user->hasAtLeastEnhancedTier(),
+            'hasPremium' => $user->hasPremiumTier(),
+        ];
 
         return Inertia::render('Hotelier/Claims/ManageHotel', [
             'hotel' => $hotel,
+            'subscription' => $subscription,
         ]);
     }
 
@@ -40,6 +49,7 @@ class HotelManagementController extends Controller
 
         $this->handleImageUploads($request, $hotel);
         $this->updateHotelDescriptions($hotel, $validated);
+        $this->updateEnhancedFeatures($hotel, $validated);
         $this->updatePoolCriteria($hotel, $validated);
         $this->recalculateScores($hotel);
 
@@ -218,6 +228,15 @@ class HotelManagementController extends Controller
             'has_heated_pool' => 'boolean',
             'has_jacuzzi' => 'boolean',
             'has_adult_sun_terrace' => 'boolean',
+            
+            // Enhanced Subscription Features
+            'promotional_banner' => 'nullable|string|max:255',
+            'special_offer' => 'nullable|string|max:1000',
+            'special_offer_expires_at' => 'nullable|date|after_or_equal:today',
+            'video_url' => 'nullable|url|max:500',
+            'video_360_url' => 'nullable|url|max:500',
+            'direct_booking_url' => 'nullable|url|max:500',
+            'show_verified_badge' => 'boolean',
         ];
     }
 
@@ -266,6 +285,30 @@ class HotelManagementController extends Controller
             'house_rules' => $validated['house_rules'] ?? null,
             'towel_policy' => $validated['towel_policy'] ?? null,
             'faqs' => $validated['faqs'] ?? null,
+        ]);
+    }
+
+    /**
+     * Update enhanced subscription features (only for Enhanced+ tier users).
+     */
+    private function updateEnhancedFeatures(Hotel $hotel, array $validated): void
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        
+        // Only allow updates if user has at least Enhanced subscription
+        if (!$user->hasAtLeastEnhancedTier()) {
+            return;
+        }
+
+        $hotel->update([
+            'promotional_banner' => $validated['promotional_banner'] ?: null,
+            'special_offer' => $validated['special_offer'] ?: null,
+            'special_offer_expires_at' => !empty($validated['special_offer_expires_at']) ? $validated['special_offer_expires_at'] : null,
+            'video_url' => $validated['video_url'] ?: null,
+            'video_360_url' => $validated['video_360_url'] ?: null,
+            'direct_booking_url' => $validated['direct_booking_url'] ?: null,
+            'show_verified_badge' => $validated['show_verified_badge'] ?? false,
         ]);
     }
 

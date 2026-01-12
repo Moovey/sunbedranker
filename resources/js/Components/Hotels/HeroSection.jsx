@@ -165,6 +165,160 @@ export function ScoreCard({ hotel }) {
 // ============================================
 // HERO SECTION - COMBINES ALL HERO COMPONENTS
 // ============================================
+// Helper to extract YouTube video ID
+const getYouTubeVideoId = (url) => {
+    if (!url) return null;
+    const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+    return match ? match[1] : null;
+};
+
+// Check if URL is a YouTube link
+const isYouTubeUrl = (url) => {
+    return url && (url.includes('youtube.com') || url.includes('youtu.be'));
+};
+
+// Special Offer Banner Component - Displayed above image gallery
+function SpecialOfferBanner({ hotel }) {
+    const hasPromotionalContent = hotel.promotional_banner || hotel.special_offer;
+    
+    if (!hasPromotionalContent) {
+        return null;
+    }
+
+    return (
+        <div className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white px-4 py-3 rounded-xl mb-4 shadow-md relative overflow-hidden">
+            {/* Decorative circles */}
+            <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
+            <div className="absolute bottom-0 left-1/2 w-16 h-16 bg-white/10 rounded-full -mb-8"></div>
+            
+            <div className="relative flex flex-wrap items-center gap-x-4 gap-y-2">
+                <div className="flex items-center gap-2">
+                    <span className="text-xl">🎉</span>
+                    <span className="font-bold text-sm">Special Offer</span>
+                </div>
+                
+                {hotel.promotional_banner && (
+                    <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-lg font-bold text-sm">
+                        {hotel.promotional_banner}
+                    </span>
+                )}
+                
+                {hotel.special_offer && (
+                    <span className="text-white/90 text-sm">{hotel.special_offer}</span>
+                )}
+                
+                {hotel.special_offer_expires_at && (
+                    <span className="flex items-center gap-1 text-xs text-white/80 ml-auto">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Valid until {new Date(hotel.special_offer_expires_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </span>
+                )}
+            </div>
+        </div>
+    );
+}
+
+// Enhanced Features Component for Hero Section
+function HeroEnhancedFeatures({ hotel }) {
+    const hasVideoContent = hotel.video_url || hotel.video_360_url;
+    const hasDirectBooking = hotel.direct_booking_url;
+    
+    if (!hasVideoContent && !hasDirectBooking) {
+        return null;
+    }
+
+    return (
+        <div className="mt-6 sm:mt-8">
+            {/* Main Enhanced Features Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Video Tour */}
+                {hotel.video_url && (
+                    <div className="bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl overflow-hidden shadow-lg">
+                        {isYouTubeUrl(hotel.video_url) && getYouTubeVideoId(hotel.video_url) ? (
+                            <div className="aspect-video">
+                                <iframe
+                                    src={`https://www.youtube.com/embed/${getYouTubeVideoId(hotel.video_url)}`}
+                                    title="Pool Video Tour"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    className="w-full h-full"
+                                />
+                            </div>
+                        ) : (
+                            <a 
+                                href={hotel.video_url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex flex-col items-center justify-center p-6 text-white hover:bg-white/10 transition-colors h-full"
+                            >
+                                <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mb-2">
+                                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                                <span className="font-bold">Watch Video Tour</span>
+                                <span className="text-xs text-white/80">See our pool area</span>
+                            </a>
+                        )}
+                    </div>
+                )}
+
+                {/* 360° Virtual Tour */}
+                {hotel.video_360_url && (
+                    <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl overflow-hidden shadow-lg">
+                        {isYouTubeUrl(hotel.video_360_url) && getYouTubeVideoId(hotel.video_360_url) ? (
+                            <div className="aspect-video">
+                                <iframe
+                                    src={`https://www.youtube.com/embed/${getYouTubeVideoId(hotel.video_360_url)}`}
+                                    title="360° Virtual Tour"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; vr"
+                                    allowFullScreen
+                                    className="w-full h-full"
+                                />
+                            </div>
+                        ) : (
+                            <a 
+                                href={hotel.video_360_url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex flex-col items-center justify-center p-6 text-white hover:bg-white/10 transition-colors h-full"
+                            >
+                                <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mb-2">
+                                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                                    </svg>
+                                </div>
+                                <span className="font-bold">360° Virtual Tour</span>
+                                <span className="text-xs text-white/80">Explore in immersive 360°</span>
+                            </a>
+                        )}
+                    </div>
+                )}
+
+                {/* Direct Booking */}
+                {hasDirectBooking && (
+                    <a 
+                        href={hotel.direct_booking_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-5 text-white shadow-lg flex items-center gap-4 hover:from-green-600 hover:to-emerald-700 transition-all group hover:shadow-xl"
+                    >
+                        <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                            <span className="text-2xl">💰</span>
+                        </div>
+                        <div>
+                            <span className="font-bold block">Book Direct & Save</span>
+                            <span className="text-xs text-white/80">Best rates guaranteed</span>
+                        </div>
+                    </a>
+                )}
+            </div>
+        </div>
+    );
+}
+
 export function HeroSection({ hotel, allImages, activeImageIndex, onPrevImage, onNextImage }) {
     return (
         <div className="bg-gradient-to-b from-blue-50/50 to-white border-b border-orange-100">
@@ -172,8 +326,11 @@ export function HeroSection({ hotel, allImages, activeImageIndex, onPrevImage, o
                 {/* Hotel Header */}
                 <HotelHeader hotel={hotel} />
 
+                {/* Special Offer Banner - Above Image Gallery */}
+                <SpecialOfferBanner hotel={hotel} />
+
                 {/* Hero Grid: Image + Map + Score */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                     {/* Main Pool Image */}
                     <ImageGallery 
                         allImages={allImages}
@@ -186,6 +343,9 @@ export function HeroSection({ hotel, allImages, activeImageIndex, onPrevImage, o
                     {/* Map & Score Column */}
                     <MapAndScoreColumn hotel={hotel} />
                 </div>
+
+                {/* Enhanced Features from Hotelier */}
+                <HeroEnhancedFeatures hotel={hotel} />
             </div>
         </div>
     );

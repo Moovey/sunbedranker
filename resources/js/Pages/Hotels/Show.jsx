@@ -45,7 +45,6 @@ import {
     TowelPolicySection,
     FaqsSection,
     PhotoGallerySection,
-    EnhancedProfileSection,
     ReviewsSection,
     
     // Sidebar Components
@@ -179,9 +178,6 @@ export default function HotelShow({ hotel, similarHotels }) {
                                 setActiveImageIndex={setActiveImageIndex}
                                 hotelName={hotel.name}
                             />
-
-                            {/* Enhanced Profile Content */}
-                            <EnhancedProfileSection hotel={hotel} />
 
                             {/* Reviews Section */}
                             <ReviewsSection hotel={hotel} />

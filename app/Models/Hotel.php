@@ -62,6 +62,13 @@ class Hotel extends Model
         'override_name',
         'override_images',
         'override_description',
+        // Enhanced subscription features
+        'promotional_banner',
+        'special_offer',
+        'special_offer_expires_at',
+        'video_url',
+        'video_360_url',
+        'show_verified_badge',
     ];
 
     protected $casts = [
@@ -83,6 +90,8 @@ class Hotel extends Model
         'override_name' => 'boolean',
         'override_images' => 'boolean',
         'override_description' => 'boolean',
+        'special_offer_expires_at' => 'date',
+        'show_verified_badge' => 'boolean',
     ];
 
     protected $appends = ['main_image_url', 'gallery_images_urls', 'has_pending_claim'];

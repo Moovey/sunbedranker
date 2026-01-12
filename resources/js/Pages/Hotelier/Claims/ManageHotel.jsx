@@ -15,6 +15,7 @@ const TABS = {
     IMAGES: 'images',
     DESCRIPTIONS: 'descriptions',
     FAQS: 'faqs',
+    ENHANCED: 'enhanced',
 };
 
 const TAB_CONFIG = [
@@ -22,6 +23,7 @@ const TAB_CONFIG = [
     { key: TABS.IMAGES, label: '📷 Images' },
     { key: TABS.DESCRIPTIONS, label: '📝 Descriptions' },
     { key: TABS.FAQS, label: '❓ FAQs & Rules' },
+    { key: TABS.ENHANCED, label: '⭐ Enhanced Features', requiresEnhanced: true },
 ];
 
 // ============================================================================
@@ -36,6 +38,14 @@ const getInitialFormData = (hotel) => ({
     house_rules: hotel.house_rules || '',
     towel_policy: hotel.towel_policy || '',
     faqs: hotel.faqs || [],
+    // Enhanced subscription features
+    promotional_banner: hotel.promotional_banner || '',
+    special_offer: hotel.special_offer || '',
+    special_offer_expires_at: hotel.special_offer_expires_at ? hotel.special_offer_expires_at.split('T')[0] : '',
+    video_url: hotel.video_url || '',
+    video_360_url: hotel.video_360_url || '',
+    direct_booking_url: hotel.direct_booking_url || '',
+    show_verified_badge: hotel.show_verified_badge || false,
     ...getPoolCriteriaData(hotel.pool_criteria),
 });
 
@@ -354,6 +364,167 @@ const FaqsTab = ({ data, setData, errors, faqs, onAddFaq, onUpdateFaq, onRemoveF
     </div>
 );
 
+const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced }) => {
+    if (!hasEnhanced) {
+        return (
+            <div className="space-y-8">
+                <div className="bg-gradient-to-r from-orange-50 to-yellow-50 border-2 border-orange-200 rounded-2xl p-8 text-center">
+                    <div className="text-5xl mb-4">⭐</div>
+                    <h2 className="text-2xl font-black text-gray-900 mb-3">Enhanced Features</h2>
+                    <p className="text-gray-600 mb-6 max-w-lg mx-auto">
+                        Upgrade to an Enhanced or Premium subscription to unlock promotional banners, 
+                        video content, direct booking links, and the "Verified by Hotel" badge.
+                    </p>
+                    <Link
+                        href={route('hotelier.subscription')}
+                        className="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                    >
+                        Upgrade Now
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-8">
+            <h2 className="text-2xl font-black text-gray-900 flex items-center gap-2">
+                <span className="text-3xl">⭐</span> Enhanced Subscription Features
+            </h2>
+            <p className="text-gray-600">
+                As an Enhanced subscriber, you can add promotional content, videos, and direct booking links to boost your hotel's visibility and conversions.
+            </p>
+
+            {/* Promotional Banner & Special Offers */}
+            <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-2xl p-6 border-2 border-orange-200">
+                <h3 className="text-lg font-bold text-orange-800 mb-4">🎉 Promotional Banner & Special Offers</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                    Create eye-catching banners and special offers to attract more guests. Example: "Free cabana with direct booking"
+                </p>
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Promotional Banner Text</label>
+                        <input
+                            type="text"
+                            value={data.promotional_banner}
+                            onChange={(e) => setData('promotional_banner', e.target.value)}
+                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 font-semibold"
+                            placeholder="e.g., Early Bird Special - Book Direct & Save 15%"
+                            maxLength={255}
+                        />
+                        {errors.promotional_banner && <p className="mt-2 text-red-600 text-sm font-semibold">{errors.promotional_banner}</p>}
+                    </div>
+                    <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Special Offer Details</label>
+                        <textarea
+                            value={data.special_offer}
+                            onChange={(e) => setData('special_offer', e.target.value)}
+                            rows={3}
+                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 font-semibold"
+                            placeholder="Describe your special offer in detail. Include terms, conditions, and what's included..."
+                            maxLength={1000}
+                        />
+                        {errors.special_offer && <p className="mt-2 text-red-600 text-sm font-semibold">{errors.special_offer}</p>}
+                    </div>
+                    <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Offer Expires On</label>
+                        <input
+                            type="date"
+                            value={data.special_offer_expires_at}
+                            onChange={(e) => setData('special_offer_expires_at', e.target.value)}
+                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 font-semibold"
+                            min={new Date().toISOString().split('T')[0]}
+                        />
+                        {errors.special_offer_expires_at && <p className="mt-2 text-red-600 text-sm font-semibold">{errors.special_offer_expires_at}</p>}
+                    </div>
+                </div>
+            </div>
+
+            {/* Videos and 360° Content */}
+            <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-6 border-2 border-blue-200">
+                <h3 className="text-lg font-bold text-blue-800 mb-4">🎬 Videos & 360° Content</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                    Add video tours and 360° content to give guests an immersive preview of your pool areas. Use YouTube, Vimeo, or other video hosting URLs.
+                </p>
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Video URL</label>
+                        <input
+                            type="url"
+                            value={data.video_url}
+                            onChange={(e) => setData('video_url', e.target.value)}
+                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 font-semibold"
+                            placeholder="https://www.youtube.com/watch?v=..."
+                        />
+                        {errors.video_url && <p className="mt-2 text-red-600 text-sm font-semibold">{errors.video_url}</p>}
+                    </div>
+                    <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">360° Virtual Tour URL</label>
+                        <input
+                            type="url"
+                            value={data.video_360_url}
+                            onChange={(e) => setData('video_360_url', e.target.value)}
+                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 font-semibold"
+                            placeholder="https://my360tour.com/hotel-pool-tour"
+                        />
+                        {errors.video_360_url && <p className="mt-2 text-red-600 text-sm font-semibold">{errors.video_360_url}</p>}
+                    </div>
+                </div>
+            </div>
+
+            {/* Direct Booking Link */}
+            <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-2xl p-6 border-2 border-green-200">
+                <h3 className="text-lg font-bold text-green-800 mb-4">🔗 Direct Booking Link</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                    Add a link to your direct booking engine. This will be displayed alongside OTA links, encouraging guests to book directly with you.
+                </p>
+                <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Direct Booking URL</label>
+                    <input
+                        type="url"
+                        value={data.direct_booking_url}
+                        onChange={(e) => setData('direct_booking_url', e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 font-semibold"
+                        placeholder="https://your-hotel.com/book"
+                    />
+                    {errors.direct_booking_url && <p className="mt-2 text-red-600 text-sm font-semibold">{errors.direct_booking_url}</p>}
+                </div>
+            </div>
+
+            {/* Verified by Hotel Badge */}
+            <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-2xl p-6 border-2 border-purple-200">
+                <h3 className="text-lg font-bold text-purple-800 mb-4">✅ "Verified by Hotel" Badge</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                    Display a trust badge on your profile indicating that all information has been verified by your hotel. This builds trust with potential guests.
+                </p>
+                <label className="flex items-center gap-3 cursor-pointer group">
+                    <div className="relative">
+                        <input
+                            type="checkbox"
+                            checked={data.show_verified_badge}
+                            onChange={(e) => setData('show_verified_badge', e.target.checked)}
+                            className="sr-only peer"
+                        />
+                        <div className="w-14 h-8 bg-gray-200 rounded-full peer peer-checked:bg-purple-500 transition-colors"></div>
+                        <div className="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow peer-checked:translate-x-6 transition-transform"></div>
+                    </div>
+                    <span className="text-gray-700 font-bold group-hover:text-purple-700 transition-colors">
+                        Show "Verified by Hotel" badge on my profile
+                    </span>
+                </label>
+                {data.show_verified_badge && (
+                    <div className="mt-4 p-3 bg-white rounded-xl border-2 border-purple-200 inline-flex items-center gap-2">
+                        <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                        </svg>
+                        <span className="text-purple-800 font-bold text-sm">Verified by Hotel</span>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
 const FormActions = ({ processing }) => (
     <div className="mt-8 pt-6 border-t-2 border-gray-200 flex flex-col sm:flex-row gap-3 justify-end">
         <Link
@@ -376,10 +547,12 @@ const FormActions = ({ processing }) => (
 // Main Component
 // ============================================================================
 
-export default function ManageHotel({ hotel, flash }) {
+export default function ManageHotel({ hotel, flash, subscription }) {
     const [activeTab, setActiveTab] = useState(TABS.POOL);
     const [faqs, setFaqs] = useState(hotel.faqs || []);
     const { data, setData, post, processing, errors } = useForm(getInitialFormData(hotel));
+    
+    const hasEnhanced = subscription?.hasEnhanced || false;
 
     // Flash message handling (only for server-side flash messages)
     useEffect(() => {
@@ -440,6 +613,15 @@ export default function ManageHotel({ hotel, flash }) {
                         onRemoveFaq={removeFaq}
                     />
                 );
+            case TABS.ENHANCED:
+                return (
+                    <EnhancedFeaturesTab
+                        data={data}
+                        setData={setData}
+                        errors={errors}
+                        hasEnhanced={hasEnhanced}
+                    />
+                );
             default:
                 return null;
         }
@@ -457,9 +639,17 @@ export default function ManageHotel({ hotel, flash }) {
                     <form onSubmit={handleSubmit}>
                         <div className="bg-gradient-to-r from-orange-50 to-blue-50 rounded-t-2xl border-b-2 border-orange-200 shadow-lg">
                             <div className="flex gap-2 px-6 pt-5 overflow-x-auto">
-                                {TAB_CONFIG.map(({ key, label }) => (
-                                    <TabButton key={key} active={activeTab === key} onClick={() => setActiveTab(key)}>
+                                {TAB_CONFIG.map(({ key, label, requiresEnhanced }) => (
+                                    <TabButton 
+                                        key={key} 
+                                        active={activeTab === key} 
+                                        onClick={() => setActiveTab(key)}
+                                        className={requiresEnhanced && !hasEnhanced ? 'opacity-75' : ''}
+                                    >
                                         {label}
+                                        {requiresEnhanced && !hasEnhanced && (
+                                            <span className="ml-1 text-xs">🔒</span>
+                                        )}
                                     </TabButton>
                                 ))}
                             </div>
