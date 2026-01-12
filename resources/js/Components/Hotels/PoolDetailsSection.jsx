@@ -187,18 +187,50 @@ export function SunbedAvailabilitySection({ poolCriteria }) {
 // SUN EXPOSURE SECTION
 // ============================================
 export function SunExposureSection({ poolCriteria }) {
-    if (!poolCriteria?.sun_exposure) return null;
+    if (!poolCriteria?.sun_exposure && (!poolCriteria?.sunny_areas || poolCriteria?.sunny_areas?.length === 0)) {
+        return null;
+    }
+
+    // Format sunny area labels
+    const formatSunnyArea = (area) => {
+        return area.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    };
 
     return (
         <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
             <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-semibold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
                 <Icons.Sun className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" />
-                Sun Exposure
+                Sun Exposure & Orientation
             </h2>
-            <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                <div className="text-lg font-semibold text-yellow-800 capitalize">
-                    {poolCriteria.sun_exposure.replace('_', ' ')}
-                </div>
+            
+            <div className="space-y-4">
+                {/* Sun Exposure Level */}
+                {poolCriteria.sun_exposure && (
+                    <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                        <div className="text-sm text-gray-600 mb-1">Sun Exposure</div>
+                        <div className="text-lg font-semibold text-yellow-800 capitalize">
+                            {poolCriteria.sun_exposure.replace(/_/g, ' ')}
+                        </div>
+                    </div>
+                )}
+
+                {/* Sunny Areas */}
+                {poolCriteria.sunny_areas && poolCriteria.sunny_areas.length > 0 && (
+                    <div>
+                        <div className="text-sm font-semibold text-gray-900 mb-3">Which Areas are Sunny:</div>
+                        <div className="flex flex-wrap gap-2">
+                            {poolCriteria.sunny_areas.map((area, i) => (
+                                <span 
+                                    key={i} 
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-100 text-amber-800 rounded-full text-sm font-medium border border-amber-200"
+                                >
+                                    <Icons.Sun className="w-4 h-4" />
+                                    {formatSunnyArea(area)}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
@@ -265,28 +297,113 @@ export function PoolSizeSection({ poolCriteria }) {
 // FACILITIES & AMENITIES SECTION
 // ============================================
 export function FacilitiesSection({ poolCriteria }) {
-    if (!poolCriteria?.has_pool_bar && !poolCriteria?.has_waiter_service && 
-        (!poolCriteria?.shade_options || poolCriteria.shade_options.length === 0)) {
-        return null;
-    }
+    // Check if there's any data to display
+    const hasData = poolCriteria?.has_pool_bar || 
+                    poolCriteria?.has_waiter_service || 
+                    (poolCriteria?.sunbed_types && poolCriteria.sunbed_types.length > 0) ||
+                    (poolCriteria?.shade_options && poolCriteria.shade_options.length > 0) ||
+                    poolCriteria?.bar_distance ||
+                    poolCriteria?.toilet_distance;
+
+    if (!hasData) return null;
+
+    // Format labels for display
+    const formatLabel = (value) => {
+        if (!value) return '';
+        return value.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    };
+
+    // Get distance description
+    const getDistanceDescription = (distance) => {
+        const descriptions = {
+            'poolside': 'Poolside',
+            'adjacent': 'Adjacent',
+            'close': 'Close (<20m)',
+            'moderate': 'Moderate (20-50m)',
+            'far': 'Far (50m+)'
+        };
+        return descriptions[distance] || formatLabel(distance);
+    };
 
     return (
         <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
             <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-semibold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
                 <Icons.Facilities className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
-                Facilities & Amenities
+                Pool Facilities & Comfort
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {poolCriteria.has_pool_bar && (
-                    <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
-                        <Icons.Check className="w-6 h-6 text-emerald-600" />
-                        <span className="text-gray-900 font-medium">Pool Bar Available</span>
+            
+            <div className="space-y-6">
+                {/* Sunbed Types */}
+                {poolCriteria.sunbed_types && poolCriteria.sunbed_types.length > 0 && (
+                    <div>
+                        <div className="text-sm font-semibold text-gray-900 mb-3">Sunbed Types:</div>
+                        <div className="flex flex-wrap gap-2">
+                            {poolCriteria.sunbed_types.map((type, i) => (
+                                <span 
+                                    key={i} 
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-100 text-amber-800 rounded-full text-sm font-medium border border-amber-200"
+                                >
+                                    <Icons.Sunbed className="w-4 h-4" />
+                                    {formatLabel(type)}
+                                </span>
+                            ))}
+                        </div>
                     </div>
                 )}
-                {poolCriteria.has_waiter_service && (
-                    <div className="flex items-center gap-3 p-4 bg-teal-50 rounded-lg border border-teal-200">
-                        <Icons.Check className="w-6 h-6 text-teal-600" />
-                        <span className="text-gray-900 font-medium">Waiter Service</span>
+
+                {/* Shade Options */}
+                {poolCriteria.shade_options && poolCriteria.shade_options.length > 0 && (
+                    <div>
+                        <div className="text-sm font-semibold text-gray-900 mb-3">Shade Options:</div>
+                        <div className="flex flex-wrap gap-2">
+                            {poolCriteria.shade_options.map((option, i) => (
+                                <span 
+                                    key={i} 
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-100 text-green-800 rounded-full text-sm font-medium border border-green-200"
+                                >
+                                    <Icons.Shade className="w-4 h-4" />
+                                    {formatLabel(option)}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Services & Amenities */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {poolCriteria.has_pool_bar && (
+                        <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                            <Icons.Check className="w-6 h-6 text-emerald-600" />
+                            <span className="text-gray-900 font-medium">Pool Bar Available</span>
+                        </div>
+                    )}
+                    {poolCriteria.has_waiter_service && (
+                        <div className="flex items-center gap-3 p-4 bg-teal-50 rounded-lg border border-teal-200">
+                            <Icons.Check className="w-6 h-6 text-teal-600" />
+                            <span className="text-gray-900 font-medium">Waiter Service</span>
+                        </div>
+                    )}
+                </div>
+
+                {/* Distances */}
+                {(poolCriteria.bar_distance || poolCriteria.toilet_distance) && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {poolCriteria.bar_distance && (
+                            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <div className="text-sm text-gray-600 mb-1">Distance to Bar</div>
+                                <div className="text-lg font-semibold text-blue-700">
+                                    {getDistanceDescription(poolCriteria.bar_distance)}
+                                </div>
+                            </div>
+                        )}
+                        {poolCriteria.toilet_distance && (
+                            <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                                <div className="text-sm text-gray-600 mb-1">Distance to Toilets</div>
+                                <div className="text-lg font-semibold text-indigo-700">
+                                    {getDistanceDescription(poolCriteria.toilet_distance)}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
@@ -298,29 +415,73 @@ export function FacilitiesSection({ poolCriteria }) {
 // ATMOSPHERE & VIBE SECTION
 // ============================================
 export function AtmosphereSection({ poolCriteria }) {
-    if (!poolCriteria?.atmosphere && !poolCriteria?.music_level) return null;
+    // Check if there's any data to display
+    const hasData = poolCriteria?.atmosphere || 
+                    poolCriteria?.music_level || 
+                    poolCriteria?.has_entertainment ||
+                    (poolCriteria?.entertainment_types && poolCriteria.entertainment_types.length > 0);
+
+    if (!hasData) return null;
+
+    // Format label for display
+    const formatLabel = (value) => {
+        if (!value) return '';
+        return value.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    };
 
     return (
         <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
             <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-semibold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
                 <Icons.Atmosphere className="w-5 h-5 sm:w-6 sm:h-6 text-pink-600" />
-                Atmosphere & Vibe
+                Noise & Atmosphere
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {poolCriteria.atmosphere && (
-                    <div className="p-4 bg-pink-50 rounded-lg border border-pink-200">
-                        <div className="text-sm text-gray-600 mb-1">Atmosphere</div>
-                        <div className="text-lg font-semibold text-pink-700 capitalize">
-                            {poolCriteria.atmosphere}
+            
+            <div className="space-y-6">
+                {/* Atmosphere & Music Level */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {poolCriteria.atmosphere && (
+                        <div className="p-4 bg-pink-50 rounded-lg border border-pink-200">
+                            <div className="text-sm text-gray-600 mb-1">Pool Atmosphere/Vibe</div>
+                            <div className="text-lg font-semibold text-pink-700 capitalize">
+                                {formatLabel(poolCriteria.atmosphere)}
+                            </div>
                         </div>
-                    </div>
-                )}
-                {poolCriteria.music_level && (
-                    <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-                        <div className="text-sm text-gray-600 mb-1">Music Level</div>
-                        <div className="text-lg font-semibold text-purple-700 capitalize">
-                            {poolCriteria.music_level}
+                    )}
+                    {poolCriteria.music_level && (
+                        <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                            <div className="text-sm text-gray-600 mb-1">Music Level</div>
+                            <div className="text-lg font-semibold text-purple-700 capitalize">
+                                {formatLabel(poolCriteria.music_level)}
+                            </div>
                         </div>
+                    )}
+                </div>
+
+                {/* Entertainment Activities */}
+                {poolCriteria.has_entertainment && (
+                    <div>
+                        <div className="flex items-center gap-3 p-4 bg-orange-50 rounded-lg border border-orange-200 mb-4">
+                            <Icons.Check className="w-6 h-6 text-orange-600" />
+                            <span className="text-gray-900 font-medium">Has Entertainment Activities</span>
+                        </div>
+                        
+                        {/* Entertainment Types */}
+                        {poolCriteria.entertainment_types && poolCriteria.entertainment_types.length > 0 && (
+                            <div>
+                                <div className="text-sm font-semibold text-gray-900 mb-3">Entertainment Types:</div>
+                                <div className="flex flex-wrap gap-2">
+                                    {poolCriteria.entertainment_types.map((type, i) => (
+                                        <span 
+                                            key={i} 
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 text-orange-800 rounded-full text-sm font-medium border border-orange-200"
+                                        >
+                                            <Icons.Music className="w-4 h-4" />
+                                            {formatLabel(type)}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

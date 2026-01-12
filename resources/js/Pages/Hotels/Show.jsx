@@ -8,26 +8,35 @@ import {
     Breadcrumb,
     HeroSection,
     
-    // Pool Details Section
-    PoolDetailsMetrics,
+    // Pool Details Section (Following Pool Criteria Tab Order)
+    // 1. Sunbed-to-Guest Ratio
     SunbedAvailabilitySection,
-    SunExposureSection,
-    PoolSizeSection,
-    FacilitiesSection,
-    AtmosphereSection,
-    CleanlinessSection,
-    AccessibilitySection,
-    KidsFeaturesSection,
-    LuxuryFeaturesSection,
     
-    // Pool Features Section (List-based)
-    PoolOverviewSection,
-    PoolDetailsListSection,
-    ShadeOptionsSection,
-    SpecialFeaturesListSection,
-    AtmosphereVibeSection,
-    FamilyFeaturesListSection,
-    FamilyFeaturesIconsSection,
+    // 2. Sun Exposure & Orientation
+    SunExposureSection,
+    
+    // 3. Pool Area Size & Variety
+    PoolSizeSection,
+    
+    // 4. Towel & Reservation Policy (via TowelPolicySection)
+    
+    // 5. Pool Facilities & Comfort
+    FacilitiesSection,
+    
+    // 6. Noise & Atmosphere
+    AtmosphereSection,
+    
+    // 7. Cleanliness & Maintenance
+    CleanlinessSection,
+    
+    // 8. Accessibility Features
+    AccessibilitySection,
+    
+    // 9. Kids & Family Facilities
+    KidsFeaturesSection,
+    
+    // 10. Extras & Luxury Touches
+    LuxuryFeaturesSection,
     
     // Hotelier Content Section
     PoolDescriptionSection,
@@ -105,38 +114,58 @@ export default function HotelShow({ hotel, similarHotels }) {
                         {/* Main Content Column */}
                         <div className="lg:col-span-2 space-y-5 sm:space-y-6 lg:space-y-7 xl:space-y-8">
                             
-                            {/* Pool Details - Metrics Table */}
-                            <PoolDetailsMetrics poolCriteria={poolCriteria} />
-
-                            {/* Pool Overview Features (List-based sections) */}
-                            <PoolOverviewSection poolCriteria={poolCriteria} />
-                            <PoolDetailsListSection poolCriteria={poolCriteria} />
-                            <ShadeOptionsSection poolCriteria={poolCriteria} />
-                            <SpecialFeaturesListSection poolCriteria={poolCriteria} />
-                            <AtmosphereVibeSection poolCriteria={poolCriteria} />
-                            <FamilyFeaturesListSection poolCriteria={poolCriteria} />
-                            <FamilyFeaturesIconsSection poolCriteria={poolCriteria} />
-
-                            {/* Comprehensive Pool Criteria Details */}
+                            {/* ============================================ */}
+                            {/* POOL CRITERIA SECTIONS - Following Admin Tab Order */}
+                            {/* ============================================ */}
+                            
                             {poolCriteria && (
                                 <>
+                                    {/* 1. Sunbed-to-Guest Ratio */}
                                     <SunbedAvailabilitySection poolCriteria={poolCriteria} />
+                                    
+                                    {/* 2. Sun Exposure & Orientation */}
                                     <SunExposureSection poolCriteria={poolCriteria} />
+                                    
+                                    {/* 3. Pool Area Size & Variety */}
                                     <PoolSizeSection poolCriteria={poolCriteria} />
+                                    
+                                    {/* 4. Towel & Reservation Policy */}
+                                    <TowelPolicySection hotel={hotel} />
+                                    
+                                    {/* 5. Pool Facilities & Comfort */}
                                     <FacilitiesSection poolCriteria={poolCriteria} />
+                                    
+                                    {/* 6. Noise & Atmosphere */}
                                     <AtmosphereSection poolCriteria={poolCriteria} />
+                                    
+                                    {/* 7. Cleanliness & Maintenance */}
                                     <CleanlinessSection poolCriteria={poolCriteria} />
+                                    
+                                    {/* 8. Accessibility Features */}
                                     <AccessibilitySection poolCriteria={poolCriteria} />
+                                    
+                                    {/* 9. Kids & Family Facilities */}
                                     <KidsFeaturesSection poolCriteria={poolCriteria} />
+                                    
+                                    {/* 10. Extras & Luxury Touches */}
                                     <LuxuryFeaturesSection poolCriteria={poolCriteria} />
                                 </>
                             )}
 
-                            {/* Hotelier-Provided Content Sections */}
+                            {/* ============================================ */}
+                            {/* HOTELIER-PROVIDED CONTENT SECTIONS */}
+                            {/* ============================================ */}
+                            
+                            {/* Pool Description */}
                             <PoolDescriptionSection hotel={hotel} />
+                            
+                            {/* Amenities Description */}
                             <AmenitiesDescriptionSection hotel={hotel} />
+                            
+                            {/* House Rules */}
                             <HouseRulesSection hotel={hotel} />
-                            <TowelPolicySection hotel={hotel} />
+                            
+                            {/* FAQs */}
                             <FaqsSection 
                                 hotel={hotel} 
                                 openFaqIndex={openFaqIndex} 
