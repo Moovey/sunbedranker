@@ -1,5 +1,5 @@
 import { Link, Head, useForm, usePage, router } from '@inertiajs/react';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import HotelierNav from '@/Components/HotelierNav';
 import TabButton from '@/Components/Admin/Hotels/TabButton';
@@ -567,15 +567,6 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
     };
     const hasErrors = Object.keys(allErrors).length > 0;
 
-    // Flash message handling - check both direct prop and usePage props
-    const flashSuccess = flash?.success || props?.flash?.success;
-    const flashError = flash?.error || props?.flash?.error;
-    
-    useEffect(() => {
-        if (flashSuccess) toast.success(flashSuccess);
-        if (flashError) toast.error(flashError);
-    }, [flashSuccess, flashError]);
-
     // FAQ management
     const addFaq = useCallback(() => {
         const newFaqs = [...faqs, { question: '', answer: '' }];
@@ -616,7 +607,10 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     return;
                 }
-                // Flash message will be handled by useEffect - no need to show toast here
+                // Show success toast directly in callback like Admin Edit does
+                if (page?.props?.flash?.success) {
+                    toast.success(page.props.flash.success);
+                }
             },
             onError: (errors) => {
                 setProcessing(false);
