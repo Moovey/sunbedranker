@@ -1,4 +1,4 @@
-import { Link, Head, useForm } from '@inertiajs/react';
+import { Link, Head, useForm, usePage } from '@inertiajs/react';
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import HotelierNav from '@/Components/HotelierNav';
@@ -547,12 +547,24 @@ const FormActions = ({ processing }) => (
 // Main Component
 // ============================================================================
 
-export default function ManageHotel({ hotel, flash, subscription }) {
+export default function ManageHotel({ hotel, flash, subscription, errors: serverErrors = {} }) {
     const [activeTab, setActiveTab] = useState(TABS.POOL);
     const [faqs, setFaqs] = useState(hotel.faqs || []);
-    const { data, setData, post, processing, errors } = useForm(getInitialFormData(hotel));
+    const [validationErrors, setValidationErrors] = useState({});
+    const { data, setData, post, processing, errors: formErrors } = useForm(getInitialFormData(hotel));
+    const { props } = usePage();
     
     const hasEnhanced = subscription?.hasEnhanced || false;
+
+    // Combine all error sources - server errors, form errors, page props errors, and local state
+    const pageErrors = props?.errors || {};
+    const allErrors = { 
+        ...serverErrors,
+        ...pageErrors, 
+        ...formErrors,
+        ...validationErrors 
+    };
+    const hasErrors = Object.keys(allErrors).length > 0;
 
     // Flash message handling (only for server-side flash messages)
     useEffect(() => {
@@ -583,10 +595,29 @@ export default function ManageHotel({ hotel, flash, subscription }) {
     // Form submission
     const handleSubmit = useCallback((e) => {
         e.preventDefault();
+        setValidationErrors({}); // Clear previous errors
+        
         post(route('hotelier.hotels.update', hotel.slug), {
             forceFormData: true,
             preserveScroll: true,
-            onError: () => {
+            onSuccess: (page) => {
+                // Check if there are validation errors in the response
+                const responseErrors = page?.props?.errors || {};
+                
+                if (Object.keys(responseErrors).length > 0) {
+                    // Store errors in local state to ensure they display
+                    setValidationErrors(responseErrors);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    return;
+                }
+                // Only show success if there's a success flash message
+                if (page?.props?.flash?.success) {
+                    toast.success(page.props.flash.success);
+                }
+            },
+            onError: (errors) => {
+                // Store errors in local state to ensure they display
+                setValidationErrors(errors || {});
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             },
         });
@@ -596,17 +627,17 @@ export default function ManageHotel({ hotel, flash, subscription }) {
     const renderTabContent = () => {
         switch (activeTab) {
             case TABS.POOL:
-                return <PoolCriteriaTab data={data} setData={setData} errors={errors} />;
+                return <PoolCriteriaTab data={data} setData={setData} errors={allErrors} />;
             case TABS.IMAGES:
-                return <CreateImagesTab data={data} setData={setData} errors={errors} hotel={hotel} />;
+                return <CreateImagesTab data={data} setData={setData} errors={allErrors} hotel={hotel} />;
             case TABS.DESCRIPTIONS:
-                return <DescriptionsTab data={data} setData={setData} errors={errors} />;
+                return <DescriptionsTab data={data} setData={setData} errors={allErrors} />;
             case TABS.FAQS:
                 return (
                     <FaqsTab
                         data={data}
                         setData={setData}
-                        errors={errors}
+                        errors={allErrors}
                         faqs={faqs}
                         onAddFaq={addFaq}
                         onUpdateFaq={updateFaq}
@@ -618,7 +649,7 @@ export default function ManageHotel({ hotel, flash, subscription }) {
                     <EnhancedFeaturesTab
                         data={data}
                         setData={setData}
-                        errors={errors}
+                        errors={allErrors}
                         hasEnhanced={hasEnhanced}
                     />
                 );
@@ -635,7 +666,10 @@ export default function ManageHotel({ hotel, flash, subscription }) {
                 <PageHeader hotel={hotel} />
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12">
                     <InfoBanner />
-                    <ValidationErrorsBox errors={errors} />
+                    
+                    {/* Validation Errors Display - prominent box that's always visible when there are errors */}
+                    {hasErrors && <ValidationErrorsBox errors={allErrors} />}
+                    
                     <form onSubmit={handleSubmit}>
                         <div className="bg-gradient-to-r from-orange-50 to-blue-50 rounded-t-2xl border-b-2 border-orange-200 shadow-lg">
                             <div className="flex gap-2 px-6 pt-5 overflow-x-auto">
