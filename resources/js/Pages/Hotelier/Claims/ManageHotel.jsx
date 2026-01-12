@@ -1,4 +1,4 @@
-import { Link, Head, useForm, usePage } from '@inertiajs/react';
+import { Link, Head, useForm, usePage, router } from '@inertiajs/react';
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import HotelierNav from '@/Components/HotelierNav';
@@ -551,7 +551,8 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
     const [activeTab, setActiveTab] = useState(TABS.POOL);
     const [faqs, setFaqs] = useState(hotel.faqs || []);
     const [validationErrors, setValidationErrors] = useState({});
-    const { data, setData, post, processing, errors: formErrors } = useForm(getInitialFormData(hotel));
+    const [processing, setProcessing] = useState(false);
+    const { data, setData, errors: formErrors } = useForm(getInitialFormData(hotel));
     const { props } = usePage();
     
     const hasEnhanced = subscription?.hasEnhanced || false;
@@ -592,15 +593,17 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
         setData('faqs', newFaqs);
     }, [faqs, setData]);
 
-    // Form submission
+    // Form submission - Use router.post directly like Admin Edit does for Laravel Cloud compatibility
     const handleSubmit = useCallback((e) => {
         e.preventDefault();
         setValidationErrors({}); // Clear previous errors
+        setProcessing(true);
         
-        post(route('hotelier.hotels.update', hotel.slug), {
+        router.post(route('hotelier.hotels.update', hotel.slug), data, {
             forceFormData: true,
             preserveScroll: true,
             onSuccess: (page) => {
+                setProcessing(false);
                 // Check if there are validation errors in the response
                 const responseErrors = page?.props?.errors || {};
                 
@@ -610,18 +613,19 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     return;
                 }
-                // Only show success if there's a success flash message
-                if (page?.props?.flash?.success) {
-                    toast.success(page.props.flash.success);
-                }
+                // Flash message will be handled by useEffect - no need to show toast here
             },
             onError: (errors) => {
+                setProcessing(false);
                 // Store errors in local state to ensure they display
                 setValidationErrors(errors || {});
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             },
+            onFinish: () => {
+                setProcessing(false);
+            },
         });
-    }, [post, hotel.slug]);
+    }, [data, hotel.slug]);
 
     // Render tab content
     const renderTabContent = () => {
