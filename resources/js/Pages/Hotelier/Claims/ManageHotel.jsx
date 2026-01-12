@@ -567,11 +567,14 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
     };
     const hasErrors = Object.keys(allErrors).length > 0;
 
-    // Flash message handling (only for server-side flash messages)
+    // Flash message handling - check both direct prop and usePage props
+    const flashSuccess = flash?.success || props?.flash?.success;
+    const flashError = flash?.error || props?.flash?.error;
+    
     useEffect(() => {
-        if (flash?.success) toast.success(flash.success);
-        if (flash?.error) toast.error(flash.error);
-    }, [flash?.success, flash?.error]);
+        if (flashSuccess) toast.success(flashSuccess);
+        if (flashError) toast.error(flashError);
+    }, [flashSuccess, flashError]);
 
     // FAQ management
     const addFaq = useCallback(() => {
