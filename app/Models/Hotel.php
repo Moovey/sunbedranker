@@ -94,7 +94,7 @@ class Hotel extends Model
         'show_verified_badge' => 'boolean',
     ];
 
-    protected $appends = ['main_image_url', 'gallery_images_urls', 'has_pending_claim'];
+    protected $appends = ['main_image_url', 'gallery_images_urls', 'has_pending_claim', 'is_premium'];
 
     public function destination(): BelongsTo
     {
@@ -271,5 +271,13 @@ class Hotel extends Model
     public function getHasPendingClaimAttribute(): bool
     {
         return $this->claims()->where('status', 'pending')->exists();
+    }
+
+    /**
+     * Check if hotel is premium (via owner's subscription)
+     */
+    public function getIsPremiumAttribute(): bool
+    {
+        return $this->isPremium();
     }
 }

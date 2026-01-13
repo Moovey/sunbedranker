@@ -463,11 +463,19 @@ export default function SearchResults({ searchParams, localHotels, amadeusHotels
 
 function HotelCard({ hotel, isInCompare, onToggleCompare, isHotelier }) {
     const canClaim = isHotelier && !hotel.owned_by && !hotel.has_pending_claim;
+    const isPremium = hotel.is_premium;
+
+    // Premium hotels get larger, more prominent cards
+    const cardClasses = isPremium 
+        ? "bg-white overflow-hidden transition-all duration-500 hover:shadow-2xl rounded-lg relative group border-4 border-gradient-to-r from-yellow-400 to-orange-500 shadow-xl ring-2 ring-yellow-300"
+        : "bg-white overflow-hidden transition-all duration-500 hover:shadow-2xl rounded-lg relative group";
+    
+    const imageAspect = isPremium ? "aspect-[16/10]" : "aspect-[4/3]";
 
     return (
-        <div className="bg-white overflow-hidden transition-all duration-500 hover:shadow-2xl rounded-lg relative group">
+        <div className={cardClasses}>
             <Link href={`/hotels/${hotel.slug}`} className="block">
-                <div className="relative overflow-hidden aspect-[4/3]">
+                <div className={`relative overflow-hidden ${imageAspect}`}>
                     <img
                         src={hotel.main_image_url || '/images/default-hotel.jpg'}
                         alt={hotel.name}
@@ -482,6 +490,14 @@ function HotelCard({ hotel, isInCompare, onToggleCompare, isHotelier }) {
                                 <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                             </svg>
                             PREMIUM
+                        </div>
+                    )}
+                    
+                    {/* Special Offer Badge */}
+                    {isPremium && hotel.special_offer && (
+                        <div className="absolute top-3 sm:top-4 left-3 sm:left-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full font-bold text-[10px] sm:text-xs shadow-lg flex items-center gap-1 z-10">
+                            <span>🎉</span>
+                            OFFER
                         </div>
                     )}
                     

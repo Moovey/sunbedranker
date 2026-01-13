@@ -354,6 +354,7 @@ function HotelCard({ hotel, scoreType = 'overall', isInCompare = false, onToggle
                 : hotel.overall_score;
 
     const canClaim = isHotelier && !hotel.owned_by && !hotel.has_pending_claim;
+    const isPremium = hotel.is_premium;
 
     const handleClaimClick = (e) => {
         e.stopPropagation();
@@ -379,13 +380,20 @@ function HotelCard({ hotel, scoreType = 'overall', isInCompare = false, onToggle
         router.visit(`/hotelier/hotels/${hotel.slug}/claim`);
     };
 
+    // Premium hotels get larger, more prominent cards
+    const cardClasses = isPremium 
+        ? "group bg-white overflow-hidden transition-all duration-300 hover:shadow-2xl rounded-2xl shadow-xl border-4 border-gradient-to-r from-yellow-400 to-orange-500 transform hover:scale-105 relative ring-2 ring-yellow-300"
+        : "group bg-white overflow-hidden transition-all duration-300 hover:shadow-2xl rounded-2xl shadow-lg border-2 border-gray-100 transform hover:scale-105 relative";
+    
+    const imageAspect = isPremium ? "aspect-[16/10]" : "aspect-[4/3]";
+
     return (
-        <div className="group bg-white overflow-hidden transition-all duration-300 hover:shadow-2xl rounded-2xl shadow-lg border-2 border-gray-100 transform hover:scale-105 relative">
+        <div className={cardClasses}>
             <Link
                 href={`/hotels/${hotel.slug}`}
                 className="block"
             >
-                <div className="relative overflow-hidden aspect-[4/3]">
+                <div className={`relative overflow-hidden ${imageAspect}`}>
                     <img
                         src={hotel.main_image || '/images/default-hotel.jpg'}
                         alt={hotel.name}
@@ -403,20 +411,30 @@ function HotelCard({ hotel, scoreType = 'overall', isInCompare = false, onToggle
                         </div>
                     )}
                     
+                    {/* Special Offer Badge - for premium hotels */}
+                    {isPremium && hotel.special_offer && (
+                        <div className="absolute top-14 left-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 z-10">
+                            <span>🎉</span>
+                            SPECIAL OFFER
+                        </div>
+                    )}
+                    
+                    {/* Verified Badge - for premium hotels */}
+                    {isPremium && hotel.show_verified_badge && (
+                        <div className="absolute top-24 left-4 bg-gradient-to-r from-blue-500 to-cyan-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 z-10">
+                            <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            VERIFIED
+                        </div>
+                    )}
+                    
                     {score && (
                         <div className="absolute top-4 right-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full font-bold text-base shadow-lg flex items-center gap-1.5">
                             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
                             </svg>
                             {score}/10
-                        </div>
-                    )}
-                    {hotel.is_featured && !hotel.is_premium && (
-                        <div className="absolute top-4 left-4 bg-blue-500 text-white px-3 py-1.5 text-xs font-bold tracking-wide uppercase rounded-full shadow-lg flex items-center gap-1">
-                            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                            </svg>
-                            Featured
                         </div>
                     )}
                     {hotel.has_pending_claim && (
@@ -479,12 +497,29 @@ function HotelCard({ hotel, scoreType = 'overall', isInCompare = false, onToggle
                             Sunbed Ratio: <span className="text-orange-600">{hotel.pool_criteria.sunbed_to_guest_ratio}:1</span>
                         </div>
                     )}
+                    
+                    {/* Premium CTA Buttons - visible for premium hotels */}
+                    {isPremium && (
+                        <div className="flex gap-2 mt-4">
+                            <span className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg font-bold text-sm shadow-md hover:shadow-lg transition-all">
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                </svg>
+                                View Pool Details
+                            </span>
+                            {hotel.direct_booking_url && (
+                                <span className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-bold text-sm shadow-md">
+                                    💰 Book Direct
+                                </span>
+                            )}
+                        </div>
+                    )}
                 </div>
             </Link>
 
-            {/* Action buttons container */}
+            {/* Action buttons container - positioned where Featured badge used to be for non-premium */}
             {(onToggleCompare || canClaim) && (
-                <div className="absolute top-16 left-4 flex gap-2 z-10">
+                <div className={`absolute ${isPremium ? 'top-16' : 'top-4'} left-4 flex gap-2 z-10`}>
                     {/* Compare Button */}
                     {onToggleCompare && (
                         <div className="relative">

@@ -253,8 +253,19 @@ export default function DestinationShow({ destination, hotels, filters = {} }) {
 }
 
 function HotelCard({ hotel, isInCompare, onToggleCompare }) {
+    const isPremium = hotel.is_premium;
+    
+    // Premium hotels get larger, more prominent cards with enhanced borders
+    const cardClasses = isPremium 
+        ? "bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group relative border-4 border-yellow-400 transform hover:scale-105 ring-2 ring-yellow-200"
+        : "bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group relative border-2 border-gray-100 transform hover:scale-105";
+    
+    // Premium hotels get taller images on mobile
+    const imageHeight = isPremium ? "h-56 sm:h-auto" : "h-40 sm:h-auto";
+    const imageWidth = isPremium ? "sm:w-1/2" : "sm:w-2/5 md:w-1/3 lg:w-2/5";
+    
     return (
-        <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group relative border-2 border-gray-100 transform hover:scale-105">
+        <div className={cardClasses}>
             {/* Premium Badge */}
             {hotel.is_premium && (
                 <div className="absolute top-2 sm:top-3 right-2 sm:right-3 z-20 bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full font-sans font-black text-[10px] sm:text-xs shadow-lg flex items-center gap-1 animate-pulse">
@@ -262,6 +273,13 @@ function HotelCard({ hotel, isInCompare, onToggleCompare }) {
                         <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                     </svg>
                     PREMIUM
+                </div>
+            )}
+            
+            {/* Special Offer Badge */}
+            {isPremium && hotel.special_offer && (
+                <div className="absolute top-10 sm:top-12 right-2 sm:right-3 z-20 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-2 sm:px-2.5 py-1 rounded-full font-sans font-bold text-[9px] sm:text-[10px] shadow-lg flex items-center gap-1">
+                    🎉 OFFER
                 </div>
             )}
             
@@ -285,7 +303,7 @@ function HotelCard({ hotel, isInCompare, onToggleCompare }) {
             </button>
             
             <div className="flex flex-col sm:flex-row h-full">
-                <div className="relative w-full sm:w-2/5 md:w-1/3 lg:w-2/5 h-40 sm:h-auto flex-shrink-0">
+                <div className={`relative w-full ${imageWidth} ${imageHeight} flex-shrink-0`}>
                     <img
                         src={hotel.main_image_url || '/images/default-hotel.jpg'}
                         alt={hotel.name}

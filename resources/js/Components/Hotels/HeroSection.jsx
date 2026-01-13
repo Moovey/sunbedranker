@@ -60,15 +60,31 @@ export function HotelHeader({ hotel }) {
 // ============================================
 // IMAGE GALLERY COMPONENT
 // ============================================
-export function ImageGallery({ allImages, activeImageIndex, hotelName, onPrevImage, onNextImage }) {
+export function ImageGallery({ allImages, activeImageIndex, hotelName, onPrevImage, onNextImage, isPremium = false }) {
+    // Premium hotels get significantly larger hero images
+    const heightClass = isPremium 
+        ? "h-80 sm:h-96 md:h-[32rem] lg:h-[40rem] xl:h-[48rem]" 
+        : "h-64 sm:h-80 md:h-96 lg:h-[28rem]";
+    
     return (
         <div className="lg:col-span-2">
-            <div className="relative h-64 sm:h-80 md:h-96 lg:h-[28rem] rounded-2xl overflow-hidden shadow-2xl border-2 border-gray-100">
+            <div className={`relative ${heightClass} rounded-2xl overflow-hidden shadow-2xl border-2 border-gray-100`}>
                 <img
                     src={allImages[activeImageIndex] || '/images/default-hotel.jpg'}
                     alt={hotelName}
                     className="w-full h-full object-cover"
                 />
+                
+                {/* Premium Badge Overlay */}
+                {isPremium && (
+                    <div className="absolute top-4 left-4 bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-2 animate-pulse z-10">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                        </svg>
+                        PREMIUM
+                    </div>
+                )}
+                
                 {allImages.length > 1 && (
                     <>
                         <button
@@ -320,6 +336,8 @@ function HeroEnhancedFeatures({ hotel }) {
 }
 
 export function HeroSection({ hotel, allImages, activeImageIndex, onPrevImage, onNextImage }) {
+    const isPremium = hotel.is_premium;
+    
     return (
         <div className="bg-gradient-to-b from-blue-50/50 to-white border-b border-orange-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
@@ -338,6 +356,7 @@ export function HeroSection({ hotel, allImages, activeImageIndex, onPrevImage, o
                         hotelName={hotel.name}
                         onPrevImage={onPrevImage}
                         onNextImage={onNextImage}
+                        isPremium={isPremium}
                     />
 
                     {/* Map & Score Column */}
