@@ -392,6 +392,17 @@ function HotelCard({ hotel, scoreType = 'overall', isInCompare = false, onToggle
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                    
+                    {/* Premium Badge */}
+                    {hotel.is_premium && (
+                        <div className="absolute top-4 left-4 bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 animate-pulse z-10">
+                            <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                            </svg>
+                            PREMIUM
+                        </div>
+                    )}
+                    
                     {score && (
                         <div className="absolute top-4 right-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full font-bold text-base shadow-lg flex items-center gap-1.5">
                             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -400,7 +411,7 @@ function HotelCard({ hotel, scoreType = 'overall', isInCompare = false, onToggle
                             {score}/10
                         </div>
                     )}
-                    {hotel.is_featured && (
+                    {hotel.is_featured && !hotel.is_premium && (
                         <div className="absolute top-4 left-4 bg-blue-500 text-white px-3 py-1.5 text-xs font-bold tracking-wide uppercase rounded-full shadow-lg flex items-center gap-1">
                             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>

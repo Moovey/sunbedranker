@@ -18,23 +18,34 @@ class HomeController extends Controller
             }])
             ->get();
 
+        // Helper function to add is_premium flag to hotels
+        $addPremiumFlag = function ($hotels) {
+            return $hotels->map(function ($hotel) {
+                $hotel->is_premium = $hotel->isPremium();
+                return $hotel;
+            });
+        };
+
         $topRatedHotels = Hotel::active()
             ->topRated()
-            ->with(['destination', 'poolCriteria'])
+            ->with(['destination', 'poolCriteria', 'owner'])
             ->limit(8)
             ->get();
+        $topRatedHotels = $addPremiumFlag($topRatedHotels);
 
         $familyFriendlyHotels = Hotel::active()
             ->forFamilies()
-            ->with(['destination', 'poolCriteria'])
+            ->with(['destination', 'poolCriteria', 'owner'])
             ->limit(6)
             ->get();
+        $familyFriendlyHotels = $addPremiumFlag($familyFriendlyHotels);
 
         $quietSunHotels = Hotel::active()
             ->quietSun()
-            ->with(['destination', 'poolCriteria'])
+            ->with(['destination', 'poolCriteria', 'owner'])
             ->limit(6)
             ->get();
+        $quietSunHotels = $addPremiumFlag($quietSunHotels);
 
         return Inertia::render('Home', [
             'featuredDestinations' => $featuredDestinations,

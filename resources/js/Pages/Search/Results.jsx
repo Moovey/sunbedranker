@@ -90,8 +90,16 @@ export default function SearchResults({ searchParams, localHotels, amadeusHotels
             });
         }
 
-        // Apply sorting
+        // Apply sorting - Premium hotels always come first, then secondary sort
         filtered.sort((a, b) => {
+            // Premium hotels first
+            const aPremium = a.is_premium ? 1 : 0;
+            const bPremium = b.is_premium ? 1 : 0;
+            if (bPremium !== aPremium) {
+                return bPremium - aPremium;
+            }
+            
+            // Secondary sort
             if (sortBy === 'score') {
                 return (b.overall_score || 0) - (a.overall_score || 0);
             }
@@ -466,8 +474,19 @@ function HotelCard({ hotel, isInCompare, onToggleCompare, isHotelier }) {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    {/* Premium Badge */}
+                    {hotel.is_premium && (
+                        <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full font-bold text-[10px] sm:text-xs shadow-lg flex items-center gap-1 animate-pulse z-10">
+                            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                            </svg>
+                            PREMIUM
+                        </div>
+                    )}
+                    
                     {hotel.overall_score && (
-                        <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-white/95 backdrop-blur-sm text-neutral-900 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-light tracking-wider text-xs sm:text-sm shadow-lg">
+                        <div className={`absolute ${hotel.is_premium ? 'top-12 sm:top-14' : 'top-3 sm:top-4'} right-3 sm:right-4 bg-white/95 backdrop-blur-sm text-neutral-900 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-light tracking-wider text-xs sm:text-sm shadow-lg`}>
                             {hotel.overall_score}/10
                         </div>
                     )}

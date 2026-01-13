@@ -25,9 +25,10 @@ class DestinationController extends Controller
 
     public function show(Request $request, Destination $destination): Response
     {
-        $query = Hotel::where('destination_id', $destination->id)
-            ->where('is_active', true)
-            ->with(['poolCriteria']);
+        // Use table prefix to avoid ambiguity after join with users table
+        $query = Hotel::where('hotels.destination_id', $destination->id)
+            ->where('hotels.is_active', true)
+            ->with(['poolCriteria', 'owner']);
 
         // Apply filters
         if ($request->has('pool_type')) {
@@ -64,7 +65,20 @@ class DestinationController extends Controller
             });
         }
 
-        // Sorting
+        // Priority Placement: Premium hotels appear first, then sort by selected criteria
+        // A hotel is premium if its OWNER (hotelier) has a premium subscription
+        $query->leftJoin('users', 'hotels.owned_by', '=', 'users.id')
+            ->select('hotels.*')
+            ->orderByRaw("
+                CASE 
+                    WHEN users.subscription_tier = 'premium' 
+                         AND (users.subscription_expires_at IS NULL OR users.subscription_expires_at > NOW()) 
+                    THEN 0 
+                    ELSE 1 
+                END ASC
+            ");
+
+        // Secondary sorting based on user selection
         $sortBy = $request->get('sort', 'score');
         
         switch ($sortBy) {
@@ -85,7 +99,14 @@ class DestinationController extends Controller
                 break;
         }
 
+        // Add is_premium attribute to each hotel for frontend display
         $hotels = $query->paginate(12)->withQueryString();
+        
+        // Transform hotels to include is_premium flag
+        $hotels->getCollection()->transform(function ($hotel) {
+            $hotel->is_premium = $hotel->isPremium();
+            return $hotel;
+        });
 
         return Inertia::render('Destinations/Show', [
             'destination' => $destination,

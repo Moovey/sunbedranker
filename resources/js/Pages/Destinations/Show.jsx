@@ -255,6 +255,16 @@ export default function DestinationShow({ destination, hotels, filters = {} }) {
 function HotelCard({ hotel, isInCompare, onToggleCompare }) {
     return (
         <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group relative border-2 border-gray-100 transform hover:scale-105">
+            {/* Premium Badge */}
+            {hotel.is_premium && (
+                <div className="absolute top-2 sm:top-3 right-2 sm:right-3 z-20 bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full font-sans font-black text-[10px] sm:text-xs shadow-lg flex items-center gap-1 animate-pulse">
+                    <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                    </svg>
+                    PREMIUM
+                </div>
+            )}
+            
             {/* Compare Checkbox */}
             <button
                 onClick={onToggleCompare}
@@ -282,7 +292,7 @@ function HotelCard({ hotel, isInCompare, onToggleCompare }) {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     {hotel.overall_score && (
-                        <div className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg font-sans font-black text-[10px] sm:text-xs md:text-sm shadow-lg flex items-center gap-1">
+                        <div className={`absolute ${hotel.is_premium ? 'top-10 sm:top-12' : 'top-2 sm:top-3'} right-2 sm:right-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg font-sans font-black text-[10px] sm:text-xs md:text-sm shadow-lg flex items-center gap-1`}>
                             <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                             </svg>

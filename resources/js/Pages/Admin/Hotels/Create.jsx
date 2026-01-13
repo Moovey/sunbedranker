@@ -7,7 +7,6 @@ import CreateBasicInfoTab from '@/Components/Admin/Hotels/CreateBasicInfoTab';
 import ContactLocationTab from '@/Components/Admin/Hotels/ContactLocationTab';
 import PoolCriteriaTab from '@/Components/Admin/Hotels/PoolCriteriaTab';
 import CreateAffiliateTab from '@/Components/Admin/Hotels/CreateAffiliateTab';
-import SettingsTab from '@/Components/Admin/Hotels/SettingsTab';
 import CreateImagesTab from '@/Components/Admin/Hotels/CreateImagesTab';
 
 // Form field groupings for tab switching on validation errors
@@ -17,7 +16,6 @@ const TAB_FIELDS = {
     images: ['main_image', 'gallery_images'],
     pool: ['sunbed_count', 'sun_exposure', 'pool_size_category', 'pool_size_sqm', 'number_of_pools'],
     affiliate: ['booking_affiliate_url', 'expedia_affiliate_url', 'direct_booking_url', 'affiliate_provider', 'affiliate_tracking_code'],
-    settings: ['is_active', 'is_verified', 'is_featured', 'subscription_tier'],
 };
 
 // Initial form state
@@ -47,12 +45,6 @@ const INITIAL_FORM_DATA = {
     direct_booking_url: '',
     affiliate_provider: '',
     affiliate_tracking_code: '',
-    
-    // Settings
-    is_active: true,
-    is_verified: false,
-    is_featured: false,
-    subscription_tier: 'free',
     
     // Pool Criteria - Required
     sunbed_count: '',
@@ -108,7 +100,7 @@ export default function CreateHotel({ destinations, stats, errors: serverErrors 
     });
     const { props } = usePage();
 
-    const tabs = ['basic', 'contact', 'images', 'pool', 'affiliate', 'settings'];
+    const tabs = ['basic', 'contact', 'images', 'pool', 'affiliate'];
 
     // Combine all error sources - server errors, form errors, page props errors, and local state
     const pageErrors = props?.errors || {};
@@ -182,7 +174,7 @@ export default function CreateHotel({ destinations, stats, errors: serverErrors 
         });
     };
 
-    const isLastTab = activeTab === 'settings';
+    const isLastTab = activeTab === 'affiliate';
     const isFirstTab = activeTab === 'basic';
 
     return (
@@ -314,7 +306,6 @@ function TabNavigation({ activeTab, setActiveTab }) {
         { id: 'images', label: 'Images' },
         { id: 'pool', label: 'Pool Scoring' },
         { id: 'affiliate', label: 'Affiliate Links' },
-        { id: 'settings', label: 'Settings' },
     ];
 
     return (
@@ -341,7 +332,6 @@ function TabContent({ activeTab, data, setData, errors, destinations }) {
         images: <CreateImagesTab data={data} setData={setData} errors={errors} />,
         pool: <PoolCriteriaTab data={data} setData={setData} errors={errors} />,
         affiliate: <CreateAffiliateTab data={data} setData={setData} errors={errors} />,
-        settings: <SettingsTab data={data} setData={setData} errors={errors} />,
     };
 
     return tabComponents[activeTab] || null;

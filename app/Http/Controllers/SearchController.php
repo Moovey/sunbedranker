@@ -21,7 +21,8 @@ class SearchController extends Controller
         $guests = $request->input('guests', 2);
 
         // Step 1: Search for hotels in our database first
-        $query = Hotel::query()->where('is_active', true);
+        // Use table prefix to avoid ambiguity after join with users table
+        $query = Hotel::query()->where('hotels.is_active', true);
 
         // Search by destination name or city
         if ($destination) {
@@ -31,8 +32,8 @@ class SearchController extends Controller
                             ->orWhere('country', 'LIKE', "%{$destination}%")
                             ->orWhere('region', 'LIKE', "%{$destination}%");
                 })
-                ->orWhere('name', 'LIKE', "%{$destination}%")
-                ->orWhere('address', 'LIKE', "%{$destination}%");
+                ->orWhere('hotels.name', 'LIKE', "%{$destination}%")
+                ->orWhere('hotels.address', 'LIKE', "%{$destination}%");
             });
         }
 
@@ -65,13 +66,30 @@ class SearchController extends Controller
         }
 
         // Get hotels with scores and pool criteria
-        $localHotels = $query->with(['destination', 'poolCriteria'])
+        // Priority Placement: Premium hotels appear first (based on owner's subscription)
+        $localHotels = $query->with(['destination', 'poolCriteria', 'owner'])
             ->withExists(['claims as has_pending_claim' => function ($query) {
                 $query->where('status', 'pending');
             }])
-            ->orderByDesc('overall_score')
+            ->leftJoin('users', 'hotels.owned_by', '=', 'users.id')
+            ->select('hotels.*')
+            ->orderByRaw("
+                CASE 
+                    WHEN users.subscription_tier = 'premium' 
+                         AND (users.subscription_expires_at IS NULL OR users.subscription_expires_at > NOW()) 
+                    THEN 0 
+                    ELSE 1 
+                END ASC
+            ")
+            ->orderByDesc('hotels.overall_score')
             ->limit(20)
             ->get();
+
+        // Add is_premium flag to each hotel
+        $localHotels = $localHotels->map(function ($hotel) {
+            $hotel->is_premium = $hotel->isPremium();
+            return $hotel;
+        });
 
         // Amadeus API integration disabled - only showing local database results
         // To enable live hotel prices, configure AMADEUS_API_KEY and AMADEUS_API_SECRET environment variables

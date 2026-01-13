@@ -148,14 +148,20 @@ class Hotel extends Model
 
     public function isPremium(): bool
     {
-        return $this->subscription_tier === 'premium' 
-            && ($this->subscription_expires_at === null || $this->subscription_expires_at->isFuture());
+        // Check if the hotel owner (hotelier) has a premium subscription
+        if ($this->owner) {
+            return $this->owner->hasPremiumTier() && $this->owner->hasActiveSubscription();
+        }
+        return false;
     }
 
     public function isEnhanced(): bool
     {
-        return in_array($this->subscription_tier, ['enhanced', 'premium'])
-            && ($this->subscription_expires_at === null || $this->subscription_expires_at->isFuture());
+        // Check if the hotel owner (hotelier) has at least enhanced subscription
+        if ($this->owner) {
+            return $this->owner->hasAtLeastEnhancedTier() && $this->owner->hasActiveSubscription();
+        }
+        return false;
     }
 
     public function incrementViews(): void
