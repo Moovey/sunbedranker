@@ -375,7 +375,7 @@ function HotelCard({ hotel, scoreType = 'overall', isInCompare = false, onToggle
             });
             return;
         }
-        
+            
         // Navigate to claim form
         router.visit(`/hotelier/hotels/${hotel.slug}/claim`);
     };

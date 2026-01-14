@@ -194,43 +194,120 @@ const isYouTubeUrl = (url) => {
 };
 
 // Special Offer Banner Component - Displayed above image gallery
+// Supports multiple promotions for Premium hoteliers
 function SpecialOfferBanner({ hotel }) {
-    const hasPromotionalContent = hotel.promotional_banner || hotel.special_offer;
-    
-    if (!hasPromotionalContent) {
+    // Get promotions from the new array format, or fall back to legacy single promotion
+    const promotions = hotel.promotions && hotel.promotions.length > 0 
+        ? hotel.promotions 
+        : (hotel.promotional_banner || hotel.special_offer) 
+            ? [{
+                promotional_banner: hotel.promotional_banner,
+                special_offer: hotel.special_offer,
+                special_offer_expires_at: hotel.special_offer_expires_at,
+            }]
+            : [];
+
+    // Filter to only show non-expired promotions with content
+    const activePromotions = promotions.filter(promo => {
+        const hasContent = promo.promotional_banner || promo.special_offer;
+        if (!hasContent) return false;
+        
+        // Check if promotion has expired
+        if (promo.special_offer_expires_at) {
+            const expiryDate = new Date(promo.special_offer_expires_at);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (expiryDate < today) return false;
+        }
+        return true;
+    });
+
+    if (activePromotions.length === 0) {
         return null;
     }
 
-    return (
-        <div className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white px-4 py-3 rounded-xl mb-4 shadow-md relative overflow-hidden">
-            {/* Decorative circles */}
-            <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
-            <div className="absolute bottom-0 left-1/2 w-16 h-16 bg-white/10 rounded-full -mb-8"></div>
-            
-            <div className="relative flex flex-wrap items-center gap-x-4 gap-y-2">
-                <div className="flex items-center gap-2">
-                    <span className="text-xl">🎉</span>
-                    <span className="font-bold text-sm">Special Offer</span>
+    // Single promotion - compact display
+    if (activePromotions.length === 1) {
+        const promo = activePromotions[0];
+        return (
+            <div className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white px-4 py-3 rounded-xl mb-4 shadow-md relative overflow-hidden">
+                {/* Decorative circles */}
+                <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
+                <div className="absolute bottom-0 left-1/2 w-16 h-16 bg-white/10 rounded-full -mb-8"></div>
+                
+                <div className="relative flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <div className="flex items-center gap-2">
+                        <span className="text-xl">🎉</span>
+                        <span className="font-bold text-sm">Special Offer</span>
+                    </div>
+                    
+                    {promo.promotional_banner && (
+                        <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-lg font-bold text-sm">
+                            {promo.promotional_banner}
+                        </span>
+                    )}
+                    
+                    {promo.special_offer && (
+                        <span className="text-white/90 text-sm">{promo.special_offer}</span>
+                    )}
+                    
+                    {promo.special_offer_expires_at && (
+                        <span className="flex items-center gap-1 text-xs text-white/80 ml-auto">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Valid until {new Date(promo.special_offer_expires_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </span>
+                    )}
                 </div>
-                
-                {hotel.promotional_banner && (
-                    <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-lg font-bold text-sm">
-                        {hotel.promotional_banner}
-                    </span>
-                )}
-                
-                {hotel.special_offer && (
-                    <span className="text-white/90 text-sm">{hotel.special_offer}</span>
-                )}
-                
-                {hotel.special_offer_expires_at && (
-                    <span className="flex items-center gap-1 text-xs text-white/80 ml-auto">
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Valid until {new Date(hotel.special_offer_expires_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </span>
-                )}
+            </div>
+        );
+    }
+
+    // Multiple promotions - vertical display for Premium hoteliers
+    return (
+        <div className="mb-4 space-y-3">
+            {/* Header for multiple promotions */}
+            <div className="flex items-center gap-2">
+                <span className="text-xl">🎉</span>
+                <span className="font-bold text-gray-800">Current Offers & Promotions</span>
+                <span className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-2 py-0.5 rounded-full text-xs font-bold">
+                    {activePromotions.length} Active
+                </span>
+            </div>
+            
+            {/* Promotions Vertical Stack */}
+            <div className="flex flex-col gap-3">
+                {activePromotions.map((promo, index) => (
+                    <div 
+                        key={index}
+                        className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white px-4 py-3 rounded-xl shadow-md relative overflow-hidden"
+                    >
+                        {/* Decorative element */}
+                        <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8"></div>
+                        
+                        <div className="relative flex flex-wrap items-center gap-x-4 gap-y-2">
+                            {promo.promotional_banner && (
+                                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-lg font-bold text-sm">
+                                    {promo.promotional_banner}
+                                </span>
+                            )}
+                            
+                            {promo.special_offer && (
+                                <span className="text-white/90 text-sm">{promo.special_offer}</span>
+                            )}
+                            
+                            {promo.special_offer_expires_at && (
+                                <span className="flex items-center gap-1 text-xs text-white/80 ml-auto">
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Valid until {new Date(promo.special_offer_expires_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );

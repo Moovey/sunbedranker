@@ -39,9 +39,12 @@ const getInitialFormData = (hotel) => ({
     towel_policy: hotel.towel_policy || '',
     faqs: hotel.faqs || [],
     // Enhanced subscription features
-    promotional_banner: hotel.promotional_banner || '',
-    special_offer: hotel.special_offer || '',
-    special_offer_expires_at: hotel.special_offer_expires_at ? hotel.special_offer_expires_at.split('T')[0] : '',
+    // Support multiple promotions for premium subscribers
+    promotions: hotel.promotions || (hotel.promotional_banner ? [{
+        promotional_banner: hotel.promotional_banner || '',
+        special_offer: hotel.special_offer || '',
+        special_offer_expires_at: hotel.special_offer_expires_at ? hotel.special_offer_expires_at.split('T')[0] : '',
+    }] : []),
     video_url: hotel.video_url || '',
     video_360_url: hotel.video_360_url || '',
     direct_booking_url: hotel.direct_booking_url || '',
@@ -244,6 +247,55 @@ const DescriptionField = ({ title, icon, description, value, onChange, error, co
     );
 };
 
+const PromotionItem = ({ promotion, index, onUpdate, onRemove, canRemove }) => (
+    <div className="bg-white rounded-xl p-4 mb-4 border-2 border-orange-200 shadow-sm">
+        <div className="flex justify-between items-start mb-3">
+            <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-lg text-xs font-bold">
+                Promotion #{index + 1}
+            </span>
+            {canRemove && (
+                <button type="button" onClick={onRemove} className="text-red-600 hover:text-red-800 font-bold text-sm">
+                    ✕ Remove
+                </button>
+            )}
+        </div>
+        <div className="space-y-4">
+            <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Promotional Banner Text</label>
+                <input
+                    type="text"
+                    value={promotion.promotional_banner}
+                    onChange={(e) => onUpdate(index, 'promotional_banner', e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 font-semibold"
+                    placeholder="e.g., Early Bird Special - Book Direct & Save 15%"
+                    maxLength={255}
+                />
+            </div>
+            <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Special Offer Details</label>
+                <textarea
+                    value={promotion.special_offer}
+                    onChange={(e) => onUpdate(index, 'special_offer', e.target.value)}
+                    rows={3}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 font-semibold"
+                    placeholder="Describe your special offer in detail. Include terms, conditions, and what's included..."
+                    maxLength={1000}
+                />
+            </div>
+            <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Offer Expires On</label>
+                <input
+                    type="date"
+                    value={promotion.special_offer_expires_at}
+                    onChange={(e) => onUpdate(index, 'special_offer_expires_at', e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 font-semibold"
+                    min={new Date().toISOString().split('T')[0]}
+                />
+            </div>
+        </div>
+    </div>
+);
+
 const FaqItem = ({ faq, index, onUpdate, onRemove }) => (
     <div className="bg-white rounded-xl p-4 mb-4 border-2 border-gray-200">
         <div className="flex justify-between items-start mb-3">
@@ -364,7 +416,7 @@ const FaqsTab = ({ data, setData, errors, faqs, onAddFaq, onUpdateFaq, onRemoveF
     </div>
 );
 
-const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced }) => {
+const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced, hasPremium, promotions, onAddPromotion, onUpdatePromotion, onRemovePromotion }) => {
     if (!hasEnhanced) {
         return (
             <div className="space-y-8">
@@ -386,6 +438,10 @@ const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced }) => {
         );
     }
 
+    // Premium users can have unlimited promotions, Enhanced users get 1
+    const maxPromotions = hasPremium ? 10 : 1;
+    const canAddMore = promotions.length < maxPromotions;
+
     return (
         <div className="space-y-8">
             <h2 className="text-2xl font-black text-gray-900 flex items-center gap-2">
@@ -397,47 +453,57 @@ const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced }) => {
 
             {/* Promotional Banner & Special Offers */}
             <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-2xl p-6 border-2 border-orange-200">
-                <h3 className="text-lg font-bold text-orange-800 mb-4">🎉 Promotional Banner & Special Offers</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                    Create eye-catching banners and special offers to attract more guests. Example: "Free cabana with direct booking"
-                </p>
-                <div className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Promotional Banner Text</label>
-                        <input
-                            type="text"
-                            value={data.promotional_banner}
-                            onChange={(e) => setData('promotional_banner', e.target.value)}
-                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 font-semibold"
-                            placeholder="e.g., Early Bird Special - Book Direct & Save 15%"
-                            maxLength={255}
-                        />
-                        {errors.promotional_banner && <p className="mt-2 text-red-600 text-sm font-semibold">{errors.promotional_banner}</p>}
-                    </div>
-                    <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Special Offer Details</label>
-                        <textarea
-                            value={data.special_offer}
-                            onChange={(e) => setData('special_offer', e.target.value)}
-                            rows={3}
-                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 font-semibold"
-                            placeholder="Describe your special offer in detail. Include terms, conditions, and what's included..."
-                            maxLength={1000}
-                        />
-                        {errors.special_offer && <p className="mt-2 text-red-600 text-sm font-semibold">{errors.special_offer}</p>}
-                    </div>
-                    <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Offer Expires On</label>
-                        <input
-                            type="date"
-                            value={data.special_offer_expires_at}
-                            onChange={(e) => setData('special_offer_expires_at', e.target.value)}
-                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 font-semibold"
-                            min={new Date().toISOString().split('T')[0]}
-                        />
-                        {errors.special_offer_expires_at && <p className="mt-2 text-red-600 text-sm font-semibold">{errors.special_offer_expires_at}</p>}
-                    </div>
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold text-orange-800">🎉 Promotional Banner & Special Offers</h3>
+                    {hasPremium && (
+                        <span className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                            👑 Premium - Multiple Promotions
+                        </span>
+                    )}
                 </div>
+                <p className="text-sm text-gray-600 mb-4">
+                    Create eye-catching banners and special offers to attract more guests.
+                    {hasPremium 
+                        ? " As a Premium subscriber, you can run up to 10 active promotions simultaneously!" 
+                        : " Upgrade to Premium to run multiple promotions at once."}
+                </p>
+                
+                {promotions.map((promotion, index) => (
+                    <PromotionItem
+                        key={index}
+                        promotion={promotion}
+                        index={index}
+                        onUpdate={onUpdatePromotion}
+                        onRemove={() => onRemovePromotion(index)}
+                        canRemove={promotions.length > 1 || (promotion.promotional_banner === '' && promotion.special_offer === '')}
+                    />
+                ))}
+                
+                {errors.promotions && <p className="mt-2 text-red-600 text-sm font-semibold">{errors.promotions}</p>}
+                
+                {canAddMore ? (
+                    <button
+                        type="button"
+                        onClick={onAddPromotion}
+                        className="w-full py-3 border-2 border-dashed border-orange-300 rounded-xl text-orange-600 font-bold hover:bg-orange-50 transition-colors"
+                    >
+                        + Add Another Promotion {hasPremium && `(${promotions.length}/${maxPromotions})`}
+                    </button>
+                ) : (
+                    <div className="text-center py-3 text-gray-500 text-sm">
+                        {hasPremium 
+                            ? `Maximum ${maxPromotions} promotions reached` 
+                            : (
+                                <span>
+                                    <Link href={route('hotelier.subscription')} className="text-orange-600 font-bold hover:underline">
+                                        Upgrade to Premium
+                                    </Link>
+                                    {" to add multiple promotions"}
+                                </span>
+                            )
+                        }
+                    </div>
+                )}
             </div>
 
             {/* Videos and 360° Content */}
@@ -556,6 +622,17 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
     const { props } = usePage();
     
     const hasEnhanced = subscription?.hasEnhanced || false;
+    const hasPremium = subscription?.hasPremium || false;
+    
+    // Initialize promotions state
+    const [promotions, setPromotions] = useState(() => {
+        const initialPromotions = hotel.promotions || (hotel.promotional_banner ? [{
+            promotional_banner: hotel.promotional_banner || '',
+            special_offer: hotel.special_offer || '',
+            special_offer_expires_at: hotel.special_offer_expires_at ? hotel.special_offer_expires_at.split('T')[0] : '',
+        }] : [{ promotional_banner: '', special_offer: '', special_offer_expires_at: '' }]);
+        return initialPromotions;
+    });
 
     // Combine all error sources - server errors, form errors, page props errors, and local state
     const pageErrors = props?.errors || {};
@@ -586,6 +663,30 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
         setFaqs(newFaqs);
         setData('faqs', newFaqs);
     }, [faqs, setData]);
+
+    // Promotion management (Premium feature - multiple active promotions)
+    const addPromotion = useCallback(() => {
+        const newPromotions = [...promotions, { promotional_banner: '', special_offer: '', special_offer_expires_at: '' }];
+        setPromotions(newPromotions);
+        setData('promotions', newPromotions);
+    }, [promotions, setData]);
+
+    const updatePromotion = useCallback((index, field, value) => {
+        const newPromotions = [...promotions];
+        newPromotions[index][field] = value;
+        setPromotions(newPromotions);
+        setData('promotions', newPromotions);
+    }, [promotions, setData]);
+
+    const removePromotion = useCallback((index) => {
+        const newPromotions = promotions.filter((_, i) => i !== index);
+        // Ensure at least one empty promotion form exists
+        const finalPromotions = newPromotions.length === 0 
+            ? [{ promotional_banner: '', special_offer: '', special_offer_expires_at: '' }] 
+            : newPromotions;
+        setPromotions(finalPromotions);
+        setData('promotions', finalPromotions);
+    }, [promotions, setData]);
 
     // Form submission - Use router.post directly like Admin Edit does for Laravel Cloud compatibility
     const handleSubmit = useCallback((e) => {
@@ -652,6 +753,11 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
                         setData={setData}
                         errors={allErrors}
                         hasEnhanced={hasEnhanced}
+                        hasPremium={hasPremium}
+                        promotions={promotions}
+                        onAddPromotion={addPromotion}
+                        onUpdatePromotion={updatePromotion}
+                        onRemovePromotion={removePromotion}
                     />
                 );
             default:

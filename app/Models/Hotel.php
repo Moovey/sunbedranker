@@ -69,6 +69,7 @@ class Hotel extends Model
         'video_url',
         'video_360_url',
         'show_verified_badge',
+        'promotions', // JSON array for multiple promotions (Premium feature)
     ];
 
     protected $casts = [
@@ -92,6 +93,7 @@ class Hotel extends Model
         'override_description' => 'boolean',
         'special_offer_expires_at' => 'date',
         'show_verified_badge' => 'boolean',
+        'promotions' => 'array',
     ];
 
     protected $appends = ['main_image_url', 'gallery_images_urls', 'has_pending_claim', 'is_premium'];

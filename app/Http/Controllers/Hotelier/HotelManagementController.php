@@ -254,10 +254,17 @@ class HotelManagementController extends Controller
             'has_jacuzzi' => 'boolean',
             'has_adult_sun_terrace' => 'boolean',
             
-            // Enhanced Subscription Features
+            // Enhanced Subscription Features (single promo - legacy support)
             'promotional_banner' => 'nullable|string|max:255',
             'special_offer' => 'nullable|string|max:1000',
             'special_offer_expires_at' => 'nullable|date|after_or_equal:today',
+            
+            // Multiple Promotions (Premium feature)
+            'promotions' => 'nullable|array|max:10',
+            'promotions.*.promotional_banner' => 'nullable|string|max:255',
+            'promotions.*.special_offer' => 'nullable|string|max:1000',
+            'promotions.*.special_offer_expires_at' => 'nullable|date|after_or_equal:today',
+            
             'video_url' => 'nullable|url|max:500',
             'video_360_url' => 'nullable|url|max:500',
             'direct_booking_url' => 'nullable|url|max:500',
@@ -326,10 +333,34 @@ class HotelManagementController extends Controller
             return;
         }
 
+        // Handle multiple promotions (Premium feature)
+        $promotions = null;
+        if (!empty($validated['promotions'])) {
+            // Premium users can have multiple promotions, Enhanced users only 1
+            $maxPromotions = $user->hasPremiumTier() ? 10 : 1;
+            $promotions = array_slice($validated['promotions'], 0, $maxPromotions);
+            
+            // Filter out empty promotions
+            $promotions = array_filter($promotions, function ($promo) {
+                return !empty($promo['promotional_banner']) || !empty($promo['special_offer']);
+            });
+            
+            // Re-index array
+            $promotions = array_values($promotions);
+            
+            // Also set the first promotion to legacy single fields for backward compatibility
+            if (!empty($promotions[0])) {
+                $validated['promotional_banner'] = $promotions[0]['promotional_banner'] ?? null;
+                $validated['special_offer'] = $promotions[0]['special_offer'] ?? null;
+                $validated['special_offer_expires_at'] = $promotions[0]['special_offer_expires_at'] ?? null;
+            }
+        }
+
         $hotel->update([
             'promotional_banner' => $validated['promotional_banner'] ?: null,
             'special_offer' => $validated['special_offer'] ?: null,
             'special_offer_expires_at' => !empty($validated['special_offer_expires_at']) ? $validated['special_offer_expires_at'] : null,
+            'promotions' => !empty($promotions) ? $promotions : null,
             'video_url' => $validated['video_url'] ?: null,
             'video_360_url' => $validated['video_360_url'] ?: null,
             'direct_booking_url' => $validated['direct_booking_url'] ?: null,
