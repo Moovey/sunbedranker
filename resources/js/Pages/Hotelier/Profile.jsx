@@ -90,14 +90,14 @@ export default function HotelierProfile({ stats, hotels }) {
                 <HotelierNav />
 
                 {/* Page Header */}
-                <div className="bg-gradient-to-r from-orange-50 to-blue-50 shadow-lg border-b-2 border-orange-200">
+                <div className="bg-white shadow-lg border-b-2 border-gray-200">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-12">
                         <div className="flex items-center justify-center mb-4 sm:mb-5 md:mb-6">
-                            <div className="h-1 w-8 sm:w-10 md:w-12 bg-orange-300 rounded-full"></div>
+                            <div className="h-1 w-8 sm:w-10 md:w-12 bg-orange-400 rounded-full"></div>
                             <svg className="mx-3 sm:mx-4 text-orange-500" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
                             </svg>
-                            <div className="h-1 w-8 sm:w-10 md:w-12 bg-blue-300 rounded-full"></div>
+                            <div className="h-1 w-8 sm:w-10 md:w-12 bg-orange-400 rounded-full"></div>
                         </div>
                         <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 text-center">Hotelier Profile</h1>
                         <p className="text-center text-gray-600 mt-2 font-semibold">Manage your hotelier account and view your properties</p>
@@ -156,7 +156,7 @@ export default function HotelierProfile({ stats, hotels }) {
                                         <div className="text-sm text-gray-600 font-semibold">Avg Score</div>
                                     </div>
                                     <div className="p-4 text-center">
-                                        <div className="text-2xl font-black text-green-600">{stats?.total_reviews || 0}</div>
+                                        <div className="text-2xl font-black text-blue-600">{stats?.total_reviews || 0}</div>
                                         <div className="text-sm text-gray-600 font-semibold">Reviews</div>
                                     </div>
                                 </div>
@@ -226,7 +226,7 @@ export default function HotelierProfile({ stats, hotels }) {
                                                                 <button
                                                                     type="button"
                                                                     onClick={handleRemoveImage}
-                                                                    className="px-4 py-2 bg-red-100 text-red-700 font-bold rounded-lg hover:bg-red-200 transition-colors"
+                                                                    className="px-4 py-2 bg-gray-100 text-gray-700 font-bold rounded-lg hover:bg-gray-200 transition-colors"
                                                                 >
                                                                     Remove
                                                                 </button>
@@ -344,7 +344,7 @@ export default function HotelierProfile({ stats, hotels }) {
                         {/* Right Column - My Hotels */}
                         <div className="lg:col-span-1">
                             <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 overflow-hidden">
-                                <div className="bg-gradient-to-r from-orange-50 to-blue-50 px-6 py-4 border-b-2 border-gray-100">
+                                <div className="bg-gray-50 px-6 py-4 border-b-2 border-gray-100">
                                     <h3 className="font-bold text-gray-900 text-lg">My Hotels</h3>
                                 </div>
                                 <div className="p-4">
@@ -402,7 +402,7 @@ export default function HotelierProfile({ stats, hotels }) {
 
                             {/* Quick Links */}
                             <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 overflow-hidden mt-6">
-                                <div className="bg-gradient-to-r from-orange-50 to-blue-50 px-6 py-4 border-b-2 border-gray-100">
+                                <div className="bg-gray-50 px-6 py-4 border-b-2 border-gray-100">
                                     <h3 className="font-bold text-gray-900 text-lg">Quick Links</h3>
                                 </div>
                                 <div className="p-4 space-y-2">
