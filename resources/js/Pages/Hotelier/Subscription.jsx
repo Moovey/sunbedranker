@@ -65,15 +65,15 @@ export default function Subscription({ currentTier, redirectTo }) {
                 <HotelierNav />
 
                 {/* Page Header */}
-                <div className="bg-gradient-to-r from-orange-50 to-blue-50 shadow-lg border-b-2 border-orange-200">
+                <div className="bg-white shadow-lg border-b-2 border-gray-200">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20 text-center">
                         {/* Decorative accent */}
                         <div className="flex items-center justify-center mb-6">
-                            <div className="h-1 w-12 sm:w-16 bg-orange-300 rounded-full"></div>
+                            <div className="h-1 w-12 sm:w-16 bg-orange-400 rounded-full"></div>
                             <svg className="mx-4 text-orange-500" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                             </svg>
-                            <div className="h-1 w-12 sm:w-16 bg-blue-300 rounded-full"></div>
+                            <div className="h-1 w-12 sm:w-16 bg-orange-400 rounded-full"></div>
                         </div>
                         
                         <span className="inline-block px-4 py-2 bg-orange-100 border-2 border-orange-200 rounded-full text-sm font-bold text-orange-700 mb-4">
@@ -98,7 +98,7 @@ export default function Subscription({ currentTier, redirectTo }) {
 
                 {/* Why Upgrade Section */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <div className="bg-gradient-to-r from-orange-50 to-yellow-50 border-2 border-orange-200 rounded-2xl p-6 sm:p-8 mb-12">
+                    <div className="bg-orange-50 border-2 border-orange-200 rounded-2xl p-6 sm:p-8 mb-12">
                         <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                             <svg className="w-6 h-6 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
@@ -118,7 +118,7 @@ export default function Subscription({ currentTier, redirectTo }) {
                                 </div>
                             </div>
                             <div className="flex items-start gap-3">
-                                <div className="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white">
+                                <div className="flex-shrink-0 w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white">
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                                     </svg>
@@ -129,7 +129,7 @@ export default function Subscription({ currentTier, redirectTo }) {
                                 </div>
                             </div>
                             <div className="flex items-start gap-3">
-                                <div className="flex-shrink-0 w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white">
+                                <div className="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white">
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
                                     </svg>
@@ -140,7 +140,7 @@ export default function Subscription({ currentTier, redirectTo }) {
                                 </div>
                             </div>
                             <div className="flex items-start gap-3">
-                                <div className="flex-shrink-0 w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white">
+                                <div className="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white">
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
                                     </svg>
@@ -168,17 +168,17 @@ export default function Subscription({ currentTier, redirectTo }) {
                     {/* Feature Comparison Table */}
                     <div className="mt-16 max-w-4xl mx-auto">
                         <div className="flex items-center justify-center mb-8">
-                            <div className="h-1 w-8 bg-orange-300 rounded-full"></div>
+                            <div className="h-1 w-8 bg-orange-400 rounded-full"></div>
                             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mx-4">
                                 Feature Comparison
                             </h2>
-                            <div className="h-1 w-8 bg-blue-300 rounded-full"></div>
+                            <div className="h-1 w-8 bg-orange-400 rounded-full"></div>
                         </div>
-                        <div className="bg-white rounded-2xl shadow-xl border-2 border-orange-200 overflow-hidden">
+                        <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-200 overflow-hidden">
                             <div className="overflow-x-auto">
                                 <table className="w-full">
                                     <thead>
-                                        <tr className="bg-gradient-to-r from-orange-50 to-blue-50">
+                                        <tr className="bg-gray-50">
                                             <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">Feature</th>
                                             <th className="px-4 py-4 text-center text-sm font-bold text-gray-500">Free</th>
                                             <th className="px-4 py-4 text-center text-sm font-bold text-orange-600">Enhanced</th>
@@ -207,11 +207,11 @@ export default function Subscription({ currentTier, redirectTo }) {
                     {/* FAQ Section */}
                     <div className="mt-16 max-w-3xl mx-auto">
                         <div className="flex items-center justify-center mb-8">
-                            <div className="h-1 w-8 bg-orange-300 rounded-full"></div>
+                            <div className="h-1 w-8 bg-orange-400 rounded-full"></div>
                             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mx-4">
                                 Frequently Asked Questions
                             </h2>
-                            <div className="h-1 w-8 bg-blue-300 rounded-full"></div>
+                            <div className="h-1 w-8 bg-orange-400 rounded-full"></div>
                         </div>
                         <div className="space-y-4">
                             <FAQItem 
@@ -237,7 +237,7 @@ export default function Subscription({ currentTier, redirectTo }) {
                     <div className="mt-12 text-center">
                         <Link
                             href="/hotelier"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-50 to-blue-50 border-2 border-orange-200 rounded-lg text-gray-700 hover:text-orange-600 font-semibold transition-all hover:shadow-md"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-200 rounded-lg text-gray-700 hover:text-orange-600 font-semibold transition-all hover:shadow-md hover:border-orange-200"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -355,7 +355,7 @@ function ComparisonRow({ feature, free, enhanced, premium }) {
     const renderValue = (value) => {
         if (value === true) {
             return (
-                <svg className="w-5 h-5 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-orange-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
             );
