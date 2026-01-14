@@ -40,7 +40,7 @@ export default function HotelCompare({ hotels, auth }) {
                 <Header />
                 
                 {/* Header */}
-                <div className="bg-gradient-to-r from-orange-50 to-blue-50 border-b-2 border-orange-200 shadow-lg">
+                <div className="bg-white border-b-2 border-gray-200 shadow-lg">
                     <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 lg:py-10 xl:py-12">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                             <div className="w-full sm:w-auto">
@@ -63,12 +63,12 @@ export default function HotelCompare({ hotels, auth }) {
                 <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-12 xl:py-16">
                     {/* Mobile Scroll Hint */}
                     <div className="md:hidden mb-4 text-center">
-                        <p className="text-xs text-gray-700 font-sans font-bold flex items-center justify-center gap-2 bg-gradient-to-r from-blue-50 to-orange-50 p-3 rounded-2xl border-2 border-blue-200">
-                            <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                        <p className="text-xs text-gray-700 font-sans font-bold flex items-center justify-center gap-2 bg-gray-50 p-3 rounded-2xl border-2 border-gray-200">
+                            <svg className="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M9 5l7 7-7 7"/>
                             </svg>
                             Scroll horizontally to view all hotels
-                            <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M15 19l-7-7 7-7"/>
                             </svg>
                         </p>
@@ -79,18 +79,18 @@ export default function HotelCompare({ hotels, auth }) {
                         <div className="overflow-x-auto overflow-y-visible scrollbar-thin scrollbar-thumb-orange-300 scrollbar-track-orange-100">
                             <table className="w-full min-w-[800px]">
                             <thead>
-                                <tr className="border-b-2 border-orange-200 bg-gradient-to-r from-orange-50 to-blue-50">
-                                    <th className="p-3 sm:p-4 md:p-5 lg:p-6 xl:p-7 text-left font-sans font-bold text-gray-900 bg-gradient-to-r from-orange-100 to-orange-50 sticky left-0 z-10 text-xs sm:text-sm md:text-base shadow-lg">
+                                <tr className="border-b-2 border-orange-200 bg-white">
+                                    <th className="p-3 sm:p-4 md:p-5 lg:p-6 xl:p-7 text-left font-sans font-bold text-gray-900 bg-orange-50 sticky left-0 z-10 text-xs sm:text-sm md:text-base shadow-lg">
                                         Feature
                                     </th>
                                     {hotels.map((hotel) => {
                                         const isPremium = hotel.is_premium || hotel.subscription_tier === 'premium';
                                         return (
-                                            <th key={hotel.id} className={`p-3 sm:p-4 md:p-5 lg:p-6 text-center min-w-[220px] sm:min-w-[250px] md:min-w-[280px] lg:min-w-[300px] ${isPremium ? 'bg-gradient-to-b from-yellow-50 via-orange-50 to-transparent relative' : ''}`}>
+                                            <th key={hotel.id} className={`p-3 sm:p-4 md:p-5 lg:p-6 text-center min-w-[220px] sm:min-w-[250px] md:min-w-[280px] lg:min-w-[300px] ${isPremium ? 'bg-orange-50 relative' : ''}`}>
                                                 {/* Premium Badge at Top */}
                                                 {isPremium && (
                                                     <div className="absolute -top-1 left-1/2 -translate-x-1/2 z-20">
-                                                        <div className="bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-3 py-1 rounded-b-lg font-bold text-xs shadow-lg flex items-center gap-1.5 animate-pulse">
+                                                        <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-b-lg font-bold text-xs shadow-lg flex items-center gap-1.5 animate-pulse">
                                                             <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                                                                 <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                                                             </svg>
@@ -99,7 +99,7 @@ export default function HotelCompare({ hotels, auth }) {
                                                     </div>
                                                 )}
                                                 <div className={`space-y-2 sm:space-y-3 ${isPremium ? 'pt-4' : ''}`}>
-                                                    <div className={`overflow-hidden rounded-2xl shadow-lg sm:shadow-xl w-full h-32 sm:h-36 md:h-40 ${isPremium ? 'border-2 border-yellow-400 ring-2 ring-yellow-200' : 'border-2 border-gray-100'}`}>
+                                                    <div className={`overflow-hidden rounded-2xl shadow-lg sm:shadow-xl w-full h-32 sm:h-36 md:h-40 ${isPremium ? 'border-2 border-orange-400 ring-2 ring-orange-200' : 'border-2 border-gray-100'}`}>
                                                         <img
                                                             src={hotel.main_image_url || '/images/default-hotel.jpg'}
                                                             alt={hotel.name}
@@ -130,7 +130,7 @@ export default function HotelCompare({ hotels, auth }) {
                                                     {/* Verified Badge for Premium */}
                                                     {isPremium && hotel.show_verified_badge && (
                                                         <div className="flex justify-center">
-                                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold border border-blue-200">
+                                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-orange-100 text-orange-700 rounded-full text-[10px] font-bold border border-orange-200">
                                                                 <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
                                                                     <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
                                                                 </svg>
@@ -161,7 +161,7 @@ export default function HotelCompare({ hotels, auth }) {
                                 {/* Family Score */}
                                 <ComparisonRow
                                     label="Family Score"
-                                    icon={<svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24"><path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63C19.68 7.55 18.92 7 18.06 7h-.12c-.86 0-1.62.55-1.9 1.37L13.5 16H16v6h4zM5.5 6c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2zm1.5 16v-7H9V9c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v6h2v7h3z"/></svg>}
+                                    icon={<svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63C19.68 7.55 18.92 7 18.06 7h-.12c-.86 0-1.62.55-1.9 1.37L13.5 16H16v6h4zM5.5 6c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2zm1.5 16v-7H9V9c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v6h2v7h3z"/></svg>}
                                     hotels={hotels}
                                     getValue={(hotel) => hotel.family_score}
                                     formatValue={(value) => value ? `${value}/10` : '-'}
@@ -181,7 +181,7 @@ export default function HotelCompare({ hotels, auth }) {
                                 {/* Party Score */}
                                 <ComparisonRow
                                     label="Party Vibe Score"
-                                    icon={<svg className="w-5 h-5 text-pink-500" fill="currentColor" viewBox="0 0 24 24"><path d="M7 8c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.76-2.24 5-5 5S7 10.76 7 8zm5-3c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3zm1 13h-2v-2H9v2H7v2h2v2h2v-2h2v-2zm8-4h-2v2h2v-2zm-2-2h2v-2h-2v2zM4 14H2v2h2v-2zm0-4H2v2h2v-2z"/></svg>}
+                                    icon={<svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M7 8c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.76-2.24 5-5 5S7 10.76 7 8zm5-3c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3zm1 13h-2v-2H9v2H7v2h2v2h2v-2h2v-2zm8-4h-2v2h2v-2zm-2-2h2v-2h-2v2zM4 14H2v2h2v-2zm0-4H2v2h2v-2z"/></svg>}
                                     hotels={hotels}
                                     getValue={(hotel) => hotel.party_score}
                                     formatValue={(value) => value ? `${value}/10` : '-'}
@@ -189,7 +189,7 @@ export default function HotelCompare({ hotels, auth }) {
                                 />
 
                                 {/* Section Header - Pool Metrics */}
-                                <tr className="bg-gradient-to-r from-blue-100 to-blue-50 border-t-2 border-blue-200">
+                                <tr className="bg-blue-50 border-t-2 border-blue-200">
                                     <td colSpan={hotels.length + 1} className="p-3 sm:p-4 font-sans font-black text-gray-900 flex items-center gap-2">
                                         <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
@@ -221,7 +221,7 @@ export default function HotelCompare({ hotels, auth }) {
                                 {/* Pool Size */}
                                 <ComparisonRow
                                     label="Total Pool Size"
-                                    icon={<svg className="w-5 h-5 text-cyan-500" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16V8c0-.55-.22-1.05-.59-1.41L14.5 1.59C14.14 1.22 13.64 1 13.09 1H8v6H2v14c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-5l5-5zM13 3.5L18.5 9H13V3.5zM4 21V9h16v4.83L16.83 21H4z"/></svg>}
+                                    icon={<svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16V8c0-.55-.22-1.05-.59-1.41L14.5 1.59C14.14 1.22 13.64 1 13.09 1H8v6H2v14c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-5l5-5zM13 3.5L18.5 9H13V3.5zM4 21V9h16v4.83L16.83 21H4z"/></svg>}
                                     hotels={hotels}
                                     getValue={(hotel) => hotel.pool_criteria?.pool_size_sqm}
                                     formatValue={(value) => value ? `${value} m²` : '-'}
@@ -231,7 +231,7 @@ export default function HotelCompare({ hotels, auth }) {
                                 {/* Sun Exposure */}
                                 <ComparisonRow
                                     label="Sun Exposure"
-                                    icon={<svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>}
+                                    icon={<svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>}
                                     hotels={hotels}
                                     getValue={(hotel) => hotel.pool_criteria?.sun_exposure}
                                     formatValue={(value) => value ? formatSunExposure(value) : '-'}
@@ -240,16 +240,16 @@ export default function HotelCompare({ hotels, auth }) {
                                 {/* Atmosphere */}
                                 <ComparisonRow
                                     label="Atmosphere"
-                                    icon={<svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z"/></svg>}
+                                    icon={<svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z"/></svg>}
                                     hotels={hotels}
                                     getValue={(hotel) => hotel.pool_criteria?.atmosphere}
                                     formatValue={(value) => value ? value.charAt(0).toUpperCase() + value.slice(1) : '-'}
                                 />
 
                                 {/* Section Header - Features */}
-                                <tr className="bg-gradient-to-r from-purple-100 to-purple-50 border-t-2 border-purple-200">
+                                <tr className="bg-orange-50 border-t-2 border-orange-200">
                                     <td colSpan={hotels.length + 1} className="p-3 sm:p-4 font-sans font-black text-gray-900 flex items-center gap-2">
-                                        <svg className="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-5 h-5 text-orange-600" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                                         </svg>
                                         Pool Features
@@ -268,7 +268,7 @@ export default function HotelCompare({ hotels, auth }) {
                                 {/* Rooftop Pool */}
                                 <ComparisonRow
                                     label="Rooftop Pool"
-                                    icon={<svg className="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L4 7v12h2v-6h12v6h2V7l-8-5zm0 2.84L18 8v3H6V8l6-3.16zM10 14v2h4v-2h-4z"/></svg>}
+                                    icon={<svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L4 7v12h2v-6h12v6h2V7l-8-5zm0 2.84L18 8v3H6V8l6-3.16zM10 14v2h4v-2h-4z"/></svg>}
                                     hotels={hotels}
                                     getValue={(hotel) => hotel.pool_criteria?.has_rooftop_pool}
                                     formatValue={(value) => <BooleanBadge value={value} />}
@@ -286,7 +286,7 @@ export default function HotelCompare({ hotels, auth }) {
                                 {/* Pool Bar */}
                                 <ComparisonRow
                                     label="Pool Bar"
-                                    icon={<svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24"><path d="M21 5V3H3v2l8 9v5H6v2h12v-2h-5v-5l8-9zM7.43 7L5.66 5h12.69l-1.78 2H7.43z"/></svg>}
+                                    icon={<svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M21 5V3H3v2l8 9v5H6v2h12v-2h-5v-5l8-9zM7.43 7L5.66 5h12.69l-1.78 2H7.43z"/></svg>}
                                     hotels={hotels}
                                     getValue={(hotel) => hotel.pool_criteria?.has_pool_bar}
                                     formatValue={(value) => <BooleanBadge value={value} />}
@@ -295,16 +295,16 @@ export default function HotelCompare({ hotels, auth }) {
                                 {/* Lazy River */}
                                 <ComparisonRow
                                     label="Lazy River"
-                                    icon={<svg className="w-5 h-5 text-cyan-500" fill="currentColor" viewBox="0 0 24 24"><path d="M22 21c-1.11 0-1.73-.37-2.18-.64-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.45.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.45.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36s-.78.13-1.15.36c-.46.27-1.08.64-2.19.64v-2c.56 0 .78-.13 1.15-.36.46-.27 1.08-.64 2.19-.64s1.73.37 2.18.64c.37.23.59.36 1.15.36.56 0 .78-.13 1.15-.36.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36s.78-.13 1.15-.36c.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.23.59.36 1.15.36v2zm0-4.5c-1.11 0-1.73-.37-2.18-.64-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.45.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.45.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36s-.78.13-1.15.36c-.47.27-1.09.64-2.2.64v-2c.56 0 .78-.13 1.15-.36.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36.56 0 .78-.13 1.15-.36.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36s.78-.13 1.15-.36c.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36v2z"/></svg>}
+                                    icon={<svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M22 21c-1.11 0-1.73-.37-2.18-.64-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.45.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.45.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36s-.78.13-1.15.36c-.46.27-1.08.64-2.19.64v-2c.56 0 .78-.13 1.15-.36.46-.27 1.08-.64 2.19-.64s1.73.37 2.18.64c.37.23.59.36 1.15.36.56 0 .78-.13 1.15-.36.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36s.78-.13 1.15-.36c.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.23.59.36 1.15.36v2zm0-4.5c-1.11 0-1.73-.37-2.18-.64-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.45.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.45.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36s-.78.13-1.15.36c-.47.27-1.09.64-2.2.64v-2c.56 0 .78-.13 1.15-.36.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36.56 0 .78-.13 1.15-.36.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36s.78-.13 1.15-.36c.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36v2z"/></svg>}
                                     hotels={hotels}
                                     getValue={(hotel) => hotel.pool_criteria?.has_lazy_river}
                                     formatValue={(value) => <BooleanBadge value={value} />}
                                 />
 
                                 {/* Section Header - Family Features */}
-                                <tr className="bg-gradient-to-r from-green-100 to-green-50 border-t-2 border-green-200">
+                                <tr className="bg-blue-50 border-t-2 border-blue-200">
                                     <td colSpan={hotels.length + 1} className="p-3 sm:p-4 font-sans font-black text-gray-900 flex items-center gap-2">
-                                        <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63C19.68 7.55 18.92 7 18.06 7h-.12c-.86 0-1.62.55-1.9 1.37L13.5 16H16v6h4zM5.5 6c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2zm1.5 16v-7H9V9c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v6h2v7h3z"/>
                                         </svg>
                                         Family & Safety
@@ -314,7 +314,7 @@ export default function HotelCompare({ hotels, auth }) {
                                 {/* Kids Pool */}
                                 <ComparisonRow
                                     label="Kids Pool"
-                                    icon={<svg className="w-5 h-5 text-pink-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 5.9c1.16 0 2.1-.94 2.1-2.1S13.16 1.7 12 1.7s-2.1.94-2.1 2.1S10.84 5.9 12 5.9zm8 7.5c-.03 0-.06 0-.08.01L15 13.5v5.5l-2.07-.46c1.11.49 2.41.46 3.5-.07V22h2v-6.23l2.58.58c.36.08.72-.15.8-.51.08-.37-.15-.73-.51-.81L21 15v-.1c.02-.43-.31-.8-.73-.88C20.17 14.01 20.09 14 20 13.5zm-9.98 1l.54 5.5h2.08l.54-5.5c.06-.61-.4-1.13-1-1.13h-.16c-.6 0-1.06.52-1 1.13zM12 8c-1.66 0-3 1.34-3 3 0 1.65 1.34 3 3 3s3-1.35 3-3c0-1.66-1.34-3-3-3z"/></svg>}
+                                    icon={<svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 5.9c1.16 0 2.1-.94 2.1-2.1S13.16 1.7 12 1.7s-2.1.94-2.1 2.1S10.84 5.9 12 5.9zm8 7.5c-.03 0-.06 0-.08.01L15 13.5v5.5l-2.07-.46c1.11.49 2.41.46 3.5-.07V22h2v-6.23l2.58.58c.36.08.72-.15.8-.51.08-.37-.15-.73-.51-.81L21 15v-.1c.02-.43-.31-.8-.73-.88C20.17 14.01 20.09 14 20 13.5zm-9.98 1l.54 5.5h2.08l.54-5.5c.06-.61-.4-1.13-1-1.13h-.16c-.6 0-1.06.52-1 1.13zM12 8c-1.66 0-3 1.34-3 3 0 1.65 1.34 3 3 3s3-1.35 3-3c0-1.66-1.34-3-3-3z"/></svg>}
                                     hotels={hotels}
                                     getValue={(hotel) => hotel.pool_criteria?.has_kids_pool}
                                     formatValue={(value) => <BooleanBadge value={value} />}
@@ -323,7 +323,7 @@ export default function HotelCompare({ hotels, auth }) {
                                 {/* Splash Area */}
                                 <ComparisonRow
                                     label="Splash Area"
-                                    icon={<svg className="w-5 h-5 text-cyan-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>}
+                                    icon={<svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>}
                                     hotels={hotels}
                                     getValue={(hotel) => hotel.pool_criteria?.has_splash_area}
                                     formatValue={(value) => <BooleanBadge value={value} />}
@@ -332,7 +332,7 @@ export default function HotelCompare({ hotels, auth }) {
                                 {/* Lifeguard */}
                                 <ComparisonRow
                                     label="Lifeguard on Duty"
-                                    icon={<svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>}
+                                    icon={<svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>}
                                     hotels={hotels}
                                     getValue={(hotel) => hotel.pool_criteria?.has_lifeguard}
                                     formatValue={(value) => <BooleanBadge value={value} />}
@@ -341,16 +341,16 @@ export default function HotelCompare({ hotels, auth }) {
                                 {/* Adults Only */}
                                 <ComparisonRow
                                     label="Adults Only"
-                                    icon={<svg className="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>}
+                                    icon={<svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>}
                                     hotels={hotels}
                                     getValue={(hotel) => hotel.pool_criteria?.is_adults_only}
                                     formatValue={(value) => <BooleanBadge value={value} />}
                                 />
 
                                 {/* Section Header - Comfort */}
-                                <tr className="bg-gradient-to-r from-yellow-100 to-yellow-50 border-t-2 border-yellow-200">
+                                <tr className="bg-orange-50 border-t-2 border-orange-200">
                                     <td colSpan={hotels.length + 1} className="p-3 sm:p-4 font-sans font-black text-gray-900 flex items-center gap-2">
-                                        <svg className="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-5 h-5 text-orange-600" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                                         </svg>
                                         Comfort & Amenities
@@ -360,7 +360,7 @@ export default function HotelCompare({ hotels, auth }) {
                                 {/* Shade Areas */}
                                 <ComparisonRow
                                     label="Shade Areas"
-                                    icon={<svg className="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 24 24"><path d="M14.5 6.92L13 5.77V3.4c0-.26.22-.48.5-.48s.5.21.5.48V4h1v-.6C15 2.07 13.88 1 12.5 1S10 2.07 10 3.4v2.37L8.5 6.92 6 6.07l5.05 15.25c.15.45.55.68.95.68s.8-.23.95-.69L18 6.07l-3.5.85zM13.28 8.5l.76.58.92-.23L13 14.8V8.29l.28.21z"/></svg>}
+                                    icon={<svg className="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M14.5 6.92L13 5.77V3.4c0-.26.22-.48.5-.48s.5.21.5.48V4h1v-.6C15 2.07 13.88 1 12.5 1S10 2.07 10 3.4v2.37L8.5 6.92 6 6.07l5.05 15.25c.15.45.55.68.95.68s.8-.23.95-.69L18 6.07l-3.5.85zM13.28 8.5l.76.58.92-.23L13 14.8V8.29l.28.21z"/></svg>}
                                     hotels={hotels}
                                     getValue={(hotel) => hotel.pool_criteria?.has_shade_areas}
                                     formatValue={(value) => <BooleanBadge value={value} />}
@@ -378,7 +378,7 @@ export default function HotelCompare({ hotels, auth }) {
                                 {/* Food Service */}
                                 <ComparisonRow
                                     label="Poolside Food Service"
-                                    icon={<svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>}
+                                    icon={<svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>}
                                     hotels={hotels}
                                     getValue={(hotel) => hotel.pool_criteria?.has_food_service}
                                     formatValue={(value) => <BooleanBadge value={value} />}
@@ -407,14 +407,14 @@ export default function HotelCompare({ hotels, auth }) {
                                     key={hotel.id} 
                                     className={`rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-5 md:p-6 text-center transform hover:scale-105 ${
                                         isPremium 
-                                            ? 'bg-gradient-to-b from-yellow-50 via-orange-50 to-white border-2 border-yellow-400 ring-2 ring-yellow-200' 
+                                            ? 'bg-orange-50 border-2 border-orange-400 ring-2 ring-orange-200' 
                                             : 'bg-white border-2 border-gray-100'
                                     }`}
                                 >
                                     {/* Premium Badge */}
                                     {isPremium && (
                                         <div className="flex justify-center mb-2">
-                                            <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                                            <span className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
                                                 <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
                                                     <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                                                 </svg>
@@ -429,7 +429,7 @@ export default function HotelCompare({ hotels, auth }) {
                                     
                                     {/* Active Promotion Banner for Premium */}
                                     {isPremium && activePromo && (
-                                        <div className="mb-3 bg-gradient-to-r from-orange-500 to-yellow-500 text-white px-3 py-2 rounded-lg text-xs font-bold">
+                                        <div className="mb-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-2 rounded-lg text-xs font-bold">
                                             <div className="flex items-center justify-center gap-1 mb-1">
                                                 <span>⭐</span>
                                                 <span>Special Offer</span>
@@ -458,7 +458,7 @@ export default function HotelCompare({ hotels, auth }) {
                                                 href={hotel.direct_booking_url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="block w-full px-4 py-3 sm:py-4 bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 text-white font-sans font-black rounded-2xl hover:from-green-600 hover:via-emerald-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl text-xs sm:text-sm transform hover:scale-105 animate-pulse"
+                                                className="block w-full px-4 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-black rounded-2xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl text-xs sm:text-sm transform hover:scale-105"
                                             >
                                                 <div className="flex items-center justify-center gap-2">
                                                     <span>💰</span>
@@ -509,8 +509,8 @@ function SpecialOffersRow({ hotels }) {
     if (!hasAnyPromotions) return null;
 
     return (
-        <tr className="border-b-2 border-orange-200 bg-gradient-to-r from-yellow-50 to-orange-50">
-            <td className="p-3 sm:p-4 md:p-5 lg:p-6 xl:p-7 font-sans font-bold text-gray-700 bg-gradient-to-r from-orange-100 to-yellow-50 sticky left-0 z-10 shadow-md">
+        <tr className="border-b-2 border-orange-200 bg-orange-50">
+            <td className="p-3 sm:p-4 md:p-5 lg:p-6 xl:p-7 font-sans font-bold text-gray-700 bg-orange-100 sticky left-0 z-10 shadow-md">
                 <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3">
                     <span className="text-xl">⭐</span>
                     <span className="text-[10px] sm:text-xs md:text-sm lg:text-base text-orange-800 font-black">Special Offers</span>
@@ -552,7 +552,7 @@ function SpecialOffersRow({ hotels }) {
                         key={hotel.id} 
                         className={`p-3 sm:p-4 md:p-5 lg:p-6 text-center ${
                             isPremium 
-                                ? 'bg-gradient-to-b from-yellow-100 via-orange-50 to-transparent' 
+                                ? 'bg-orange-50' 
                                 : ''
                         }`}
                     >
@@ -562,7 +562,7 @@ function SpecialOffersRow({ hotels }) {
                                     key={idx}
                                     className={`rounded-lg px-2 py-1.5 text-xs font-bold ${
                                         isPremium 
-                                            ? 'bg-gradient-to-r from-orange-500 to-yellow-500 text-white shadow-md' 
+                                            ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md' 
                                             : 'bg-orange-100 text-orange-800 border border-orange-200'
                                     }`}
                                 >
@@ -606,7 +606,7 @@ function ComparisonRow({ label, icon, hotels, getValue, formatValue, highlightBe
                     <td 
                         key={hotel.id} 
                         className={`p-3 sm:p-4 md:p-5 lg:p-6 text-center font-sans text-xs sm:text-sm md:text-base ${
-                            isBest ? 'bg-gradient-to-r from-green-50 to-green-100 font-black text-green-900 border-2 border-green-300' : 'text-gray-700 font-bold'
+                            isBest ? 'bg-orange-50 font-black text-orange-900 border-2 border-orange-300' : 'text-gray-700 font-bold'
                         }`}
                     >
                         <div className="flex items-center justify-center gap-1 sm:gap-2">
@@ -628,7 +628,7 @@ function ComparisonRow({ label, icon, hotels, getValue, formatValue, highlightBe
 function BooleanBadge({ value }) {
     if (value === true) {
         return (
-            <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 md:px-4 py-1 sm:py-1.5 bg-green-100 text-green-800 rounded-full text-[10px] sm:text-xs md:text-sm font-sans font-bold border-2 border-green-300">
+            <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 md:px-4 py-1 sm:py-1.5 bg-orange-100 text-orange-800 rounded-full text-[10px] sm:text-xs md:text-sm font-sans font-bold border-2 border-orange-300">
                 <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                 </svg>
