@@ -38,7 +38,7 @@ export default function DestinationShow({ destination, hotels, filters = {} }) {
             <div className="min-h-screen bg-white">
                 <Header />
                 {/* Header */}
-                <div className="bg-gradient-to-r from-orange-500 via-orange-600 to-blue-600 text-white py-6 sm:py-8 md:py-10 lg:py-12 xl:py-16 shadow-lg">
+                <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-6 sm:py-8 md:py-10 lg:py-12 xl:py-16 shadow-lg">
                     <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
                         <Link href="/" className="text-white hover:text-orange-100 mb-3 sm:mb-4 md:mb-5 lg:mb-6 inline-flex items-center gap-2 font-sans font-bold text-xs sm:text-sm md:text-base transition-all duration-300 transform hover:scale-105">
                             <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -68,7 +68,7 @@ export default function DestinationShow({ destination, hotels, filters = {} }) {
                                     {Object.keys(localFilters).length > 0 && (
                                         <button
                                             onClick={clearFilters}
-                                            className="text-[10px] sm:text-xs md:text-sm text-red-600 hover:text-red-700 font-sans font-bold transition-all duration-300 px-2 py-1 hover:bg-red-50 rounded-lg"
+                                            className="text-[10px] sm:text-xs md:text-sm text-gray-600 hover:text-gray-700 font-sans font-bold transition-all duration-300 px-2 py-1 hover:bg-gray-100 rounded-lg"
                                         >
                                             Clear all
                                         </button>
@@ -166,7 +166,7 @@ export default function DestinationShow({ destination, hotels, filters = {} }) {
                         <div className="flex-1 min-w-0">
                             {/* Compare Bar - Shows when hotels are selected */}
                             {compareList.length > 0 && (
-                                <div className="bg-gradient-to-r from-orange-50 to-blue-50 rounded-2xl shadow-xl border-2 border-orange-200 p-4 sm:p-5 mb-4 sm:mb-6">
+                                <div className="bg-white rounded-2xl shadow-xl border-2 border-orange-200 p-4 sm:p-5 mb-4 sm:mb-6">
                                     <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
                                         <div className="text-center sm:text-left">
                                             <p className="text-sm sm:text-base font-sans font-black text-gray-900 mb-1">
@@ -257,7 +257,7 @@ function HotelCard({ hotel, isInCompare, onToggleCompare }) {
     
     // Premium hotels get larger, more prominent cards with enhanced borders
     const cardClasses = isPremium 
-        ? "bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group relative border-4 border-yellow-400 transform hover:scale-105 ring-2 ring-yellow-200"
+        ? "bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group relative border-4 border-orange-400 transform hover:scale-105 ring-2 ring-orange-200"
         : "bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group relative border-2 border-gray-100 transform hover:scale-105";
     
     // Premium hotels get taller images on mobile
@@ -268,7 +268,7 @@ function HotelCard({ hotel, isInCompare, onToggleCompare }) {
         <div className={cardClasses}>
             {/* Premium Badge */}
             {hotel.is_premium && (
-                <div className="absolute top-2 sm:top-3 right-2 sm:right-3 z-20 bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full font-sans font-black text-[10px] sm:text-xs shadow-lg flex items-center gap-1 animate-pulse">
+                <div className="absolute top-2 sm:top-3 right-2 sm:right-3 z-20 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full font-sans font-black text-[10px] sm:text-xs shadow-lg flex items-center gap-1 animate-pulse">
                     <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                     </svg>
@@ -278,7 +278,7 @@ function HotelCard({ hotel, isInCompare, onToggleCompare }) {
             
             {/* Special Offer Badge */}
             {isPremium && hotel.special_offer && (
-                <div className="absolute top-10 sm:top-12 right-2 sm:right-3 z-20 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-2 sm:px-2.5 py-1 rounded-full font-sans font-bold text-[9px] sm:text-[10px] shadow-lg flex items-center gap-1">
+                <div className="absolute top-10 sm:top-12 right-2 sm:right-3 z-20 bg-orange-500 text-white px-2 sm:px-2.5 py-1 rounded-full font-sans font-bold text-[9px] sm:text-[10px] shadow-lg flex items-center gap-1">
                     🎉 OFFER
                 </div>
             )}
@@ -346,7 +346,7 @@ function HotelCard({ hotel, isInCompare, onToggleCompare }) {
                             )}
                             {hotel.pool_criteria.sun_exposure && (
                                 <div className="flex items-center text-gray-700 font-sans font-bold">
-                                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 flex-shrink-0 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 flex-shrink-0 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
                                     </svg>
                                     <span className="font-bold">Sun:</span>&nbsp;<span className="truncate">{hotel.pool_criteria.sun_exposure.replace('_', ' ')}</span>
@@ -354,7 +354,7 @@ function HotelCard({ hotel, isInCompare, onToggleCompare }) {
                             )}
                             {hotel.pool_criteria.atmosphere && (
                                 <div className="flex items-center text-gray-700 font-sans font-bold">
-                                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 flex-shrink-0 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 flex-shrink-0 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z"/>
                                     </svg>
                                     <span className="font-bold">Vibe:</span>&nbsp;<span className="truncate capitalize">{hotel.pool_criteria.atmosphere}</span>

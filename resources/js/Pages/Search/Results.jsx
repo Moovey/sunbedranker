@@ -493,14 +493,6 @@ function HotelCard({ hotel, isInCompare, onToggleCompare, isHotelier }) {
                         </div>
                     )}
                     
-                    {/* Special Offer Badge */}
-                    {isPremium && hotel.special_offer && (
-                        <div className="absolute top-3 sm:top-4 left-3 sm:left-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full font-bold text-[10px] sm:text-xs shadow-lg flex items-center gap-1 z-10">
-                            <span>🎉</span>
-                            OFFER
-                        </div>
-                    )}
-                    
                     {hotel.overall_score && (
                         <div className={`absolute ${hotel.is_premium ? 'top-12 sm:top-14' : 'top-3 sm:top-4'} right-3 sm:right-4 bg-white/95 backdrop-blur-sm text-neutral-900 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-light tracking-wider text-xs sm:text-sm shadow-lg`}>
                             {hotel.overall_score}/10
