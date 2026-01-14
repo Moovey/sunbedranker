@@ -9,19 +9,19 @@ import { Icons } from '../Icons';
 // FAQ ITEM COMPONENT
 // ============================================
 export const FaqItem = ({ question, answer, isOpen, onClick }) => (
-    <div className="border border-gray-200 rounded-lg overflow-hidden">
+    <div className="border-b border-orange-100 last:border-b-0">
         <button
             onClick={onClick}
-            className="w-full px-4 py-3 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors"
+            className="w-full px-4 py-4 flex items-center justify-between bg-white hover:bg-orange-50 transition-colors"
         >
-            <span className="font-medium text-gray-900 text-left">{question}</span>
+            <span className="font-semibold text-gray-900 text-left">{question}</span>
             <Icons.ChevronDown 
-                className={`w-5 h-5 text-gray-500 transform transition-transform ${isOpen ? 'rotate-180' : ''}`} 
+                className={`w-5 h-5 text-orange-500 transform transition-transform ${isOpen ? 'rotate-180' : ''}`} 
             />
         </button>
         {isOpen && (
-            <div className="px-4 py-3 bg-white border-t border-gray-200">
-                <p className="text-gray-600">{answer}</p>
+            <div className="px-4 py-4 bg-orange-50/50">
+                <p className="text-gray-700">{answer}</p>
             </div>
         )}
     </div>
@@ -30,16 +30,11 @@ export const FaqItem = ({ question, answer, isOpen, onClick }) => (
 // ============================================
 // METRIC CARD COMPONENT
 // ============================================
-export const MetricCard = ({ icon, label, value, subValue, description, highlight, color = 'blue' }) => {
+export const MetricCard = ({ icon, label, value, subValue, description, highlight, color = 'orange' }) => {
     const colorClasses = {
         blue: 'bg-blue-50 text-blue-600',
-        green: 'bg-green-50 text-green-600',
-        yellow: 'bg-yellow-50 text-yellow-600',
-        purple: 'bg-purple-50 text-purple-600',
         orange: 'bg-orange-50 text-orange-600',
-        cyan: 'bg-cyan-50 text-cyan-600',
-        pink: 'bg-pink-50 text-pink-600',
-        indigo: 'bg-indigo-50 text-indigo-600',
+        gray: 'bg-gray-100 text-gray-600',
     };
 
     // Handle both JSX elements and component references
@@ -53,7 +48,7 @@ export const MetricCard = ({ icon, label, value, subValue, description, highligh
     };
 
     return (
-        <div className={`bg-white rounded-lg p-4 border ${highlight ? 'border-green-300 bg-green-50' : 'border-gray-100'} shadow-sm hover:shadow-md transition-shadow`}>
+        <div className={`bg-white rounded-xl p-4 border-2 ${highlight ? 'border-orange-300 bg-orange-50' : 'border-gray-100'} shadow-sm hover:shadow-lg transition-all duration-300`}>
             <div className={`w-10 h-10 rounded-lg ${colorClasses[color]} flex items-center justify-center mb-3`}>
                 {renderIcon()}
             </div>
@@ -71,10 +66,10 @@ export const MetricCard = ({ icon, label, value, subValue, description, highligh
 export const FeatureBadge = ({ icon, label, text, variant = 'default', color }) => {
     const variants = {
         default: 'bg-gray-100 text-gray-700',
-        success: 'bg-green-100 text-green-700',
-        warning: 'bg-yellow-100 text-yellow-700',
+        success: 'bg-orange-100 text-orange-700',
+        warning: 'bg-orange-100 text-orange-700',
         info: 'bg-blue-100 text-blue-700',
-        premium: 'bg-purple-100 text-purple-700',
+        premium: 'bg-orange-100 text-orange-700',
     };
 
     // Handle both JSX elements and component references
@@ -110,7 +105,7 @@ export const SectionCard = ({ children, className = '' }) => (
 // ============================================
 // SECTION TITLE COMPONENT
 // ============================================
-export const SectionTitle = ({ icon, title, subtitle, iconColor = 'text-blue-600', iconBg = 'bg-blue-100' }) => {
+export const SectionTitle = ({ icon, title, subtitle, iconColor = 'text-orange-600', iconBg = 'bg-orange-100' }) => {
     const renderIcon = () => {
         if (!icon) return null;
         if (React.isValidElement(icon)) return icon;
@@ -137,7 +132,7 @@ export const SectionTitle = ({ icon, title, subtitle, iconColor = 'text-blue-600
 // VERIFIED BADGE COMPONENT
 // ============================================
 export const VerifiedBadge = ({ text = 'Verified' }) => (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-medium rounded-full">
         <Icons.Verified className="w-3 h-3" />
         {text}
     </span>
@@ -214,7 +209,7 @@ export const StarRating = ({ rating, maxRating = 5, size = 'md' }) => {
 // ============================================
 // FEATURE CARD COMPONENT
 // ============================================
-export const FeatureCard = ({ icon, title, description, iconBg = 'bg-blue-100', iconColor = 'text-blue-600' }) => {
+export const FeatureCard = ({ icon, title, description, iconBg = 'bg-orange-100', iconColor = 'text-orange-600' }) => {
     const renderIcon = () => {
         if (!icon) return null;
         if (React.isValidElement(icon)) return icon;
@@ -243,9 +238,9 @@ export const FeatureCard = ({ icon, title, description, iconBg = 'bg-blue-100', 
 export const CheckFeature = ({ label, available = true }) => (
     <div className="flex items-center gap-2">
         {available ? (
-            <Icons.Check className="w-4 h-4 text-green-500" />
+            <Icons.Check className="w-4 h-4 text-orange-500" />
         ) : (
-            <Icons.X className="w-4 h-4 text-red-400" />
+            <Icons.X className="w-4 h-4 text-gray-400" />
         )}
         <span className={available ? 'text-gray-700' : 'text-gray-400'}>{label}</span>
     </div>
@@ -254,15 +249,13 @@ export const CheckFeature = ({ label, available = true }) => (
 // ============================================
 // PROGRESS BAR COMPONENT
 // ============================================
-export const ProgressBar = ({ value, max = 100, color = 'blue', showLabel = true }) => {
+export const ProgressBar = ({ value, max = 100, color = 'orange', showLabel = true }) => {
     const percentage = Math.min((value / max) * 100, 100);
     
     const colors = {
         blue: 'bg-blue-500',
-        green: 'bg-green-500',
-        yellow: 'bg-yellow-500',
-        red: 'bg-red-500',
-        purple: 'bg-purple-500',
+        orange: 'bg-orange-500',
+        gray: 'bg-gray-500',
     };
 
     return (
@@ -334,9 +327,9 @@ export const EmptyState = ({ icon, title, description }) => {
 export const InfoBanner = ({ icon, title, description, variant = 'info' }) => {
     const variants = {
         info: 'bg-blue-50 border-blue-200 text-blue-800',
-        success: 'bg-green-50 border-green-200 text-green-800',
-        warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
-        error: 'bg-red-50 border-red-200 text-red-800',
+        success: 'bg-orange-50 border-orange-200 text-orange-800',
+        warning: 'bg-orange-50 border-orange-200 text-orange-800',
+        error: 'bg-gray-100 border-gray-300 text-gray-800',
     };
 
     const renderIcon = () => {

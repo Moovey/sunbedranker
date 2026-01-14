@@ -6,7 +6,7 @@ import { Icons } from './Icons';
 // ============================================
 export function Breadcrumb({ hotel }) {
     return (
-        <div className="bg-gradient-to-r from-orange-50 via-white to-blue-50 border-b-2 border-orange-100">
+        <div className="bg-white border-b-2 border-gray-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
                 <nav className="text-xs sm:text-sm lg:text-base text-gray-600 font-sans flex items-center flex-wrap gap-2">
                     <Link href="/" className="hover:text-orange-600 transition-colors duration-300 font-semibold">Home</Link>
@@ -47,7 +47,7 @@ export function HotelHeader({ hotel }) {
                     <span>{hotel.destination.name}</span>
                 </div>
                 {hotel.subscription_tier === 'premium' && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 rounded-full text-xs sm:text-sm font-sans font-bold border border-green-200">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 text-orange-700 rounded-full text-xs sm:text-sm font-sans font-bold border border-orange-200">
                         <Icons.Verified />
                         Verified
                     </span>
@@ -77,7 +77,7 @@ export function ImageGallery({ allImages, activeImageIndex, hotelName, onPrevIma
                 
                 {/* Premium Badge Overlay */}
                 {isPremium && (
-                    <div className="absolute top-4 left-4 bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-2 animate-pulse z-10">
+                    <div className="absolute top-4 left-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-2 animate-pulse z-10">
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                         </svg>
@@ -230,7 +230,7 @@ function SpecialOfferBanner({ hotel }) {
     if (activePromotions.length === 1) {
         const promo = activePromotions[0];
         return (
-            <div className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white px-4 py-3 rounded-xl mb-4 shadow-md relative overflow-hidden">
+            <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-3 rounded-xl mb-4 shadow-md relative overflow-hidden">
                 {/* Decorative circles */}
                 <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
                 <div className="absolute bottom-0 left-1/2 w-16 h-16 bg-white/10 rounded-full -mb-8"></div>
@@ -271,7 +271,7 @@ function SpecialOfferBanner({ hotel }) {
             <div className="flex items-center gap-2">
                 <span className="text-xl">🎉</span>
                 <span className="font-bold text-gray-800">Current Offers & Promotions</span>
-                <span className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-2 py-0.5 rounded-full text-xs font-bold">
+                <span className="bg-orange-500 text-white px-2 py-0.5 rounded-full text-xs font-bold">
                     {activePromotions.length} Active
                 </span>
             </div>
@@ -281,7 +281,7 @@ function SpecialOfferBanner({ hotel }) {
                 {activePromotions.map((promo, index) => (
                     <div 
                         key={index}
-                        className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white px-4 py-3 rounded-xl shadow-md relative overflow-hidden"
+                        className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-3 rounded-xl shadow-md relative overflow-hidden"
                     >
                         {/* Decorative element */}
                         <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8"></div>
@@ -338,7 +338,7 @@ function HeroEnhancedFeatures({ hotel, onBookingClick }) {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {/* Video Tour */}
                 {hotel.video_url && (
-                    <div className="bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl overflow-hidden shadow-lg">
+                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl overflow-hidden shadow-lg">
                         {isYouTubeUrl(hotel.video_url) && getYouTubeVideoId(hotel.video_url) ? (
                             <div className="aspect-video">
                                 <iframe
@@ -370,7 +370,7 @@ function HeroEnhancedFeatures({ hotel, onBookingClick }) {
 
                 {/* 360° Virtual Tour */}
                 {hotel.video_360_url && (
-                    <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl overflow-hidden shadow-lg">
+                    <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl overflow-hidden shadow-lg">
                         {isYouTubeUrl(hotel.video_360_url) && getYouTubeVideoId(hotel.video_360_url) ? (
                             <div className="aspect-video">
                                 <iframe
@@ -426,7 +426,7 @@ export function HeroSection({ hotel, allImages, activeImageIndex, onPrevImage, o
     const isPremium = hotel.is_premium;
     
     return (
-        <div className="bg-gradient-to-b from-blue-50/50 to-white border-b border-orange-100">
+        <div className="bg-white border-b border-gray-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
                 {/* Hotel Header */}
                 <HotelHeader hotel={hotel} />

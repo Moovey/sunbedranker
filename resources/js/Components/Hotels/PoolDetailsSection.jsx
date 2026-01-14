@@ -148,21 +148,21 @@ export function SunbedAvailabilitySection({ poolCriteria }) {
     }
 
     return (
-        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-semibold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
-                <Icons.Sunbed className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
+        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                <Icons.Sunbed className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
                 Sunbed Availability
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {poolCriteria.sunbed_count && (
-                    <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-lg border border-amber-200">
-                        <div className="text-2xl font-bold text-amber-700">{poolCriteria.sunbed_count}</div>
+                    <div className="flex items-center gap-3 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                        <div className="text-2xl font-bold text-orange-600">{poolCriteria.sunbed_count}</div>
                         <div className="text-sm text-gray-700">Total Sunbeds</div>
                     </div>
                 )}
                 {poolCriteria.sunbed_to_guest_ratio && (
-                    <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
-                        <div className="text-2xl font-bold text-emerald-700">{poolCriteria.sunbed_to_guest_ratio}</div>
+                    <div className="flex items-center gap-3 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                        <div className="text-2xl font-bold text-orange-600">{poolCriteria.sunbed_to_guest_ratio}</div>
                         <div className="text-sm text-gray-700">Sunbed Ratio</div>
                     </div>
                 )}
@@ -171,7 +171,7 @@ export function SunbedAvailabilitySection({ poolCriteria }) {
                         <div className="text-sm font-semibold text-gray-900 mb-2">Sunbed Types:</div>
                         <div className="flex flex-wrap gap-2">
                             {poolCriteria.sunbed_types.map((type, i) => (
-                                <span key={i} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium capitalize">
+                                <span key={i} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium capitalize">
                                     {type.replace('_', ' ')}
                                 </span>
                             ))}
@@ -197,18 +197,18 @@ export function SunExposureSection({ poolCriteria }) {
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-semibold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
-                <Icons.Sun className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" />
+        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                <Icons.Sun className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
                 Sun Exposure & Orientation
             </h2>
             
             <div className="space-y-4">
                 {/* Sun Exposure Level */}
                 {poolCriteria.sun_exposure && (
-                    <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                    <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
                         <div className="text-sm text-gray-600 mb-1">Sun Exposure</div>
-                        <div className="text-lg font-semibold text-yellow-800 capitalize">
+                        <div className="text-lg font-semibold text-orange-600 capitalize">
                             {poolCriteria.sun_exposure.replace(/_/g, ' ')}
                         </div>
                     </div>
@@ -222,7 +222,7 @@ export function SunExposureSection({ poolCriteria }) {
                             {poolCriteria.sunny_areas.map((area, i) => (
                                 <span 
                                     key={i} 
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-100 text-amber-800 rounded-full text-sm font-medium border border-amber-200"
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 text-orange-700 rounded-full text-sm font-medium border border-orange-200"
                                 >
                                     <Icons.Sun className="w-4 h-4" />
                                     {formatSunnyArea(area)}
@@ -246,32 +246,32 @@ export function PoolSizeSection({ poolCriteria }) {
     }
 
     return (
-        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-semibold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
-                <Icons.PoolSize className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                <Icons.PoolSize className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
                 Pool Size & Variety
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {poolCriteria.pool_size_category && (
                     <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                         <div className="text-sm text-gray-600 mb-1">Pool Size</div>
-                        <div className="text-lg font-semibold text-blue-700 capitalize">
+                        <div className="text-lg font-semibold text-blue-600 capitalize">
                             {poolCriteria.pool_size_category.replace('_', ' ')}
                         </div>
                     </div>
                 )}
                 {poolCriteria.total_pool_area_sqm && (
-                    <div className="p-4 bg-cyan-50 rounded-lg border border-cyan-200">
+                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                         <div className="text-sm text-gray-600 mb-1">Total Area</div>
-                        <div className="text-lg font-semibold text-cyan-700">
+                        <div className="text-lg font-semibold text-blue-600">
                             {poolCriteria.total_pool_area_sqm} m²
                         </div>
                     </div>
                 )}
                 {poolCriteria.number_of_pools && (
-                    <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                         <div className="text-sm text-gray-600 mb-1">Number of Pools</div>
-                        <div className="text-lg font-semibold text-indigo-700">
+                        <div className="text-lg font-semibold text-blue-600">
                             {poolCriteria.number_of_pools}
                         </div>
                     </div>
@@ -281,7 +281,7 @@ export function PoolSizeSection({ poolCriteria }) {
                         <div className="text-sm font-semibold text-gray-900 mb-2">Pool Types:</div>
                         <div className="flex flex-wrap gap-2">
                             {poolCriteria.pool_types.map((type, i) => (
-                                <span key={i} className="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-medium capitalize">
+                                <span key={i} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium capitalize">
                                     {type.replace('_', ' ')}
                                 </span>
                             ))}
@@ -326,9 +326,9 @@ export function FacilitiesSection({ poolCriteria }) {
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-semibold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
-                <Icons.Facilities className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
+        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                <Icons.Facilities className="w-5 h-5 sm:w-6 sm:h-6 text-green-500" />
                 Pool Facilities & Comfort
             </h2>
             
@@ -341,7 +341,7 @@ export function FacilitiesSection({ poolCriteria }) {
                             {poolCriteria.sunbed_types.map((type, i) => (
                                 <span 
                                     key={i} 
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-100 text-amber-800 rounded-full text-sm font-medium border border-amber-200"
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 text-orange-700 rounded-full text-sm font-medium border border-orange-200"
                                 >
                                     <Icons.Sunbed className="w-4 h-4" />
                                     {formatLabel(type)}
@@ -359,7 +359,7 @@ export function FacilitiesSection({ poolCriteria }) {
                             {poolCriteria.shade_options.map((option, i) => (
                                 <span 
                                     key={i} 
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-100 text-green-800 rounded-full text-sm font-medium border border-green-200"
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm font-medium border border-gray-200"
                                 >
                                     <Icons.Shade className="w-4 h-4" />
                                     {formatLabel(option)}
@@ -372,14 +372,14 @@ export function FacilitiesSection({ poolCriteria }) {
                 {/* Services & Amenities */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {poolCriteria.has_pool_bar && (
-                        <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
-                            <Icons.Check className="w-6 h-6 text-emerald-600" />
+                        <div className="flex items-center gap-3 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                            <Icons.Check className="w-6 h-6 text-orange-600" />
                             <span className="text-gray-900 font-medium">Pool Bar Available</span>
                         </div>
                     )}
                     {poolCriteria.has_waiter_service && (
-                        <div className="flex items-center gap-3 p-4 bg-teal-50 rounded-lg border border-teal-200">
-                            <Icons.Check className="w-6 h-6 text-teal-600" />
+                        <div className="flex items-center gap-3 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                            <Icons.Check className="w-6 h-6 text-orange-600" />
                             <span className="text-gray-900 font-medium">Waiter Service</span>
                         </div>
                     )}
@@ -389,17 +389,17 @@ export function FacilitiesSection({ poolCriteria }) {
                 {(poolCriteria.bar_distance || poolCriteria.toilet_distance) && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {poolCriteria.bar_distance && (
-                            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                                 <div className="text-sm text-gray-600 mb-1">Distance to Bar</div>
-                                <div className="text-lg font-semibold text-blue-700">
+                                <div className="text-lg font-semibold text-gray-700">
                                     {getDistanceDescription(poolCriteria.bar_distance)}
                                 </div>
                             </div>
                         )}
                         {poolCriteria.toilet_distance && (
-                            <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                                 <div className="text-sm text-gray-600 mb-1">Distance to Toilets</div>
-                                <div className="text-lg font-semibold text-indigo-700">
+                                <div className="text-lg font-semibold text-gray-700">
                                     {getDistanceDescription(poolCriteria.toilet_distance)}
                                 </div>
                             </div>
@@ -430,9 +430,9 @@ export function AtmosphereSection({ poolCriteria }) {
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-semibold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
-                <Icons.Atmosphere className="w-5 h-5 sm:w-6 sm:h-6 text-pink-600" />
+        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                <Icons.Atmosphere className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
                 Noise & Atmosphere
             </h2>
             
@@ -440,17 +440,17 @@ export function AtmosphereSection({ poolCriteria }) {
                 {/* Atmosphere & Music Level */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {poolCriteria.atmosphere && (
-                        <div className="p-4 bg-pink-50 rounded-lg border border-pink-200">
+                        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                             <div className="text-sm text-gray-600 mb-1">Pool Atmosphere/Vibe</div>
-                            <div className="text-lg font-semibold text-pink-700 capitalize">
+                            <div className="text-lg font-semibold text-blue-600 capitalize">
                                 {formatLabel(poolCriteria.atmosphere)}
                             </div>
                         </div>
                     )}
                     {poolCriteria.music_level && (
-                        <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                             <div className="text-sm text-gray-600 mb-1">Music Level</div>
-                            <div className="text-lg font-semibold text-purple-700 capitalize">
+                            <div className="text-lg font-semibold text-blue-600 capitalize">
                                 {formatLabel(poolCriteria.music_level)}
                             </div>
                         </div>
@@ -460,8 +460,8 @@ export function AtmosphereSection({ poolCriteria }) {
                 {/* Entertainment Activities */}
                 {poolCriteria.has_entertainment && (
                     <div>
-                        <div className="flex items-center gap-3 p-4 bg-orange-50 rounded-lg border border-orange-200 mb-4">
-                            <Icons.Check className="w-6 h-6 text-orange-600" />
+                        <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200 mb-4">
+                            <Icons.Check className="w-6 h-6 text-blue-600" />
                             <span className="text-gray-900 font-medium">Has Entertainment Activities</span>
                         </div>
                         
@@ -473,7 +473,7 @@ export function AtmosphereSection({ poolCriteria }) {
                                     {poolCriteria.entertainment_types.map((type, i) => (
                                         <span 
                                             key={i} 
-                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 text-orange-800 rounded-full text-sm font-medium border border-orange-200"
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm font-medium border border-gray-200"
                                         >
                                             <Icons.Music className="w-4 h-4" />
                                             {formatLabel(type)}
@@ -509,28 +509,28 @@ export function CleanlinessSection({ poolCriteria }) {
     );
 
     return (
-        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-semibold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
-                <Icons.Cleanliness className="w-5 h-5 sm:w-6 sm:h-6 text-teal-600" />
+        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                <Icons.Cleanliness className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
                 Cleanliness & Maintenance
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {poolCriteria.cleanliness_rating > 0 && (
-                    <div className="p-4 bg-teal-50 rounded-lg border border-teal-200">
+                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                         <div className="text-sm text-gray-600 mb-2">Cleanliness</div>
-                        <StarRating rating={poolCriteria.cleanliness_rating} colorClass="text-teal-600" />
+                        <StarRating rating={poolCriteria.cleanliness_rating} colorClass="text-orange-500" />
                     </div>
                 )}
                 {poolCriteria.sunbed_condition_rating > 0 && (
-                    <div className="p-4 bg-cyan-50 rounded-lg border border-cyan-200">
+                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                         <div className="text-sm text-gray-600 mb-2">Sunbed Condition</div>
-                        <StarRating rating={poolCriteria.sunbed_condition_rating} colorClass="text-cyan-600" />
+                        <StarRating rating={poolCriteria.sunbed_condition_rating} colorClass="text-orange-500" />
                     </div>
                 )}
                 {poolCriteria.tiling_condition_rating > 0 && (
-                    <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                         <div className="text-sm text-gray-600 mb-2">Tiling Condition</div>
-                        <StarRating rating={poolCriteria.tiling_condition_rating} colorClass="text-indigo-600" />
+                        <StarRating rating={poolCriteria.tiling_condition_rating} colorClass="text-orange-500" />
                     </div>
                 )}
             </div>
@@ -548,9 +548,9 @@ export function AccessibilitySection({ poolCriteria }) {
     }
 
     return (
-        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-semibold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
-                <Icons.Accessibility className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                <Icons.Accessibility className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
                 Accessibility Features
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -561,20 +561,20 @@ export function AccessibilitySection({ poolCriteria }) {
                     </div>
                 )}
                 {poolCriteria.has_pool_hoist && (
-                    <div className="flex items-center gap-3 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
-                        <Icons.Check className="w-6 h-6 text-indigo-600" />
+                    <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <Icons.Check className="w-6 h-6 text-blue-600" />
                         <span className="text-gray-900 font-medium">Pool Hoist</span>
                     </div>
                 )}
                 {poolCriteria.has_step_free_access && (
-                    <div className="flex items-center gap-3 p-4 bg-cyan-50 rounded-lg border border-cyan-200">
-                        <Icons.Check className="w-6 h-6 text-cyan-600" />
+                    <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <Icons.Check className="w-6 h-6 text-blue-600" />
                         <span className="text-gray-900 font-medium">Step-Free Access</span>
                     </div>
                 )}
                 {poolCriteria.has_elevator_to_rooftop && (
-                    <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg border border-purple-200">
-                        <Icons.Check className="w-6 h-6 text-purple-600" />
+                    <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <Icons.Check className="w-6 h-6 text-blue-600" />
                         <span className="text-gray-900 font-medium">Elevator to Rooftop</span>
                     </div>
                 )}
@@ -593,33 +593,33 @@ export function KidsFeaturesSection({ poolCriteria }) {
     }
 
     return (
-        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-semibold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
-                <Icons.Kids className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                <Icons.Kids className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
                 Kids & Family Features
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {poolCriteria.has_kids_pool && (
-                    <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg border border-green-200">
-                        <Icons.Check className="w-6 h-6 text-green-600" />
+                    <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <Icons.Check className="w-6 h-6 text-blue-600" />
                         <span className="text-gray-900 font-medium">Kids Pool</span>
                     </div>
                 )}
                 {poolCriteria.has_splash_park && (
-                    <div className="flex items-center gap-3 p-4 bg-sky-50 rounded-lg border border-sky-200">
-                        <Icons.Check className="w-6 h-6 text-sky-600" />
+                    <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <Icons.Check className="w-6 h-6 text-blue-600" />
                         <span className="text-gray-900 font-medium">Splash Park</span>
                     </div>
                 )}
                 {poolCriteria.has_waterslide && (
-                    <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg border border-purple-200">
-                        <Icons.Check className="w-6 h-6 text-purple-600" />
+                    <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <Icons.Check className="w-6 h-6 text-blue-600" />
                         <span className="text-gray-900 font-medium">Water Slides</span>
                     </div>
                 )}
                 {poolCriteria.has_lifeguard && (
-                    <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
-                        <Icons.Check className="w-6 h-6 text-emerald-600" />
+                    <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <Icons.Check className="w-6 h-6 text-blue-600" />
                         <span className="text-gray-900 font-medium">Lifeguard on Duty</span>
                     </div>
                 )}
@@ -638,21 +638,21 @@ export function LuxuryFeaturesSection({ poolCriteria }) {
     }
 
     return (
-        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-semibold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
-                <Icons.Luxury className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
+        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                <Icons.Luxury className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
                 Luxury & Premium Features
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {poolCriteria.has_luxury_cabanas && (
-                    <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-lg border border-amber-200">
-                        <Icons.Check className="w-6 h-6 text-amber-600" />
+                    <div className="flex items-center gap-3 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                        <Icons.Check className="w-6 h-6 text-orange-600" />
                         <span className="text-gray-900 font-medium">Luxury Cabanas</span>
                     </div>
                 )}
                 {poolCriteria.has_cabana_service && (
-                    <div className="flex items-center gap-3 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                        <Icons.Check className="w-6 h-6 text-yellow-600" />
+                    <div className="flex items-center gap-3 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                        <Icons.Check className="w-6 h-6 text-orange-600" />
                         <span className="text-gray-900 font-medium">Cabana Service</span>
                     </div>
                 )}
@@ -663,14 +663,14 @@ export function LuxuryFeaturesSection({ poolCriteria }) {
                     </div>
                 )}
                 {poolCriteria.has_jacuzzi && (
-                    <div className="flex items-center gap-3 p-4 bg-red-50 rounded-lg border border-red-200">
-                        <Icons.Check className="w-6 h-6 text-red-600" />
+                    <div className="flex items-center gap-3 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                        <Icons.Check className="w-6 h-6 text-orange-600" />
                         <span className="text-gray-900 font-medium">Jacuzzi</span>
                     </div>
                 )}
                 {poolCriteria.has_adult_sun_terrace && (
-                    <div className="flex items-center gap-3 p-4 bg-rose-50 rounded-lg border border-rose-200">
-                        <Icons.Check className="w-6 h-6 text-rose-600" />
+                    <div className="flex items-center gap-3 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                        <Icons.Check className="w-6 h-6 text-orange-600" />
                         <span className="text-gray-900 font-medium">Adult Sun Terrace</span>
                     </div>
                 )}

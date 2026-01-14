@@ -5,9 +5,9 @@ import { Icons } from './Icons';
 // ============================================
 export function BookingCard({ hotel, onBookingClick }) {
     return (
-        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-            <h3 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-sans font-semibold text-gray-900 mb-4 lg:mb-5 xl:mb-6 flex items-center gap-2">
-                <Icons.Money className="w-5 h-5" />
+        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h3 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-sans font-bold text-gray-900 mb-4 lg:mb-5 xl:mb-6 flex items-center gap-2">
+                <Icons.Money className="w-5 h-5 text-orange-500" />
                 Check Prices & Book
             </h3>
             
@@ -46,7 +46,7 @@ export function PromotionalBanner({ hotel, onBookingClick }) {
     if (hotel.subscription_tier !== 'premium') return null;
 
     return (
-        <div className="bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl shadow-lg p-5 sm:p-6 text-white">
+        <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg p-5 sm:p-6 text-white">
             <div className="text-center">
                 <svg className="w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-2 text-white" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
@@ -71,9 +71,9 @@ export function VerificationBadgeCard({ hotel }) {
     if (hotel.subscription_tier !== 'premium') return null;
 
     return (
-        <div className="bg-white rounded-xl shadow-lg p-4 border-2 border-emerald-200">
+        <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl shadow-lg p-4 border-2 border-orange-200 hover:shadow-xl transition-all duration-300">
             <div className="flex items-center gap-3">
-                <svg className="w-8 h-8 sm:w-10 sm:h-10 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 sm:w-10 sm:h-10 text-orange-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <div>
@@ -90,8 +90,11 @@ export function VerificationBadgeCard({ hotel }) {
 // ============================================
 export function QuickStatsCard({ hotel }) {
     return (
-        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-            <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-sans font-semibold text-gray-900 mb-4 lg:mb-5 xl:mb-6">Quick Info</h3>
+        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-sans font-bold text-gray-900 mb-4 lg:mb-5 xl:mb-6 flex items-center gap-2">
+                <svg className="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+                Quick Info
+            </h3>
             <div className="space-y-3">
                 {hotel.total_rooms && (
                     <div className="flex justify-between text-xs sm:text-sm font-sans">
@@ -127,8 +130,11 @@ export function QuickStatsCard({ hotel }) {
 // ============================================
 export function ContactInfoCard({ hotel }) {
     return (
-        <div className="bg-white rounded-xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8">
-            <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-sans font-semibold text-gray-900 mb-4 lg:mb-5 xl:mb-6">Contact</h3>
+        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-sans font-bold text-gray-900 mb-4 lg:mb-5 xl:mb-6 flex items-center gap-2">
+                <svg className="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                Contact
+            </h3>
             <div className="space-y-3 text-xs sm:text-sm text-gray-700 font-sans">
                 {hotel.address && (
                     <div className="flex items-start gap-2">

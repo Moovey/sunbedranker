@@ -91,7 +91,7 @@ export default function HotelShow({ hotel, similarHotels }) {
         <>
             <Head title={`${hotel.name} - Pool & Sunbed Review`} />
             
-            <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+            <div className="min-h-screen bg-white">
                 <Header />
                 
                 {/* Breadcrumb Navigation */}
