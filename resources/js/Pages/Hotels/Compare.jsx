@@ -83,40 +83,65 @@ export default function HotelCompare({ hotels, auth }) {
                                     <th className="p-3 sm:p-4 md:p-5 lg:p-6 xl:p-7 text-left font-sans font-bold text-gray-900 bg-gradient-to-r from-orange-100 to-orange-50 sticky left-0 z-10 text-xs sm:text-sm md:text-base shadow-lg">
                                         Feature
                                     </th>
-                                    {hotels.map((hotel) => (
-                                        <th key={hotel.id} className="p-3 sm:p-4 md:p-5 lg:p-6 text-center min-w-[220px] sm:min-w-[250px] md:min-w-[280px] lg:min-w-[300px]">
-                                            <div className="space-y-2 sm:space-y-3">
-                                                <div className="overflow-hidden rounded-2xl shadow-lg sm:shadow-xl w-full h-32 sm:h-36 md:h-40 border-2 border-gray-100">
-                                                    <img
-                                                        src={hotel.main_image_url || '/images/default-hotel.jpg'}
-                                                        alt={hotel.name}
-                                                        className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-500"
-                                                    />
-                                                </div>
-                                                <Link
-                                                    href={`/hotels/${hotel.slug}`}
-                                                    className="font-sans font-bold text-sm sm:text-base md:text-lg text-gray-900 hover:text-orange-600 block transition-colors duration-300 px-2"
-                                                >
-                                                    {hotel.name}
-                                                </Link>
-                                                {hotel.star_rating && (
-                                                    <div className="flex justify-center gap-0.5 sm:gap-1">
-                                                        {[...Array(hotel.star_rating)].map((_, i) => (
-                                                            <svg key={i} className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
-                                                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                    {hotels.map((hotel) => {
+                                        const isPremium = hotel.is_premium || hotel.subscription_tier === 'premium';
+                                        return (
+                                            <th key={hotel.id} className={`p-3 sm:p-4 md:p-5 lg:p-6 text-center min-w-[220px] sm:min-w-[250px] md:min-w-[280px] lg:min-w-[300px] ${isPremium ? 'bg-gradient-to-b from-yellow-50 via-orange-50 to-transparent relative' : ''}`}>
+                                                {/* Premium Badge at Top */}
+                                                {isPremium && (
+                                                    <div className="absolute -top-1 left-1/2 -translate-x-1/2 z-20">
+                                                        <div className="bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-3 py-1 rounded-b-lg font-bold text-xs shadow-lg flex items-center gap-1.5 animate-pulse">
+                                                            <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                                                             </svg>
-                                                        ))}
+                                                            PREMIUM
+                                                        </div>
                                                     </div>
                                                 )}
-                                                <div className="text-[10px] sm:text-xs md:text-sm text-gray-700 font-sans font-bold px-2 flex items-center justify-center gap-1">
-                                                    <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
-                                                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                                                    </svg>
-                                                    {hotel.destination?.name}
+                                                <div className={`space-y-2 sm:space-y-3 ${isPremium ? 'pt-4' : ''}`}>
+                                                    <div className={`overflow-hidden rounded-2xl shadow-lg sm:shadow-xl w-full h-32 sm:h-36 md:h-40 ${isPremium ? 'border-2 border-yellow-400 ring-2 ring-yellow-200' : 'border-2 border-gray-100'}`}>
+                                                        <img
+                                                            src={hotel.main_image_url || '/images/default-hotel.jpg'}
+                                                            alt={hotel.name}
+                                                            className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-500"
+                                                        />
+                                                    </div>
+                                                    <Link
+                                                        href={`/hotels/${hotel.slug}`}
+                                                        className={`font-sans font-bold text-sm sm:text-base md:text-lg hover:text-orange-600 block transition-colors duration-300 px-2 ${isPremium ? 'text-orange-700' : 'text-gray-900'}`}
+                                                    >
+                                                        {hotel.name}
+                                                    </Link>
+                                                    {hotel.star_rating && (
+                                                        <div className="flex justify-center gap-0.5 sm:gap-1">
+                                                            {[...Array(hotel.star_rating)].map((_, i) => (
+                                                                <svg key={i} className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
+                                                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                                                </svg>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                    <div className="text-[10px] sm:text-xs md:text-sm text-gray-700 font-sans font-bold px-2 flex items-center justify-center gap-1">
+                                                        <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                                        </svg>
+                                                        {hotel.destination?.name}
+                                                    </div>
+                                                    {/* Verified Badge for Premium */}
+                                                    {isPremium && hotel.show_verified_badge && (
+                                                        <div className="flex justify-center">
+                                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold border border-blue-200">
+                                                                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                                                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                                                                </svg>
+                                                                Verified by Hotel
+                                                            </span>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                            </div>
-                                        </th>
-                                    ))}
+                                            </th>
+                                        );
+                                    })}
                                 </tr>
                             </thead>
                             <tbody>
@@ -129,6 +154,9 @@ export default function HotelCompare({ hotels, auth }) {
                                     formatValue={(value) => value ? `${value}/10` : '-'}
                                     highlightBest={true}
                                 />
+
+                                {/* Special Offers - Premium Highlighted */}
+                                <SpecialOffersRow hotels={hotels} />
 
                                 {/* Family Score */}
                                 <ComparisonRow
@@ -360,35 +388,198 @@ export default function HotelCompare({ hotels, auth }) {
                         </div>
                     </div>
 
-                    {/* Action Buttons */}
+                    {/* Action Buttons - Enhanced for Premium Hotels */}
                     <div className="mt-6 sm:mt-8 md:mt-10 lg:mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
-                        {hotels.map((hotel) => (
-                            <div key={hotel.id} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-5 md:p-6 text-center border-2 border-gray-100 transform hover:scale-105">
-                                <h3 className="font-sans font-bold text-gray-900 mb-3 sm:mb-4 text-sm sm:text-base line-clamp-2">{hotel.name}</h3>
-                                <div className="space-y-2 sm:space-y-3">
-                                    <Link
-                                        href={`/hotels/${hotel.slug}`}
-                                        className="block w-full px-4 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-sans font-bold rounded-2xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg text-xs sm:text-sm transform hover:scale-105"
-                                    >
-                                        View Details
-                                    </Link>
-                                    {hotel.booking_affiliate_url && (
-                                        <a
-                                            href={hotel.booking_affiliate_url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="block w-full px-4 py-2.5 sm:py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-2xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-md hover:shadow-lg text-xs sm:text-sm transform hover:scale-105"
-                                        >
-                                            Book Now
-                                        </a>
+                        {hotels.map((hotel) => {
+                            const isPremium = hotel.is_premium || hotel.subscription_tier === 'premium';
+                            const hasDirectBooking = hotel.direct_booking_url;
+                            
+                            // Get active promotions
+                            const promotions = hotel.promotions && hotel.promotions.length > 0 
+                                ? hotel.promotions 
+                                : (hotel.promotional_banner || hotel.special_offer) 
+                                    ? [{ promotional_banner: hotel.promotional_banner, special_offer: hotel.special_offer }]
+                                    : [];
+                            const activePromo = promotions.find(p => p.promotional_banner || p.special_offer);
+                            
+                            return (
+                                <div 
+                                    key={hotel.id} 
+                                    className={`rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-5 md:p-6 text-center transform hover:scale-105 ${
+                                        isPremium 
+                                            ? 'bg-gradient-to-b from-yellow-50 via-orange-50 to-white border-2 border-yellow-400 ring-2 ring-yellow-200' 
+                                            : 'bg-white border-2 border-gray-100'
+                                    }`}
+                                >
+                                    {/* Premium Badge */}
+                                    {isPremium && (
+                                        <div className="flex justify-center mb-2">
+                                            <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                                                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                                                </svg>
+                                                Premium Partner
+                                            </span>
+                                        </div>
                                     )}
+                                    
+                                    <h3 className={`font-sans font-bold mb-3 sm:mb-4 text-sm sm:text-base line-clamp-2 ${isPremium ? 'text-orange-800' : 'text-gray-900'}`}>
+                                        {hotel.name}
+                                    </h3>
+                                    
+                                    {/* Active Promotion Banner for Premium */}
+                                    {isPremium && activePromo && (
+                                        <div className="mb-3 bg-gradient-to-r from-orange-500 to-yellow-500 text-white px-3 py-2 rounded-lg text-xs font-bold">
+                                            <div className="flex items-center justify-center gap-1 mb-1">
+                                                <span>⭐</span>
+                                                <span>Special Offer</span>
+                                            </div>
+                                            {activePromo.promotional_banner && (
+                                                <div className="text-white/90">{activePromo.promotional_banner}</div>
+                                            )}
+                                        </div>
+                                    )}
+                                    
+                                    <div className="space-y-2 sm:space-y-3">
+                                        <Link
+                                            href={`/hotels/${hotel.slug}`}
+                                            className={`block w-full px-4 py-2.5 sm:py-3 font-sans font-bold rounded-2xl transition-all duration-300 shadow-md hover:shadow-lg text-xs sm:text-sm transform hover:scale-105 ${
+                                                isPremium 
+                                                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800' 
+                                                    : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700'
+                                            }`}
+                                        >
+                                            View Details
+                                        </Link>
+                                        
+                                        {/* Premium Direct Booking CTA - Highlighted */}
+                                        {isPremium && hasDirectBooking && (
+                                            <a
+                                                href={hotel.direct_booking_url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="block w-full px-4 py-3 sm:py-4 bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 text-white font-sans font-black rounded-2xl hover:from-green-600 hover:via-emerald-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl text-xs sm:text-sm transform hover:scale-105 animate-pulse"
+                                            >
+                                                <div className="flex items-center justify-center gap-2">
+                                                    <span>💰</span>
+                                                    <span>Book Direct & Save</span>
+                                                </div>
+                                                <div className="text-[10px] text-white/80 mt-0.5">Best Rate Guaranteed</div>
+                                            </a>
+                                        )}
+                                        
+                                        {/* Regular OTA Booking */}
+                                        {hotel.booking_affiliate_url && (
+                                            <a
+                                                href={hotel.booking_affiliate_url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className={`block w-full px-4 py-2.5 sm:py-3 font-sans font-bold rounded-2xl transition-all duration-300 shadow-md hover:shadow-lg text-xs sm:text-sm transform hover:scale-105 ${
+                                                    isPremium && hasDirectBooking
+                                                        ? 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                                                        : 'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700'
+                                                }`}
+                                            >
+                                                {isPremium && hasDirectBooking ? 'Check OTA Prices' : 'Book Now'}
+                                            </a>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             </div>
         </>
+    );
+}
+
+// Special Offers Row Component - Highlights Premium Hotel Offers
+function SpecialOffersRow({ hotels }) {
+    // Check if any hotel has promotions
+    const hasAnyPromotions = hotels.some(hotel => {
+        const promotions = hotel.promotions && hotel.promotions.length > 0 
+            ? hotel.promotions 
+            : (hotel.promotional_banner || hotel.special_offer) 
+                ? [{ promotional_banner: hotel.promotional_banner, special_offer: hotel.special_offer }]
+                : [];
+        return promotions.length > 0 && promotions.some(p => p.promotional_banner || p.special_offer);
+    });
+
+    if (!hasAnyPromotions) return null;
+
+    return (
+        <tr className="border-b-2 border-orange-200 bg-gradient-to-r from-yellow-50 to-orange-50">
+            <td className="p-3 sm:p-4 md:p-5 lg:p-6 xl:p-7 font-sans font-bold text-gray-700 bg-gradient-to-r from-orange-100 to-yellow-50 sticky left-0 z-10 shadow-md">
+                <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3">
+                    <span className="text-xl">⭐</span>
+                    <span className="text-[10px] sm:text-xs md:text-sm lg:text-base text-orange-800 font-black">Special Offers</span>
+                </div>
+            </td>
+            {hotels.map((hotel) => {
+                const isPremium = hotel.is_premium || hotel.subscription_tier === 'premium';
+                
+                // Get promotions
+                const promotions = hotel.promotions && hotel.promotions.length > 0 
+                    ? hotel.promotions 
+                    : (hotel.promotional_banner || hotel.special_offer) 
+                        ? [{ promotional_banner: hotel.promotional_banner, special_offer: hotel.special_offer, special_offer_expires_at: hotel.special_offer_expires_at }]
+                        : [];
+                
+                // Filter active promotions
+                const activePromotions = promotions.filter(promo => {
+                    const hasContent = promo.promotional_banner || promo.special_offer;
+                    if (!hasContent) return false;
+                    if (promo.special_offer_expires_at) {
+                        const expiryDate = new Date(promo.special_offer_expires_at);
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        if (expiryDate < today) return false;
+                    }
+                    return true;
+                });
+
+                if (activePromotions.length === 0) {
+                    return (
+                        <td key={hotel.id} className="p-3 sm:p-4 md:p-5 lg:p-6 text-center">
+                            <span className="text-gray-400 font-sans font-bold text-xs sm:text-sm">—</span>
+                        </td>
+                    );
+                }
+
+                return (
+                    <td 
+                        key={hotel.id} 
+                        className={`p-3 sm:p-4 md:p-5 lg:p-6 text-center ${
+                            isPremium 
+                                ? 'bg-gradient-to-b from-yellow-100 via-orange-50 to-transparent' 
+                                : ''
+                        }`}
+                    >
+                        <div className="space-y-2">
+                            {activePromotions.slice(0, 3).map((promo, idx) => (
+                                <div 
+                                    key={idx}
+                                    className={`rounded-lg px-2 py-1.5 text-xs font-bold ${
+                                        isPremium 
+                                            ? 'bg-gradient-to-r from-orange-500 to-yellow-500 text-white shadow-md' 
+                                            : 'bg-orange-100 text-orange-800 border border-orange-200'
+                                    }`}
+                                >
+                                    {isPremium && <span className="mr-1">⭐</span>}
+                                    {promo.promotional_banner || 'Special Offer'}
+                                </div>
+                            ))}
+                            {activePromotions.length > 3 && (
+                                <div className="text-[10px] text-gray-500 font-semibold">
+                                    +{activePromotions.length - 3} more offers
+                                </div>
+                            )}
+                        </div>
+                    </td>
+                );
+            })}
+        </tr>
     );
 }
 
