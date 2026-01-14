@@ -15,6 +15,8 @@ class HotelAnalytic extends Model
         'date',
         'views',
         'clicks',
+        'affiliate_clicks',
+        'direct_clicks',
         'comparisons',
         'ctr',
     ];

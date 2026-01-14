@@ -30,15 +30,6 @@ export function BookingCard({ hotel, onBookingClick }) {
                         Check Expedia
                     </button>
                 )}
-                {hotel.direct_booking_url && (
-                    <button
-                        onClick={() => onBookingClick('direct')}
-                        className="w-full px-4 py-2.5 sm:py-3 bg-white border-2 border-orange-300 text-orange-600 font-sans font-bold rounded-xl hover:bg-orange-50 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base"
-                    >
-                        <Icons.External />
-                        Visit Hotel Website
-                    </button>
-                )}
             </div>
 
             <div className="mt-4 text-[10px] sm:text-xs text-gray-500 text-center font-sans">

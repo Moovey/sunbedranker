@@ -32,4 +32,7 @@ Route::middleware(['auth', 'hotelier'])->prefix('hotelier')->name('hotelier.')->
     Route::post('/hotels/{hotel:slug}/manage', [HotelManagementController::class, 'update'])->name('hotels.update');
     Route::post('/hotels/{hotel:slug}/images', [HotelManagementController::class, 'uploadImage'])->name('hotels.uploadImage');
     Route::delete('/hotels/{hotel:slug}/images/{image}', [HotelManagementController::class, 'deleteImage'])->name('hotels.deleteImage');
+    
+    // Hotel Analytics
+    Route::get('/hotels/{hotel:slug}/analytics', [HotelManagementController::class, 'analytics'])->name('hotels.analytics');
 });

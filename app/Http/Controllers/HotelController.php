@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Hotel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
@@ -12,8 +13,11 @@ class HotelController extends Controller
 {
     public function show(Hotel $hotel): Response
     {
-        // Increment view count
-        $hotel->incrementViews();
+        // Only increment view count for users with 'user' role (not hoteliers or admins)
+        $user = Auth::user();
+        if (!$user || $user->role === 'user') {
+            $hotel->incrementViews();
+        }
 
         $hotel->load([
             'destination',
@@ -41,9 +45,17 @@ class HotelController extends Controller
 
     public function trackClick(Request $request, Hotel $hotel): RedirectResponse
     {
-        $hotel->incrementClicks();
-
         $affiliateType = $request->get('type', 'booking');
+        
+        // Only track clicks for users with 'user' role
+        $user = auth()->user();
+        $shouldTrack = $user && $user->isUser();
+        
+        if ($shouldTrack) {
+            // Determine if this is a direct booking or affiliate click
+            $clickType = $affiliateType === 'direct' ? 'direct' : 'affiliate';
+            $hotel->incrementClicks($clickType);
+        }
         
         $url = match($affiliateType) {
             'expedia' => $hotel->expedia_affiliate_url,

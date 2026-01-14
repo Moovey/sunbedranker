@@ -314,13 +314,23 @@ function SpecialOfferBanner({ hotel }) {
 }
 
 // Enhanced Features Component for Hero Section
-function HeroEnhancedFeatures({ hotel }) {
+function HeroEnhancedFeatures({ hotel, onBookingClick }) {
     const hasVideoContent = hotel.video_url || hotel.video_360_url;
     const hasDirectBooking = hotel.direct_booking_url;
     
     if (!hasVideoContent && !hasDirectBooking) {
         return null;
     }
+
+    // Handle direct booking click with tracking
+    const handleDirectClick = (e) => {
+        e.preventDefault();
+        if (onBookingClick) {
+            onBookingClick('direct');
+        }
+        // Open in new tab after tracking
+        window.open(hotel.direct_booking_url, '_blank', 'noopener,noreferrer');
+    };
 
     return (
         <div className="mt-6 sm:mt-8">
@@ -390,29 +400,29 @@ function HeroEnhancedFeatures({ hotel }) {
                     </div>
                 )}
 
-                {/* Direct Booking */}
+                {/* Visit Hotel Website */}
                 {hasDirectBooking && (
-                    <a 
-                        href={hotel.direct_booking_url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-5 text-white shadow-lg flex items-center gap-4 hover:from-green-600 hover:to-emerald-700 transition-all group hover:shadow-xl"
+                    <button 
+                        onClick={handleDirectClick}
+                        className="bg-white border-2 border-orange-300 rounded-2xl p-5 shadow-lg flex items-center gap-4 hover:bg-orange-50 transition-all group hover:shadow-xl text-left"
                     >
-                        <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                            <span className="text-2xl">💰</span>
+                        <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                            <svg className="w-7 h-7 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
                         </div>
                         <div>
-                            <span className="font-bold block">Book Direct & Save</span>
-                            <span className="text-xs text-white/80">Best rates guaranteed</span>
+                            <span className="font-bold block text-orange-600">Visit Hotel Website</span>
+                            <span className="text-xs text-gray-500">Book direct for best rates</span>
                         </div>
-                    </a>
+                    </button>
                 )}
             </div>
         </div>
     );
 }
 
-export function HeroSection({ hotel, allImages, activeImageIndex, onPrevImage, onNextImage }) {
+export function HeroSection({ hotel, allImages, activeImageIndex, onPrevImage, onNextImage, onBookingClick }) {
     const isPremium = hotel.is_premium;
     
     return (
@@ -441,7 +451,7 @@ export function HeroSection({ hotel, allImages, activeImageIndex, onPrevImage, o
                 </div>
 
                 {/* Enhanced Features from Hotelier */}
-                <HeroEnhancedFeatures hotel={hotel} />
+                <HeroEnhancedFeatures hotel={hotel} onBookingClick={onBookingClick} />
             </div>
         </div>
     );

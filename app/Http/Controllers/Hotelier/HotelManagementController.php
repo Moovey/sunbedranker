@@ -443,4 +443,99 @@ class HotelManagementController extends Controller
         $scoringService = new HotelScoringService();
         $scoringService->calculateAndUpdateScores($hotel);
     }
+
+    /**
+     * Display hotel analytics dashboard.
+     */
+    public function analytics(Hotel $hotel)
+    {
+        $this->authorizeOwnership($hotel);
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        
+        // Get analytics data for different time periods
+        $today = now()->toDateString();
+        $weekAgo = now()->subDays(7)->toDateString();
+        $monthAgo = now()->subDays(30)->toDateString();
+
+        // Daily analytics for the past 30 days
+        $dailyAnalytics = $hotel->analytics()
+            ->where('date', '>=', $monthAgo)
+            ->orderBy('date', 'asc')
+            ->get()
+            ->map(function ($analytic) {
+                return [
+                    'date' => $analytic->date->format('Y-m-d'),
+                    'formatted_date' => $analytic->date->format('M d'),
+                    'views' => $analytic->views,
+                    'clicks' => $analytic->clicks,
+                    'affiliate_clicks' => $analytic->affiliate_clicks ?? 0,
+                    'direct_clicks' => $analytic->direct_clicks ?? 0,
+                    'comparisons' => $analytic->comparisons ?? 0,
+                    'ctr' => $analytic->ctr,
+                ];
+            });
+
+        // Calculate totals for different periods
+        $todayStats = $hotel->analytics()->where('date', $today)->first();
+        $weeklyStats = $hotel->analytics()
+            ->where('date', '>=', $weekAgo)
+            ->selectRaw('SUM(views) as views, SUM(clicks) as clicks, SUM(affiliate_clicks) as affiliate_clicks, SUM(direct_clicks) as direct_clicks, SUM(comparisons) as comparisons')
+            ->first();
+        $monthlyStats = $hotel->analytics()
+            ->where('date', '>=', $monthAgo)
+            ->selectRaw('SUM(views) as views, SUM(clicks) as clicks, SUM(affiliate_clicks) as affiliate_clicks, SUM(direct_clicks) as direct_clicks, SUM(comparisons) as comparisons')
+            ->first();
+        $allTimeStats = [
+            'views' => $hotel->view_count ?? 0,
+            'clicks' => $hotel->click_count ?? 0,
+            'affiliate_clicks' => $hotel->affiliate_click_count ?? 0,
+            'direct_clicks' => $hotel->direct_click_count ?? 0,
+        ];
+
+        // Use actual tracked click breakdown data
+        $clickBreakdown = [
+            'affiliate' => $allTimeStats['affiliate_clicks'],
+            'direct' => $allTimeStats['direct_clicks'],
+        ];
+
+        $subscription = [
+            'tier' => $user->subscription_tier ?? 'free',
+            'hasEnhanced' => $user->hasAtLeastEnhancedTier(),
+            'hasPremium' => $user->hasPremiumTier(),
+        ];
+
+        return Inertia::render('Hotelier/Analytics', [
+            'hotel' => $hotel->load('destination'),
+            'subscription' => $subscription,
+            'analytics' => [
+                'daily' => $dailyAnalytics,
+                'today' => [
+                    'views' => $todayStats->views ?? 0,
+                    'clicks' => $todayStats->clicks ?? 0,
+                    'affiliate_clicks' => $todayStats->affiliate_clicks ?? 0,
+                    'direct_clicks' => $todayStats->direct_clicks ?? 0,
+                    'comparisons' => $todayStats->comparisons ?? 0,
+                    'ctr' => $todayStats->ctr ?? 0,
+                ],
+                'weekly' => [
+                    'views' => (int) ($weeklyStats->views ?? 0),
+                    'clicks' => (int) ($weeklyStats->clicks ?? 0),
+                    'affiliate_clicks' => (int) ($weeklyStats->affiliate_clicks ?? 0),
+                    'direct_clicks' => (int) ($weeklyStats->direct_clicks ?? 0),
+                    'comparisons' => (int) ($weeklyStats->comparisons ?? 0),
+                ],
+                'monthly' => [
+                    'views' => (int) ($monthlyStats->views ?? 0),
+                    'clicks' => (int) ($monthlyStats->clicks ?? 0),
+                    'affiliate_clicks' => (int) ($monthlyStats->affiliate_clicks ?? 0),
+                    'direct_clicks' => (int) ($monthlyStats->direct_clicks ?? 0),
+                    'comparisons' => (int) ($monthlyStats->comparisons ?? 0),
+                ],
+                'allTime' => $allTimeStats,
+                'clickBreakdown' => $clickBreakdown,
+            ],
+        ]);
+    }
 }

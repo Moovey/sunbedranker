@@ -167,12 +167,25 @@ export default function HotelierDashboard({ hotels, pendingClaim, recentReviews,
                                                                 <div className="text-sm text-gray-900 font-bold">{hotel.total_reviews}</div>
                                                             </td>
                                                             <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm font-bold">
-                                                                <Link
-                                                                    href={route('hotels.show', hotel.slug)}
-                                                                    className="text-orange-600 hover:text-orange-700 font-bold uppercase text-xs transition-all duration-300 transform hover:scale-105"
-                                                                >
-                                                                    View
-                                                                </Link>
+                                                                <div className="flex items-center gap-3">
+                                                                    <Link
+                                                                        href={route('hotels.show', hotel.slug)}
+                                                                        className="text-orange-600 hover:text-orange-700 font-bold uppercase text-xs transition-all duration-300 transform hover:scale-105"
+                                                                    >
+                                                                        View
+                                                                    </Link>
+                                                                    {(subscription?.tier === 'premium' || subscription?.tier === 'enhanced') && (
+                                                                        <Link
+                                                                            href={route('hotelier.hotels.analytics', hotel.slug)}
+                                                                            className="inline-flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-bold text-xs hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
+                                                                        >
+                                                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                                                            </svg>
+                                                                            Analytics
+                                                                        </Link>
+                                                                    )}
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     ))}
@@ -191,14 +204,8 @@ export default function HotelierDashboard({ hotels, pendingClaim, recentReviews,
                                                     <h4 className="font-bold text-gray-900 text-base mb-1">{hotel.name}</h4>
                                                     <p className="text-xs text-gray-700 font-semibold uppercase tracking-wide">{hotel.destination}</p>
                                                 </div>
-                                                <Link
-                                                    href={route('hotels.show', hotel.slug)}
-                                                    className="ml-3 text-orange-600 hover:text-orange-700 font-bold uppercase text-xs transition-all duration-300 transform hover:scale-105 whitespace-nowrap"
-                                                >
-                                                    View
-                                                </Link>
                                             </div>
-                                            <div className="flex gap-6 text-sm">
+                                            <div className="flex gap-6 text-sm mb-3">
                                                 <div>
                                                     <span className="text-xs text-gray-700 font-bold uppercase tracking-wider block mb-1">Score</span>
                                                     <span className="text-gray-900 font-bold">{hotel.score ? Number(hotel.score).toFixed(1) : 'N/A'}</span>
@@ -207,6 +214,25 @@ export default function HotelierDashboard({ hotels, pendingClaim, recentReviews,
                                                     <span className="text-xs text-gray-700 font-bold uppercase tracking-wider block mb-1">Reviews</span>
                                                     <span className="text-gray-900 font-bold">{hotel.total_reviews}</span>
                                                 </div>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <Link
+                                                    href={route('hotels.show', hotel.slug)}
+                                                    className="text-orange-600 hover:text-orange-700 font-bold uppercase text-xs transition-all duration-300"
+                                                >
+                                                    View
+                                                </Link>
+                                                {(subscription?.tier === 'premium' || subscription?.tier === 'enhanced') && (
+                                                    <Link
+                                                        href={route('hotelier.hotels.analytics', hotel.slug)}
+                                                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-bold text-xs hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md"
+                                                    >
+                                                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                                        </svg>
+                                                        Analytics
+                                                    </Link>
+                                                )}
                                             </div>
                                         </div>
                                     ))}

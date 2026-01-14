@@ -54,6 +54,8 @@ class Hotel extends Model
         'party_score',
         'view_count',
         'click_count',
+        'affiliate_click_count',
+        'direct_click_count',
         'average_rating',
         'review_count',
         'affiliate_provider',
@@ -178,16 +180,30 @@ class Hotel extends Model
         $analytic->increment('views');
     }
 
-    public function incrementClicks(): void
+    public function incrementClicks(string $type = 'affiliate'): void
     {
         $this->increment('click_count');
+        
+        // Track by type (affiliate vs direct)
+        if ($type === 'direct') {
+            $this->increment('direct_click_count');
+        } else {
+            $this->increment('affiliate_click_count');
+        }
         
         // Update analytics
         $analytic = $this->analytics()->firstOrCreate(
             ['date' => now()->toDateString()],
-            ['views' => 0, 'clicks' => 0]
+            ['views' => 0, 'clicks' => 0, 'affiliate_clicks' => 0, 'direct_clicks' => 0]
         );
         $analytic->increment('clicks');
+        
+        // Also increment the specific type
+        if ($type === 'direct') {
+            $analytic->increment('direct_clicks');
+        } else {
+            $analytic->increment('affiliate_clicks');
+        }
     }
 
     public function getRouteKeyName(): string

@@ -30,8 +30,15 @@ class ClaimController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        $subscription = [
+            'tier' => $user->subscription_tier ?? 'free',
+            'hasEnhanced' => $user->hasAtLeastEnhancedTier(),
+            'hasPremium' => $user->hasPremiumTier(),
+        ];
+
         return Inertia::render('Hotelier/Claims/Index', [
             'claims' => $claims,
+            'subscription' => $subscription,
         ]);
     }
 

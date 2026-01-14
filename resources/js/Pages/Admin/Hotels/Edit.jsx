@@ -17,7 +17,7 @@ const TAB_FIELDS = {
     contact: ['address', 'latitude', 'longitude', 'phone', 'email', 'website'],
     images: ['main_image', 'gallery_images'],
     pool: ['sunbed_count', 'sun_exposure', 'pool_size_category', 'pool_size_sqm', 'number_of_pools'],
-    affiliate: ['booking_affiliate_url', 'expedia_affiliate_url', 'direct_booking_url', 'affiliate_provider', 'affiliate_tracking_code'],
+    affiliate: ['booking_affiliate_url', 'expedia_affiliate_url', 'affiliate_provider', 'affiliate_tracking_code'],
     settings: ['is_active', 'is_verified', 'is_featured', 'subscription_tier'],
 };
 
@@ -45,7 +45,6 @@ const buildFormData = (hotel) => ({
     // Affiliate Links
     booking_affiliate_url: hotel.booking_affiliate_url || '',
     expedia_affiliate_url: hotel.expedia_affiliate_url || '',
-    direct_booking_url: hotel.direct_booking_url || '',
     affiliate_provider: hotel.affiliate_provider || '',
     affiliate_tracking_code: hotel.affiliate_tracking_code || '',
     
