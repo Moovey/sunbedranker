@@ -19,11 +19,11 @@ const TABS = {
 };
 
 const TAB_CONFIG = [
-    { key: TABS.POOL, label: '🏊 Pool Scoring' },
-    { key: TABS.IMAGES, label: '📷 Images' },
-    { key: TABS.DESCRIPTIONS, label: '📝 Descriptions' },
-    { key: TABS.FAQS, label: '❓ FAQs & Rules' },
-    { key: TABS.ENHANCED, label: '⭐ Enhanced Features', requiresEnhanced: true },
+    { key: TABS.POOL, label: 'Pool Scoring', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> },
+    { key: TABS.IMAGES, label: 'Images', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" /></svg> },
+    { key: TABS.DESCRIPTIONS, label: 'Descriptions', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg> },
+    { key: TABS.FAQS, label: 'FAQs & Rules', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg> },
+    { key: TABS.ENHANCED, label: 'Enhanced Features', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>, requiresEnhanced: true },
 ];
 
 // ============================================================================
@@ -100,7 +100,7 @@ const getPoolCriteriaData = (criteria) => ({
 const StatusBadge = ({ isActive, isVerified }) => (
     <div className="flex items-center justify-center sm:justify-start gap-3 mt-3 flex-wrap">
         {isActive && (
-            <span className="flex items-center gap-1.5 text-sm text-green-600 font-bold">
+            <span className="flex items-center gap-1.5 text-sm text-blue-600 font-bold">
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                 </svg>
@@ -119,14 +119,14 @@ const StatusBadge = ({ isActive, isVerified }) => (
 );
 
 const PageHeader = ({ hotel }) => (
-    <div className="bg-gradient-to-r from-orange-50 to-blue-50 shadow-lg border-b-2 border-orange-200">
+    <div className="bg-white shadow-lg border-b-2 border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-12">
             <div className="flex items-center justify-center mb-4 sm:mb-5 md:mb-6">
-                <div className="h-1 w-8 sm:w-10 md:w-12 bg-orange-300 rounded-full"></div>
+                <div className="h-1 w-8 sm:w-10 md:w-12 bg-orange-400 rounded-full"></div>
                 <svg className="mx-3 sm:mx-4 text-orange-500" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                 </svg>
-                <div className="h-1 w-8 sm:w-10 md:w-12 bg-blue-300 rounded-full"></div>
+                <div className="h-1 w-8 sm:w-10 md:w-12 bg-orange-400 rounded-full"></div>
             </div>
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="text-center sm:text-left flex-1">
@@ -225,15 +225,14 @@ const ValidationErrorsBox = ({ errors }) => {
 const DescriptionField = ({ title, icon, description, value, onChange, error, colorScheme, rows = 6, placeholder }) => {
     const colors = {
         blue: { bg: 'from-blue-50 to-blue-100', border: 'border-blue-200', title: 'text-blue-800', focus: 'focus:border-blue-500 focus:ring-blue-200' },
-        green: { bg: 'from-green-50 to-green-100', border: 'border-green-200', title: 'text-green-800', focus: 'focus:border-green-500 focus:ring-green-200' },
-        red: { bg: 'from-red-50 to-red-100', border: 'border-red-200', title: 'text-red-800', focus: 'focus:border-red-500 focus:ring-red-200' },
-        purple: { bg: 'from-purple-50 to-purple-100', border: 'border-purple-200', title: 'text-purple-800', focus: 'focus:border-purple-500 focus:ring-purple-200' },
+        orange: { bg: 'from-orange-50 to-orange-100', border: 'border-orange-200', title: 'text-orange-800', focus: 'focus:border-orange-500 focus:ring-orange-200' },
+        gray: { bg: 'from-gray-50 to-gray-100', border: 'border-gray-200', title: 'text-gray-800', focus: 'focus:border-gray-500 focus:ring-gray-200' },
     };
     const scheme = colors[colorScheme];
     
     return (
         <div className={`bg-gradient-to-r ${scheme.bg} rounded-2xl p-6 border-2 ${scheme.border}`}>
-            <h3 className={`text-lg font-bold ${scheme.title} mb-4`}>{icon} {title}</h3>
+            <h3 className={`text-lg font-bold ${scheme.title} mb-4 flex items-center gap-2`}>{icon} {title}</h3>
             <p className="text-sm text-gray-600 mb-3">{description}</p>
             <textarea
                 value={value}
@@ -334,14 +333,17 @@ const FaqItem = ({ faq, index, onUpdate, onRemove }) => (
 const DescriptionsTab = ({ data, setData, errors }) => (
     <div className="space-y-8">
         <h2 className="text-2xl font-black text-gray-900 flex items-center gap-2">
-            <span className="text-3xl">📝</span> Rich Descriptions
+            <svg className="w-8 h-8 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+            </svg>
+            Rich Descriptions
         </h2>
         <p className="text-gray-600">
             Add detailed descriptions of your pool areas and amenities. These will be displayed on your hotel's public page to help guests understand what makes your property special.
         </p>
         <DescriptionField
             title="Pool Area Description"
-            icon="🏊"
+            icon={<svg className="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="currentColor"><path d="M22 21c-1.11 0-1.73-.37-2.18-.64-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.08.64-2.19.64-1.11 0-1.73-.37-2.18-.64-.37-.23-.6-.36-1.15-.36s-.78.13-1.15.36c-.46.27-1.08.64-2.19.64v-2c.56 0 .78-.13 1.15-.36.46-.27 1.08-.64 2.19-.64s1.73.37 2.18.64c.37.23.59.36 1.15.36.56 0 .78-.13 1.15-.36.46-.27 1.08-.64 2.19-.64 1.11 0 1.73.37 2.18.64.37.22.6.36 1.15.36s.78-.13 1.15-.36c.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.23.59.36 1.15.36v2zm0-4.5c-1.11 0-1.73-.37-2.18-.64-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.45.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.45.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36s-.78.13-1.15.36c-.47.27-1.09.64-2.2.64v-2c.56 0 .78-.13 1.15-.36.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36.56 0 .78-.13 1.15-.36.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36s.78-.13 1.15-.36c.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36v2zM8.67 12c.56 0 .78-.13 1.15-.36.46-.27 1.08-.64 2.19-.64 1.11 0 1.73.37 2.18.64.37.22.6.36 1.15.36s.78-.13 1.15-.36c.12-.07.26-.15.41-.23L10.48 5C10.23 4.72 9.85 4.5 9.4 4.5c-.45 0-.83.22-1.08.5L2.5 11.39c.15.08.29.16.41.23.37.22.6.36 1.15.36s.78-.13 1.15-.36c.46-.27 1.08-.64 2.19-.64.56 0 .78.13 1.15.36.08.05.18.1.27.16l1.85-4.91 1.85 4.91c.09-.06.18-.11.27-.16z"/></svg>}
             description="Describe your pool areas in detail. What makes them special? Include details about the views, surroundings, and unique features."
             value={data.pool_description}
             onChange={(value) => setData('pool_description', value)}
@@ -351,12 +353,12 @@ const DescriptionsTab = ({ data, setData, errors }) => (
         />
         <DescriptionField
             title="Amenities Description"
-            icon="🍹"
+            icon={<svg className="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="currentColor"><path d="M7.5 7c.83 0 1.5-.67 1.5-1.5S8.33 4 7.5 4 6 4.67 6 5.5 6.67 7 7.5 7zM11 7c.83 0 1.5-.67 1.5-1.5S11.83 4 11 4s-1.5.67-1.5 1.5S10.17 7 11 7zm3.5 0c.83 0 1.5-.67 1.5-1.5S15.33 4 14.5 4 13 4.67 13 5.5s.67 1.5 1.5 1.5zM18 7c.83 0 1.5-.67 1.5-1.5S18.83 4 18 4s-1.5.67-1.5 1.5S17.17 7 18 7zM3.5 14c.83 0 1.5-.67 1.5-1.5S4.33 11 3.5 11 2 11.67 2 12.5 2.67 14 3.5 14zm3 0c.83 0 1.5-.67 1.5-1.5S7.33 11 6.5 11 5 11.67 5 12.5 5.67 14 6.5 14zm4.5 0c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm3 0c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm4 0c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm-11 4c.83 0 1.5-.67 1.5-1.5S7.83 15 7 15s-1.5.67-1.5 1.5S6.17 18 7 18zm4 0c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm4 0c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5z"/></svg>}
             description="Describe the amenities and services available at your pool area. Mention any premium services, food & beverage options, and special features."
             value={data.amenities_description}
             onChange={(value) => setData('amenities_description', value)}
             error={errors.amenities_description}
-            colorScheme="green"
+            colorScheme="orange"
             placeholder="Our poolside bar serves refreshing cocktails and light Mediterranean cuisine throughout the day. Premium cabanas with dedicated butler service are available for booking..."
         />
     </div>
@@ -365,34 +367,42 @@ const DescriptionsTab = ({ data, setData, errors }) => (
 const FaqsTab = ({ data, setData, errors, faqs, onAddFaq, onUpdateFaq, onRemoveFaq }) => (
     <div className="space-y-8">
         <h2 className="text-2xl font-black text-gray-900 flex items-center gap-2">
-            <span className="text-3xl">❓</span> FAQs & House Rules
+            <svg className="w-8 h-8 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+            </svg>
+            FAQs & House Rules
         </h2>
         <p className="text-gray-600">
             Add frequently asked questions and pool house rules to help guests know what to expect before they arrive.
         </p>
         <DescriptionField
             title="Pool House Rules"
-            icon="🏠"
+            icon={<svg className="w-5 h-5 text-gray-600" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>}
             description="List the pool rules and guidelines guests should follow. Use bullet points for clarity."
             value={data.house_rules}
             onChange={(value) => setData('house_rules', value)}
             error={errors.house_rules}
-            colorScheme="red"
+            colorScheme="gray"
             placeholder="• No diving in shallow areas&#10;• Children must be supervised at all times&#10;• No glass containers near the pool&#10;• Shower before entering the pool&#10;• Pool towels must be returned before checkout"
         />
         <DescriptionField
             title="Towel & Sunbed Policy Details"
-            icon="🏖️"
+            icon={<svg className="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>}
             description="Provide additional details about your towel and sunbed reservation policies."
             value={data.towel_policy}
             onChange={(value) => setData('towel_policy', value)}
             error={errors.towel_policy}
-            colorScheme="purple"
+            colorScheme="blue"
             rows={4}
             placeholder="Towels are provided free of charge at the pool. A €10 deposit is required. Sunbeds cannot be reserved before 8am. Unoccupied sunbeds with towels only will be cleared after 30 minutes..."
         />
         <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-2xl p-6 border-2 border-orange-200">
-            <h3 className="text-lg font-bold text-orange-800 mb-4">❓ Frequently Asked Questions</h3>
+            <h3 className="text-lg font-bold text-orange-800 mb-4 flex items-center gap-2">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+                </svg>
+                Frequently Asked Questions
+            </h3>
             <p className="text-sm text-gray-600 mb-4">
                 Add common questions and answers about your pool area. These help guests find information quickly.
             </p>
@@ -420,8 +430,10 @@ const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced, hasPremium, p
     if (!hasEnhanced) {
         return (
             <div className="space-y-8">
-                <div className="bg-gradient-to-r from-orange-50 to-yellow-50 border-2 border-orange-200 rounded-2xl p-8 text-center">
-                    <div className="text-5xl mb-4">⭐</div>
+                <div className="bg-orange-50 border-2 border-orange-200 rounded-2xl p-8 text-center">
+                    <svg className="w-16 h-16 mx-auto text-orange-500 mb-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
                     <h2 className="text-2xl font-black text-gray-900 mb-3">Enhanced Features</h2>
                     <p className="text-gray-600 mb-6 max-w-lg mx-auto">
                         Upgrade to an Enhanced or Premium subscription to unlock promotional banners, 
@@ -445,7 +457,10 @@ const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced, hasPremium, p
     return (
         <div className="space-y-8">
             <h2 className="text-2xl font-black text-gray-900 flex items-center gap-2">
-                <span className="text-3xl">⭐</span> Enhanced Subscription Features
+                <svg className="w-8 h-8 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                Enhanced Subscription Features
             </h2>
             <p className="text-gray-600">
                 As an Enhanced subscriber, you can add promotional content, videos, and direct booking links to boost your hotel's visibility and conversions.
@@ -454,7 +469,12 @@ const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced, hasPremium, p
             {/* Promotional Banner & Special Offers */}
             <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-2xl p-6 border-2 border-orange-200">
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-bold text-orange-800">🎉 Promotional Banner & Special Offers</h3>
+                    <h3 className="text-lg font-bold text-orange-800 flex items-center gap-2">
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/>
+                        </svg>
+                        Promotional Banner & Special Offers
+                    </h3>
                     {hasPremium && (
                         <span className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">
                             👑 Premium - Multiple Promotions
@@ -508,7 +528,12 @@ const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced, hasPremium, p
 
             {/* Videos and 360° Content */}
             <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-6 border-2 border-blue-200">
-                <h3 className="text-lg font-bold text-blue-800 mb-4">🎬 Videos & 360° Content</h3>
+                <h3 className="text-lg font-bold text-blue-800 mb-4 flex items-center gap-2">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18 3.99H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-12c0-1.1-.9-2-2-2zm0 14.01H6V5.99h12v12.01zM9.5 13l2.5 3.01L14.5 13l3.5 4.51H6z"/>
+                    </svg>
+                    Videos & 360° Content
+                </h3>
                 <p className="text-sm text-gray-600 mb-4">
                     Add video tours and 360° content to give guests an immersive preview of your pool areas. Use YouTube, Vimeo, or other video hosting URLs.
                 </p>
@@ -539,8 +564,13 @@ const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced, hasPremium, p
             </div>
 
             {/* Direct Booking Link */}
-            <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-2xl p-6 border-2 border-green-200">
-                <h3 className="text-lg font-bold text-green-800 mb-4">🔗 Direct Booking Link</h3>
+            <div className="bg-gray-50 rounded-2xl p-6 border-2 border-gray-200">
+                <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+                    </svg>
+                    Direct Booking Link
+                </h3>
                 <p className="text-sm text-gray-600 mb-4">
                     Add a link to your direct booking engine. This will be displayed alongside OTA links, encouraging guests to book directly with you.
                 </p>
@@ -550,7 +580,7 @@ const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced, hasPremium, p
                         type="url"
                         value={data.direct_booking_url}
                         onChange={(e) => setData('direct_booking_url', e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 font-semibold"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-gray-500 focus:ring-2 focus:ring-gray-200 font-semibold"
                         placeholder="https://your-hotel.com/book"
                     />
                     {errors.direct_booking_url && <p className="mt-2 text-red-600 text-sm font-semibold">{errors.direct_booking_url}</p>}
@@ -558,8 +588,13 @@ const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced, hasPremium, p
             </div>
 
             {/* Verified by Hotel Badge */}
-            <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-2xl p-6 border-2 border-purple-200">
-                <h3 className="text-lg font-bold text-purple-800 mb-4">✅ "Verified by Hotel" Badge</h3>
+            <div className="bg-blue-50 rounded-2xl p-6 border-2 border-blue-200">
+                <h3 className="text-lg font-bold text-blue-800 mb-4 flex items-center gap-2">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                    </svg>
+                    "Verified by Hotel" Badge
+                </h3>
                 <p className="text-sm text-gray-600 mb-4">
                     Display a trust badge on your profile indicating that all information has been verified by your hotel. This builds trust with potential guests.
                 </p>
@@ -571,19 +606,19 @@ const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced, hasPremium, p
                             onChange={(e) => setData('show_verified_badge', e.target.checked)}
                             className="sr-only peer"
                         />
-                        <div className="w-14 h-8 bg-gray-200 rounded-full peer peer-checked:bg-purple-500 transition-colors"></div>
+                        <div className="w-14 h-8 bg-gray-200 rounded-full peer peer-checked:bg-blue-500 transition-colors"></div>
                         <div className="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow peer-checked:translate-x-6 transition-transform"></div>
                     </div>
-                    <span className="text-gray-700 font-bold group-hover:text-purple-700 transition-colors">
+                    <span className="text-gray-700 font-bold group-hover:text-blue-700 transition-colors">
                         Show "Verified by Hotel" badge on my profile
                     </span>
                 </label>
                 {data.show_verified_badge && (
-                    <div className="mt-4 p-3 bg-white rounded-xl border-2 border-purple-200 inline-flex items-center gap-2">
-                        <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="currentColor">
+                    <div className="mt-4 p-3 bg-white rounded-xl border-2 border-blue-200 inline-flex items-center gap-2">
+                        <svg className="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
                         </svg>
-                        <span className="text-purple-800 font-bold text-sm">Verified by Hotel</span>
+                        <span className="text-blue-800 font-bold text-sm">Verified by Hotel</span>
                     </div>
                 )}
             </div>
@@ -778,18 +813,23 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
                     {hasErrors && <ValidationErrorsBox errors={allErrors} />}
                     
                     <form onSubmit={handleSubmit}>
-                        <div className="bg-gradient-to-r from-orange-50 to-blue-50 rounded-t-2xl border-b-2 border-orange-200 shadow-lg">
+                        <div className="bg-white rounded-t-2xl border-b-2 border-gray-200 shadow-lg">
                             <div className="flex gap-2 px-6 pt-5 overflow-x-auto">
-                                {TAB_CONFIG.map(({ key, label, requiresEnhanced }) => (
+                                {TAB_CONFIG.map(({ key, label, icon, requiresEnhanced }) => (
                                     <TabButton 
                                         key={key} 
                                         active={activeTab === key} 
                                         onClick={() => setActiveTab(key)}
                                         className={requiresEnhanced && !hasEnhanced ? 'opacity-75' : ''}
                                     >
-                                        {label}
+                                        <span className="flex items-center gap-2">
+                                            {icon}
+                                            {label}
+                                        </span>
                                         {requiresEnhanced && !hasEnhanced && (
-                                            <span className="ml-1 text-xs">🔒</span>
+                                            <svg className="ml-1 w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                                            </svg>
                                         )}
                                     </TabButton>
                                 ))}
