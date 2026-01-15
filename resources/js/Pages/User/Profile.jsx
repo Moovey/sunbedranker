@@ -110,18 +110,18 @@ export default function UserProfile({ reviews, savedHotels }) {
                         {/* Left Column - Profile Card */}
                         <div className="lg:col-span-2">
                             <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 overflow-hidden">
-                                {/* Profile Header */}
-                                <div className="bg-gradient-to-r from-orange-500 to-blue-500 px-6 py-8 text-white">
+                                {/* Profile Header - Soft color palette */}
+                                <div className="bg-orange-50 border-b-2 border-orange-200 px-6 py-8">
                                     <div className="flex items-center gap-6">
                                         <div className="relative group">
                                             {imagePreview ? (
                                                 <img 
                                                     src={imagePreview} 
                                                     alt={user.name}
-                                                    className="w-20 h-20 rounded-full object-cover border-4 border-white/30"
+                                                    className="w-20 h-20 rounded-full object-cover border-4 border-orange-200"
                                                 />
                                             ) : (
-                                                <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-3xl font-black border-4 border-white/30">
+                                                <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center text-3xl font-black text-orange-600 border-4 border-orange-200">
                                                     {user.name.charAt(0).toUpperCase()}
                                                 </div>
                                             )}
@@ -137,9 +137,9 @@ export default function UserProfile({ reviews, savedHotels }) {
                                             </button>
                                         </div>
                                         <div>
-                                            <h2 className="text-2xl font-bold">{user.name}</h2>
-                                            <p className="text-white/80">{user.email}</p>
-                                            <span className="inline-block mt-2 px-3 py-1 bg-white/20 rounded-full text-sm font-bold">
+                                            <h2 className="text-2xl font-bold text-gray-900">{user.name}</h2>
+                                            <p className="text-gray-600">{user.email}</p>
+                                            <span className="inline-block mt-2 px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-bold">
                                                 Member
                                             </span>
                                         </div>
@@ -443,15 +443,15 @@ export default function UserProfile({ reviews, savedHotels }) {
                                 </div>
                             </div>
 
-                            {/* Tips Card */}
-                            <div className="bg-gradient-to-br from-orange-500 to-blue-500 rounded-2xl shadow-xl p-6 text-white">
+                            {/* Tips Card - Soft color palette */}
+                            <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl shadow-sm p-6">
                                 <div className="flex items-center gap-3 mb-4">
-                                    <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
+                                    <svg className="w-8 h-8 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                                     </svg>
-                                    <h3 className="font-bold text-lg">Sunbed Ranker Tips</h3>
+                                    <h3 className="font-bold text-lg text-blue-800">Sunbed Ranker Tips</h3>
                                 </div>
-                                <p className="text-white/90 text-sm leading-relaxed">
+                                <p className="text-blue-700 text-sm leading-relaxed">
                                     Share your pool experiences by writing reviews! Your insights help fellow travelers find the perfect sunbed spot.
                                 </p>
                             </div>
