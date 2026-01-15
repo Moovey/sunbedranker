@@ -14,7 +14,10 @@ Route::middleware(['auth', 'hotelier'])->prefix('hotelier')->name('hotelier.')->
     // Subscription
     Route::get('/subscription', [SubscriptionController::class, 'index'])->name('subscription');
     Route::get('/upgrade', [SubscriptionController::class, 'index'])->name('upgrade'); // Alias for subscription
-    Route::get('/subscribe/{plan}', [SubscriptionController::class, 'subscribe'])->name('subscribe');
+    Route::get('/subscribe/{plan}', [SubscriptionController::class, 'checkout'])->name('subscribe');
+    Route::post('/subscribe/{plan}', [SubscriptionController::class, 'subscribe'])->name('subscribe.process');
+    Route::get('/subscribe/{plan}/payment', [SubscriptionController::class, 'payment'])->name('subscribe.payment');
+    Route::post('/subscribe/{plan}/complete', [SubscriptionController::class, 'complete'])->name('subscribe.complete');
 
     // Hotelier Profile
     Route::get('/profile', [HotelierProfileController::class, 'index'])->name('profile');

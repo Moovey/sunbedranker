@@ -71,13 +71,18 @@ class SearchController extends Controller
             ->withExists(['claims as has_pending_claim' => function ($query) {
                 $query->where('status', 'pending');
             }])
-            ->leftJoin('users', 'hotels.owned_by', '=', 'users.id')
+            ->leftJoin('subscriptions', function ($join) {
+                $join->on('hotels.owned_by', '=', 'subscriptions.user_id')
+                     ->where('subscriptions.status', '=', 'active')
+                     ->where(function ($query) {
+                         $query->whereNull('subscriptions.ends_at')
+                               ->orWhere('subscriptions.ends_at', '>', now());
+                     });
+            })
             ->select('hotels.*')
             ->orderByRaw("
                 CASE 
-                    WHEN users.subscription_tier = 'premium' 
-                         AND (users.subscription_expires_at IS NULL OR users.subscription_expires_at > NOW()) 
-                    THEN 0 
+                    WHEN subscriptions.tier = 'premium' THEN 0 
                     ELSE 1 
                 END ASC
             ")

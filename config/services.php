@@ -41,4 +41,9 @@ return [
         'base_url' => env('AMADEUS_BASE_URL', 'https://test.api.amadeus.com'),
     ],
 
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+    ],
+
 ];

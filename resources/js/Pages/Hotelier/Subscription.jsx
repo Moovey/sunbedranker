@@ -331,7 +331,7 @@ function PricingCard({ plan, currentTier, redirectTo }) {
                     </button>
                 ) : (
                     <Link
-                        href={`/hotelier/subscribe/${plan.id}${redirectTo ? `?redirect=${encodeURIComponent(redirectTo)}` : ''}`}
+                        href={route('hotelier.subscribe', { plan: plan.id, redirect: redirectTo })}
                         className={`block w-full py-3 px-6 rounded-lg font-bold text-white ${style.button} text-center transition-all duration-300 shadow-lg hover:shadow-xl`}
                     >
                         Choose {plan.name}

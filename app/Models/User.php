@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -21,6 +23,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
  * @method bool hasPremiumTier()
  * @property string|null $profile_picture_url
  * @property string $subscription_tier
+ * @property Subscription|null $activeSubscription
  */
 class User extends Authenticatable
 {
@@ -46,8 +49,6 @@ class User extends Authenticatable
         'role',
         'last_login_at',
         'profile_picture',
-        'subscription_tier',
-        'subscription_expires_at',
     ];
 
     /**
@@ -65,7 +66,7 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $appends = ['profile_picture_url'];
+    protected $appends = ['profile_picture_url', 'subscription_tier'];
 
     /**
      * Get the attributes that should be cast.
@@ -77,8 +78,51 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'subscription_expires_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Get the user's subscriptions.
+     */
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    /**
+     * Get the user's active subscription.
+     */
+    public function activeSubscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class)
+            ->where('status', Subscription::STATUS_ACTIVE)
+            ->where(function ($query) {
+                $query->whereNull('ends_at')
+                      ->orWhere('ends_at', '>', now());
+            })
+            ->latest();
+    }
+
+    /**
+     * Get the current subscription tier (from active subscription or free).
+     */
+    protected function subscriptionTier(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $subscription = $this->activeSubscription;
+                return $subscription ? $subscription->tier : self::TIER_FREE;
+            }
+        );
+    }
+
+    /**
+     * Get the subscription expiration date.
+     */
+    public function getSubscriptionExpiresAtAttribute()
+    {
+        $subscription = $this->activeSubscription;
+        return $subscription ? $subscription->ends_at : null;
     }
 
     /**

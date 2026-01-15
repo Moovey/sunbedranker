@@ -67,13 +67,18 @@ class DestinationController extends Controller
 
         // Priority Placement: Premium hotels appear first, then sort by selected criteria
         // A hotel is premium if its OWNER (hotelier) has a premium subscription
-        $query->leftJoin('users', 'hotels.owned_by', '=', 'users.id')
+        $query->leftJoin('subscriptions', function ($join) {
+                $join->on('hotels.owned_by', '=', 'subscriptions.user_id')
+                     ->where('subscriptions.status', '=', 'active')
+                     ->where(function ($query) {
+                         $query->whereNull('subscriptions.ends_at')
+                               ->orWhere('subscriptions.ends_at', '>', now());
+                     });
+            })
             ->select('hotels.*')
             ->orderByRaw("
                 CASE 
-                    WHEN users.subscription_tier = 'premium' 
-                         AND (users.subscription_expires_at IS NULL OR users.subscription_expires_at > NOW()) 
-                    THEN 0 
+                    WHEN subscriptions.tier = 'premium' THEN 0 
                     ELSE 1 
                 END ASC
             ");
