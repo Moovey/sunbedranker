@@ -8,7 +8,7 @@ export default function ViewsTab({ analytics }) {
         <div className="space-y-8">
             <div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
-                    <EyeIcon className="w-6 h-6 text-blue-500" />
+                    <EyeIcon className="w-6 h-6 text-orange-500" />
                     Profile Views
                 </h3>
                 <p className="text-gray-600">
@@ -29,7 +29,7 @@ export default function ViewsTab({ analytics }) {
 
             {/* Why Views Matter */}
             <InfoBox
-                color="blue"
+                color="orange"
                 title="Why Profile Views Matter"
                 icon={<LightbulbIcon className="w-5 h-5" />}
                 items={[

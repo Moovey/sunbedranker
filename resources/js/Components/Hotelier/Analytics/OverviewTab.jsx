@@ -47,22 +47,22 @@ export default function OverviewTab({ analytics, hotel }) {
             {/* Chart Area */}
             <PerformanceChart data={chartData} />
 
-            {/* Summary Stats */}
+            {/* Summary Stats - Using consistent 4-color palette (orange, blue, green, purple) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <SummaryCard
-                    icon={<EyeIcon className="w-6 h-6 text-blue-500" />}
+                    icon={<EyeIcon className="w-6 h-6 text-orange-500" />}
                     title="Total Profile Views"
                     value={analytics.allTime.views}
                     description="How many times guests viewed your hotel profile"
                 />
                 <SummaryCard
-                    icon={<LinkIcon className="w-6 h-6 text-green-500" />}
+                    icon={<LinkIcon className="w-6 h-6 text-blue-500" />}
                     title="Total Booking Clicks"
                     value={analytics.allTime.clicks}
                     description="Clicks on booking buttons (affiliate & direct)"
                 />
                 <SummaryCard
-                    icon={<PercentIcon className="w-6 h-6 text-purple-500" />}
+                    icon={<PercentIcon className="w-6 h-6 text-green-500" />}
                     title="Click-Through Rate"
                     value={`${ctr}%`}
                     description="Percentage of views that resulted in booking clicks"

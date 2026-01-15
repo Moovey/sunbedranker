@@ -1,5 +1,12 @@
 export default function InfoBox({ color, title, icon, items }) {
+    // Consistent 4-color palette matching homepage (orange, blue, green, purple)
     const colorClasses = {
+        orange: {
+            bg: 'bg-orange-50',
+            border: 'border-orange-200',
+            title: 'text-orange-800',
+            text: 'text-orange-700',
+        },
         blue: {
             bg: 'bg-blue-50',
             border: 'border-blue-200',
@@ -12,11 +19,11 @@ export default function InfoBox({ color, title, icon, items }) {
             title: 'text-green-800',
             text: 'text-green-700',
         },
-        orange: {
-            bg: 'bg-orange-50',
-            border: 'border-orange-200',
-            title: 'text-orange-800',
-            text: 'text-orange-700',
+        purple: {
+            bg: 'bg-purple-50',
+            border: 'border-purple-200',
+            title: 'text-purple-800',
+            text: 'text-purple-700',
         },
     };
 

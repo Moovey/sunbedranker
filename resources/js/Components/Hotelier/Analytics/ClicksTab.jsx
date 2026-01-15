@@ -13,7 +13,7 @@ export default function ClicksTab({ analytics, hotel }) {
         <div className="space-y-8">
             <div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
-                    <LinkIcon className="w-6 h-6 text-green-500" />
+                    <LinkIcon className="w-6 h-6 text-blue-500" />
                     Booking Link Clicks
                 </h3>
                 <p className="text-gray-600">

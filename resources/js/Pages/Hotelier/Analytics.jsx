@@ -56,31 +56,31 @@ export default function Analytics({ hotel, subscription, analytics }) {
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12">
-                    {/* Quick Stats Cards */}
+                    {/* Quick Stats Cards - Using consistent 4-color palette */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                         <QuickStatCard
                             title="Today"
                             views={analytics.today.views}
                             clicks={analytics.today.clicks}
-                            color="blue"
+                            color="orange"
                         />
                         <QuickStatCard
                             title="This Week"
                             views={analytics.weekly.views}
                             clicks={analytics.weekly.clicks}
-                            color="green"
+                            color="blue"
                         />
                         <QuickStatCard
                             title="This Month"
                             views={analytics.monthly.views}
                             clicks={analytics.monthly.clicks}
-                            color="purple"
+                            color="green"
                         />
                         <QuickStatCard
                             title="All Time"
                             views={analytics.allTime.views}
                             clicks={analytics.allTime.clicks}
-                            color="orange"
+                            color="purple"
                         />
                     </div>
 

@@ -1,5 +1,16 @@
 export default function ClickBreakdownCard({ title, icon, value, percent, description, color }) {
+    // Consistent 4-color palette matching homepage (orange, blue, green, purple)
     const colorClasses = {
+        orange: {
+            bg: 'from-orange-50 to-orange-100',
+            border: 'border-orange-200',
+            title: 'text-orange-800',
+            value: 'text-orange-900',
+            progressBg: 'bg-orange-200',
+            progressFill: 'bg-orange-600',
+            percent: 'text-orange-700',
+            description: 'text-orange-600',
+        },
         blue: {
             bg: 'from-blue-50 to-blue-100',
             border: 'border-blue-200',
@@ -19,6 +30,16 @@ export default function ClickBreakdownCard({ title, icon, value, percent, descri
             progressFill: 'bg-green-600',
             percent: 'text-green-700',
             description: 'text-green-600',
+        },
+        purple: {
+            bg: 'from-purple-50 to-purple-100',
+            border: 'border-purple-200',
+            title: 'text-purple-800',
+            value: 'text-purple-900',
+            progressBg: 'bg-purple-200',
+            progressFill: 'bg-purple-600',
+            percent: 'text-purple-700',
+            description: 'text-purple-600',
         },
     };
 
