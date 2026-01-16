@@ -33,13 +33,13 @@ export default function OverviewTab({ analytics, hotel }) {
         : 0;
     
     return (
-        <div className="space-y-8">
+        <div className="space-y-6">
             <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <ChartIcon className="w-6 h-6 text-orange-500" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-1 flex items-center gap-2">
+                    <ChartIcon className="w-5 h-5 text-orange-500" />
                     Performance Overview
                 </h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-sm text-gray-500">
                     See how guests interact with your hotel profile on Sunbed Ranker.
                 </p>
             </div>
@@ -47,22 +47,22 @@ export default function OverviewTab({ analytics, hotel }) {
             {/* Chart Area */}
             <PerformanceChart data={chartData} />
 
-            {/* Summary Stats - Using consistent 4-color palette (orange, blue, green, purple) */}
+            {/* Summary Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <SummaryCard
-                    icon={<EyeIcon className="w-6 h-6 text-orange-500" />}
+                    icon={<EyeIcon className="w-5 h-5 text-orange-500" />}
                     title="Total Profile Views"
                     value={analytics.allTime.views}
                     description="How many times guests viewed your hotel profile"
                 />
                 <SummaryCard
-                    icon={<LinkIcon className="w-6 h-6 text-blue-500" />}
+                    icon={<LinkIcon className="w-5 h-5 text-blue-500" />}
                     title="Total Booking Clicks"
                     value={analytics.allTime.clicks}
                     description="Clicks on booking buttons (affiliate & direct)"
                 />
                 <SummaryCard
-                    icon={<PercentIcon className="w-6 h-6 text-green-500" />}
+                    icon={<PercentIcon className="w-5 h-5 text-green-500" />}
                     title="Click-Through Rate"
                     value={`${ctr}%`}
                     description="Percentage of views that resulted in booking clicks"

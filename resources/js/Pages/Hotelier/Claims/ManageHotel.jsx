@@ -98,70 +98,35 @@ const getPoolCriteriaData = (criteria) => ({
 // ============================================================================
 
 const StatusBadge = ({ isActive, isVerified }) => (
-    <div className="flex items-center justify-center sm:justify-start gap-3 mt-3 flex-wrap">
+    <div className="flex items-center gap-2 mt-1">
         {isActive && (
-            <span className="flex items-center gap-1.5 text-sm text-blue-600 font-bold">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
+            <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
                 Active
             </span>
         )}
         {isVerified && (
-            <span className="flex items-center gap-1.5 text-sm text-blue-600 font-bold">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
-                </svg>
+            <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
                 Verified
             </span>
         )}
     </div>
 );
 
-const PageHeader = ({ hotel }) => (
-    <div className="bg-white shadow-lg border-b-2 border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-12">
-            <div className="flex items-center justify-center mb-4 sm:mb-5 md:mb-6">
-                <div className="h-1 w-8 sm:w-10 md:w-12 bg-orange-400 rounded-full"></div>
-                <svg className="mx-3 sm:mx-4 text-orange-500" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                </svg>
-                <div className="h-1 w-8 sm:w-10 md:w-12 bg-orange-400 rounded-full"></div>
-            </div>
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="text-center sm:text-left flex-1">
-                    <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-gray-900">
-                        {hotel.name}
-                    </h1>
-                    <p className="text-gray-600 mt-2 font-semibold">
-                        Manage your hotel's pool & amenities information
-                    </p>
-                    <StatusBadge isActive={hotel.is_active} isVerified={hotel.is_verified} />
-                </div>
-                <Link
-                    href={route('hotels.show', hotel.slug)}
-                    target="_blank"
-                    className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm"
-                >
-                    View Public Page
-                </Link>
-            </div>
-        </div>
-    </div>
-);
+const PageHeader = ({ hotel }) => null;
 
 const InfoBanner = () => (
-    <div className="mb-6 bg-gradient-to-r from-blue-50 to-blue-100 border-2 border-blue-200 rounded-2xl p-5 shadow-lg">
+    <div className="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
         <div className="flex items-start gap-3">
-            <svg className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-            </svg>
+            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                </svg>
+            </div>
             <div>
-                <h3 className="text-blue-800 font-bold mb-1">What you can edit</h3>
-                <p className="text-blue-700 text-sm">
-                    As the verified owner of this hotel, you can update pool & sun-related information, upload images, 
-                    add rich descriptions of your pool areas & amenities, and manage FAQs & house rules. 
-                    Basic hotel details are managed by our admin team.
+                <h3 className="text-sm font-semibold text-gray-900 mb-1">What you can edit</h3>
+                <p className="text-xs text-gray-600">
+                    As the verified owner, you can update pool & sun-related information, upload images, 
+                    add descriptions, and manage FAQs & house rules. Basic hotel details are managed by our admin team.
                 </p>
             </div>
         </div>
@@ -185,37 +150,24 @@ const ValidationErrorsBox = ({ errors }) => {
     if (errorCount === 0) return null;
     
     return (
-        <div className="mb-6 bg-red-50 border-2 border-red-400 rounded-xl p-6 shadow-xl" style={{ animation: 'pulse 2s infinite' }}>
-            <style>{`
-                @keyframes pulse {
-                    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-                    50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-                }
-            `}</style>
-            <div className="flex items-start">
-                <div className="flex-shrink-0">
-                    <svg className="h-10 w-10 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+        <div className="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+            <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg className="w-4 h-4 text-red-600" viewBox="0 0 24 24" fill="currentColor">
                         <path fillRule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
                     </svg>
                 </div>
-                <div className="ml-4 flex-1">
-                    <h3 className="text-xl font-bold text-red-800 mb-3">
-                        ❌ Validation Failed - {errorCount} error{errorCount > 1 ? 's' : ''} found
+                <div className="flex-1">
+                    <h3 className="text-sm font-semibold text-red-800 mb-2">
+                        {errorCount} error{errorCount > 1 ? 's' : ''} found
                     </h3>
-                    <p className="text-red-700 mb-4 font-medium">Please fix the following errors before submitting:</p>
-                    <div className="bg-white rounded-lg p-4 border border-red-200">
-                        <ul className="space-y-3">
-                            {Object.entries(normalizedErrors).map(([field, message]) => (
-                                <li key={field} className="flex items-start gap-3 text-red-700">
-                                    <span className="text-red-500 font-bold text-lg">•</span>
-                                    <span className="text-base">
-                                        <span className="font-bold capitalize text-red-800">{field.replace(/_/g, ' ')}:</span>{' '}
-                                        <span className="text-red-600">{message}</span>
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    <ul className="space-y-1">
+                        {Object.entries(normalizedErrors).map(([field, message]) => (
+                            <li key={field} className="text-xs text-red-600">
+                                <span className="font-medium capitalize">{field.replace(/_/g, ' ')}:</span> {message}
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             </div>
         </div>
@@ -224,70 +176,70 @@ const ValidationErrorsBox = ({ errors }) => {
 
 const DescriptionField = ({ title, icon, description, value, onChange, error, colorScheme, rows = 6, placeholder }) => {
     const colors = {
-        blue: { bg: 'from-blue-50 to-blue-100', border: 'border-blue-200', title: 'text-blue-800', focus: 'focus:border-blue-500 focus:ring-blue-200' },
-        orange: { bg: 'from-orange-50 to-orange-100', border: 'border-orange-200', title: 'text-orange-800', focus: 'focus:border-orange-500 focus:ring-orange-200' },
-        gray: { bg: 'from-gray-50 to-gray-100', border: 'border-gray-200', title: 'text-gray-800', focus: 'focus:border-gray-500 focus:ring-gray-200' },
+        blue: { bg: 'bg-blue-50', border: 'border-blue-100', title: 'text-gray-900', focus: 'focus:ring-orange-500 focus:border-orange-500' },
+        orange: { bg: 'bg-orange-50', border: 'border-orange-100', title: 'text-gray-900', focus: 'focus:ring-orange-500 focus:border-orange-500' },
+        gray: { bg: 'bg-gray-50', border: 'border-gray-100', title: 'text-gray-900', focus: 'focus:ring-orange-500 focus:border-orange-500' },
     };
     const scheme = colors[colorScheme];
     
     return (
-        <div className={`bg-gradient-to-r ${scheme.bg} rounded-2xl p-6 border-2 ${scheme.border}`}>
-            <h3 className={`text-lg font-bold ${scheme.title} mb-4 flex items-center gap-2`}>{icon} {title}</h3>
-            <p className="text-sm text-gray-600 mb-3">{description}</p>
+        <div className={`${scheme.bg} rounded-xl p-5 border ${scheme.border}`}>
+            <h3 className={`text-sm font-semibold ${scheme.title} mb-2 flex items-center gap-2`}>{icon} {title}</h3>
+            <p className="text-xs text-gray-500 mb-3">{description}</p>
             <textarea
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 rows={rows}
-                className={`w-full px-4 py-3 border-2 border-gray-200 rounded-xl ${scheme.focus} font-semibold`}
+                className={`w-full px-3 py-2 border border-gray-200 rounded-lg text-sm ${scheme.focus}`}
                 placeholder={placeholder}
             />
-            {error && <p className="mt-2 text-red-600 text-sm font-semibold">{error}</p>}
+            {error && <p className="mt-2 text-red-600 text-xs">{error}</p>}
         </div>
     );
 };
 
 const PromotionItem = ({ promotion, index, onUpdate, onRemove, canRemove }) => (
-    <div className="bg-white rounded-xl p-4 mb-4 border-2 border-orange-200 shadow-sm">
-        <div className="flex justify-between items-start mb-3">
-            <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-lg text-xs font-bold">
+    <div className="bg-white rounded-lg p-4 mb-3 border border-gray-200">
+        <div className="flex justify-between items-center mb-3">
+            <span className="px-2 py-1 text-xs font-medium rounded-full bg-orange-100 text-orange-700">
                 Promotion #{index + 1}
             </span>
             {canRemove && (
-                <button type="button" onClick={onRemove} className="text-red-600 hover:text-red-800 font-bold text-sm">
-                    ✕ Remove
+                <button type="button" onClick={onRemove} className="text-red-500 hover:text-red-700 text-xs font-medium">
+                    Remove
                 </button>
             )}
         </div>
-        <div className="space-y-4">
+        <div className="space-y-3">
             <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Promotional Banner Text</label>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Banner Text</label>
                 <input
                     type="text"
                     value={promotion.promotional_banner}
                     onChange={(e) => onUpdate(index, 'promotional_banner', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 font-semibold"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-orange-500 focus:border-orange-500"
                     placeholder="e.g., Early Bird Special - Book Direct & Save 15%"
                     maxLength={255}
                 />
             </div>
             <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Special Offer Details</label>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Offer Details</label>
                 <textarea
                     value={promotion.special_offer}
                     onChange={(e) => onUpdate(index, 'special_offer', e.target.value)}
-                    rows={3}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 font-semibold"
-                    placeholder="Describe your special offer in detail. Include terms, conditions, and what's included..."
+                    rows={2}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-orange-500 focus:border-orange-500"
+                    placeholder="Describe your special offer in detail..."
                     maxLength={1000}
                 />
             </div>
             <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Offer Expires On</label>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Expires On</label>
                 <input
                     type="date"
                     value={promotion.special_offer_expires_at}
                     onChange={(e) => onUpdate(index, 'special_offer_expires_at', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 font-semibold"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-orange-500 focus:border-orange-500"
                     min={new Date().toISOString().split('T')[0]}
                 />
             </div>
@@ -296,34 +248,34 @@ const PromotionItem = ({ promotion, index, onUpdate, onRemove, canRemove }) => (
 );
 
 const FaqItem = ({ faq, index, onUpdate, onRemove }) => (
-    <div className="bg-white rounded-xl p-4 mb-4 border-2 border-gray-200">
-        <div className="flex justify-between items-start mb-3">
-            <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-lg text-xs font-bold">
+    <div className="bg-white rounded-lg p-4 mb-3 border border-gray-200">
+        <div className="flex justify-between items-center mb-3">
+            <span className="px-2 py-1 text-xs font-medium rounded-full bg-orange-100 text-orange-700">
                 FAQ #{index + 1}
             </span>
-            <button type="button" onClick={onRemove} className="text-red-600 hover:text-red-800 font-bold text-sm">
-                ✕ Remove
+            <button type="button" onClick={onRemove} className="text-red-500 hover:text-red-700 text-xs font-medium">
+                Remove
             </button>
         </div>
         <div className="space-y-3">
             <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">Question</label>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Question</label>
                 <input
                     type="text"
                     value={faq.question}
                     onChange={(e) => onUpdate(index, 'question', e.target.value)}
-                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 font-semibold"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-orange-500 focus:border-orange-500"
                     placeholder="e.g., What are the pool opening hours?"
                 />
             </div>
             <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">Answer</label>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Answer</label>
                 <textarea
                     value={faq.answer}
                     onChange={(e) => onUpdate(index, 'answer', e.target.value)}
                     rows={2}
-                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 font-semibold"
-                    placeholder="e.g., Our pool is open from 7:00 AM to 10:00 PM daily during summer season."
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-orange-500 focus:border-orange-500"
+                    placeholder="e.g., Our pool is open from 7:00 AM to 10:00 PM daily."
                 />
             </div>
         </div>
@@ -331,16 +283,18 @@ const FaqItem = ({ faq, index, onUpdate, onRemove }) => (
 );
 
 const DescriptionsTab = ({ data, setData, errors }) => (
-    <div className="space-y-8">
-        <h2 className="text-2xl font-black text-gray-900 flex items-center gap-2">
-            <svg className="w-8 h-8 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-            </svg>
-            Rich Descriptions
-        </h2>
-        <p className="text-gray-600">
-            Add detailed descriptions of your pool areas and amenities. These will be displayed on your hotel's public page to help guests understand what makes your property special.
-        </p>
+    <div className="space-y-6">
+        <div>
+            <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <svg className="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                </svg>
+                Rich Descriptions
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">
+                Add detailed descriptions of your pool areas and amenities.
+            </p>
+        </div>
         <DescriptionField
             title="Pool Area Description"
             icon={<svg className="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="currentColor"><path d="M22 21c-1.11 0-1.73-.37-2.18-.64-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.08.64-2.19.64-1.11 0-1.73-.37-2.18-.64-.37-.23-.6-.36-1.15-.36s-.78.13-1.15.36c-.46.27-1.08.64-2.19.64v-2c.56 0 .78-.13 1.15-.36.46-.27 1.08-.64 2.19-.64s1.73.37 2.18.64c.37.23.59.36 1.15.36.56 0 .78-.13 1.15-.36.46-.27 1.08-.64 2.19-.64 1.11 0 1.73.37 2.18.64.37.22.6.36 1.15.36s.78-.13 1.15-.36c.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.23.59.36 1.15.36v2zm0-4.5c-1.11 0-1.73-.37-2.18-.64-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.45.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.45.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36s-.78.13-1.15.36c-.47.27-1.09.64-2.2.64v-2c.56 0 .78-.13 1.15-.36.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36.56 0 .78-.13 1.15-.36.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36s.78-.13 1.15-.36c.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36v2zM8.67 12c.56 0 .78-.13 1.15-.36.46-.27 1.08-.64 2.19-.64 1.11 0 1.73.37 2.18.64.37.22.6.36 1.15.36s.78-.13 1.15-.36c.12-.07.26-.15.41-.23L10.48 5C10.23 4.72 9.85 4.5 9.4 4.5c-.45 0-.83.22-1.08.5L2.5 11.39c.15.08.29.16.41.23.37.22.6.36 1.15.36s.78-.13 1.15-.36c.46-.27 1.08-.64 2.19-.64.56 0 .78.13 1.15.36.08.05.18.1.27.16l1.85-4.91 1.85 4.91c.09-.06.18-.11.27-.16z"/></svg>}
@@ -365,16 +319,18 @@ const DescriptionsTab = ({ data, setData, errors }) => (
 );
 
 const FaqsTab = ({ data, setData, errors, faqs, onAddFaq, onUpdateFaq, onRemoveFaq }) => (
-    <div className="space-y-8">
-        <h2 className="text-2xl font-black text-gray-900 flex items-center gap-2">
-            <svg className="w-8 h-8 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
-            </svg>
-            FAQs & House Rules
-        </h2>
-        <p className="text-gray-600">
-            Add frequently asked questions and pool house rules to help guests know what to expect before they arrive.
-        </p>
+    <div className="space-y-6">
+        <div>
+            <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <svg className="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+                </svg>
+                FAQs & House Rules
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">
+                Add frequently asked questions and pool house rules.
+            </p>
+        </div>
         <DescriptionField
             title="Pool House Rules"
             icon={<svg className="w-5 h-5 text-gray-600" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>}
@@ -396,15 +352,15 @@ const FaqsTab = ({ data, setData, errors, faqs, onAddFaq, onUpdateFaq, onRemoveF
             rows={4}
             placeholder="Towels are provided free of charge at the pool. A €10 deposit is required. Sunbeds cannot be reserved before 8am. Unoccupied sunbeds with towels only will be cleared after 30 minutes..."
         />
-        <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-2xl p-6 border-2 border-orange-200">
-            <h3 className="text-lg font-bold text-orange-800 mb-4 flex items-center gap-2">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+        <div className="bg-orange-50 rounded-xl p-5 border border-orange-100">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <svg className="w-4 h-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
                 </svg>
                 Frequently Asked Questions
             </h3>
-            <p className="text-sm text-gray-600 mb-4">
-                Add common questions and answers about your pool area. These help guests find information quickly.
+            <p className="text-xs text-gray-500 mb-4">
+                Add common questions and answers about your pool area.
             </p>
             {faqs.map((faq, index) => (
                 <FaqItem
@@ -418,7 +374,7 @@ const FaqsTab = ({ data, setData, errors, faqs, onAddFaq, onUpdateFaq, onRemoveF
             <button
                 type="button"
                 onClick={onAddFaq}
-                className="w-full py-3 border-2 border-dashed border-orange-300 rounded-xl text-orange-600 font-bold hover:bg-orange-50 transition-colors"
+                className="w-full py-2 border border-dashed border-orange-300 rounded-lg text-orange-600 text-sm font-medium hover:bg-orange-50 transition-colors"
             >
                 + Add FAQ
             </button>
@@ -429,19 +385,20 @@ const FaqsTab = ({ data, setData, errors, faqs, onAddFaq, onUpdateFaq, onRemoveF
 const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced, hasPremium, promotions, onAddPromotion, onUpdatePromotion, onRemovePromotion }) => {
     if (!hasEnhanced) {
         return (
-            <div className="space-y-8">
-                <div className="bg-orange-50 border-2 border-orange-200 rounded-2xl p-8 text-center">
-                    <svg className="w-16 h-16 mx-auto text-orange-500 mb-4" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                    </svg>
-                    <h2 className="text-2xl font-black text-gray-900 mb-3">Enhanced Features</h2>
-                    <p className="text-gray-600 mb-6 max-w-lg mx-auto">
-                        Upgrade to an Enhanced or Premium subscription to unlock promotional banners, 
-                        video content, direct booking links, and the "Verified by Hotel" badge.
+            <div className="space-y-6">
+                <div className="bg-orange-50 border border-orange-200 rounded-xl p-8 text-center">
+                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-6 h-6 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <h2 className="text-lg font-semibold text-gray-900 mb-2">Enhanced Features</h2>
+                    <p className="text-sm text-gray-500 mb-4 max-w-md mx-auto">
+                        Upgrade to unlock promotional banners, video content, direct booking links, and more.
                     </p>
                     <Link
                         href={route('hotelier.subscription')}
-                        className="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                        className="inline-block px-4 py-2 bg-orange-500 text-white font-medium text-sm rounded-lg hover:bg-orange-600 transition-colors"
                     >
                         Upgrade Now
                     </Link>
@@ -455,37 +412,37 @@ const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced, hasPremium, p
     const canAddMore = promotions.length < maxPromotions;
 
     return (
-        <div className="space-y-8">
-            <h2 className="text-2xl font-black text-gray-900 flex items-center gap-2">
-                <svg className="w-8 h-8 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                </svg>
-                Enhanced Subscription Features
-            </h2>
-            <p className="text-gray-600">
-                As an Enhanced subscriber, you can add promotional content, videos, and direct booking links to boost your hotel's visibility and conversions.
-            </p>
+        <div className="space-y-6">
+            <div>
+                <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <svg className="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14L2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    Enhanced Features
+                </h2>
+                <p className="text-sm text-gray-500 mt-1">
+                    Add promotional content, videos, and direct booking links.
+                </p>
+            </div>
 
             {/* Promotional Banner & Special Offers */}
-            <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-2xl p-6 border-2 border-orange-200">
-                <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-bold text-orange-800 flex items-center gap-2">
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <div className="bg-orange-50 rounded-xl p-5 border border-orange-100">
+                <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                        <svg className="w-4 h-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/>
                         </svg>
-                        Promotional Banner & Special Offers
+                        Promotions & Offers
                     </h3>
                     {hasPremium && (
-                        <span className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">
-                            👑 Premium - Multiple Promotions
+                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700">
+                            Premium
                         </span>
                     )}
                 </div>
-                <p className="text-sm text-gray-600 mb-4">
-                    Create eye-catching banners and special offers to attract more guests.
-                    {hasPremium 
-                        ? " As a Premium subscriber, you can run up to 10 active promotions simultaneously!" 
-                        : " Upgrade to Premium to run multiple promotions at once."}
+                <p className="text-xs text-gray-500 mb-4">
+                    Create banners and special offers to attract more guests.
+                    {hasPremium && " You can run up to 10 promotions."}
                 </p>
                 
                 {promotions.map((promotion, index) => (
@@ -499,26 +456,26 @@ const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced, hasPremium, p
                     />
                 ))}
                 
-                {errors.promotions && <p className="mt-2 text-red-600 text-sm font-semibold">{errors.promotions}</p>}
+                {errors.promotions && <p className="mt-2 text-red-600 text-xs">{errors.promotions}</p>}
                 
                 {canAddMore ? (
                     <button
                         type="button"
                         onClick={onAddPromotion}
-                        className="w-full py-3 border-2 border-dashed border-orange-300 rounded-xl text-orange-600 font-bold hover:bg-orange-50 transition-colors"
+                        className="w-full py-2 border border-dashed border-orange-300 rounded-lg text-orange-600 text-sm font-medium hover:bg-orange-50 transition-colors"
                     >
-                        + Add Another Promotion {hasPremium && `(${promotions.length}/${maxPromotions})`}
+                        + Add Promotion {hasPremium && `(${promotions.length}/${maxPromotions})`}
                     </button>
                 ) : (
-                    <div className="text-center py-3 text-gray-500 text-sm">
+                    <div className="text-center py-2 text-gray-500 text-xs">
                         {hasPremium 
                             ? `Maximum ${maxPromotions} promotions reached` 
                             : (
                                 <span>
-                                    <Link href={route('hotelier.subscription')} className="text-orange-600 font-bold hover:underline">
+                                    <Link href={route('hotelier.subscription')} className="text-orange-600 font-medium hover:underline">
                                         Upgrade to Premium
                                     </Link>
-                                    {" to add multiple promotions"}
+                                    {" for multiple promotions"}
                                 </span>
                             )
                         }
@@ -527,76 +484,76 @@ const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced, hasPremium, p
             </div>
 
             {/* Videos and 360° Content */}
-            <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-6 border-2 border-blue-200">
-                <h3 className="text-lg font-bold text-blue-800 mb-4 flex items-center gap-2">
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <div className="bg-blue-50 rounded-xl p-5 border border-blue-100">
+                <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <svg className="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18 3.99H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-12c0-1.1-.9-2-2-2zm0 14.01H6V5.99h12v12.01zM9.5 13l2.5 3.01L14.5 13l3.5 4.51H6z"/>
                     </svg>
                     Videos & 360° Content
                 </h3>
-                <p className="text-sm text-gray-600 mb-4">
-                    Add video tours and 360° content to give guests an immersive preview of your pool areas. Use YouTube, Vimeo, or other video hosting URLs.
+                <p className="text-xs text-gray-500 mb-4">
+                    Add video tours and 360° content to give guests an immersive preview.
                 </p>
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Video URL</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Video URL</label>
                         <input
                             type="url"
                             value={data.video_url}
                             onChange={(e) => setData('video_url', e.target.value)}
-                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 font-semibold"
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-orange-500 focus:border-orange-500"
                             placeholder="https://www.youtube.com/watch?v=..."
                         />
-                        {errors.video_url && <p className="mt-2 text-red-600 text-sm font-semibold">{errors.video_url}</p>}
+                        {errors.video_url && <p className="mt-1 text-red-600 text-xs">{errors.video_url}</p>}
                     </div>
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">360° Virtual Tour URL</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">360° Virtual Tour URL</label>
                         <input
                             type="url"
                             value={data.video_360_url}
                             onChange={(e) => setData('video_360_url', e.target.value)}
-                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 font-semibold"
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-orange-500 focus:border-orange-500"
                             placeholder="https://my360tour.com/hotel-pool-tour"
                         />
-                        {errors.video_360_url && <p className="mt-2 text-red-600 text-sm font-semibold">{errors.video_360_url}</p>}
+                        {errors.video_360_url && <p className="mt-1 text-red-600 text-xs">{errors.video_360_url}</p>}
                     </div>
                 </div>
             </div>
 
             {/* Direct Booking Link */}
-            <div className="bg-gray-50 rounded-2xl p-6 border-2 border-gray-200">
-                <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
+                <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <svg className="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
                     </svg>
                     Direct Booking Link
                 </h3>
-                <p className="text-sm text-gray-600 mb-4">
-                    Add a link to your direct booking engine. This will be displayed alongside OTA links, encouraging guests to book directly with you.
+                <p className="text-xs text-gray-500 mb-4">
+                    Add a link to your direct booking engine to encourage direct bookings.
                 </p>
                 <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Direct Booking URL</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Direct Booking URL</label>
                     <input
                         type="url"
                         value={data.direct_booking_url}
                         onChange={(e) => setData('direct_booking_url', e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-gray-500 focus:ring-2 focus:ring-gray-200 font-semibold"
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-orange-500 focus:border-orange-500"
                         placeholder="https://your-hotel.com/book"
                     />
-                    {errors.direct_booking_url && <p className="mt-2 text-red-600 text-sm font-semibold">{errors.direct_booking_url}</p>}
+                    {errors.direct_booking_url && <p className="mt-1 text-red-600 text-xs">{errors.direct_booking_url}</p>}
                 </div>
             </div>
 
             {/* Verified by Hotel Badge */}
-            <div className="bg-blue-50 rounded-2xl p-6 border-2 border-blue-200">
-                <h3 className="text-lg font-bold text-blue-800 mb-4 flex items-center gap-2">
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <div className="bg-blue-50 rounded-xl p-5 border border-blue-100">
+                <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <svg className="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
                     </svg>
                     "Verified by Hotel" Badge
                 </h3>
-                <p className="text-sm text-gray-600 mb-4">
-                    Display a trust badge on your profile indicating that all information has been verified by your hotel. This builds trust with potential guests.
+                <p className="text-xs text-gray-500 mb-4">
+                    Display a trust badge on your profile indicating verified information.
                 </p>
                 <label className="flex items-center gap-3 cursor-pointer group">
                     <div className="relative">
@@ -606,19 +563,19 @@ const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced, hasPremium, p
                             onChange={(e) => setData('show_verified_badge', e.target.checked)}
                             className="sr-only peer"
                         />
-                        <div className="w-14 h-8 bg-gray-200 rounded-full peer peer-checked:bg-blue-500 transition-colors"></div>
-                        <div className="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow peer-checked:translate-x-6 transition-transform"></div>
+                        <div className="w-10 h-6 bg-gray-200 rounded-full peer peer-checked:bg-orange-500 transition-colors"></div>
+                        <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow peer-checked:translate-x-4 transition-transform"></div>
                     </div>
-                    <span className="text-gray-700 font-bold group-hover:text-blue-700 transition-colors">
+                    <span className="text-sm text-gray-700 font-medium">
                         Show "Verified by Hotel" badge on my profile
                     </span>
                 </label>
                 {data.show_verified_badge && (
-                    <div className="mt-4 p-3 bg-white rounded-xl border-2 border-blue-200 inline-flex items-center gap-2">
-                        <svg className="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                    <div className="mt-3 p-2 bg-white rounded-lg border border-blue-200 inline-flex items-center gap-2">
+                        <svg className="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
                         </svg>
-                        <span className="text-blue-800 font-bold text-sm">Verified by Hotel</span>
+                        <span className="text-blue-800 font-medium text-xs">Verified by Hotel</span>
                     </div>
                 )}
             </div>
@@ -627,17 +584,17 @@ const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced, hasPremium, p
 };
 
 const FormActions = ({ processing }) => (
-    <div className="mt-8 pt-6 border-t-2 border-gray-200 flex flex-col sm:flex-row gap-3 justify-end">
+    <div className="mt-6 pt-6 border-t border-gray-200 flex flex-col sm:flex-row gap-3 justify-end">
         <Link
             href={route('hotelier.claims.index')}
-            className="px-6 py-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-bold transition-all duration-300 text-center transform hover:scale-105 shadow-md"
+            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm transition-colors text-center"
         >
             Back to My Hotels
         </Link>
         <button
             type="submit"
             disabled={processing}
-            className="px-6 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-orange-500 text-white font-medium text-sm rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
             {processing ? 'Saving...' : 'Save Changes'}
         </button>
@@ -803,18 +760,35 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
     return (
         <>
             <Head title={`Manage ${hotel.name}`} />
-            <div className="min-h-screen bg-white font-sans">
+            <div className="min-h-screen bg-gray-50 font-sans">
                 <HotelierNav />
-                <PageHeader hotel={hotel} />
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12">
+                
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    {/* Inline Header */}
+                    <div className="mb-6">
+                        <div className="flex items-center gap-3 mb-2">
+                            <Link
+                                href={route('hotelier.claims.index')}
+                                className="text-gray-500 hover:text-gray-700 transition-colors"
+                            >
+                                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </Link>
+                            <h1 className="text-2xl font-bold text-gray-900">Manage {hotel.name}</h1>
+                            <StatusBadge status={hotel.claim_status} />
+                        </div>
+                        <p className="text-gray-500 text-sm ml-8">Update your hotel's pool area information and features</p>
+                    </div>
+                    
                     <InfoBanner />
                     
-                    {/* Validation Errors Display - prominent box that's always visible when there are errors */}
+                    {/* Validation Errors Display */}
                     {hasErrors && <ValidationErrorsBox errors={allErrors} />}
                     
                     <form onSubmit={handleSubmit}>
-                        <div className="bg-white rounded-t-2xl border-b-2 border-gray-200 shadow-lg">
-                            <div className="flex gap-2 px-6 pt-5 overflow-x-auto">
+                        <div className="bg-white rounded-t-xl border-b border-gray-200 shadow-sm">
+                            <div className="flex gap-1 px-4 pt-4 overflow-x-auto">
                                 {TAB_CONFIG.map(({ key, label, icon, requiresEnhanced }) => (
                                     <TabButton 
                                         key={key} 
@@ -835,7 +809,7 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
                                 ))}
                             </div>
                         </div>
-                        <div className="bg-white rounded-b-2xl shadow-xl p-5 sm:p-6 md:p-8 border-2 border-gray-100 border-t-0">
+                        <div className="bg-white rounded-b-xl shadow-sm p-5 sm:p-6 border border-gray-100 border-t-0">
                             {renderTabContent()}
                             <FormActions processing={processing} />
                         </div>

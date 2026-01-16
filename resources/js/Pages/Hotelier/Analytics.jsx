@@ -19,45 +19,42 @@ export default function Analytics({ hotel, subscription, analytics }) {
         <>
             <Head title={`Analytics - ${hotel.name}`} />
             
-            <div className="min-h-screen bg-white font-sans">
+            <div className="min-h-screen bg-gray-50 font-sans">
                 <HotelierNav />
 
-                {/* Page Header */}
-                <div className="bg-gradient-to-r from-orange-50 to-blue-50 shadow-lg border-b-2 border-orange-200">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    {/* Inline Header */}
+                    <div className="mb-6">
+                        <div className="flex items-center gap-3 mb-2">
+                            <Link
+                                href={route('hotelier.dashboard')}
+                                className="text-gray-500 hover:text-gray-700 transition-colors"
+                            >
+                                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </Link>
+                            <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                                <ChartIcon className="w-6 h-6 text-orange-500" />
+                                Analytics
+                            </h1>
+                        </div>
+                        <div className="flex items-center justify-between ml-8">
                             <div>
-                                <div className="flex items-center gap-2 mb-2">
-                                    <Link
-                                        href={route('hotelier.dashboard')}
-                                        className="text-gray-500 hover:text-orange-600 transition-colors"
-                                    >
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                                        </svg>
-                                    </Link>
-                                    <span className="text-gray-400">|</span>
-                                    <span className="text-sm text-gray-600 font-semibold">{hotel.destination?.name}</span>
-                                </div>
-                                <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 flex items-center gap-3">
-                                    <ChartIcon className="w-8 h-8 sm:w-10 sm:h-10 text-orange-500" />
-                                    Analytics
-                                </h1>
-                                <p className="text-gray-600 font-semibold mt-1">{hotel.name}</p>
+                                <p className="text-gray-900 font-medium">{hotel.name}</p>
+                                <p className="text-gray-500 text-sm">{hotel.destination?.name}</p>
                             </div>
                             <Link
                                 href={route('hotelier.hotels.manage', hotel.slug)}
-                                className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm"
+                                className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 font-medium text-sm transition-colors"
                             >
                                 Manage Hotel
                             </Link>
                         </div>
                     </div>
-                </div>
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12">
-                    {/* Quick Stats Cards - Using consistent 4-color palette */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    {/* Quick Stats Cards */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                         <QuickStatCard
                             title="Today"
                             views={analytics.today.views}
@@ -84,33 +81,35 @@ export default function Analytics({ hotel, subscription, analytics }) {
                         />
                     </div>
 
-                    {/* Tab Navigation */}
-                    <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-                        <TabButton active={activeTab === 'overview'} onClick={() => setActiveTab('overview')}>
-                            <ChartIcon className="w-4 h-4" />
-                            Overview
-                        </TabButton>
-                        <TabButton active={activeTab === 'views'} onClick={() => setActiveTab('views')}>
-                            <EyeIcon className="w-4 h-4" />
-                            Profile Views
-                        </TabButton>
-                        <TabButton active={activeTab === 'clicks'} onClick={() => setActiveTab('clicks')}>
-                            <LinkIcon className="w-4 h-4" />
-                            Booking Clicks
-                        </TabButton>
-                    </div>
-
-                    {/* Tab Content */}
-                    <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 p-6 sm:p-8">
-                        {activeTab === 'overview' && (
-                            <OverviewTab analytics={analytics} hotel={hotel} />
-                        )}
-                        {activeTab === 'views' && (
-                            <ViewsTab analytics={analytics} />
-                        )}
-                        {activeTab === 'clicks' && (
-                            <ClicksTab analytics={analytics} hotel={hotel} />
-                        )}
+                    {/* Tab Navigation + Content Card */}
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+                        <div className="border-b border-gray-200 px-4 pt-4">
+                            <div className="flex gap-1 overflow-x-auto pb-0">
+                                <TabButton active={activeTab === 'overview'} onClick={() => setActiveTab('overview')}>
+                                    <ChartIcon className="w-4 h-4" />
+                                    Overview
+                                </TabButton>
+                                <TabButton active={activeTab === 'views'} onClick={() => setActiveTab('views')}>
+                                    <EyeIcon className="w-4 h-4" />
+                                    Profile Views
+                                </TabButton>
+                                <TabButton active={activeTab === 'clicks'} onClick={() => setActiveTab('clicks')}>
+                                    <LinkIcon className="w-4 h-4" />
+                                    Booking Clicks
+                                </TabButton>
+                            </div>
+                        </div>
+                        <div className="p-5 sm:p-6">
+                            {activeTab === 'overview' && (
+                                <OverviewTab analytics={analytics} hotel={hotel} />
+                            )}
+                            {activeTab === 'views' && (
+                                <ViewsTab analytics={analytics} />
+                            )}
+                            {activeTab === 'clicks' && (
+                                <ClicksTab analytics={analytics} hotel={hotel} />
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

@@ -5,23 +5,23 @@ import { EyeIcon, CalendarIcon, CalendarWeekIcon, CalendarMonthIcon, ChartIcon, 
 
 export default function ViewsTab({ analytics }) {
     return (
-        <div className="space-y-8">
+        <div className="space-y-6">
             <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
-                    <EyeIcon className="w-6 h-6 text-orange-500" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-1 flex items-center gap-2">
+                    <EyeIcon className="w-5 h-5 text-orange-500" />
                     Profile Views
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-sm text-gray-500">
                     Track how many times your hotel profile was viewed. Higher visibility leads to more bookings.
                 </p>
             </div>
 
             {/* Period Breakdown */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <PeriodCard title="Today" value={analytics.today.views} icon={<CalendarIcon className="w-5 h-5 text-gray-500" />} />
-                <PeriodCard title="This Week" value={analytics.weekly.views} icon={<CalendarWeekIcon className="w-5 h-5 text-gray-500" />} />
-                <PeriodCard title="This Month" value={analytics.monthly.views} icon={<CalendarMonthIcon className="w-5 h-5 text-gray-500" />} />
-                <PeriodCard title="All Time" value={analytics.allTime.views} icon={<ChartIcon className="w-5 h-5 text-orange-500" />} highlight />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <PeriodCard title="Today" value={analytics.today.views} icon={<CalendarIcon className="w-4 h-4 text-gray-400" />} />
+                <PeriodCard title="This Week" value={analytics.weekly.views} icon={<CalendarWeekIcon className="w-4 h-4 text-gray-400" />} />
+                <PeriodCard title="This Month" value={analytics.monthly.views} icon={<CalendarMonthIcon className="w-4 h-4 text-gray-400" />} />
+                <PeriodCard title="All Time" value={analytics.allTime.views} icon={<ChartIcon className="w-4 h-4 text-orange-500" />} highlight />
             </div>
 
             {/* Daily Breakdown Table */}
@@ -31,7 +31,7 @@ export default function ViewsTab({ analytics }) {
             <InfoBox
                 color="orange"
                 title="Why Profile Views Matter"
-                icon={<LightbulbIcon className="w-5 h-5" />}
+                icon={<LightbulbIcon className="w-4 h-4" />}
                 items={[
                     "Measures your hotel's visibility on Sunbed Ranker",
                     "Shows if promotions or upgrades increase exposure",

@@ -8,54 +8,58 @@ export default function HotelierDashboard({ hotels, pendingClaim, recentReviews,
         <>
             <Head title="Hotelier Dashboard" />
             
-            <div className="min-h-screen bg-white font-sans">
+            <div className="min-h-screen bg-gray-50 font-sans">
                 <HotelierNav />
 
-                {/* Page Header */}
-                <div className="bg-gradient-to-r from-orange-50 to-blue-50 shadow-lg border-b-2 border-orange-200">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-6 sm:py-8 md:py-10 lg:py-12">
-                        {/* Decorative accent */}
-                        <div className="flex items-center justify-center mb-4 sm:mb-5 md:mb-6">
-                            <div className="h-1 w-8 sm:w-10 md:w-12 lg:w-16 bg-orange-300 rounded-full"></div>
-                            <svg className="mx-3 sm:mx-4 text-orange-500" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                            </svg>
-                            <div className="h-1 w-8 sm:w-10 md:w-12 lg:w-16 bg-blue-300 rounded-full"></div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    {/* Page Header */}
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-900">Hotelier Dashboard</h1>
+                            <p className="text-sm text-gray-500 mt-1">Welcome back, {auth.user.name}</p>
                         </div>
-                        <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-gray-900 text-center">Hotelier Dashboard</h1>
+                        {subscription && (
+                            <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                                subscription.tier === 'premium' ? 'bg-purple-100 text-purple-700' :
+                                subscription.tier === 'enhanced' ? 'bg-blue-100 text-blue-700' :
+                                'bg-gray-100 text-gray-700'
+                            }`}>
+                                {subscription.tier?.charAt(0).toUpperCase() + subscription.tier?.slice(1)} Plan
+                            </span>
+                        )}
                     </div>
-                </div>
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-8 sm:py-10 md:py-12 lg:py-16 xl:py-20 2xl:py-24">
                     {/* Free Tier Upgrade Banner */}
                     {subscription?.tier === 'free' && (
-                        <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-16 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 shadow-lg">
+                        <div className="mb-6 bg-orange-50 border border-orange-200 rounded-xl p-4">
                             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                                 <div className="flex-shrink-0">
-                                    <svg className="w-8 h-8 sm:w-10 sm:h-10 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                                    </svg>
+                                    <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                                        </svg>
+                                    </div>
                                 </div>
                                 <div className="flex-1">
-                                    <h3 className="font-sans text-lg sm:text-xl md:text-2xl font-bold text-blue-900 mb-2">Upgrade Your Subscription</h3>
-                                    <p className="text-sm sm:text-base text-blue-800 font-medium leading-relaxed mb-3">
-                                        You're currently on the <span className="font-bold">Free</span> plan. Upgrade to <span className="font-bold text-blue-600">Enhanced</span> or <span className="font-bold text-purple-600">Premium</span> to claim and manage your hotel profiles.
+                                    <h3 className="text-base font-semibold text-gray-900 mb-1">Upgrade Your Subscription</h3>
+                                    <p className="text-sm text-gray-600 mb-2">
+                                        Upgrade to <span className="font-medium text-blue-600">Enhanced</span> or <span className="font-medium text-purple-600">Premium</span> to claim and manage your hotel profiles.
                                     </p>
-                                    <div className="flex flex-wrap gap-2 text-xs sm:text-sm text-blue-700">
+                                    <div className="flex flex-wrap gap-3 text-xs text-gray-500">
                                         <span className="inline-flex items-center gap-1">
-                                            <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <svg className="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
-                                            Claim Hotel Ownership
+                                            Claim Ownership
                                         </span>
                                         <span className="inline-flex items-center gap-1">
-                                            <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <svg className="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
-                                            Edit Hotel Profiles
+                                            Edit Profiles
                                         </span>
                                         <span className="inline-flex items-center gap-1">
-                                            <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <svg className="w-3.5 h-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
                                             Upload Images
@@ -64,7 +68,7 @@ export default function HotelierDashboard({ hotels, pendingClaim, recentReviews,
                                 </div>
                                 <Link
                                     href="/hotelier/upgrade"
-                                    className="flex-shrink-0 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                    className="flex-shrink-0 px-4 py-2 bg-orange-500 text-white font-medium text-sm rounded-lg hover:bg-orange-600 transition-colors"
                                 >
                                     Upgrade Now
                                 </Link>
@@ -72,208 +76,272 @@ export default function HotelierDashboard({ hotels, pendingClaim, recentReviews,
                         </div>
                     )}
 
-                    {/* Stats Overview */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12 mb-8 sm:mb-10 md:mb-12 lg:mb-16 xl:mb-20">
-                        <StatCard
-                            title="Total Hotels"
+                    {/* Stats Overview - MiniStatCard style */}
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                        <MiniStatCard
+                            icon={
+                                <svg className="w-5 h-5 text-orange-600" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
+                                </svg>
+                            }
                             value={stats.total_hotels}
+                            label="HOTELS"
+                            bgColor="bg-orange-50"
+                        />
+                        <MiniStatCard
                             icon={
-                                <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                    <path d="M3 21h18M9 8h1m0 0h1m-1 0v12m0-12V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2m0 0h1m-1 0v12m-6 0h6m-9 0H3m0 0V8a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v13"/>
+                                <svg className="w-5 h-5 text-yellow-600" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                                 </svg>
                             }
-                        />
-                        <StatCard
-                            title="Average Score"
                             value={stats.average_score ? Number(stats.average_score).toFixed(1) : 'N/A'}
-                            icon={
-                                <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                    <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-                                </svg>
-                            }
+                            label="AVG SCORE"
+                            bgColor="bg-yellow-50"
                         />
-                        <StatCard
-                            title="Total Reviews"
-                            value={stats.total_reviews}
+                        <MiniStatCard
                             icon={
-                                <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                    <path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                                <svg className="w-5 h-5 text-cyan-600" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/>
                                 </svg>
                             }
+                            value={stats.total_reviews}
+                            label="REVIEWS"
+                            bgColor="bg-cyan-50"
                         />
                     </div>
 
                     {/* Pending Claim Alert */}
                     {pendingClaim && (
-                        <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-16 bg-gradient-to-r from-yellow-50 to-yellow-100 border-2 border-yellow-300 rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 shadow-lg">
-                            <div className="flex items-start gap-3 sm:gap-4">
-                                <div className="flex-shrink-0">
-                                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" viewBox="0 0 24 24" fill="currentColor">
+                        <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                            <div className="flex items-start gap-3">
+                                <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg className="w-4 h-4 text-yellow-600" viewBox="0 0 24 24" fill="currentColor">
                                         <path fillRule="evenodd" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" clipRule="evenodd" />
                                     </svg>
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h3 className="font-sans text-lg sm:text-xl md:text-2xl font-bold text-yellow-900 mb-2 sm:mb-3">Pending Claim</h3>
-                                    <p className="text-sm sm:text-base text-yellow-800 font-semibold leading-relaxed">
-                                        Your claim for <span className="font-bold break-words">{pendingClaim.hotel.name}</span> is currently under review.
+                                    <h3 className="text-sm font-semibold text-gray-900 mb-1">Pending Claim</h3>
+                                    <p className="text-sm text-gray-600">
+                                        Your claim for <span className="font-medium">{pendingClaim.hotel.name}</span> is currently under review.
                                     </p>
                                 </div>
                             </div>
                         </div>
                     )}
 
-                    {/* Hotels List */}
-                    <div className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 p-5 sm:p-6 md:p-8 border-2 border-gray-100 mb-8 sm:mb-10 md:mb-12 lg:mb-16">
-                        <h3 className="font-sans text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-5 sm:mb-6">My Hotels</h3>
-                        {hotels && hotels.length > 0 ? (
-                            <>
-                                {/* Desktop Table View - Hidden on mobile */}
-                                <div className="hidden md:block overflow-x-auto -mx-5 sm:-mx-6 md:-mx-8">
-                                    <div className="inline-block min-w-full align-middle">
-                                        <div className="overflow-hidden">
-                                            <table className="min-w-full divide-y-2 divide-gray-200">
-                                                <thead className="bg-gradient-to-r from-orange-50 to-blue-50">
-                                                    <tr>
-                                                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                            Hotel Name
-                                                        </th>
-                                                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                            Destination
-                                                        </th>
-                                                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                            Score
-                                                        </th>
-                                                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                            Reviews
-                                                        </th>
-                                                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                            Actions
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="bg-white divide-y divide-gray-100">
-                                                    {hotels.map((hotel) => (
-                                                        <tr key={hotel.id} className="hover:bg-orange-50 transition-colors duration-300">
-                                                            <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
-                                                                <div className="text-sm font-bold text-gray-900">{hotel.name}</div>
-                                                            </td>
-                                                            <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
-                                                                <div className="text-sm text-gray-700 font-semibold">{hotel.destination}</div>
-                                                            </td>
-                                                            <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
-                                                                <div className="text-sm text-gray-900 font-bold">{hotel.score ? Number(hotel.score).toFixed(1) : 'N/A'}</div>
-                                                            </td>
-                                                            <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
-                                                                <div className="text-sm text-gray-900 font-bold">{hotel.total_reviews}</div>
-                                                            </td>
-                                                            <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm font-bold">
-                                                                <div className="flex items-center gap-3">
+                    {/* Main Content Grid */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                        {/* Hotels List - Takes 2 columns */}
+                        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="font-semibold text-gray-900">My Hotels</h3>
+                                {hotels && hotels.length > 0 && (
+                                    <span className="text-sm text-gray-500">{hotels.length} total</span>
+                                )}
+                            </div>
+                            {hotels && hotels.length > 0 ? (
+                                <>
+                                    {/* Desktop Table View */}
+                                    <div className="hidden md:block overflow-x-auto">
+                                        <table className="w-full">
+                                            <thead>
+                                                <tr className="text-left text-xs text-gray-500 border-b border-gray-100">
+                                                    <th className="pb-3 font-medium">Hotel Name</th>
+                                                    <th className="pb-3 font-medium">Destination</th>
+                                                    <th className="pb-3 font-medium">Score</th>
+                                                    <th className="pb-3 font-medium">Reviews</th>
+                                                    <th className="pb-3 font-medium">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {hotels.map((hotel) => (
+                                                    <tr key={hotel.id} className="border-b border-gray-50 hover:bg-gray-50">
+                                                        <td className="py-3">
+                                                            <span className="text-sm font-medium text-gray-900">{hotel.name}</span>
+                                                        </td>
+                                                        <td className="py-3">
+                                                            <span className="text-sm text-gray-500">{hotel.destination}</span>
+                                                        </td>
+                                                        <td className="py-3">
+                                                            <span className="text-sm font-medium text-gray-900">{hotel.score ? Number(hotel.score).toFixed(1) : 'N/A'}</span>
+                                                        </td>
+                                                        <td className="py-3">
+                                                            <span className="text-sm text-gray-900">{hotel.total_reviews}</span>
+                                                        </td>
+                                                        <td className="py-3">
+                                                            <div className="flex items-center gap-2">
+                                                                <Link
+                                                                    href={route('hotels.show', hotel.slug)}
+                                                                    className="text-orange-600 hover:text-orange-700 text-sm font-medium"
+                                                                >
+                                                                    View
+                                                                </Link>
+                                                                {(subscription?.tier === 'premium' || subscription?.tier === 'enhanced') && (
                                                                     <Link
-                                                                        href={route('hotels.show', hotel.slug)}
-                                                                        className="text-orange-600 hover:text-orange-700 font-bold uppercase text-xs transition-all duration-300 transform hover:scale-105"
+                                                                        href={route('hotelier.hotels.analytics', hotel.slug)}
+                                                                        className="inline-flex items-center gap-1 px-2 py-1 bg-orange-500 text-white rounded text-xs font-medium hover:bg-orange-600 transition-colors"
                                                                     >
-                                                                        View
+                                                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                                                        </svg>
+                                                                        Analytics
                                                                     </Link>
-                                                                    {(subscription?.tier === 'premium' || subscription?.tier === 'enhanced') && (
-                                                                        <Link
-                                                                            href={route('hotelier.hotels.analytics', hotel.slug)}
-                                                                            className="inline-flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-bold text-xs hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
-                                                                        >
-                                                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                                                            </svg>
-                                                                            Analytics
-                                                                        </Link>
-                                                                    )}
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
                                     </div>
-                                </div>
 
-                                {/* Mobile Card View - Hidden on desktop */}
-                                <div className="md:hidden space-y-4">
-                                    {hotels.map((hotel) => (
-                                        <div key={hotel.id} className="bg-gradient-to-r from-orange-50 to-blue-50 rounded-2xl p-4 border-2 border-gray-200 hover:border-orange-300 hover:shadow-md transition-all duration-300">
-                                            <div className="flex justify-between items-start mb-3">
-                                                <div className="flex-1">
-                                                    <h4 className="font-bold text-gray-900 text-base mb-1">{hotel.name}</h4>
-                                                    <p className="text-xs text-gray-700 font-semibold uppercase tracking-wide">{hotel.destination}</p>
+                                    {/* Mobile Card View */}
+                                    <div className="md:hidden space-y-3">
+                                        {hotels.map((hotel) => (
+                                            <div key={hotel.id} className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <div>
+                                                        <h4 className="font-medium text-gray-900 text-sm">{hotel.name}</h4>
+                                                        <p className="text-xs text-gray-500">{hotel.destination}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="flex gap-6 text-sm mb-3">
-                                                <div>
-                                                    <span className="text-xs text-gray-700 font-bold uppercase tracking-wider block mb-1">Score</span>
-                                                    <span className="text-gray-900 font-bold">{hotel.score ? Number(hotel.score).toFixed(1) : 'N/A'}</span>
+                                                <div className="flex gap-4 text-xs mb-3">
+                                                    <div>
+                                                        <span className="text-gray-500 block">Score</span>
+                                                        <span className="font-medium text-gray-900">{hotel.score ? Number(hotel.score).toFixed(1) : 'N/A'}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-gray-500 block">Reviews</span>
+                                                        <span className="font-medium text-gray-900">{hotel.total_reviews}</span>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <span className="text-xs text-gray-700 font-bold uppercase tracking-wider block mb-1">Reviews</span>
-                                                    <span className="text-gray-900 font-bold">{hotel.total_reviews}</span>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <Link
-                                                    href={route('hotels.show', hotel.slug)}
-                                                    className="text-orange-600 hover:text-orange-700 font-bold uppercase text-xs transition-all duration-300"
-                                                >
-                                                    View
-                                                </Link>
-                                                {(subscription?.tier === 'premium' || subscription?.tier === 'enhanced') && (
+                                                <div className="flex items-center gap-2">
                                                     <Link
-                                                        href={route('hotelier.hotels.analytics', hotel.slug)}
-                                                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-bold text-xs hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md"
+                                                        href={route('hotels.show', hotel.slug)}
+                                                        className="text-orange-600 hover:text-orange-700 text-xs font-medium"
                                                     >
-                                                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                                        </svg>
-                                                        Analytics
+                                                        View
                                                     </Link>
-                                                )}
+                                                    {(subscription?.tier === 'premium' || subscription?.tier === 'enhanced') && (
+                                                        <Link
+                                                            href={route('hotelier.hotels.analytics', hotel.slug)}
+                                                            className="inline-flex items-center gap-1 px-2 py-1 bg-orange-500 text-white rounded text-xs font-medium hover:bg-orange-600 transition-colors"
+                                                        >
+                                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                                            </svg>
+                                                            Analytics
+                                                        </Link>
+                                                    )}
+                                                </div>
                                             </div>
+                                        ))}
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="text-center py-8">
+                                    <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <svg className="w-6 h-6 text-gray-400" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
+                                        </svg>
+                                    </div>
+                                    <p className="text-gray-500 text-sm">You don't have any hotels yet.</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Recent Reviews Sidebar */}
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h3 className="font-semibold text-gray-900 mb-4">Recent Reviews</h3>
+                            {recentReviews && recentReviews.length > 0 ? (
+                                <div className="space-y-4 max-h-[400px] overflow-y-auto">
+                                    {recentReviews.map((review) => (
+                                        <div key={review.id} className="pb-4 border-b border-gray-100 last:border-b-0 last:pb-0">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium text-gray-900 truncate">{review.hotel.name}</p>
+                                                    <p className="text-xs text-gray-500">by {review.user.name}</p>
+                                                </div>
+                                                <div className="text-orange-500 flex items-center gap-0.5 flex-shrink-0">
+                                                    {[...Array(5)].map((_, i) => (
+                                                        <svg
+                                                            key={i}
+                                                            className={`w-3 h-3 ${i < review.rating ? 'fill-current' : 'fill-gray-300'}`}
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                                        </svg>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <p className="text-sm text-gray-600 line-clamp-2">{review.comment}</p>
                                         </div>
                                     ))}
                                 </div>
-                            </>
-                        ) : (
-                            <p className="text-gray-600 font-semibold">You don't have any hotels yet.</p>
-                        )}
+                            ) : (
+                                <div className="text-center py-6">
+                                    <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                        <svg className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/>
+                                        </svg>
+                                    </div>
+                                    <p className="text-gray-500 text-sm">No reviews yet.</p>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
-                    {/* Recent Reviews */}
-                    <div className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 p-5 sm:p-6 md:p-8 border-2 border-gray-100">
-                        <h3 className="font-sans text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-5 sm:mb-6">Recent Reviews</h3>
-                        {recentReviews && recentReviews.length > 0 ? (
-                            <div className="space-y-4 sm:space-y-5">
-                                {recentReviews.map((review) => (
-                                    <div key={review.id} className="border-b-2 border-gray-200 pb-4 sm:pb-5 last:border-b-0 last:pb-0">
-                                        <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-0">
-                                            <div className="flex-1">
-                                                <p className="font-bold text-gray-900 text-base sm:text-lg">{review.hotel.name}</p>
-                                                <p className="text-xs sm:text-sm text-gray-600 font-semibold mt-1">by {review.user.name}</p>
-                                            </div>
-                                            <div className="text-orange-500 flex items-center gap-0.5">
-                                                {[...Array(5)].map((_, i) => (
-                                                    <svg
-                                                        key={i}
-                                                        className={`w-4 h-4 sm:w-5 sm:h-5 ${i < review.rating ? 'fill-current' : 'fill-gray-300'}`}
-                                                        viewBox="0 0 24 24"
-                                                    >
-                                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                                    </svg>
-                                                ))}
-                                            </div>
-                                        </div>
-                                        <p className="mt-3 text-sm sm:text-base text-gray-700 font-medium leading-relaxed">{review.comment}</p>
+                    {/* Quick Actions */}
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <h3 className="font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <Link
+                                href="/hotels"
+                                className="flex items-center gap-3 p-4 bg-orange-50 rounded-xl hover:bg-orange-100 transition-colors group"
+                            >
+                                <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
+                                    </svg>
+                                </div>
+                                <span className="font-medium text-gray-900 text-sm">Browse Hotels</span>
+                            </Link>
+                            {(subscription?.tier === 'premium' || subscription?.tier === 'enhanced') && (
+                                <Link
+                                    href="/hotels"
+                                    className="flex items-center gap-3 p-4 bg-green-50 rounded-xl hover:bg-green-100 transition-colors group"
+                                >
+                                    <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                                        </svg>
                                     </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <p className="text-gray-600 font-semibold">No reviews yet.</p>
-                        )}
+                                    <span className="font-medium text-gray-900 text-sm">Claim Hotel</span>
+                                </Link>
+                            )}
+                            <Link
+                                href="/hotelier/profile"
+                                className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors group"
+                            >
+                                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                    </svg>
+                                </div>
+                                <span className="font-medium text-gray-900 text-sm">My Profile</span>
+                            </Link>
+                            <Link
+                                href="/hotelier/upgrade"
+                                className="flex items-center gap-3 p-4 bg-purple-50 rounded-xl hover:bg-purple-100 transition-colors group"
+                            >
+                                <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                                    </svg>
+                                </div>
+                                <span className="font-medium text-gray-900 text-sm">Upgrade Plan</span>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -281,29 +349,18 @@ export default function HotelierDashboard({ hotels, pendingClaim, recentReviews,
     );
 }
 
-function StatCard({ title, value, subtitle, icon, link }) {
-    const card = (
-        <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-5 sm:p-6 md:p-8 border-2 border-gray-100 group transform hover:scale-105">
-            <div className="flex items-start justify-between mb-3 sm:mb-4">
-                <div className="flex-1">
-                    <div className="text-gray-700 font-bold text-xs sm:text-sm uppercase mb-2 sm:mb-3">{title}</div>
-                    <div className="font-sans text-3xl sm:text-4xl md:text-5xl font-black text-gray-900">{value}</div>
-                    {subtitle && (
-                        <div className="text-gray-600 font-semibold text-xs sm:text-sm mt-1 sm:mt-2">{subtitle}</div>
-                    )}
-                </div>
-                <div className="text-orange-400 group-hover:text-orange-600 transition-colors duration-300 flex-shrink-0 ml-2">
-                    {icon}
-                </div>
+function MiniStatCard({ icon, value, label, bgColor }) {
+    return (
+        <div className={`${bgColor} rounded-xl p-4 flex items-center gap-3`}>
+            <div className="flex-shrink-0">
+                {icon}
+            </div>
+            <div>
+                <div className="text-xl font-bold text-gray-900">{value}</div>
+                <div className="text-xs text-gray-500 font-medium">{label}</div>
             </div>
         </div>
     );
-
-    return link ? (
-        <Link href={link} className="block">
-            {card}
-        </Link>
-    ) : card;
 }
 
 

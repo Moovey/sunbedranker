@@ -1,7 +1,7 @@
 export default function PerformanceChart({ data }) {
     return (
-        <div className="bg-gray-50 rounded-xl p-6">
-            <h4 className="font-bold text-gray-800 mb-4">Last 30 Days</h4>
+        <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+            <h4 className="font-semibold text-gray-900 mb-4">Last 30 Days</h4>
             <div className="space-y-4">
                 {/* Simple bar chart */}
                 <div className="flex items-end gap-1 h-40 overflow-x-auto pb-2">
@@ -15,9 +15,9 @@ export default function PerformanceChart({ data }) {
                                 className="flex-shrink-0 w-6 group relative h-full flex items-end"
                             >
                                 <div
-                                    className={`rounded-t w-full transition-all duration-300 ${
+                                    className={`rounded-t w-full transition-all ${
                                         day.views > 0 
-                                            ? 'bg-gradient-to-t from-orange-500 to-orange-400 hover:from-orange-600 hover:to-orange-500' 
+                                            ? 'bg-orange-500 hover:bg-orange-600' 
                                             : 'bg-gray-200'
                                     }`}
                                     style={{ height: `${heightPx}px` }}
