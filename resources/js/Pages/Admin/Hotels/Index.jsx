@@ -12,9 +12,9 @@ const STATUS_OPTIONS = [
 
 // Subscription tier styling configuration
 const SUBSCRIPTION_STYLES = {
-    premium: 'bg-purple-100 text-purple-700 border-purple-300',
-    enhanced: 'bg-blue-100 text-blue-700 border-blue-300',
-    free: 'bg-gray-100 text-gray-700 border-gray-300',
+    premium: 'bg-purple-100 text-purple-700',
+    enhanced: 'bg-blue-100 text-blue-700',
+    free: 'bg-gray-100 text-gray-600',
 };
 
 // Table column configuration
@@ -67,12 +67,27 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
         <>
             <Head title="Manage Hotels" />
             
-            <div className="min-h-screen bg-white font-sans">
+            <div className="min-h-screen bg-gray-50 font-sans">
                 <AdminNav stats={stats} />
-                
-                <PageHeader />
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12 lg:py-16">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    {/* Page Header */}
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-900">Hotel Management</h1>
+                            <p className="text-gray-500 text-sm mt-1">Manage all hotels and their details</p>
+                        </div>
+                        <Link
+                            href={route('admin.hotels.create')}
+                            className="inline-flex items-center gap-2 px-4 py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors shadow-sm"
+                        >
+                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Add New Hotel
+                        </Link>
+                    </div>
+
                     <FilterSection
                         filterState={filterState}
                         updateFilter={updateFilter}
@@ -95,48 +110,10 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
 // Sub-components
 // ============================================================================
 
-function PageHeader() {
-    return (
-        <div className="bg-gradient-to-r from-orange-50 to-blue-50 shadow-lg border-b-2 border-orange-200">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-12">
-                <DecorativeAccent />
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="text-center sm:text-left">
-                        <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-gray-900">
-                            Hotel Management
-                        </h1>
-                        <p className="text-gray-700 mt-2 font-semibold">
-                            Manage all hotels and their details
-                        </p>
-                    </div>
-                    <Link
-                        href={route('admin.hotels.create')}
-                        className="px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 text-center hover:shadow-xl transform hover:scale-105 active:scale-95 text-sm sm:text-base whitespace-nowrap shadow-lg"
-                    >
-                        Add New Hotel
-                    </Link>
-                </div>
-            </div>
-        </div>
-    );
-}
-
-function DecorativeAccent() {
-    return (
-        <div className="flex items-center justify-center mb-4 sm:mb-5 md:mb-6">
-            <div className="h-0.5 w-8 sm:w-10 md:w-12 bg-gradient-to-r from-orange-500 to-orange-600" />
-            <StarIcon className="w-6 h-6 mx-3 sm:mx-4 text-orange-500" />
-            <div className="h-0.5 w-8 sm:w-10 md:w-12 bg-gradient-to-r from-blue-500 to-blue-600" />
-        </div>
-    );
-}
-
 function FilterSection({ filterState, updateFilter, destinations, onSearch, onClear }) {
     return (
-        <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-500 p-5 sm:p-6 md:p-8 mb-6 sm:mb-8 md:mb-10 border-2 border-gray-100">
-            <h2 className="font-sans text-xl sm:text-2xl font-bold text-gray-900 mb-5 sm:mb-6">
-                Filter Hotels
-            </h2>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+            <h2 className="font-semibold text-gray-900 mb-4">Filter Hotels</h2>
             <form onSubmit={onSearch} className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <FilterInput
                     label="Search"
@@ -166,14 +143,14 @@ function FilterSection({ filterState, updateFilter, destinations, onSearch, onCl
                 <div className="flex items-end gap-2">
                     <button
                         type="submit"
-                        className="flex-1 px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 font-bold transition-all duration-300 shadow-lg transform hover:scale-105"
+                        className="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 font-medium transition-colors"
                     >
                         Search
                     </button>
                     <button
                         type="button"
                         onClick={onClear}
-                        className="px-4 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-bold transition-all duration-300 transform hover:scale-105"
+                        className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
                     >
                         Clear
                     </button>
@@ -186,12 +163,12 @@ function FilterSection({ filterState, updateFilter, destinations, onSearch, onCl
 function FilterInput({ label, ...props }) {
     return (
         <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 {label}
             </label>
             <input
                 {...props}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
             />
         </div>
     );
@@ -200,12 +177,12 @@ function FilterInput({ label, ...props }) {
 function FilterSelect({ label, options, ...props }) {
     return (
         <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 {label}
             </label>
             <select
                 {...props}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
             >
                 {options.map(opt => (
                     <option key={opt.value} value={opt.value}>
@@ -219,11 +196,11 @@ function FilterSelect({ label, options, ...props }) {
 
 function HotelTable({ hotels, onDelete }) {
     return (
-        <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-500 overflow-hidden border-2 border-gray-100">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
+                <table className="min-w-full">
                     <TableHeader />
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="divide-y divide-gray-100">
                         {hotels.data.length === 0 ? (
                             <EmptyRow />
                         ) : (
@@ -246,12 +223,12 @@ function HotelTable({ hotels, onDelete }) {
 
 function TableHeader() {
     return (
-        <thead className="bg-gradient-to-r from-orange-50 to-blue-50">
+        <thead className="bg-gray-50 border-b border-gray-100">
             <tr>
                 {TABLE_COLUMNS.map(col => (
                     <th 
                         key={col.key}
-                        className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                         {col.label}
                     </th>
@@ -265,7 +242,7 @@ function EmptyRow() {
     return (
         <tr>
             <td colSpan={TABLE_COLUMNS.length} className="px-6 py-12 text-center">
-                <p className="text-gray-500 font-semibold">No hotels found</p>
+                <p className="text-gray-500 text-sm">No hotels found</p>
             </td>
         </tr>
     );
@@ -273,7 +250,7 @@ function EmptyRow() {
 
 function HotelRow({ hotel, onDelete }) {
     return (
-        <tr className="hover:bg-orange-50 transition-colors duration-200">
+        <tr className="hover:bg-gray-50 transition-colors">
             <HotelInfoCell hotel={hotel} />
             <DestinationCell destination={hotel.destination?.name} />
             <ScoreCell score={hotel.overall_score} />
@@ -288,19 +265,21 @@ function HotelInfoCell({ hotel }) {
     return (
         <td className="px-6 py-4 whitespace-nowrap">
             <div className="flex items-center">
-                {hotel.main_image_url && (
+                {hotel.main_image_url ? (
                     <img
                         src={hotel.main_image_url}
                         alt={hotel.name}
-                        className="w-16 h-16 rounded-lg object-cover mr-4 border-2 border-gray-100"
+                        className="w-10 h-10 rounded-lg object-cover mr-3"
                     />
+                ) : (
+                    <div className="w-10 h-10 bg-gray-100 rounded-lg mr-3"></div>
                 )}
                 <div>
-                    <div className="text-sm font-semibold text-gray-900">
+                    <div className="text-sm font-medium text-gray-900">
                         {hotel.name}
                     </div>
                     {hotel.star_rating && (
-                        <div className="text-sm text-gray-600 font-medium">
+                        <div className="text-xs text-gray-500">
                             {hotel.star_rating} Star
                         </div>
                     )}
@@ -313,7 +292,7 @@ function HotelInfoCell({ hotel }) {
 function DestinationCell({ destination }) {
     return (
         <td className="px-6 py-4 whitespace-nowrap">
-            <div className="text-sm text-gray-900 font-semibold">
+            <div className="text-sm text-gray-900">
                 {destination || '-'}
             </div>
         </td>
@@ -323,7 +302,7 @@ function DestinationCell({ destination }) {
 function ScoreCell({ score }) {
     return (
         <td className="px-6 py-4 whitespace-nowrap">
-            <div className="text-sm font-bold text-gray-900">
+            <div className="text-sm font-medium text-gray-900">
                 {score ? `${score}/100` : 'N/A'}
             </div>
         </td>
@@ -335,7 +314,7 @@ function SubscriptionCell({ tier }) {
     
     return (
         <td className="px-6 py-4 whitespace-nowrap">
-            <span className={`px-2 py-1 text-xs rounded-full font-bold border-2 ${style}`}>
+            <span className={`px-2 py-1 text-xs font-medium rounded-full ${style}`}>
                 {tier || 'free'}
             </span>
         </td>
@@ -367,7 +346,7 @@ function StatusBadge({ type }) {
             label: 'Verified',
         },
         featured: {
-            color: 'text-orange-600',
+            color: 'text-purple-600',
             icon: <StarIcon className="w-3 h-3" />,
             label: 'Featured',
         },
@@ -376,7 +355,7 @@ function StatusBadge({ type }) {
     const badge = badges[type];
     
     return (
-        <span className={`text-xs ${badge.color} font-bold flex items-center gap-1`}>
+        <span className={`text-xs ${badge.color} font-medium flex items-center gap-1`}>
             {badge.icon}
             {badge.label}
         </span>
@@ -389,20 +368,20 @@ function ActionsCell({ hotel, onDelete }) {
             <div className="flex items-center gap-3">
                 <Link
                     href={route('admin.hotels.edit', hotel.id)}
-                    className="text-blue-600 hover:text-blue-700 font-bold transition-all duration-300 transform hover:scale-105"
+                    className="text-orange-600 hover:text-orange-700 font-medium transition-colors"
                 >
                     Edit
                 </Link>
                 <Link
                     href={`/hotels/${hotel.slug}`}
                     target="_blank"
-                    className="text-orange-600 hover:text-orange-700 font-bold transition-all duration-300 transform hover:scale-105"
+                    className="text-gray-600 hover:text-gray-700 font-medium transition-colors"
                 >
                     View
                 </Link>
                 <button
                     onClick={() => onDelete(hotel)}
-                    className="text-red-600 hover:text-red-700 font-bold transition-all duration-300 transform hover:scale-105"
+                    className="text-red-600 hover:text-red-700 font-medium transition-colors"
                 >
                     Delete
                 </button>
@@ -413,7 +392,7 @@ function ActionsCell({ hotel, onDelete }) {
 
 function Pagination({ hotels }) {
     return (
-        <div className="bg-white px-4 py-3 border-t-2 border-gray-200 sm:px-6">
+        <div className="bg-white px-6 py-4 border-t border-gray-100">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <PaginationInfo 
                     from={hotels.from} 
@@ -428,17 +407,17 @@ function Pagination({ hotels }) {
 
 function PaginationInfo({ from, to, total }) {
     return (
-        <div className="text-sm text-gray-700 font-semibold">
-            Showing <span className="font-bold text-orange-600">{from}</span> to{' '}
-            <span className="font-bold text-orange-600">{to}</span> of{' '}
-            <span className="font-bold text-orange-600">{total}</span> results
+        <div className="text-sm text-gray-500">
+            Showing <span className="font-medium text-gray-900">{from}</span> to{' '}
+            <span className="font-medium text-gray-900">{to}</span> of{' '}
+            <span className="font-medium text-gray-900">{total}</span> results
         </div>
     );
 }
 
 function PaginationLinks({ links }) {
     return (
-        <div className="flex gap-2 flex-wrap justify-center">
+        <div className="flex gap-1 flex-wrap justify-center">
             {links.map((link, index) => (
                 <PaginationLink key={index} link={link} />
             ))}
@@ -447,12 +426,12 @@ function PaginationLinks({ links }) {
 }
 
 function PaginationLink({ link }) {
-    const baseClasses = 'px-3 py-1 border-2 rounded-lg font-bold transition-all duration-300';
+    const baseClasses = 'px-3 py-1.5 text-sm rounded-lg font-medium transition-colors';
     
     if (!link.url) {
         return (
             <span
-                className={`${baseClasses} bg-gray-100 text-gray-400 border-gray-200 font-semibold`}
+                className={`${baseClasses} text-gray-400`}
                 dangerouslySetInnerHTML={{ __html: link.label }}
             />
         );
@@ -461,10 +440,10 @@ function PaginationLink({ link }) {
     return (
         <Link
             href={link.url}
-            className={`${baseClasses} transform hover:scale-105 ${
+            className={`${baseClasses} ${
                 link.active
-                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white border-orange-600 shadow-lg'
-                    : 'bg-white text-gray-700 border-gray-300 hover:bg-orange-50 hover:border-orange-300'
+                    ? 'bg-orange-500 text-white'
+                    : 'text-gray-700 hover:bg-gray-100'
             }`}
             dangerouslySetInnerHTML={{ __html: link.label }}
         />

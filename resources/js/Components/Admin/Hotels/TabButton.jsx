@@ -3,10 +3,10 @@ export default function TabButton({ active, onClick, children }) {
         <button
             type="button"
             onClick={onClick}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
+            className={`px-4 py-2.5 text-sm font-medium rounded-t-lg transition-colors ${
                 active
-                    ? 'text-neutral-900 border-b-2 border-neutral-900'
-                    : 'text-neutral-600 hover:text-neutral-900'
+                    ? 'bg-white text-orange-600 border border-gray-100 border-b-white -mb-px'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
             }`}
         >
             {children}

@@ -86,255 +86,267 @@ export default function AdminProfile({ stats }) {
         <>
             <Head title="Admin Profile" />
             
-            <div className="min-h-screen bg-white font-sans">
+            <div className="min-h-screen bg-gray-50 font-sans">
                 <AdminNav stats={stats} />
 
-                {/* Page Header */}
-                <div className="bg-gradient-to-r from-orange-50 to-blue-50 shadow-lg border-b-2 border-orange-200">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-12">
-                        <div className="flex items-center justify-center mb-4 sm:mb-5 md:mb-6">
-                            <div className="h-1 w-8 sm:w-10 md:w-12 bg-orange-300 rounded-full"></div>
-                            <svg className="mx-3 sm:mx-4 text-orange-500" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-                            </svg>
-                            <div className="h-1 w-8 sm:w-10 md:w-12 bg-blue-300 rounded-full"></div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-900">Admin Profile</h1>
+                            <p className="text-sm text-gray-500">Manage your administrator account</p>
                         </div>
-                        <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 text-center">Admin Profile</h1>
-                        <p className="text-center text-gray-600 mt-2 font-semibold">Manage your administrator account</p>
                     </div>
-                </div>
 
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12 lg:py-16">
-                    {/* Profile Card */}
-                    <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 overflow-hidden">
-                        {/* Profile Header */}
-                        <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-8 text-white">
-                            <div className="flex items-center gap-6">
-                                <div className="relative group">
-                                    {imagePreview ? (
-                                        <img 
-                                            src={imagePreview} 
-                                            alt={user.name}
-                                            className="w-20 h-20 rounded-full object-cover border-4 border-white/30"
-                                        />
-                                    ) : (
-                                        <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-3xl font-black border-4 border-white/30">
-                                            {user.name.charAt(0).toUpperCase()}
-                                        </div>
-                                    )}
-                                    <button
-                                        type="button"
-                                        onClick={() => fileInputRef.current?.click()}
-                                        className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                                    >
-                                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div>
-                                    <h2 className="text-2xl font-bold">{user.name}</h2>
-                                    <p className="text-orange-100">{user.email}</p>
-                                    <span className="inline-block mt-2 px-3 py-1 bg-white/20 rounded-full text-sm font-bold">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        {/* Left Column - Profile Card */}
+                        <div className="lg:col-span-1 space-y-6">
+                            {/* User Card */}
+                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                                <div className="bg-orange-500 px-6 py-8 text-white text-center">
+                                    <div className="relative inline-block group">
+                                        {imagePreview ? (
+                                            <img 
+                                                src={imagePreview} 
+                                                alt={user.name}
+                                                className="w-20 h-20 rounded-full object-cover border-4 border-white/30 mx-auto"
+                                            />
+                                        ) : (
+                                            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-3xl font-bold border-4 border-white/30 mx-auto">
+                                                {user.name.charAt(0).toUpperCase()}
+                                            </div>
+                                        )}
+                                        <button
+                                            type="button"
+                                            onClick={() => fileInputRef.current?.click()}
+                                            className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                                        >
+                                            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <h2 className="text-xl font-semibold mt-4">{user.name}</h2>
+                                    <p className="text-orange-100 text-sm">{user.email}</p>
+                                    <span className="inline-block mt-2 px-3 py-1 bg-white/20 rounded-full text-xs font-medium">
                                         Administrator
                                     </span>
                                 </div>
                             </div>
+
+                            {/* Stats Cards */}
+                            <div className="bg-orange-50 rounded-xl p-4 flex items-center gap-3">
+                                <svg className="w-5 h-5 text-orange-600" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
+                                </svg>
+                                <div>
+                                    <div className="text-xl font-bold text-gray-900">{stats?.total_hotels || 0}</div>
+                                    <div className="text-xs text-gray-500 font-medium">HOTELS</div>
+                                </div>
+                            </div>
+                            <div className="bg-cyan-50 rounded-xl p-4 flex items-center gap-3">
+                                <svg className="w-5 h-5 text-cyan-600" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                                </svg>
+                                <div>
+                                    <div className="text-xl font-bold text-gray-900">{stats?.total_users || 0}</div>
+                                    <div className="text-xs text-gray-500 font-medium">USERS</div>
+                                </div>
+                            </div>
+                            <div className="bg-yellow-50 rounded-xl p-4 flex items-center gap-3">
+                                <svg className="w-5 h-5 text-yellow-600" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                                </svg>
+                                <div>
+                                    <div className="text-xl font-bold text-gray-900">{stats?.pending_claims || 0}</div>
+                                    <div className="text-xs text-gray-500 font-medium">PENDING CLAIMS</div>
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Stats Row */}
-                        <div className="grid grid-cols-3 border-b-2 border-gray-100">
-                            <div className="p-4 text-center border-r border-gray-100">
-                                <div className="text-2xl font-black text-orange-600">{stats?.total_hotels || 0}</div>
-                                <div className="text-sm text-gray-600 font-semibold">Hotels</div>
-                            </div>
-                            <div className="p-4 text-center border-r border-gray-100">
-                                <div className="text-2xl font-black text-blue-600">{stats?.total_users || 0}</div>
-                                <div className="text-sm text-gray-600 font-semibold">Users</div>
-                            </div>
-                            <div className="p-4 text-center">
-                                <div className="text-2xl font-black text-green-600">{stats?.pending_claims || 0}</div>
-                                <div className="text-sm text-gray-600 font-semibold">Pending Claims</div>
-                            </div>
-                        </div>
+                        {/* Right Column - Forms */}
+                        <div className="lg:col-span-2">
+                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                                {/* Tab Navigation */}
+                                <div className="flex border-b border-gray-100">
+                                    <button
+                                        onClick={() => setActiveTab('profile')}
+                                        className={`flex-1 px-6 py-3 font-medium text-sm transition-colors ${
+                                            activeTab === 'profile'
+                                                ? 'text-orange-600 border-b-2 border-orange-500 bg-orange-50'
+                                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                                        }`}
+                                    >
+                                        Profile Information
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab('password')}
+                                        className={`flex-1 px-6 py-3 font-medium text-sm transition-colors ${
+                                            activeTab === 'password'
+                                                ? 'text-orange-600 border-b-2 border-orange-500 bg-orange-50'
+                                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                                        }`}
+                                    >
+                                        Change Password
+                                    </button>
+                                </div>
 
-                        {/* Tab Navigation */}
-                        <div className="flex border-b-2 border-gray-100">
-                            <button
-                                onClick={() => setActiveTab('profile')}
-                                className={`flex-1 px-6 py-4 font-bold text-sm transition-all ${
-                                    activeTab === 'profile'
-                                        ? 'text-orange-600 border-b-2 border-orange-500 bg-orange-50'
-                                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                                }`}
-                            >
-                                Profile Information
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('password')}
-                                className={`flex-1 px-6 py-4 font-bold text-sm transition-all ${
-                                    activeTab === 'password'
-                                        ? 'text-orange-600 border-b-2 border-orange-500 bg-orange-50'
-                                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                                }`}
-                            >
-                                Change Password
-                            </button>
-                        </div>
-
-                        {/* Tab Content */}
-                        <div className="p-6 sm:p-8">
-                            {activeTab === 'profile' && (
-                                <form onSubmit={handleProfileSubmit} className="space-y-6">
-                                    {/* Profile Picture Upload */}
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Profile Picture</label>
-                                        <div className="flex items-center gap-6">
-                                            <div className="relative">
-                                                {imagePreview ? (
-                                                    <img 
-                                                        src={imagePreview} 
-                                                        alt="Profile preview"
-                                                        className="w-24 h-24 rounded-full object-cover border-4 border-gray-200"
-                                                    />
-                                                ) : (
-                                                    <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center text-4xl font-black text-gray-400 border-4 border-gray-200">
-                                                        {user.name.charAt(0).toUpperCase()}
+                                {/* Tab Content */}
+                                <div className="p-6">
+                                    {activeTab === 'profile' && (
+                                        <form onSubmit={handleProfileSubmit} className="space-y-5">
+                                            {/* Profile Picture Upload */}
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-2">Profile Picture</label>
+                                                <div className="flex items-center gap-4">
+                                                    <div className="relative">
+                                                        {imagePreview ? (
+                                                            <img 
+                                                                src={imagePreview} 
+                                                                alt="Profile preview"
+                                                                className="w-16 h-16 rounded-lg object-cover border border-gray-200"
+                                                            />
+                                                        ) : (
+                                                            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-2xl font-semibold text-gray-400 border border-gray-200">
+                                                                {user.name.charAt(0).toUpperCase()}
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                )}
-                                            </div>
-                                            <div className="flex-1 space-y-2">
-                                                <input
-                                                    ref={fileInputRef}
-                                                    type="file"
-                                                    accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
-                                                    onChange={handleImageChange}
-                                                    className="hidden"
-                                                />
-                                                <div className="flex flex-wrap gap-2">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => fileInputRef.current?.click()}
-                                                        className="px-4 py-2 bg-orange-100 text-orange-700 font-bold rounded-lg hover:bg-orange-200 transition-colors"
-                                                    >
-                                                        Upload New Photo
-                                                    </button>
-                                                    {(imagePreview || user.profile_picture_url) && (
-                                                        <button
-                                                            type="button"
-                                                            onClick={handleRemoveImage}
-                                                            className="px-4 py-2 bg-red-100 text-red-700 font-bold rounded-lg hover:bg-red-200 transition-colors"
-                                                        >
-                                                            Remove
-                                                        </button>
-                                                    )}
+                                                    <div className="flex-1 space-y-2">
+                                                        <input
+                                                            ref={fileInputRef}
+                                                            type="file"
+                                                            accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
+                                                            onChange={handleImageChange}
+                                                            className="hidden"
+                                                        />
+                                                        <div className="flex flex-wrap gap-2">
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => fileInputRef.current?.click()}
+                                                                className="px-3 py-1.5 bg-orange-50 text-orange-700 font-medium rounded-lg hover:bg-orange-100 transition-colors text-sm"
+                                                            >
+                                                                Upload New Photo
+                                                            </button>
+                                                            {(imagePreview || user.profile_picture_url) && (
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={handleRemoveImage}
+                                                                    className="px-3 py-1.5 bg-red-50 text-red-700 font-medium rounded-lg hover:bg-red-100 transition-colors text-sm"
+                                                                >
+                                                                    Remove
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                        <p className="text-xs text-gray-500">JPG, PNG, GIF or WEBP. Max 2MB.</p>
+                                                    </div>
                                                 </div>
-                                                <p className="text-xs text-gray-500">JPG, PNG, GIF or WEBP. Max 2MB.</p>
+                                                {errors.profile_picture && <p className="mt-1 text-red-600 text-sm">{errors.profile_picture}</p>}
                                             </div>
-                                        </div>
-                                        {errors.profile_picture && <p className="mt-2 text-red-600 text-sm">{errors.profile_picture}</p>}
-                                    </div>
 
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Name</label>
-                                        <input
-                                            type="text"
-                                            value={data.name}
-                                            onChange={(e) => setData('name', e.target.value)}
-                                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all font-semibold"
-                                        />
-                                        {errors.name && <p className="mt-2 text-red-600 text-sm">{errors.name}</p>}
-                                    </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                                <input
+                                                    type="text"
+                                                    value={data.name}
+                                                    onChange={(e) => setData('name', e.target.value)}
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors"
+                                                />
+                                                {errors.name && <p className="mt-1 text-red-600 text-sm">{errors.name}</p>}
+                                            </div>
 
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
-                                        <input
-                                            type="email"
-                                            value={data.email}
-                                            onChange={(e) => setData('email', e.target.value)}
-                                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all font-semibold"
-                                        />
-                                        {errors.email && <p className="mt-2 text-red-600 text-sm">{errors.email}</p>}
-                                    </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                                <input
+                                                    type="email"
+                                                    value={data.email}
+                                                    onChange={(e) => setData('email', e.target.value)}
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors"
+                                                />
+                                                {errors.email && <p className="mt-1 text-red-600 text-sm">{errors.email}</p>}
+                                            </div>
 
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Role</label>
-                                        <input
-                                            type="text"
-                                            value="Administrator"
-                                            disabled
-                                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-600 font-semibold"
-                                        />
-                                    </div>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                                    <input
+                                                        type="text"
+                                                        value="Administrator"
+                                                        disabled
+                                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Account Created</label>
+                                                    <input
+                                                        type="text"
+                                                        value={new Date(user.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                                        disabled
+                                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500"
+                                                    />
+                                                </div>
+                                            </div>
 
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Account Created</label>
-                                        <input
-                                            type="text"
-                                            value={new Date(user.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                                            disabled
-                                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-600 font-semibold"
-                                        />
-                                    </div>
+                                            <div className="pt-4 border-t border-gray-100">
+                                                <button
+                                                    type="submit"
+                                                    disabled={processing}
+                                                    className="px-4 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50"
+                                                >
+                                                    {processing ? 'Saving...' : 'Update Profile'}
+                                                </button>
+                                            </div>
+                                        </form>
+                                    )}
 
-                                    <div className="pt-4">
-                                        <button
-                                            type="submit"
-                                            disabled={processing}
-                                            className="w-full px-6 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] disabled:opacity-50"
-                                        >
-                                            {processing ? 'Saving...' : 'Update Profile'}
-                                        </button>
-                                    </div>
-                                </form>
-                            )}
+                                    {activeTab === 'password' && (
+                                        <form onSubmit={handlePasswordSubmit} className="space-y-5">
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                                                <input
+                                                    type="password"
+                                                    value={passwordData.current_password}
+                                                    onChange={(e) => setPasswordData('current_password', e.target.value)}
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors"
+                                                />
+                                                {passwordErrors.current_password && <p className="mt-1 text-red-600 text-sm">{passwordErrors.current_password}</p>}
+                                            </div>
 
-                            {activeTab === 'password' && (
-                                <form onSubmit={handlePasswordSubmit} className="space-y-6">
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Current Password</label>
-                                        <input
-                                            type="password"
-                                            value={passwordData.current_password}
-                                            onChange={(e) => setPasswordData('current_password', e.target.value)}
-                                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all font-semibold"
-                                        />
-                                        {passwordErrors.current_password && <p className="mt-2 text-red-600 text-sm">{passwordErrors.current_password}</p>}
-                                    </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                                                <input
+                                                    type="password"
+                                                    value={passwordData.password}
+                                                    onChange={(e) => setPasswordData('password', e.target.value)}
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors"
+                                                />
+                                                {passwordErrors.password && <p className="mt-1 text-red-600 text-sm">{passwordErrors.password}</p>}
+                                            </div>
 
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">New Password</label>
-                                        <input
-                                            type="password"
-                                            value={passwordData.password}
-                                            onChange={(e) => setPasswordData('password', e.target.value)}
-                                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all font-semibold"
-                                        />
-                                        {passwordErrors.password && <p className="mt-2 text-red-600 text-sm">{passwordErrors.password}</p>}
-                                    </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                                                <input
+                                                    type="password"
+                                                    value={passwordData.password_confirmation}
+                                                    onChange={(e) => setPasswordData('password_confirmation', e.target.value)}
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors"
+                                                />
+                                            </div>
 
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Confirm New Password</label>
-                                        <input
-                                            type="password"
-                                            value={passwordData.password_confirmation}
-                                            onChange={(e) => setPasswordData('password_confirmation', e.target.value)}
-                                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all font-semibold"
-                                        />
-                                    </div>
-
-                                    <div className="pt-4">
-                                        <button
-                                            type="submit"
-                                            disabled={passwordProcessing}
-                                            className="w-full px-6 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] disabled:opacity-50"
-                                        >
-                                            {passwordProcessing ? 'Updating...' : 'Update Password'}
-                                        </button>
-                                    </div>
-                                </form>
-                            )}
+                                            <div className="pt-4 border-t border-gray-100">
+                                                <button
+                                                    type="submit"
+                                                    disabled={passwordProcessing}
+                                                    className="px-4 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50"
+                                                >
+                                                    {passwordProcessing ? 'Updating...' : 'Update Password'}
+                                                </button>
+                                            </div>
+                                        </form>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

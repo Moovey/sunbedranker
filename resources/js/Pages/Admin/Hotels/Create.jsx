@@ -180,13 +180,23 @@ export default function CreateHotel({ destinations, stats, errors: serverErrors 
         <>
             <Head title="Add New Hotel" />
             
-            <div className="min-h-screen bg-white font-sans">
+            <div className="min-h-screen bg-gray-50 font-sans">
                 <AdminNav stats={stats} />
-                
-                {/* Page Header */}
-                <PageHeader />
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12 lg:py-16">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    {/* Page Header */}
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-900">Add New Hotel</h1>
+                            <p className="text-gray-500 text-sm mt-1">Create a new hotel listing</p>
+                        </div>
+                        <Link
+                            href={route('admin.hotels.index')}
+                            className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                            ← Back to Hotels
+                        </Link>
+                    </div>
                     {/* Validation Errors Display - prominent box that's always visible when there are errors */}
                     {hasErrors && <ValidationErrorsBox errors={allErrors} />}
                     
@@ -195,7 +205,7 @@ export default function CreateHotel({ destinations, stats, errors: serverErrors 
                         <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
                         {/* Tab Content */}
-                        <div className="bg-white rounded-b-2xl shadow-xl hover:shadow-2xl transition-all duration-300 p-5 sm:p-6 md:p-8 border-2 border-gray-100 border-t-0">
+                        <div className="bg-white rounded-b-xl shadow-sm p-6 border border-gray-100 border-t-0">
                             <TabContent 
                                 activeTab={activeTab}
                                 data={data}
@@ -221,27 +231,6 @@ export default function CreateHotel({ destinations, stats, errors: serverErrors 
 }
 
 // Sub-components for cleaner code
-function PageHeader() {
-    return (
-        <div className="bg-gradient-to-r from-orange-50 to-blue-50 shadow-lg border-b-2 border-orange-200">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-12">
-                <div className="flex items-center justify-center mb-4 sm:mb-5 md:mb-6">
-                    <div className="h-1 w-8 sm:w-10 md:w-12 bg-orange-300 rounded-full"></div>
-                    <svg className="mx-3 sm:mx-4 text-orange-500" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                    </svg>
-                    <div className="h-1 w-8 sm:w-10 md:w-12 bg-blue-300 rounded-full"></div>
-                </div>
-                <div className="text-center sm:text-left">
-                    <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-gray-900">
-                        Add New Hotel
-                    </h1>
-                    <p className="text-gray-700 mt-2 font-semibold">Create a new hotel listing</p>
-                </div>
-            </div>
-        </div>
-    );
-}
 
 function ValidationErrorsBox({ errors }) {
     // Normalize errors - handle both string and array formats
@@ -261,31 +250,24 @@ function ValidationErrorsBox({ errors }) {
     if (errorCount === 0) return null;
     
     return (
-        <div className="mb-6 bg-red-50 border-2 border-red-400 rounded-xl p-6 shadow-xl" style={{ animation: 'pulse 2s infinite' }}>
-            <style>{`
-                @keyframes pulse {
-                    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-                    50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-                }
-            `}</style>
+        <div className="mb-6 bg-red-50 border border-red-300 rounded-xl p-5 shadow-sm">
             <div className="flex items-start">
                 <div className="flex-shrink-0">
-                    <svg className="h-10 w-10 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+                    <svg className="h-6 w-6 text-red-500" viewBox="0 0 24 24" fill="currentColor">
                         <path fillRule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
                     </svg>
                 </div>
                 <div className="ml-4 flex-1">
-                    <h3 className="text-xl font-bold text-red-800 mb-3">
-                        ❌ Validation Failed - {errorCount} error{errorCount > 1 ? 's' : ''} found
+                    <h3 className="text-base font-semibold text-red-800 mb-2">
+                        Validation Failed - {errorCount} error{errorCount > 1 ? 's' : ''} found
                     </h3>
-                    <p className="text-red-700 mb-4 font-medium">Please fix the following errors before submitting:</p>
                     <div className="bg-white rounded-lg p-4 border border-red-200">
-                        <ul className="space-y-3">
+                        <ul className="space-y-2">
                             {Object.entries(normalizedErrors).map(([field, message]) => (
-                                <li key={field} className="flex items-start gap-3 text-red-700">
-                                    <span className="text-red-500 font-bold text-lg">•</span>
-                                    <span className="text-base">
-                                        <span className="font-bold capitalize text-red-800">{field.replace(/_/g, ' ')}:</span>{' '}
+                                <li key={field} className="flex items-start gap-2 text-sm text-red-700">
+                                    <span className="text-red-500">•</span>
+                                    <span>
+                                        <span className="font-medium capitalize text-red-800">{field.replace(/_/g, ' ')}:</span>{' '}
                                         <span className="text-red-600">{message}</span>
                                     </span>
                                 </li>
@@ -308,8 +290,8 @@ function TabNavigation({ activeTab, setActiveTab }) {
     ];
 
     return (
-        <div className="bg-gradient-to-r from-orange-50 to-blue-50 rounded-t-2xl border-b-2 border-orange-200 shadow-lg">
-            <div className="flex gap-2 px-6 pt-5 overflow-x-auto">
+        <div className="bg-gray-50 rounded-t-xl border border-gray-100 border-b-0 shadow-sm">
+            <div className="flex gap-1 px-4 pt-4 overflow-x-auto">
                 {tabConfig.map(tab => (
                     <TabButton 
                         key={tab.id}
@@ -338,10 +320,10 @@ function TabContent({ activeTab, data, setData, errors, destinations }) {
 
 function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab }) {
     return (
-        <div className="mt-8 pt-6 border-t-2 border-gray-200 flex flex-col sm:flex-row gap-3 justify-between">
+        <div className="mt-6 pt-6 border-t border-gray-200 flex flex-col sm:flex-row gap-3 justify-between">
             <Link
                 href={route('admin.hotels.index')}
-                className="px-4 sm:px-6 py-3 sm:py-4 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-bold transition-all duration-300 text-center text-sm sm:text-base transform hover:scale-105 shadow-md hover:shadow-lg"
+                className="px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors text-center text-sm"
             >
                 Cancel
             </Link>
@@ -351,7 +333,7 @@ function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab
                     <button
                         type="button"
                         onClick={onPrevTab}
-                        className="px-4 sm:px-6 py-3 sm:py-4 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-bold transition-all duration-300 text-center text-sm sm:text-base transform hover:scale-105 shadow-md hover:shadow-lg"
+                        className="px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors text-center text-sm"
                     >
                         Previous
                     </button>
@@ -361,7 +343,7 @@ function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab
                     <button
                         type="button"
                         onClick={onNextTab}
-                        className="px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 text-center shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 text-sm sm:text-base"
+                        className="px-4 py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors text-center text-sm"
                     >
                         Next
                     </button>
@@ -369,7 +351,7 @@ function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab
                     <button
                         type="submit"
                         disabled={processing}
-                        className="px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 text-center shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                        className="px-4 py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors text-center text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {processing ? 'Creating...' : 'Create Hotel'}
                     </button>

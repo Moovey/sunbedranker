@@ -25,13 +25,13 @@ export default function ClaimShow({ claim, userClaimHistory, hotelClaimHistory, 
 
     const getStatusBadge = (status) => {
         const styles = {
-            pending: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-            approved: 'bg-green-100 text-green-800 border-green-300',
-            rejected: 'bg-red-100 text-red-800 border-red-300',
+            pending: 'bg-yellow-50 text-yellow-700',
+            approved: 'bg-green-50 text-green-700',
+            rejected: 'bg-red-50 text-red-700',
         };
 
         return (
-            <span className={`px-4 py-2 rounded-full text-sm font-bold border-2 ${styles[status]}`}>
+            <span className={`px-3 py-1 rounded-full text-sm font-medium ${styles[status]}`}>
                 {status.charAt(0).toUpperCase() + status.slice(1)}
             </span>
         );
@@ -71,67 +71,47 @@ export default function ClaimShow({ claim, userClaimHistory, hotelClaimHistory, 
         <>
             <Head title={`Review Claim - ${claim.hotel?.name}`} />
             
-            <div className="min-h-screen bg-white font-sans">
+            <div className="min-h-screen bg-gray-50 font-sans">
                 <AdminNav stats={stats} />
-                
-                {/* Page Header */}
-                <div className="bg-gradient-to-r from-orange-50 to-blue-50 shadow-lg border-b-2 border-orange-200">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-12">
-                        {/* Decorative accent */}
-                        <div className="flex items-center justify-center mb-4 sm:mb-5 md:mb-6">
-                            <div className="h-0.5 w-8 sm:w-10 md:w-12 bg-gradient-to-r from-orange-500 to-orange-600"></div>
-                            <svg className="mx-3 sm:mx-4 text-orange-500" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                            </svg>
-                            <div className="h-0.5 w-8 sm:w-10 md:w-12 bg-gradient-to-r from-blue-500 to-blue-600"></div>
-                        </div>
-                        <div className="text-center">
-                            <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-gray-900">Review Hotel Claim</h1>
-                            <p className="text-gray-700 mt-2 font-semibold">{claim.hotel?.name}</p>
-                        </div>
-                    </div>
-                </div>
 
-            <div className="py-6 sm:py-8 md:py-12">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Back Button */}
-                    <div className="mb-8">
-                        <Link
-                            href={route('admin.claims.index')}
-                            className="text-orange-500 hover:text-orange-600 font-semibold mb-4 inline-flex items-center gap-2"
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                            </svg>
-                            Back to Claims
-                        </Link>
-                        <div className="flex items-center justify-between mt-4">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-4">
+                            <Link
+                                href={route('admin.claims.index')}
+                                className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </Link>
                             <div>
-                                <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">Hotel Claim Review</h1>
-                                <p className="text-gray-600 mt-2">ID: #{claim.id}</p>
+                                <h1 className="text-2xl font-bold text-gray-900">Review Claim</h1>
+                                <p className="text-sm text-gray-500">Claim #{claim.id} • {claim.hotel?.name}</p>
                             </div>
-                            {getStatusBadge(claim.status)}
                         </div>
+                        {getStatusBadge(claim.status)}
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         {/* Main Content */}
                         <div className="lg:col-span-2 space-y-6">
                             {/* Hotel Information */}
-                            <div className="bg-white rounded-xl shadow-lg p-6">
-                                <h2 className="text-2xl font-bold text-gray-900 mb-4">Hotel Details</h2>
-                                <div className="flex gap-6">
+                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                                <h2 className="text-lg font-semibold text-gray-900 mb-4">Hotel Details</h2>
+                                <div className="flex gap-4">
                                     <img
                                         src={claim.hotel?.main_image || '/images/default-hotel.jpg'}
                                         alt={claim.hotel?.name}
-                                        className="w-32 h-32 object-cover rounded-lg"
+                                        className="w-24 h-24 object-cover rounded-lg"
                                     />
                                     <div className="flex-1">
-                                        <h3 className="text-xl font-bold text-gray-900">{claim.hotel?.name}</h3>
-                                        <p className="text-gray-600 mt-1">{claim.hotel?.destination?.name}</p>
+                                        <h3 className="text-lg font-semibold text-gray-900">{claim.hotel?.name}</h3>
+                                        <p className="text-gray-500 text-sm mt-1">{claim.hotel?.destination?.name}</p>
                                         {claim.hotel?.website && (
                                             <p className="text-sm text-gray-500 mt-2">
-                                                Website: <a href={claim.hotel.website} target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:underline">{claim.hotel.website}</a>
+                                                Website: <a href={claim.hotel.website} target="_blank" rel="noopener noreferrer" className="text-orange-600 hover:text-orange-700">{claim.hotel.website}</a>
                                             </p>
                                         )}
                                         {claim.hotel?.email && (
@@ -145,27 +125,27 @@ export default function ClaimShow({ claim, userClaimHistory, hotelClaimHistory, 
                             </div>
 
                             {/* Claimant Information */}
-                            <div className="bg-white rounded-xl shadow-lg p-6">
-                                <h2 className="text-2xl font-bold text-gray-900 mb-4">Claimant Information</h2>
+                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                                <h2 className="text-lg font-semibold text-gray-900 mb-4">Claimant Information</h2>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <p className="text-sm text-gray-600 font-semibold">Name</p>
-                                        <p className="text-gray-900 font-medium">{claim.user?.name}</p>
+                                        <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Name</p>
+                                        <p className="text-gray-900 mt-1">{claim.user?.name}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-600 font-semibold">Account Email</p>
-                                        <p className="text-gray-900 font-medium">{claim.user?.email}</p>
+                                        <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Account Email</p>
+                                        <p className="text-gray-900 mt-1">{claim.user?.email}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-600 font-semibold">Official Hotel Email</p>
-                                        <div className="flex items-center gap-2">
-                                            <p className="text-gray-900 font-medium">{claim.official_email}</p>
+                                        <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Official Hotel Email</p>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <p className="text-gray-900">{claim.official_email}</p>
                                             {domainMatches ? (
-                                                <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                                 </svg>
                                             ) : (
-                                                <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                                                 </svg>
                                             )}
@@ -175,47 +155,47 @@ export default function ClaimShow({ claim, userClaimHistory, hotelClaimHistory, 
                                         )}
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-600 font-semibold">Phone</p>
-                                        <p className="text-gray-900 font-medium">{claim.phone}</p>
+                                        <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Phone</p>
+                                        <p className="text-gray-900 mt-1">{claim.phone}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-600 font-semibold">IP Address</p>
-                                        <p className="text-gray-900 font-medium">{claim.ip_address || 'N/A'}</p>
+                                        <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">IP Address</p>
+                                        <p className="text-gray-900 mt-1">{claim.ip_address || 'N/A'}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-600 font-semibold">Submitted</p>
-                                        <p className="text-gray-900 font-medium">{formatDate(claim.created_at)}</p>
+                                        <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Submitted</p>
+                                        <p className="text-gray-900 mt-1">{formatDate(claim.created_at)}</p>
                                     </div>
                                 </div>
 
                                 {claim.claim_message && (
                                     <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                                        <p className="text-sm text-gray-600 font-semibold mb-2">Additional Message:</p>
-                                        <p className="text-gray-900">{claim.claim_message}</p>
+                                        <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-2">Additional Message</p>
+                                        <p className="text-gray-900 text-sm">{claim.claim_message}</p>
                                     </div>
                                 )}
                             </div>
 
                             {/* Review Information (if reviewed) */}
                             {claim.reviewed_at && (
-                                <div className="bg-white rounded-xl shadow-lg p-6">
-                                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Review Details</h2>
-                                    <div className="space-y-3">
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                                    <h2 className="text-lg font-semibold text-gray-900 mb-4">Review Details</h2>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
-                                            <p className="text-sm text-gray-600 font-semibold">Reviewed By</p>
-                                            <p className="text-gray-900 font-medium">{claim.reviewer?.name || 'N/A'}</p>
+                                            <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Reviewed By</p>
+                                            <p className="text-gray-900 mt-1">{claim.reviewer?.name || 'N/A'}</p>
                                         </div>
                                         <div>
-                                            <p className="text-sm text-gray-600 font-semibold">Reviewed At</p>
-                                            <p className="text-gray-900 font-medium">{formatDate(claim.reviewed_at)}</p>
+                                            <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Reviewed At</p>
+                                            <p className="text-gray-900 mt-1">{formatDate(claim.reviewed_at)}</p>
                                         </div>
-                                        {claim.admin_notes && (
-                                            <div className="p-4 bg-gray-50 rounded-lg">
-                                                <p className="text-sm text-gray-600 font-semibold mb-2">Admin Notes:</p>
-                                                <p className="text-gray-900">{claim.admin_notes}</p>
-                                            </div>
-                                        )}
                                     </div>
+                                    {claim.admin_notes && (
+                                        <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                                            <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-2">Admin Notes</p>
+                                            <p className="text-gray-900 text-sm">{claim.admin_notes}</p>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -224,24 +204,24 @@ export default function ClaimShow({ claim, userClaimHistory, hotelClaimHistory, 
                         <div className="space-y-6">
                             {/* Actions */}
                             {claim.status === 'pending' && (
-                                <div className="bg-white rounded-xl shadow-lg p-6">
-                                    <h3 className="text-xl font-bold text-gray-900 mb-4">Actions</h3>
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Actions</h3>
                                     <div className="space-y-3">
                                         <button
                                             onClick={handleApprove}
                                             disabled={approveForm.processing}
-                                            className="w-full px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-bold flex items-center justify-center gap-2"
+                                            className="w-full px-4 py-2.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium flex items-center justify-center gap-2"
                                         >
-                                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                             </svg>
                                             {approveForm.processing ? 'Approving...' : 'Approve Claim'}
                                         </button>
                                         <button
                                             onClick={() => setShowRejectModal(true)}
-                                            className="w-full px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-bold flex items-center justify-center gap-2"
+                                            className="w-full px-4 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium flex items-center justify-center gap-2"
                                         >
-                                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                                             </svg>
                                             Reject Claim
@@ -251,37 +231,37 @@ export default function ClaimShow({ claim, userClaimHistory, hotelClaimHistory, 
                             )}
 
                             {/* Verification Checklist */}
-                            <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
-                                <h3 className="text-lg font-bold text-blue-900 mb-4">Verification Checklist</h3>
+                            <div className="bg-orange-50 rounded-xl border border-orange-100 p-6">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Verification Checklist</h3>
                                 <div className="space-y-3">
-                                    <div className="flex items-start gap-2">
-                                        <input type="checkbox" checked={domainMatches} readOnly className="mt-1" />
-                                        <span className="text-sm text-blue-900">Email domain matches hotel website</span>
-                                    </div>
-                                    <div className="flex items-start gap-2">
-                                        <input type="checkbox" checked={!!claim.phone} readOnly className="mt-1" />
-                                        <span className="text-sm text-blue-900">Phone number provided</span>
-                                    </div>
-                                    <div className="flex items-start gap-2">
-                                        <input type="checkbox" checked={!claim.hotel?.owned_by} readOnly className="mt-1" />
-                                        <span className="text-sm text-blue-900">Hotel has no existing owner</span>
-                                    </div>
-                                    <div className="flex items-start gap-2">
-                                        <input type="checkbox" checked={userClaimHistory.length === 0} readOnly className="mt-1" />
-                                        <span className="text-sm text-blue-900">No suspicious claim history</span>
-                                    </div>
+                                    <label className="flex items-start gap-3 cursor-pointer">
+                                        <input type="checkbox" checked={domainMatches} readOnly className="mt-0.5 w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500" />
+                                        <span className="text-sm text-gray-700">Email domain matches hotel website</span>
+                                    </label>
+                                    <label className="flex items-start gap-3 cursor-pointer">
+                                        <input type="checkbox" checked={!!claim.phone} readOnly className="mt-0.5 w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500" />
+                                        <span className="text-sm text-gray-700">Phone number provided</span>
+                                    </label>
+                                    <label className="flex items-start gap-3 cursor-pointer">
+                                        <input type="checkbox" checked={!claim.hotel?.owned_by} readOnly className="mt-0.5 w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500" />
+                                        <span className="text-sm text-gray-700">Hotel has no existing owner</span>
+                                    </label>
+                                    <label className="flex items-start gap-3 cursor-pointer">
+                                        <input type="checkbox" checked={userClaimHistory.length === 0} readOnly className="mt-0.5 w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500" />
+                                        <span className="text-sm text-gray-700">No suspicious claim history</span>
+                                    </label>
                                 </div>
                             </div>
 
                             {/* User Claim History */}
                             {userClaimHistory.length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg p-6">
-                                    <h3 className="text-lg font-bold text-gray-900 mb-4">User's Claim History</h3>
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-4">User's Claim History</h3>
                                     <div className="space-y-2">
                                         {userClaimHistory.map((historyClaim) => (
                                             <div key={historyClaim.id} className="text-sm p-3 bg-gray-50 rounded-lg">
-                                                <p className="font-semibold">{historyClaim.hotel?.name}</p>
-                                                <p className="text-gray-600">{historyClaim.status} - {formatDate(historyClaim.created_at)}</p>
+                                                <p className="font-medium text-gray-900">{historyClaim.hotel?.name}</p>
+                                                <p className="text-gray-500 text-xs mt-1">{historyClaim.status} • {formatDate(historyClaim.created_at)}</p>
                                             </div>
                                         ))}
                                     </div>
@@ -290,13 +270,13 @@ export default function ClaimShow({ claim, userClaimHistory, hotelClaimHistory, 
 
                             {/* Hotel Claim History */}
                             {hotelClaimHistory.length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg p-6">
-                                    <h3 className="text-lg font-bold text-gray-900 mb-4">Hotel's Claim History</h3>
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Hotel's Claim History</h3>
                                     <div className="space-y-2">
                                         {hotelClaimHistory.map((historyClaim) => (
                                             <div key={historyClaim.id} className="text-sm p-3 bg-gray-50 rounded-lg">
-                                                <p className="font-semibold">{historyClaim.user?.name}</p>
-                                                <p className="text-gray-600">{historyClaim.status} - {formatDate(historyClaim.created_at)}</p>
+                                                <p className="font-medium text-gray-900">{historyClaim.user?.name}</p>
+                                                <p className="text-gray-500 text-xs mt-1">{historyClaim.status} • {formatDate(historyClaim.created_at)}</p>
                                             </div>
                                         ))}
                                     </div>
@@ -305,51 +285,50 @@ export default function ClaimShow({ claim, userClaimHistory, hotelClaimHistory, 
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Reject Modal */}
-            {showRejectModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8">
-                        <h3 className="text-2xl font-bold text-gray-900 mb-4">Reject Claim</h3>
-                        <form onSubmit={handleReject}>
-                            <div className="mb-6">
-                                <label className="block text-sm font-bold text-gray-700 mb-2">
-                                    Reason for Rejection *
-                                </label>
-                                <textarea
-                                    value={rejectForm.data.admin_notes}
-                                    onChange={(e) => rejectForm.setData('admin_notes', e.target.value)}
-                                    rows={4}
-                                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
-                                    placeholder="Explain why this claim is being rejected..."
-                                    required
-                                />
-                                {rejectForm.errors.admin_notes && (
-                                    <p className="text-red-500 text-sm mt-2">{rejectForm.errors.admin_notes}</p>
-                                )}
-                            </div>
+                {/* Reject Modal */}
+                {showRejectModal && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                        <div className="bg-white rounded-xl shadow-sm max-w-lg w-full p-6">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Reject Claim</h3>
+                            <form onSubmit={handleReject}>
+                                <div className="mb-6">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Reason for Rejection *
+                                    </label>
+                                    <textarea
+                                        value={rejectForm.data.admin_notes}
+                                        onChange={(e) => rejectForm.setData('admin_notes', e.target.value)}
+                                        rows={4}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
+                                        placeholder="Explain why this claim is being rejected..."
+                                        required
+                                    />
+                                    {rejectForm.errors.admin_notes && (
+                                        <p className="text-red-500 text-sm mt-2">{rejectForm.errors.admin_notes}</p>
+                                    )}
+                                </div>
 
-                            <div className="flex gap-3">
-                                <button
-                                    type="submit"
-                                    disabled={rejectForm.processing}
-                                    className="flex-1 px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-bold"
-                                >
-                                    {rejectForm.processing ? 'Rejecting...' : 'Confirm Rejection'}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setShowRejectModal(false)}
-                                    className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-bold"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
+                                <div className="flex gap-3">
+                                    <button
+                                        type="submit"
+                                        disabled={rejectForm.processing}
+                                        className="flex-1 px-4 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium"
+                                    >
+                                        {rejectForm.processing ? 'Rejecting...' : 'Confirm Rejection'}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowRejectModal(false)}
+                                        className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
             </div>
         </>
     );
