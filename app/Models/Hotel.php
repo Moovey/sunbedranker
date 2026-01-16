@@ -239,6 +239,12 @@ class Hotel extends Model
             ->orderByDesc('quiet_score');
     }
 
+    public function scopePartyPools($query)
+    {
+        return $query->whereNotNull('party_score')
+            ->orderByDesc('party_score');
+    }
+
     /**
      * Get the main image URL (handles both uploaded files and external URLs)
      */

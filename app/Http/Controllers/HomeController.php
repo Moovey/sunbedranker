@@ -47,11 +47,19 @@ class HomeController extends Controller
             ->get();
         $quietSunHotels = $addPremiumFlag($quietSunHotels);
 
+        $partyHotels = Hotel::active()
+            ->partyPools()
+            ->with(['destination', 'poolCriteria', 'owner'])
+            ->limit(6)
+            ->get();
+        $partyHotels = $addPremiumFlag($partyHotels);
+
         return Inertia::render('Home', [
             'featuredDestinations' => $featuredDestinations,
             'topRatedHotels' => $topRatedHotels,
             'familyFriendlyHotels' => $familyFriendlyHotels,
             'quietSunHotels' => $quietSunHotels,
+            'partyHotels' => $partyHotels,
         ]);
     }
 }
