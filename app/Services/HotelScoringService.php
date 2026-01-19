@@ -4,9 +4,34 @@ namespace App\Services;
 
 use App\Models\Hotel;
 use App\Models\PoolCriteria;
+use App\Models\ScoringWeight;
 
 class HotelScoringService
 {
+    protected $weights = null;
+
+    /**
+     * Get scoring weights from database (cached per request)
+     */
+    protected function getWeights(): array
+    {
+        if ($this->weights === null) {
+            $this->weights = ScoringWeight::active()
+                ->get()
+                ->keyBy('criteria_name')
+                ->toArray();
+        }
+        return $this->weights;
+    }
+
+    /**
+     * Clear cached weights (useful after updating weights)
+     */
+    public function clearWeightsCache(): void
+    {
+        $this->weights = null;
+    }
+
     /**
      * Calculate all scores for a hotel
      */
@@ -25,6 +50,9 @@ class HotelScoringService
             ];
         }
 
+        // Get dynamic weights from database
+        $weights = $this->getWeights();
+
         // Calculate individual criterion scores (0-5)
         $criterionScores = [
             'sunbed_ratio' => $this->scoreSunbedRatio($criteria),
@@ -39,17 +67,17 @@ class HotelScoringService
             'luxury_extras' => $this->scoreLuxuryExtras($criteria),
         ];
 
-        // Calculate category scores (0-10)
+        // Calculate category scores using dynamic weights (0-10)
         $categoryScores = [
-            'sun_availability' => $this->calculateSunAvailability($criterionScores),
-            'comfort' => $this->calculateComfort($criterionScores),
-            'family_friendly' => $this->calculateFamilyFriendly($criterionScores),
-            'peace_quiet' => $this->calculatePeaceQuiet($criterionScores, $criteria),
-            'party_vibe' => $this->calculatePartyVibe($criterionScores, $criteria),
+            'sun_availability' => $this->calculateSunAvailability($criterionScores, $weights),
+            'comfort' => $this->calculateComfort($criterionScores, $weights),
+            'family_friendly' => $this->calculateFamilyFriendly($criterionScores, $weights),
+            'peace_quiet' => $this->calculatePeaceQuiet($criterionScores, $criteria, $weights),
+            'party_vibe' => $this->calculatePartyVibe($criterionScores, $criteria, $weights),
         ];
 
-        // Calculate overall score (0-10)
-        $overallScore = $this->calculateOverallScore($categoryScores);
+        // Calculate overall score using dynamic weights (0-10)
+        $overallScore = $this->calculateOverallScore($criterionScores, $weights);
 
         // Update hotel scores
         $hotel->update([
@@ -240,96 +268,172 @@ class HotelScoringService
     /**
      * Calculate Sun Availability category score (0-10)
      */
-    private function calculateSunAvailability($scores): float
+    private function calculateSunAvailability($scores, $weights): float
     {
-        return round((
-            ($scores['sunbed_ratio'] * 0.5) +
-            ($scores['sun_exposure'] * 0.5)
-        ) * 2, 1);
+        // Uses sunbed_ratio and sun_exposure weights
+        $sunbedWeight = $weights['sunbed_ratio']['weight'] ?? 2.50;
+        $sunExposureWeight = $weights['sun_exposure']['weight'] ?? 2.00;
+        $totalWeight = $sunbedWeight + $sunExposureWeight;
+        
+        if ($totalWeight == 0) return 0;
+        
+        $score = (
+            ($scores['sunbed_ratio'] * $sunbedWeight) +
+            ($scores['sun_exposure'] * $sunExposureWeight)
+        ) / $totalWeight;
+        
+        return round($score * 2, 1); // Scale to 0-10
     }
 
     /**
      * Calculate Comfort category score (0-10)
      */
-    private function calculateComfort($scores): float
+    private function calculateComfort($scores, $weights): float
     {
-        return round((
-            ($scores['facilities'] * 0.4) +
-            ($scores['cleanliness'] * 0.3) +
-            ($scores['pool_size'] * 0.2) +
-            ($scores['luxury_extras'] * 0.1)
-        ) * 2, 1);
+        // Uses cleanliness, atmosphere, and luxury weights
+        $cleanlinessWeight = $weights['cleanliness']['weight'] ?? 1.70;
+        $atmosphereWeight = $weights['atmosphere']['weight'] ?? 1.50;
+        
+        // Pool size and facilities don't have their own weight, use atmosphere as proxy
+        $facilitiesWeight = $atmosphereWeight * 0.8;
+        $poolSizeWeight = $atmosphereWeight * 0.5;
+        
+        $totalWeight = $cleanlinessWeight + $atmosphereWeight + $facilitiesWeight + $poolSizeWeight;
+        
+        if ($totalWeight == 0) return 0;
+        
+        $score = (
+            ($scores['facilities'] * $facilitiesWeight) +
+            ($scores['cleanliness'] * $cleanlinessWeight) +
+            ($scores['pool_size'] * $poolSizeWeight) +
+            ($scores['luxury_extras'] * $atmosphereWeight)
+        ) / $totalWeight;
+        
+        return round($score * 2, 1); // Scale to 0-10
     }
 
     /**
      * Calculate Family-Friendly category score (0-10)
      */
-    private function calculateFamilyFriendly($scores): float
+    private function calculateFamilyFriendly($scores, $weights): float
     {
-        return round((
-            ($scores['kids_features'] * 0.5) +
-            ($scores['accessibility'] * 0.3) +
-            ($scores['pool_variety'] * 0.2)
-        ) * 2, 1);
+        // Uses family_features weight primarily
+        $familyWeight = $weights['family_features']['family_weight'] ?? 2.50;
+        $poolVarietyWeight = $weights['pool_variety']['family_weight'] ?? 2.50;
+        
+        // Accessibility contributes to family score
+        $accessibilityWeight = $familyWeight * 0.6;
+        
+        $totalWeight = $familyWeight + $poolVarietyWeight + $accessibilityWeight;
+        
+        if ($totalWeight == 0) return 0;
+        
+        $score = (
+            ($scores['kids_features'] * $familyWeight) +
+            ($scores['accessibility'] * $accessibilityWeight) +
+            ($scores['pool_variety'] * $poolVarietyWeight)
+        ) / $totalWeight;
+        
+        return round($score * 2, 1); // Scale to 0-10
     }
 
     /**
      * Calculate Peace & Quiet category score (0-10)
      */
-    private function calculatePeaceQuiet($scores, $criteria): float
+    private function calculatePeaceQuiet($scores, $criteria, $weights): float
     {
+        // Uses quiet_weight from relevant criteria
+        $atmosphereWeight = $weights['atmosphere']['quiet_weight'] ?? 2.50;
+        $cleanlinessWeight = $weights['cleanliness']['quiet_weight'] ?? 1.80;
+        
         $score = 0;
         
         // Atmosphere preference (quieter is better)
-        if ($criteria->atmosphere === 'quiet') $score += 3;
-        elseif ($criteria->atmosphere === 'relaxed') $score += 2;
-        elseif ($criteria->atmosphere === 'family') $score += 1;
+        if ($criteria->atmosphere === 'quiet') $score += 3 * $atmosphereWeight;
+        elseif ($criteria->atmosphere === 'relaxed') $score += 2 * $atmosphereWeight;
+        elseif ($criteria->atmosphere === 'family') $score += 1 * $atmosphereWeight;
         
         // Music level (inverse - quieter is better)
         $musicScores = ['none' => 2, 'low' => 1.5, 'moderate' => 1, 'loud' => 0.5, 'dj' => 0];
-        $score += $musicScores[$criteria->music_level] ?? 1;
+        $musicScore = $musicScores[$criteria->music_level] ?? 1;
+        $score += $musicScore * $cleanlinessWeight;
         
-        return round(($score / 5) * 10, 1);
+        $maxScore = (3 * $atmosphereWeight) + (2 * $cleanlinessWeight);
+        
+        if ($maxScore == 0) return 0;
+        
+        return round(($score / $maxScore) * 10, 1);
     }
 
     /**
      * Calculate Party Vibe category score (0-10)
      */
-    private function calculatePartyVibe($scores, $criteria): float
+    private function calculatePartyVibe($scores, $criteria, $weights): float
     {
+        // Uses party_weight from relevant criteria
+        $atmosphereWeight = $weights['atmosphere']['party_weight'] ?? 2.50;
+        $sunExposureWeight = $weights['sun_exposure']['party_weight'] ?? 2.50;
+        
         $score = 0;
         
         // Atmosphere preference (livelier is better)
-        if ($criteria->atmosphere === 'party') $score += 3;
-        elseif ($criteria->atmosphere === 'lively') $score += 2.5;
-        elseif ($criteria->atmosphere === 'relaxed') $score += 1;
+        if ($criteria->atmosphere === 'party') $score += 3 * $atmosphereWeight;
+        elseif ($criteria->atmosphere === 'lively') $score += 2.5 * $atmosphereWeight;
+        elseif ($criteria->atmosphere === 'relaxed') $score += 1 * $atmosphereWeight;
         
         // Music level (more is better for party vibe)
         $musicScores = ['dj' => 2, 'loud' => 1.5, 'moderate' => 1, 'low' => 0.5, 'none' => 0];
-        $score += $musicScores[$criteria->music_level] ?? 0;
+        $musicScore = $musicScores[$criteria->music_level] ?? 0;
+        $score += $musicScore * $sunExposureWeight;
         
-        return round(($score / 5) * 10, 1);
+        $maxScore = (3 * $atmosphereWeight) + (2 * $sunExposureWeight);
+        
+        if ($maxScore == 0) return 0;
+        
+        return round(($score / $maxScore) * 10, 1);
     }
 
     /**
      * Calculate overall Pool & Sun Score (0-10)
+     * Uses all active weights from the database
      */
-    private function calculateOverallScore($categoryScores): float
+    private function calculateOverallScore($criterionScores, $weights): float
     {
-        $weights = [
-            'sun_availability' => 0.30,
-            'comfort' => 0.30,
-            'family_friendly' => 0.15,
-            'peace_quiet' => 0.10,
-            'party_vibe' => 0.15,
+        // Map criterion scores to their weight keys
+        $criteriaMapping = [
+            'sunbed_ratio' => 'sunbed_ratio',
+            'sun_exposure' => 'sun_exposure',
+            'pool_variety' => 'pool_variety',
+            'atmosphere' => 'atmosphere',
+            'cleanliness' => 'cleanliness',
+            'kids_features' => 'family_features',
         ];
         
-        $total = 0;
-        foreach ($categoryScores as $category => $score) {
-            $total += $score * $weights[$category];
+        $weightedSum = 0;
+        $totalWeight = 0;
+        
+        foreach ($criteriaMapping as $scoreKey => $weightKey) {
+            if (isset($weights[$weightKey]) && isset($criterionScores[$scoreKey])) {
+                $weight = (float) $weights[$weightKey]['weight'];
+                $weightedSum += $criterionScores[$scoreKey] * $weight;
+                $totalWeight += $weight;
+            }
         }
         
-        return round($total, 1);
+        // Add unmapped criteria with default weight of 1.0
+        $unmappedCriteria = ['pool_size', 'facilities', 'accessibility', 'luxury_extras'];
+        foreach ($unmappedCriteria as $key) {
+            if (isset($criterionScores[$key])) {
+                $weightedSum += $criterionScores[$key] * 1.0;
+                $totalWeight += 1.0;
+            }
+        }
+        
+        if ($totalWeight == 0) return 0;
+        
+        // Calculate weighted average and scale to 0-10
+        $avgScore = $weightedSum / $totalWeight;
+        return round($avgScore * 2, 1); // Scale 0-5 to 0-10
     }
 
     /**
@@ -337,6 +441,9 @@ class HotelScoringService
      */
     public function recalculateAllScores(): int
     {
+        // Clear cached weights to ensure fresh values are used
+        $this->clearWeightsCache();
+        
         $hotels = Hotel::with('poolCriteria')->get();
         $count = 0;
         

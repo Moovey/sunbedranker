@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminProfileController;
 use App\Http\Controllers\Admin\HotelManagementController;
 use App\Http\Controllers\Admin\ClaimManagementController;
 use App\Http\Controllers\Admin\ContentManagementController;
+use App\Http\Controllers\Admin\ScoringSettingsController;
 use App\Http\Controllers\Admin\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
@@ -46,6 +47,22 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Hotel Subscription
     Route::post('/hotels/{hotel:id}/update-subscription', [HotelManagementController::class, 'updateSubscription'])->name('hotels.update-subscription');
+
+    // Scoring & Criteria Settings
+    Route::get('/scoring', [ScoringSettingsController::class, 'index'])->name('scoring.index');
+    Route::put('/scoring/weights', [ScoringSettingsController::class, 'updateWeights'])->name('scoring.weights.update');
+    Route::put('/scoring/visibility', [ScoringSettingsController::class, 'updateVisibility'])->name('scoring.visibility.update');
+    Route::put('/scoring/order', [ScoringSettingsController::class, 'updateOrder'])->name('scoring.order.update');
+    Route::post('/scoring/recalculate', [ScoringSettingsController::class, 'recalculateAllScores'])->name('scoring.recalculate');
+    
+    // Badge Management
+    Route::post('/scoring/badges', [ScoringSettingsController::class, 'storeBadge'])->name('scoring.badges.store');
+    Route::put('/scoring/badges/{badge}', [ScoringSettingsController::class, 'updateBadge'])->name('scoring.badges.update');
+    Route::delete('/scoring/badges/{badge}', [ScoringSettingsController::class, 'destroyBadge'])->name('scoring.badges.destroy');
+    Route::post('/scoring/badges/{badge}/toggle', [ScoringSettingsController::class, 'toggleBadge'])->name('scoring.badges.toggle');
+    Route::post('/scoring/badges/{badge}/apply', [ScoringSettingsController::class, 'applyBadgeToHotels'])->name('scoring.badges.apply');
+    Route::post('/scoring/badges/preview', [ScoringSettingsController::class, 'previewBadge'])->name('scoring.badges.preview');
+    Route::post('/scoring/badges/apply-all', [ScoringSettingsController::class, 'applyAllBadges'])->name('scoring.badges.apply-all');
 
     // Hotel Claims
     Route::get('/claims', [ClaimManagementController::class, 'index'])->name('claims.index');
