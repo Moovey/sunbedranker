@@ -7,6 +7,7 @@ import {
     TopRatedHotels,
     HotelCarouselSection,
     WhyChooseUs,
+    LatestPosts,
 } from '@/Components/Home';
 
 export default function Home({ 
@@ -14,7 +15,8 @@ export default function Home({
     topRatedHotels, 
     familyFriendlyHotels, 
     quietSunHotels, 
-    partyHotels 
+    partyHotels,
+    latestPosts 
 }) {
     const { auth } = usePage().props;
     const isHotelier = auth.user?.role === 'hotelier';
@@ -56,6 +58,8 @@ export default function Home({
                     type="party" 
                     isHotelier={isHotelier} 
                 />
+                
+                <LatestPosts posts={latestPosts} />
                 
                 <WhyChooseUs />
             </div>

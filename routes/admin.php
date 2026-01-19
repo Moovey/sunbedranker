@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminProfileController;
 use App\Http\Controllers\Admin\HotelManagementController;
 use App\Http\Controllers\Admin\ClaimManagementController;
+use App\Http\Controllers\Admin\ContentManagementController;
 use App\Http\Controllers\Admin\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
@@ -63,4 +64,25 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/users/{user}/edit', [UserManagementController::class, 'edit'])->name('users.edit');
     Route::patch('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
+
+    // Content Management
+    Route::get('/content', [ContentManagementController::class, 'index'])->name('content.index');
+    
+    // Posts
+    Route::get('/content/posts/create', [ContentManagementController::class, 'createPost'])->name('content.posts.create');
+    Route::post('/content/posts', [ContentManagementController::class, 'storePost'])->name('content.posts.store');
+    Route::get('/content/posts/{post}/edit', [ContentManagementController::class, 'editPost'])->name('content.posts.edit');
+    Route::put('/content/posts/{post}', [ContentManagementController::class, 'updatePost'])->name('content.posts.update');
+    Route::delete('/content/posts/{post}', [ContentManagementController::class, 'destroyPost'])->name('content.posts.destroy');
+    Route::post('/content/posts/{post}/toggle-status', [ContentManagementController::class, 'togglePostStatus'])->name('content.posts.toggle-status');
+    
+    // Categories
+    Route::post('/content/categories', [ContentManagementController::class, 'storeCategory'])->name('content.categories.store');
+    Route::put('/content/categories/{category}', [ContentManagementController::class, 'updateCategory'])->name('content.categories.update');
+    Route::delete('/content/categories/{category}', [ContentManagementController::class, 'destroyCategory'])->name('content.categories.destroy');
+    
+    // Tags
+    Route::post('/content/tags', [ContentManagementController::class, 'storeTag'])->name('content.tags.store');
+    Route::put('/content/tags/{tag}', [ContentManagementController::class, 'updateTag'])->name('content.tags.update');
+    Route::delete('/content/tags/{tag}', [ContentManagementController::class, 'destroyTag'])->name('content.tags.destroy');
 });

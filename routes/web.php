@@ -7,6 +7,7 @@ use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\ComparisonController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\BlogController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,6 +31,10 @@ Route::get('/compare', [ComparisonController::class, 'index'])->name('compare.in
 Route::post('/compare/add/{hotel}', [ComparisonController::class, 'add'])->name('compare.add');
 Route::delete('/compare/remove/{hotel}', [ComparisonController::class, 'remove'])->name('compare.remove');
 Route::delete('/compare/clear', [ComparisonController::class, 'clear'])->name('compare.clear');
+
+// Blog / Guides
+Route::get('/guides', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/guides/{post:slug}', [BlogController::class, 'show'])->name('blog.show');
 
 // Authenticated routes (regular users)
 Route::middleware('auth')->group(function () {

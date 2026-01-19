@@ -82,3 +82,89 @@ export function LinkIcon({ className = "w-5 h-5" }) {
         </svg>
     );
 }
+
+export function SearchIcon({ className = "w-5 h-5" }) {
+    return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+    );
+}
+
+export function PlusIcon({ className = "w-5 h-5" }) {
+    return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+    );
+}
+
+export function EditIcon({ className = "w-5 h-5" }) {
+    return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+    );
+}
+
+export function TrashIcon({ className = "w-5 h-5" }) {
+    return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+    );
+}
+
+export function CheckIcon({ className = "w-5 h-5" }) {
+    return (
+        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+        </svg>
+    );
+}
+
+export function PendingIcon({ className = "w-5 h-5" }) {
+    return (
+        <svg className={className} fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+        </svg>
+    );
+}
+
+export function CategoryIcon({ className = "w-5 h-5" }) {
+    return (
+        <svg className={className} fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h16a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h8a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+        </svg>
+    );
+}
+
+export function TagIcon({ className = "w-5 h-5" }) {
+    return (
+        <svg className={className} fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+        </svg>
+    );
+}
+
+// Icons namespace for easy access
+export const Icons = {
+    Clock: ClockIcon,
+    Users: UsersIcon,
+    Crown: CrownIcon,
+    Star: StarIcon,
+    Eye: EyeIcon,
+    Currency: CurrencyIcon,
+    Document: DocumentIcon,
+    Close: CloseIcon,
+    Click: ClickIcon,
+    Link: LinkIcon,
+    Search: SearchIcon,
+    Plus: PlusIcon,
+    Edit: EditIcon,
+    Trash: TrashIcon,
+    Check: CheckIcon,
+    Pending: PendingIcon,
+    Category: CategoryIcon,
+    Tag: TagIcon,
+};

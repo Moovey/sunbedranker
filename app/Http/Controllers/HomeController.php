@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Destination;
 use App\Models\Hotel;
+use App\Http\Controllers\BlogController;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -54,12 +55,16 @@ class HomeController extends Controller
             ->get();
         $partyHotels = $addPremiumFlag($partyHotels);
 
+        // Get latest blog posts
+        $latestPosts = BlogController::getLatestPosts(3);
+
         return Inertia::render('Home', [
             'featuredDestinations' => $featuredDestinations,
             'topRatedHotels' => $topRatedHotels,
             'familyFriendlyHotels' => $familyFriendlyHotels,
             'quietSunHotels' => $quietSunHotels,
             'partyHotels' => $partyHotels,
+            'latestPosts' => $latestPosts,
         ]);
     }
 }

@@ -6,3 +6,4 @@ export { default as HotelCarousel } from './HotelCarousel';
 export { default as HotelCarouselSection } from './HotelCarouselSection';
 export { default as HotelCard } from './HotelCard';
 export { default as WhyChooseUs } from './WhyChooseUs';
+export { default as LatestPosts } from './LatestPosts';
