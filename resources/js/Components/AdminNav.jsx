@@ -58,12 +58,12 @@ export default function AdminNav({ stats }) {
                             <Link
                                 href="/admin/claims"
                                 className={`px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                    route().current('admin.claims.*')
+                                    route().current('admin.claims.*') || route().current('admin.hoteliers.*') || route().current('admin.subscriptions.*')
                                         ? 'bg-neutral-100 text-neutral-900'
                                         : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                                 }`}
                             >
-                                Claims
+                                Hoteliers
                                 {stats?.pending_claims > 0 && (
                                     <span className="ml-2 px-2 py-0.5 text-xs font-normal bg-neutral-900 text-white rounded-full">
                                         {stats.pending_claims}
@@ -184,13 +184,13 @@ export default function AdminNav({ stats }) {
                         <Link
                             href="/admin/claims"
                             className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                route().current('admin.claims.*')
+                                route().current('admin.claims.*') || route().current('admin.hoteliers.*') || route().current('admin.subscriptions.*')
                                     ? 'bg-neutral-100 text-neutral-900'
                                     : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                             }`}
                             onClick={() => setShowMobileMenu(false)}
                         >
-                            <span>Claims</span>
+                            <span>Hoteliers</span>
                             {stats?.pending_claims > 0 && (
                                 <span className="px-2 py-0.5 text-xs font-normal bg-neutral-900 text-white rounded-full">
                                     {stats.pending_claims}

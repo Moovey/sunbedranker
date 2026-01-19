@@ -51,6 +51,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/claims/{claim}', [ClaimManagementController::class, 'show'])->name('claims.show');
     Route::post('/claims/{claim}/approve', [ClaimManagementController::class, 'approve'])->name('claims.approve');
     Route::post('/claims/{claim}/reject', [ClaimManagementController::class, 'reject'])->name('claims.reject');
+    
+    // Hotelier Subscription Management
+    Route::post('/hoteliers/{user}/subscription', [ClaimManagementController::class, 'updateSubscription'])->name('hoteliers.update-subscription');
+    Route::post('/hoteliers/{user}/temporary-access', [ClaimManagementController::class, 'grantTemporaryAccess'])->name('hoteliers.temporary-access');
+    Route::post('/subscriptions/{subscription}/cancel', [ClaimManagementController::class, 'cancelSubscription'])->name('subscriptions.cancel');
+    Route::get('/hoteliers/{user}/performance', [ClaimManagementController::class, 'hotelierPerformance'])->name('hoteliers.performance');
 
     // Users Management
     Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');

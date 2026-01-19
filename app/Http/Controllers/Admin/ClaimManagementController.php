@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\HotelClaim;
+use App\Models\User;
+use App\Models\Hotel;
+use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -15,25 +18,125 @@ class ClaimManagementController extends Controller
 {
     public function index(Request $request): Response
     {
+        $tab = $request->get('tab', 'claims');
         $status = $request->get('status', 'pending');
+        $search = $request->get('search', '');
+        $tier = $request->get('tier', 'all');
 
+        // Claims data
         $claims = HotelClaim::with(['hotel.destination', 'user', 'reviewer'])
             ->when($status !== 'all', function ($query) use ($status) {
                 $query->where('status', $status);
             })
+            ->when($search, function ($query) use ($search) {
+                $query->whereHas('hotel', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                })->orWhereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
             ->latest()
-            ->paginate(20);
+            ->paginate(15);
+
+        // Hoteliers with their subscriptions, hotels, and performance data
+        $hoteliersQuery = User::where('role', 'hotelier')
+            ->with(['activeSubscription', 'subscriptions' => function ($query) {
+                $query->latest()->limit(5);
+            }])
+            ->withCount(['subscriptions']);
+
+        if ($search) {
+            $hoteliersQuery->where(function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if ($tier !== 'all') {
+            $hoteliersQuery->whereHas('activeSubscription', function ($query) use ($tier) {
+                $query->where('tier', $tier);
+            });
+            
+            // Include free tier users (those without active subscription)
+            if ($tier === 'free') {
+                $hoteliersQuery->orWhere(function ($query) {
+                    $query->where('role', 'hotelier')
+                          ->whereDoesntHave('activeSubscription');
+                });
+            }
+        }
+
+        $hoteliers = $hoteliersQuery->latest()->paginate(15);
+
+        // Add hotel stats for each hotelier
+        $hoteliers->getCollection()->transform(function ($hotelier) {
+            $hotels = Hotel::where('owned_by', $hotelier->id)->get();
+            $hotelier->hotels_count = $hotels->count();
+            $hotelier->total_views = $hotels->sum('view_count');
+            $hotelier->total_clicks = $hotels->sum('click_count');
+            $hotelier->total_affiliate_clicks = $hotels->sum('affiliate_click_count');
+            $hotelier->total_revenue = $hotels->sum('affiliate_revenue');
+            $hotelier->hotels = $hotels->take(3); // Get first 3 hotels for preview
+            return $hotelier;
+        });
+
+        // Subscriptions overview
+        $subscriptions = Subscription::with(['user'])
+            ->when($tier !== 'all', function ($query) use ($tier) {
+                $query->where('tier', $tier);
+            })
+            ->when($search, function ($query) use ($search) {
+                $query->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->paginate(15);
+
+        // Calculate stats
+        $stats = [
+            // Claims stats
+            'pending_claims' => HotelClaim::where('status', 'pending')->count(),
+            'approved_claims' => HotelClaim::where('status', 'approved')->count(),
+            'rejected_claims' => HotelClaim::where('status', 'rejected')->count(),
+            
+            // Hotelier stats
+            'total_hoteliers' => User::where('role', 'hotelier')->count(),
+            'active_hoteliers' => User::where('role', 'hotelier')
+                ->whereHas('activeSubscription')
+                ->count(),
+            
+            // Subscription stats
+            'free_tier' => User::where('role', 'hotelier')
+                ->whereDoesntHave('activeSubscription')
+                ->count(),
+            'enhanced_tier' => Subscription::active()->where('tier', 'enhanced')->count(),
+            'premium_tier' => Subscription::active()->where('tier', 'premium')->count(),
+            
+            // Revenue stats
+            'total_revenue' => Subscription::where('status', 'active')->sum('total_amount'),
+            'monthly_revenue' => Subscription::where('status', 'active')
+                ->where('starts_at', '>=', now()->startOfMonth())
+                ->sum('total_amount'),
+            
+            // Engagement stats
+            'total_hotel_views' => Hotel::whereNotNull('owned_by')->sum('view_count'),
+            'total_hotel_clicks' => Hotel::whereNotNull('owned_by')->sum('click_count'),
+        ];
 
         return Inertia::render('Admin/Claims/Index', [
             'claims' => $claims,
+            'hoteliers' => $hoteliers,
+            'subscriptions' => $subscriptions,
             'filters' => [
+                'tab' => $tab,
                 'status' => $status,
+                'search' => $search,
+                'tier' => $tier,
             ],
-            'stats' => [
-                'pending' => HotelClaim::where('status', 'pending')->count(),
-                'approved' => HotelClaim::where('status', 'approved')->count(),
-                'rejected' => HotelClaim::where('status', 'rejected')->count(),
-            ],
+            'stats' => $stats,
         ]);
     }
 
@@ -119,5 +222,152 @@ class ClaimManagementController extends Controller
             DB::rollBack();
             return back()->withErrors(['message' => 'Failed to reject claim: ' . $e->getMessage()]);
         }
+    }
+
+    /**
+     * Update hotelier subscription manually
+     */
+    public function updateSubscription(Request $request, User $user): RedirectResponse
+    {
+        $validated = $request->validate([
+            'tier' => 'required|in:free,enhanced,premium',
+            'period_months' => 'required|integer|min:1|max:24',
+            'reason' => 'nullable|string|max:500',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            // Cancel any existing active subscription
+            $user->subscriptions()->where('status', Subscription::STATUS_ACTIVE)->update([
+                'status' => Subscription::STATUS_CANCELLED,
+            ]);
+
+            if ($validated['tier'] !== 'free') {
+                // Create new subscription
+                Subscription::create([
+                    'user_id' => $user->id,
+                    'tier' => $validated['tier'],
+                    'period_months' => $validated['period_months'],
+                    'monthly_price' => 0, // Manual upgrade - no charge
+                    'total_amount' => 0,
+                    'starts_at' => now(),
+                    'ends_at' => now()->addMonths($validated['period_months']),
+                    'status' => Subscription::STATUS_ACTIVE,
+                    'payment_method' => 'manual_admin',
+                    'transaction_id' => 'ADMIN-' . now()->format('YmdHis') . '-' . $user->id,
+                ]);
+            }
+
+            DB::commit();
+
+            return back()->with('success', "Subscription updated to {$validated['tier']} for {$validated['period_months']} months.");
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['message' => 'Failed to update subscription: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Grant temporary access to a hotelier
+     */
+    public function grantTemporaryAccess(Request $request, User $user): RedirectResponse
+    {
+        $validated = $request->validate([
+            'tier' => 'required|in:enhanced,premium',
+            'days' => 'required|integer|min:1|max:90',
+            'reason' => 'nullable|string|max:500',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            // Create temporary subscription
+            Subscription::create([
+                'user_id' => $user->id,
+                'tier' => $validated['tier'],
+                'period_months' => 0,
+                'monthly_price' => 0,
+                'total_amount' => 0,
+                'starts_at' => now(),
+                'ends_at' => now()->addDays($validated['days']),
+                'status' => Subscription::STATUS_ACTIVE,
+                'payment_method' => 'temporary_access',
+                'transaction_id' => 'TEMP-' . now()->format('YmdHis') . '-' . $user->id,
+            ]);
+
+            DB::commit();
+
+            return back()->with('success', "Granted {$validated['days']} days of {$validated['tier']} access.");
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['message' => 'Failed to grant access: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Cancel a subscription
+     */
+    public function cancelSubscription(Request $request, Subscription $subscription): RedirectResponse
+    {
+        $validated = $request->validate([
+            'reason' => 'nullable|string|max:500',
+        ]);
+
+        $subscription->update([
+            'status' => Subscription::STATUS_CANCELLED,
+        ]);
+
+        return back()->with('success', 'Subscription cancelled successfully.');
+    }
+
+    /**
+     * Get hotelier performance details
+     */
+    public function hotelierPerformance(User $user): Response
+    {
+        $user->load(['activeSubscription', 'subscriptions']);
+        
+        $hotels = Hotel::where('owned_by', $user->id)
+            ->with(['destination', 'analytics' => function ($query) {
+                $query->where('date', '>=', now()->subDays(30));
+            }])
+            ->get();
+
+        // Calculate performance metrics
+        $performance = [
+            'total_views' => $hotels->sum('view_count'),
+            'total_clicks' => $hotels->sum('click_count'),
+            'total_affiliate_clicks' => $hotels->sum('affiliate_click_count'),
+            'total_revenue' => $hotels->sum('affiliate_revenue'),
+            'average_score' => $hotels->avg('overall_score'),
+        ];
+
+        // 30-day analytics
+        $dailyStats = [];
+        foreach ($hotels as $hotel) {
+            foreach ($hotel->analytics as $analytic) {
+                $date = $analytic->date->format('Y-m-d');
+                if (!isset($dailyStats[$date])) {
+                    $dailyStats[$date] = ['views' => 0, 'clicks' => 0];
+                }
+                $dailyStats[$date]['views'] += $analytic->views;
+                $dailyStats[$date]['clicks'] += $analytic->clicks;
+            }
+        }
+
+        // Claims history
+        $claims = HotelClaim::with('hotel')
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get();
+
+        return Inertia::render('Admin/Claims/HotelierPerformance', [
+            'hotelier' => $user,
+            'hotels' => $hotels,
+            'performance' => $performance,
+            'dailyStats' => $dailyStats,
+            'claims' => $claims,
+        ]);
     }
 }
