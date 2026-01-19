@@ -125,7 +125,8 @@ class ContentManagementController extends Controller
             // Handle featured image upload
             $imagePath = null;
             if ($request->hasFile('featured_image')) {
-                $imagePath = $request->file('featured_image')->store('posts', 'public');
+                $disk = config('filesystems.public_uploads', 'public');
+                $imagePath = $request->file('featured_image')->store('posts', $disk);
             }
 
             // Generate slug if not provided
@@ -218,10 +219,12 @@ class ContentManagementController extends Controller
             $imagePath = $post->featured_image;
             if ($request->hasFile('featured_image')) {
                 // Delete old image
-                if ($post->featured_image) {
-                    Storage::disk('public')->delete($post->featured_image);
+                if ($post->featured_image && !str_starts_with($post->featured_image, 'http')) {
+                    $disk = config('filesystems.public_uploads', 'public');
+                    Storage::disk($disk)->delete($post->featured_image);
                 }
-                $imagePath = $request->file('featured_image')->store('posts', 'public');
+                $disk = config('filesystems.public_uploads', 'public');
+                $imagePath = $request->file('featured_image')->store('posts', $disk);
             }
 
             // Generate slug if changed

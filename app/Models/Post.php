@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Storage;
 
 class Post extends Model
 {
@@ -29,6 +31,35 @@ class Post extends Model
         'published_at' => 'datetime',
         'meta' => 'array',
     ];
+
+    protected $appends = ['featured_image_url'];
+
+    /**
+     * Get the featured image URL.
+     */
+    protected function featuredImageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if (!$this->featured_image) {
+                    return null;
+                }
+
+                // If it's already a full URL
+                if (str_starts_with($this->featured_image, 'http://') || str_starts_with($this->featured_image, 'https://')) {
+                    return $this->featured_image;
+                }
+
+                // Get the configured disk for public uploads
+                $disk = config('filesystems.public_uploads', 'public');
+
+                /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
+                $storage = Storage::disk($disk);
+
+                return $storage->url($this->featured_image);
+            }
+        );
+    }
 
     public function author(): BelongsTo
     {

@@ -18,7 +18,7 @@ export default function EditPost({ post, categories, tags }) {
     });
     const [featuredImage, setFeaturedImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(
-        post.featured_image ? `/storage/${post.featured_image}` : null
+        post.featured_image_url || null
     );
     const [errors, setErrors] = useState({});
     const [processing, setProcessing] = useState(false);

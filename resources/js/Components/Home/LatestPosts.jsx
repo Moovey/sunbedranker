@@ -49,7 +49,7 @@ export default function LatestPosts({ posts }) {
                                 <div className="aspect-[16/10] overflow-hidden bg-gray-100">
                                     {post.featured_image ? (
                                         <img
-                                            src={`/storage/${post.featured_image}`}
+                                            src={post.featured_image_url}
                                             alt={post.title}
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                         />

@@ -68,7 +68,7 @@ export default function PostsTab({ posts, onDelete, onToggleStatus }) {
                                     <div className="flex items-center">
                                         {post.featured_image ? (
                                             <img
-                                                src={`/storage/${post.featured_image}`}
+                                                src={post.featured_image_url}
                                                 alt={post.title}
                                                 className="w-12 h-12 rounded-lg object-cover mr-3"
                                             />

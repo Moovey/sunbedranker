@@ -80,7 +80,7 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                     {post.featured_image ? (
                         <div className="relative h-[300px] sm:h-[400px] lg:h-[500px] overflow-hidden">
                             <img
-                                src={`/storage/${post.featured_image}`}
+                                src={post.featured_image_url}
                                 alt={post.title}
                                 className="w-full h-full object-cover"
                             />
@@ -366,7 +366,7 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                             <div className="relative overflow-hidden aspect-[16/10]">
                                                 {relatedPost.featured_image ? (
                                                     <img
-                                                        src={`/storage/${relatedPost.featured_image}`}
+                                                        src={relatedPost.featured_image_url}
                                                         alt={relatedPost.title}
                                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
                                                     />

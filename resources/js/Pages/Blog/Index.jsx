@@ -136,7 +136,7 @@ export default function BlogIndex({ posts, categories, tags, featuredPosts, filt
                                                     <div className="aspect-[16/9] overflow-hidden bg-gray-100">
                                                         {post.featured_image ? (
                                                             <img
-                                                                src={`/storage/${post.featured_image}`}
+                                                                src={post.featured_image_url}
                                                                 alt={post.title}
                                                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                                             />
