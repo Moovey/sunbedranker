@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { Head, router } from '@inertiajs/react';
+import React, { useState, useEffect } from 'react';
+import { Head, router, usePage } from '@inertiajs/react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import AdminNav from '@/Components/AdminNav';
 import { StatCard, TabButton, Modal, Pagination, EmptyState, Icons } from '@/Components/Admin';
 import PostsTab from '@/Components/Admin/Content/PostsTab';
@@ -9,6 +11,7 @@ import CategoryModal from '@/Components/Admin/Content/CategoryModal';
 import TagModal from '@/Components/Admin/Content/TagModal';
 
 export default function ContentIndex({ posts, categories, tags, allCategories, filters, stats }) {
+    const { flash } = usePage().props;
     const [activeTab, setActiveTab] = useState(filters.tab || 'posts');
     const [search, setSearch] = useState(filters.search || '');
     const [statusFilter, setStatusFilter] = useState(filters.status || 'all');
@@ -21,6 +24,26 @@ export default function ContentIndex({ posts, categories, tags, allCategories, f
     const [editingTag, setEditingTag] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteItem, setDeleteItem] = useState(null);
+
+    // Show toast notifications from flash messages
+    useEffect(() => {
+        if (flash?.success) {
+            toast.success(flash.success, {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
+        }
+        if (flash?.error) {
+            toast.error(flash.error, {
+                position: 'top-right',
+                autoClose: 5000,
+            });
+        }
+    }, [flash]);
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
@@ -114,6 +137,7 @@ export default function ContentIndex({ posts, categories, tags, allCategories, f
     return (
         <>
             <Head title="Content & Guides" />
+            <ToastContainer />
             
             <div className="min-h-screen bg-gray-50 font-sans">
                 <AdminNav stats={{ pending_claims: 0 }} />

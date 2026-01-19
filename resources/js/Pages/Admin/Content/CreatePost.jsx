@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Head, router, Link } from '@inertiajs/react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import AdminNav from '@/Components/AdminNav';
 import { Icons } from '@/Components/Admin';
+import CategoryModal from '@/Components/Admin/Content/CategoryModal';
+import TagModal from '@/Components/Admin/Content/TagModal';
 
 export default function CreatePost({ categories, tags }) {
     const [formData, setFormData] = useState({
@@ -20,6 +24,8 @@ export default function CreatePost({ categories, tags }) {
     const [imagePreview, setImagePreview] = useState(null);
     const [errors, setErrors] = useState({});
     const [processing, setProcessing] = useState(false);
+    const [showCategoryModal, setShowCategoryModal] = useState(false);
+    const [showTagModal, setShowTagModal] = useState(false);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -63,6 +69,10 @@ export default function CreatePost({ categories, tags }) {
         router.post(route('admin.content.posts.store'), data, {
             onError: (errors) => {
                 setErrors(errors);
+                toast.error('Failed to create post. Please check the form.', {
+                    position: 'top-right',
+                    autoClose: 5000,
+                });
             },
             onFinish: () => {
                 setProcessing(false);
@@ -82,6 +92,7 @@ export default function CreatePost({ categories, tags }) {
     return (
         <>
             <Head title="Create Post" />
+            <ToastContainer />
             
             <div className="min-h-screen bg-gray-50 font-sans">
                 <AdminNav stats={{ pending_claims: 0 }} />
@@ -335,7 +346,16 @@ export default function CreatePost({ categories, tags }) {
 
                             {/* Category */}
                             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                                <h3 className="text-lg font-medium text-gray-900 mb-4">Category</h3>
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-lg font-medium text-gray-900">Category</h3>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowCategoryModal(true)}
+                                        className="text-sm text-orange-500 hover:text-orange-600 font-medium"
+                                    >
+                                        + Add New
+                                    </button>
+                                </div>
                                 <select
                                     value={formData.category_id}
                                     onChange={(e) =>
@@ -352,6 +372,9 @@ export default function CreatePost({ categories, tags }) {
                                         </option>
                                     ))}
                                 </select>
+                                {categories.length === 0 && (
+                                    <p className="mt-2 text-sm text-gray-500">No categories available. Create one first.</p>
+                                )}
                                 {errors.category_id && (
                                     <p className="mt-1 text-sm text-red-600">{errors.category_id}</p>
                                 )}
@@ -359,7 +382,16 @@ export default function CreatePost({ categories, tags }) {
 
                             {/* Tags */}
                             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                                <h3 className="text-lg font-medium text-gray-900 mb-4">Tags</h3>
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-lg font-medium text-gray-900">Tags</h3>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowTagModal(true)}
+                                        className="text-sm text-orange-500 hover:text-orange-600 font-medium"
+                                    >
+                                        + Add New
+                                    </button>
+                                </div>
                                 <div className="flex flex-wrap gap-2">
                                     {tags.map((tag) => (
                                         <button
@@ -378,7 +410,7 @@ export default function CreatePost({ categories, tags }) {
                                     ))}
                                 </div>
                                 {tags.length === 0 && (
-                                    <p className="text-sm text-gray-500">No tags available</p>
+                                    <p className="text-sm text-gray-500">No tags available. Create one first.</p>
                                 )}
                             </div>
                         </div>
@@ -386,6 +418,20 @@ export default function CreatePost({ categories, tags }) {
                 </form>
             </div>
         </div>
+
+        {/* Category Modal */}
+        <CategoryModal
+            show={showCategoryModal}
+            onClose={() => setShowCategoryModal(false)}
+            category={null}
+        />
+
+        {/* Tag Modal */}
+        <TagModal
+            show={showTagModal}
+            onClose={() => setShowTagModal(false)}
+            tag={null}
+        />
         </>
     );
 }

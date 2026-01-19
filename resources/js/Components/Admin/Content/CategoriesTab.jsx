@@ -47,8 +47,12 @@ export default function CategoriesTab({ categories, onEdit, onDelete }) {
                                 </button>
                                 <button
                                     onClick={() => onDelete(category)}
-                                    className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                    title="Delete"
+                                    className={`p-1.5 rounded-lg transition-colors ${
+                                        category.posts_count > 0
+                                            ? 'text-gray-400 cursor-not-allowed'
+                                            : 'text-red-600 hover:bg-red-50'
+                                    }`}
+                                    title={category.posts_count > 0 ? 'Cannot delete: category has posts' : 'Delete'}
                                     disabled={category.posts_count > 0}
                                 >
                                     <Icons.Trash className="w-4 h-4" />
