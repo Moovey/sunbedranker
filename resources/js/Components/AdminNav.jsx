@@ -56,6 +56,16 @@ export default function AdminNav({ stats }) {
                                 Hotels
                             </Link>
                             <Link
+                                href="/admin/scoring"
+                                className={`px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
+                                    route().current('admin.scoring.*')
+                                        ? 'bg-neutral-100 text-neutral-900'
+                                        : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
+                                }`}
+                            >
+                                Scoring
+                            </Link>
+                            <Link
                                 href="/admin/claims"
                                 className={`px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
                                     route().current('admin.claims.*') || route().current('admin.hoteliers.*') || route().current('admin.subscriptions.*')
@@ -89,16 +99,6 @@ export default function AdminNav({ stats }) {
                                 }`}
                             >
                                 Content
-                            </Link>
-                            <Link
-                                href="/admin/scoring"
-                                className={`px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                    route().current('admin.scoring.*')
-                                        ? 'bg-neutral-100 text-neutral-900'
-                                        : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
-                                }`}
-                            >
-                                Scoring
                             </Link>
                         </div>
                     </div>
@@ -202,6 +202,17 @@ export default function AdminNav({ stats }) {
                             Hotels
                         </Link>
                         <Link
+                            href="/admin/scoring"
+                            className={`block px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
+                                route().current('admin.scoring.*')
+                                    ? 'bg-neutral-100 text-neutral-900'
+                                    : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
+                            }`}
+                            onClick={() => setShowMobileMenu(false)}
+                        >
+                            Scoring
+                        </Link>
+                        <Link
                             href="/admin/claims"
                             className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
                                 route().current('admin.claims.*') || route().current('admin.hoteliers.*') || route().current('admin.subscriptions.*')
@@ -238,17 +249,6 @@ export default function AdminNav({ stats }) {
                             onClick={() => setShowMobileMenu(false)}
                         >
                             Content
-                        </Link>
-                        <Link
-                            href="/admin/scoring"
-                            className={`block px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                route().current('admin.scoring.*')
-                                    ? 'bg-neutral-100 text-neutral-900'
-                                    : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
-                            }`}
-                            onClick={() => setShowMobileMenu(false)}
-                        >
-                            Scoring
                         </Link>
                         <Link
                             href="/"
