@@ -38,6 +38,8 @@ const getInitialFormData = (hotel) => ({
     house_rules: hotel.house_rules || '',
     towel_policy: hotel.towel_policy || '',
     faqs: hotel.faqs || [],
+    // Hotel basic info needed for pool scoring calculations
+    total_rooms: hotel.total_rooms || '',
     // Enhanced subscription features
     // Support multiple promotions for premium subscribers
     promotions: hotel.promotions || (hotel.promotional_banner ? [{
@@ -73,9 +75,9 @@ const getPoolCriteriaData = (criteria) => ({
     music_level: criteria?.music_level || '',
     has_entertainment: criteria?.has_entertainment || false,
     entertainment_types: criteria?.entertainment_types || [],
-    cleanliness_rating: criteria?.cleanliness_rating || '',
-    sunbed_condition_rating: criteria?.sunbed_condition_rating || '',
-    tiling_condition_rating: criteria?.tiling_condition_rating || '',
+    cleanliness_rating: criteria?.cleanliness_rating ? Math.round(Number(criteria.cleanliness_rating)) : '',
+    sunbed_condition_rating: criteria?.sunbed_condition_rating ? Math.round(Number(criteria.sunbed_condition_rating)) : '',
+    tiling_condition_rating: criteria?.tiling_condition_rating ? Math.round(Number(criteria.tiling_condition_rating)) : '',
     has_accessibility_ramp: criteria?.has_accessibility_ramp || false,
     has_pool_hoist: criteria?.has_pool_hoist || false,
     has_step_free_access: criteria?.has_step_free_access || false,

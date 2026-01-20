@@ -76,9 +76,9 @@ const buildFormData = (hotel) => ({
     atmosphere: hotel.pool_criteria?.atmosphere || '',
     music_level: hotel.pool_criteria?.music_level || '',
     entertainment_types: hotel.pool_criteria?.entertainment_types || [],
-    cleanliness_rating: hotel.pool_criteria?.cleanliness_rating || '',
-    sunbed_condition_rating: hotel.pool_criteria?.sunbed_condition_rating || '',
-    tiling_condition_rating: hotel.pool_criteria?.tiling_condition_rating || '',
+    cleanliness_rating: hotel.pool_criteria?.cleanliness_rating ? Math.round(Number(hotel.pool_criteria.cleanliness_rating)) : '',
+    sunbed_condition_rating: hotel.pool_criteria?.sunbed_condition_rating ? Math.round(Number(hotel.pool_criteria.sunbed_condition_rating)) : '',
+    tiling_condition_rating: hotel.pool_criteria?.tiling_condition_rating ? Math.round(Number(hotel.pool_criteria.tiling_condition_rating)) : '',
     lifeguard_hours: hotel.pool_criteria?.lifeguard_hours || '',
     kids_pool_depth_m: hotel.pool_criteria?.kids_pool_depth_m || '',
     
