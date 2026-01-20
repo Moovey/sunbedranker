@@ -165,6 +165,17 @@ export function ContactInfoCard({ hotel }) {
                         </div>
                     </div>
                 )}
+                {hotel.website && (
+                    <div className="flex items-start gap-2">
+                        <Icons.Website className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 mt-0.5 flex-shrink-0" />
+                        <div>
+                            <div className="font-medium text-gray-900 mb-1">Website</div>
+                            <a href={hotel.website} target="_blank" rel="noopener noreferrer" className="text-orange-600 hover:text-orange-700 break-all transition-colors duration-300">
+                                {hotel.website.replace(/^https?:\/\//, '')}
+                            </a>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

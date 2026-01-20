@@ -24,6 +24,8 @@
         "@heroicons/react": "^2.2.0",
         "@stripe/react-stripe-js": "^5.4.1",
         "@stripe/stripe-js": "^8.6.1",
+        "leaflet": "^1.9.4",
+        "react-leaflet": "^4.2.1",
         "react-toastify": "^11.0.5"
     }
 }

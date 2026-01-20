@@ -117,7 +117,7 @@ export function ImageGallery({ allImages, activeImageIndex, hotelName, onPrevIma
 export function MapAndScoreColumn({ hotel }) {
     return (
         <div className="space-y-4">
-            {/* Google Map */}
+            {/* Google Maps (Free embed, no API key required) */}
             {hotel.latitude && hotel.longitude && (
                 <div className="h-40 sm:h-48 lg:h-52 xl:h-56 2xl:h-64 rounded-xl overflow-hidden shadow-lg">
                     <iframe
@@ -125,8 +125,10 @@ export function MapAndScoreColumn({ hotel }) {
                         height="100%"
                         frameBorder="0"
                         style={{ border: 0 }}
-                        src={`https://www.google.com/maps/embed/v1/view?key=YOUR_GOOGLE_MAPS_API_KEY&center=${hotel.latitude},${hotel.longitude}&zoom=16&maptype=satellite`}
+                        src={`https://maps.google.com/maps?q=${hotel.latitude},${hotel.longitude}&z=15&output=embed`}
                         allowFullScreen
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
                     ></iframe>
                 </div>
             )}

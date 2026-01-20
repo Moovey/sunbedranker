@@ -64,6 +64,11 @@ class PoolCriteria extends Model
         'has_heated_pool',
         'has_jacuzzi',
         'has_adult_sun_terrace',
+        
+        // Pool type flags
+        'has_infinity_pool',
+        'has_rooftop_pool',
+        'is_adults_only',
     ];
 
     protected $casts = [
@@ -95,6 +100,11 @@ class PoolCriteria extends Model
         'has_heated_pool' => 'boolean',
         'has_jacuzzi' => 'boolean',
         'has_adult_sun_terrace' => 'boolean',
+        
+        // Pool type flags
+        'has_infinity_pool' => 'boolean',
+        'has_rooftop_pool' => 'boolean',
+        'is_adults_only' => 'boolean',
     ];
 
     protected static function boot()

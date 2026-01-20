@@ -54,7 +54,7 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     
                     {/* Premium Badge */}
-                    {hotel.is_premium && (
+                    {!!hotel.is_premium && (
                         <div className="absolute top-4 left-4 bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 animate-pulse z-10">
                             <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
@@ -72,7 +72,7 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
                     )}
                     
                     {/* Verified Badge */}
-                    {isPremium && hotel.show_verified_badge && (
+                    {isPremium && !!hotel.show_verified_badge && (
                         <div className="absolute top-24 left-4 bg-gradient-to-r from-blue-500 to-cyan-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 z-10">
                             <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -92,12 +92,12 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
                     )}
 
                     {/* Claim Status Badges */}
-                    {hotel.has_pending_claim && (
+                    {!!hotel.has_pending_claim && (
                         <div className="absolute bottom-3 left-3 right-3 bg-yellow-500/90 backdrop-blur-sm text-white px-3 py-2 rounded-lg text-xs font-semibold text-center">
                             🔒 Claim under review
                         </div>
                     )}
-                    {hotel.owned_by && (
+                    {!!hotel.owned_by && (
                         <div className="absolute bottom-3 left-3 right-3 bg-green-500/90 backdrop-blur-sm text-white px-3 py-2 rounded-lg text-xs font-semibold text-center flex items-center justify-center gap-1">
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -119,7 +119,7 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
                     {/* Pool Features */}
                     {hotel.pool_criteria && (
                         <div className="flex flex-wrap gap-2 text-xs mb-4">
-                            {hotel.pool_criteria.has_infinity_pool && (
+                            {!!hotel.pool_criteria.has_infinity_pool && (
                                 <span className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-full font-semibold flex items-center gap-1">
                                     <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M22 6.5c-1.1 0-2.2.3-3 .9-.8-.6-1.9-.9-3-.9s-2.2.3-3 .9c-.8-.6-1.9-.9-3-.9s-2.2.3-3 .9c-.8-.6-1.9-.9-3-.9v2c.8 0 1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8s1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8s1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8V6.5z"/>
@@ -127,7 +127,7 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
                                     Infinity Pool
                                 </span>
                             )}
-                            {hotel.pool_criteria.has_rooftop_pool && (
+                            {!!hotel.pool_criteria.has_rooftop_pool && (
                                 <span className="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-full font-semibold flex items-center gap-1">
                                     <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
@@ -135,7 +135,7 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
                                     Rooftop
                                 </span>
                             )}
-                            {hotel.pool_criteria.is_adults_only && (
+                            {!!hotel.pool_criteria.is_adults_only && (
                                 <span className="px-3 py-1.5 bg-pink-100 text-pink-700 rounded-full font-semibold flex items-center gap-1">
                                     <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
