@@ -237,10 +237,73 @@ export function SunExposureSection({ poolCriteria }) {
 }
 
 // ============================================
+// TOWEL & RESERVATION POLICY SECTION
+// ============================================
+export function TowelReservationSection({ poolCriteria }) {
+    if (!poolCriteria?.towel_reservation_policy && !poolCriteria?.towel_service_cost && 
+        !poolCriteria?.pool_opening_hours) {
+        return null;
+    }
+
+    const policyLabels = {
+        'enforced': { label: 'Strictly Enforced', icon: '🚫', color: 'red' },
+        'tolerated': { label: 'Tolerated', icon: '😐', color: 'yellow' },
+        'free_for_all': { label: 'Free-for-All', icon: '🤷', color: 'green' },
+    };
+
+    const costLabels = {
+        'included': { label: 'Included', icon: '✅', color: 'green' },
+        'extra_cost': { label: 'Extra Cost', icon: '💰', color: 'yellow' },
+        'deposit_required': { label: 'Deposit Required', icon: '🔐', color: 'orange' },
+    };
+
+    const policy = policyLabels[poolCriteria.towel_reservation_policy];
+    const cost = costLabels[poolCriteria.towel_service_cost];
+
+    return (
+        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+                <Icons.Towel className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />
+                Towel & Reservation Policy
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {policy && (
+                    <div className={`p-4 bg-${policy.color}-50 rounded-lg border border-${policy.color}-200`}>
+                        <div className="text-sm text-gray-600 mb-1">Reservation Policy</div>
+                        <div className={`text-lg font-semibold text-${policy.color}-600 flex items-center gap-2`}>
+                            <span>{policy.icon}</span>
+                            {policy.label}
+                        </div>
+                    </div>
+                )}
+                {cost && (
+                    <div className={`p-4 bg-${cost.color}-50 rounded-lg border border-${cost.color}-200`}>
+                        <div className="text-sm text-gray-600 mb-1">Towel Service</div>
+                        <div className={`text-lg font-semibold text-${cost.color}-600 flex items-center gap-2`}>
+                            <span>{cost.icon}</span>
+                            {cost.label}
+                        </div>
+                    </div>
+                )}
+                {poolCriteria.pool_opening_hours && (
+                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="text-sm text-gray-600 mb-1">Pool Hours</div>
+                        <div className="text-lg font-semibold text-blue-600 flex items-center gap-2">
+                            <span>🕐</span>
+                            {poolCriteria.pool_opening_hours}
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
+
+// ============================================
 // POOL SIZE & VARIETY SECTION
 // ============================================
 export function PoolSizeSection({ poolCriteria }) {
-    if (!poolCriteria?.pool_size_category && !poolCriteria?.total_pool_area_sqm && 
+    if (!poolCriteria?.pool_size_category && !poolCriteria?.pool_size_sqm && 
         !poolCriteria?.number_of_pools && !poolCriteria?.pool_types) {
         return null;
     }
@@ -260,11 +323,11 @@ export function PoolSizeSection({ poolCriteria }) {
                         </div>
                     </div>
                 )}
-                {poolCriteria.total_pool_area_sqm && (
+                {poolCriteria.pool_size_sqm && (
                     <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                        <div className="text-sm text-gray-600 mb-1">Total Area</div>
+                        <div className="text-sm text-gray-600 mb-1">Main Pool Size</div>
                         <div className="text-lg font-semibold text-blue-600">
-                            {poolCriteria.total_pool_area_sqm} m²
+                            {poolCriteria.pool_size_sqm} m²
                         </div>
                     </div>
                 )}

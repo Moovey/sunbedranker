@@ -112,10 +112,15 @@ class PoolCriteria extends Model
         parent::boot();
 
         static::saving(function ($poolCriteria) {
-            // Auto-calculate sunbed ratio if both values are present
-            if ($poolCriteria->total_sunbeds && $poolCriteria->total_guests) {
-                $poolCriteria->sunbed_to_guest_ratio = 
-                    round($poolCriteria->total_sunbeds / $poolCriteria->total_guests, 2);
+            // Auto-calculate sunbed ratio from sunbed_count and hotel's total_rooms
+            // Formula: sunbed_count / (total_rooms * 2) - assuming 2 guests per room
+            if ($poolCriteria->sunbed_count && $poolCriteria->hotel_id) {
+                $hotel = \App\Models\Hotel::find($poolCriteria->hotel_id);
+                if ($hotel && $hotel->total_rooms) {
+                    $totalGuests = $hotel->total_rooms * 2; // Average 2 guests per room
+                    $poolCriteria->sunbed_to_guest_ratio = 
+                        round($poolCriteria->sunbed_count / $totalGuests, 2);
+                }
             }
         });
     }

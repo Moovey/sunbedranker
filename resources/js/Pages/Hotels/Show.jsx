@@ -18,7 +18,8 @@ import {
     // 3. Pool Area Size & Variety
     PoolSizeSection,
     
-    // 4. Towel & Reservation Policy (via TowelPolicySection)
+    // 4. Towel & Reservation Policy
+    TowelReservationSection,
     
     // 5. Pool Facilities & Comfort
     FacilitiesSection,
@@ -130,7 +131,7 @@ export default function HotelShow({ hotel, similarHotels }) {
                                     <PoolSizeSection poolCriteria={poolCriteria} />
                                     
                                     {/* 4. Towel & Reservation Policy */}
-                                    <TowelPolicySection hotel={hotel} />
+                                    <TowelReservationSection poolCriteria={poolCriteria} />
                                     
                                     {/* 5. Pool Facilities & Comfort */}
                                     <FacilitiesSection poolCriteria={poolCriteria} />

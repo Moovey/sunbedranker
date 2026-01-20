@@ -116,43 +116,29 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
                         {hotel.destination?.name}
                     </p>
                     
-                    {/* Pool Features */}
+                    {/* Pool Info */}
                     {hotel.pool_criteria && (
-                        <div className="flex flex-wrap gap-2 text-xs mb-4">
-                            {!!hotel.pool_criteria.has_infinity_pool && (
-                                <span className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-full font-semibold flex items-center gap-1">
-                                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M22 6.5c-1.1 0-2.2.3-3 .9-.8-.6-1.9-.9-3-.9s-2.2.3-3 .9c-.8-.6-1.9-.9-3-.9s-2.2.3-3 .9c-.8-.6-1.9-.9-3-.9v2c.8 0 1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8s1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8s1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8V6.5z"/>
-                                    </svg>
-                                    Infinity Pool
+                        <div className="flex flex-wrap gap-2 text-xs">
+                            {/* Sunbed Ratio */}
+                            {hotel.pool_criteria.sunbed_to_guest_ratio && (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-orange-100 text-orange-700 rounded-full font-semibold">
+                                    🛏️ {hotel.pool_criteria.sunbed_to_guest_ratio}:1
                                 </span>
                             )}
-                            {!!hotel.pool_criteria.has_rooftop_pool && (
-                                <span className="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-full font-semibold flex items-center gap-1">
-                                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-                                    </svg>
-                                    Rooftop
+                            
+                            {/* Sun Exposure */}
+                            {hotel.pool_criteria.sun_exposure && (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-yellow-100 text-yellow-700 rounded-full font-semibold capitalize">
+                                    ☀️ {hotel.pool_criteria.sun_exposure.replace(/_/g, ' ')}
                                 </span>
                             )}
-                            {!!hotel.pool_criteria.is_adults_only && (
-                                <span className="px-3 py-1.5 bg-pink-100 text-pink-700 rounded-full font-semibold flex items-center gap-1">
-                                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                                    </svg>
-                                    Adults Only
+                            
+                            {/* Pool Atmosphere */}
+                            {hotel.pool_criteria.atmosphere && (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-purple-100 text-purple-700 rounded-full font-semibold capitalize">
+                                    🎵 {hotel.pool_criteria.atmosphere}
                                 </span>
                             )}
-                        </div>
-                    )}
-                    
-                    {/* Sunbed Ratio */}
-                    {hotel.pool_criteria?.sunbed_to_guest_ratio && (
-                        <div className="text-sm text-gray-700 font-semibold bg-orange-50 px-3 py-2 rounded-lg flex items-center gap-2">
-                            <svg className="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-6.18C11.6 5.84 10.3 5 8.86 5 6.75 5 5.06 6.69 5.06 8.8c0 1.66 1.13 3.1 2.68 3.52L3.94 18H2v3h7v-2.78c0-.38.2-.72.52-.88.79-.4 2.39-1.34 3.48-1.34 1.09 0 2.69.94 3.48 1.34.32.16.52.5.52.88V21h7v-3h-1.94l-3.8-5.68C19.87 11.9 21 10.46 21 8.8 21 6.69 19.31 5 17.2 5c-1.44 0-2.74.84-3.96 2.02L13 7.8V7z"/>
-                            </svg>
-                            Sunbed Ratio: <span className="text-orange-600">{hotel.pool_criteria.sunbed_to_guest_ratio}:1</span>
                         </div>
                     )}
                     

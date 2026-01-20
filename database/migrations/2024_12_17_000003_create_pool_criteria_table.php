@@ -12,57 +12,95 @@ return new class extends Migration
             $table->id();
             $table->foreignId('hotel_id')->constrained()->cascadeOnDelete();
             
-            // Sunbed & Capacity
-            $table->integer('total_sunbeds')->nullable();
-            $table->integer('total_guests')->nullable();
-            $table->decimal('sunbed_to_guest_ratio', 4, 2)->nullable()->comment('Calculated: sunbeds/guests');
-            $table->boolean('has_towel_reservation_policy')->default(false);
-            $table->string('sunbed_quality')->nullable()->comment('basic|standard|premium');
+            // ============================================
+            // 1. SUNBED-TO-GUEST RATIO
+            // ============================================
+            $table->integer('sunbed_count')->nullable()->comment('Total sunbeds available');
+            $table->decimal('sunbed_to_guest_ratio', 4, 2)->nullable()->comment('Auto-calculated: sunbed_count / (total_rooms * 2)');
             
-            // Pool Details
+            // ============================================
+            // 2. SUN EXPOSURE & ORIENTATION
+            // ============================================
+            $table->string('sun_exposure')->nullable()->comment('all_day|afternoon_only|morning_only|partial_shade|mostly_shaded');
+            $table->json('sunny_areas')->nullable()->comment('Array: main_pool, kids_pool, quiet_area, rooftop, adult_pool, terrace');
+            
+            // ============================================
+            // 3. POOL AREA SIZE & VARIETY
+            // ============================================
+            $table->decimal('pool_size_sqm', 8, 2)->nullable()->comment('Main pool size in square meters');
+            $table->string('pool_size_category')->nullable()->comment('small|medium|large|very_large');
             $table->integer('number_of_pools')->default(1);
-            $table->string('pool_types')->nullable()->comment('main,kids,rooftop,infinity,heated');
-            $table->decimal('total_pool_area_sqm', 8, 2)->nullable();
+            $table->json('pool_types')->nullable()->comment('Array: infinity, kids, adult_only, indoor, rooftop, lagoon, heated, olympic');
+            
+            // Pool type boolean flags (derived from pool_types for quick filtering)
             $table->boolean('has_infinity_pool')->default(false);
             $table->boolean('has_rooftop_pool')->default(false);
             $table->boolean('has_heated_pool')->default(false);
             $table->boolean('has_kids_pool')->default(false);
-            $table->boolean('has_lazy_river')->default(false);
+            
+            // ============================================
+            // 4. TOWEL & RESERVATION POLICY
+            // ============================================
+            $table->string('towel_reservation_policy')->nullable()->comment('enforced|tolerated|free_for_all');
+            $table->string('towel_service_cost')->nullable()->comment('included|extra_cost|deposit_required');
+            $table->string('pool_opening_hours')->nullable()->comment('e.g. 07:00-22:00');
+            
+            // ============================================
+            // 5. POOL FACILITIES & COMFORT
+            // ============================================
+            $table->json('sunbed_types')->nullable()->comment('Array: plastic, cushioned, cabanas, bali_beds');
+            $table->json('shade_options')->nullable()->comment('Array: umbrellas, pergolas, cabanas, natural_trees');
             $table->boolean('has_pool_bar')->default(false);
+            $table->boolean('has_waiter_service')->default(false);
+            $table->string('bar_distance')->nullable()->comment('poolside|close|moderate|far');
+            $table->string('toilet_distance')->nullable()->comment('adjacent|close|moderate|far');
             
-            // Sun Exposure
-            $table->string('sun_exposure')->nullable()->comment('all_day|morning|afternoon|limited');
-            $table->boolean('has_shade_areas')->default(false);
-            $table->time('sun_from')->nullable();
-            $table->time('sun_until')->nullable();
-            
-            // Atmosphere & Rules
-            $table->string('atmosphere')->nullable()->comment('quiet|lively|family|party|mixed');
+            // ============================================
+            // 6. NOISE & ATMOSPHERE
+            // ============================================
+            $table->string('atmosphere')->nullable()->comment('quiet|relaxed|family|lively|party');
+            $table->string('music_level')->nullable()->comment('none|low|moderate|loud|dj');
+            $table->boolean('has_entertainment')->default(false);
+            $table->json('entertainment_types')->nullable()->comment('Array: aqua_gym, games, animation_team, live_music');
             $table->boolean('is_adults_only')->default(false);
-            $table->boolean('has_music')->default(false);
-            $table->string('music_volume')->nullable()->comment('none|low|medium|loud');
-            $table->boolean('allows_food_drinks')->default(true);
             
-            // Quality & Maintenance
-            $table->integer('cleanliness_score')->nullable()->comment('1-5');
-            $table->integer('maintenance_score')->nullable()->comment('1-5');
-            $table->string('water_quality')->nullable()->comment('excellent|good|average|poor');
+            // ============================================
+            // 7. CLEANLINESS & MAINTENANCE (0-5 ratings)
+            // ============================================
+            $table->decimal('cleanliness_rating', 3, 1)->nullable()->comment('0-5: Pool cleanliness');
+            $table->decimal('sunbed_condition_rating', 3, 1)->nullable()->comment('0-5: Sunbed condition');
+            $table->decimal('tiling_condition_rating', 3, 1)->nullable()->comment('0-5: Tiling/grounds condition');
             
-            // Accessibility & Family
+            // ============================================
+            // 8. ACCESSIBILITY FEATURES
+            // ============================================
+            $table->boolean('has_accessibility_ramp')->default(false);
+            $table->boolean('has_pool_hoist')->default(false);
+            $table->boolean('has_step_free_access')->default(false);
+            $table->boolean('has_elevator_to_rooftop')->default(false);
+            
+            // ============================================
+            // 9. KIDS & FAMILY FACILITIES
+            // ============================================
+            // has_kids_pool already defined above
+            $table->decimal('kids_pool_depth_m', 3, 2)->nullable()->comment('Depth in meters, max 2m');
+            $table->boolean('has_splash_park')->default(false);
+            $table->boolean('has_waterslide')->default(false);
             $table->boolean('has_lifeguard')->default(false);
-            $table->boolean('wheelchair_accessible')->default(false);
-            $table->boolean('has_changing_facilities')->default(false);
-            $table->boolean('has_pool_toys')->default(false);
-            $table->boolean('has_kids_activities')->default(false);
+            $table->string('lifeguard_hours')->nullable()->comment('e.g. 09:00-18:00');
             
-            // Additional Info
-            $table->text('special_features')->nullable();
-            $table->text('restrictions')->nullable();
-            $table->time('opening_time')->nullable();
-            $table->time('closing_time')->nullable();
-            $table->string('seasonal_availability')->nullable();
+            // ============================================
+            // 10. EXTRAS & LUXURY TOUCHES
+            // ============================================
+            $table->boolean('has_luxury_cabanas')->default(false);
+            $table->boolean('has_cabana_service')->default(false);
+            // has_heated_pool already defined above
+            $table->boolean('has_jacuzzi')->default(false);
+            $table->boolean('has_adult_sun_terrace')->default(false);
             
-            // Data Source & Quality
+            // ============================================
+            // DATA SOURCE & VERIFICATION
+            // ============================================
             $table->enum('data_source', ['admin', 'hotelier', 'user', 'verified'])->default('admin');
             $table->boolean('is_verified')->default(false);
             $table->timestamp('verified_at')->nullable();
@@ -70,9 +108,12 @@ return new class extends Migration
             
             $table->timestamps();
 
+            // Indexes for common queries
             $table->index('hotel_id');
             $table->index('sunbed_to_guest_ratio');
+            $table->index('sun_exposure');
             $table->index('atmosphere');
+            $table->index('is_adults_only');
         });
     }
 

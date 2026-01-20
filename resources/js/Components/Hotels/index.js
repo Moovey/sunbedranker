@@ -25,6 +25,7 @@ export {
     SunbedAvailabilitySection,
     SunExposureSection,
     PoolSizeSection,
+    TowelReservationSection,
     FacilitiesSection,
     AtmosphereSection,
     CleanlinessSection,

@@ -31,8 +31,9 @@ export default function PoolCriteriaTab({ data, setData, errors }) {
     };
 
     // Calculate sunbed ratio in real-time
+    // Formula: sunbed_count / (total_rooms * 2) - assuming 2 guests per room
     const sunbedRatio = data.total_rooms && data.sunbed_count 
-        ? (data.sunbed_count / data.total_rooms).toFixed(2)
+        ? (data.sunbed_count / (data.total_rooms * 2)).toFixed(2)
         : null;
 
     const getSunbedRatioLabel = (ratio) => {
@@ -370,7 +371,8 @@ export default function PoolCriteriaTab({ data, setData, errors }) {
                             <select
                                 value={data.bar_distance || ''}
                                 onChange={e => setData('bar_distance', e.target.value)}
-                                className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                disabled={!data.has_pool_bar}
+                                className={`w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-blue-500 ${!data.has_pool_bar ? 'bg-neutral-100 cursor-not-allowed' : ''}`}
                             >
                                 <option value="">Select distance...</option>
                                 <option value="poolside">Poolside</option>
@@ -378,6 +380,7 @@ export default function PoolCriteriaTab({ data, setData, errors }) {
                                 <option value="moderate">Moderate (20-50m)</option>
                                 <option value="far">Far (50m+)</option>
                             </select>
+                            {!data.has_pool_bar && <p className="text-xs text-neutral-500 mt-1">Enable "Pool Bar Available" first</p>}
                         </div>
 
                         <div>
@@ -487,53 +490,59 @@ export default function PoolCriteriaTab({ data, setData, errors }) {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-neutral-700 mb-2">
-                            Pool Cleanliness Rating (0-5)
+                            Pool Cleanliness Rating (1-5)
                         </label>
-                        <input
-                            type="number"
-                            step="0.1"
-                            min="0"
-                            max="5"
-                            value={data.cleanliness_rating || ''}
-                            onChange={e => setData('cleanliness_rating', e.target.value)}
+                        <select
+                            value={data.cleanliness_rating ? Math.round(Number(data.cleanliness_rating)) : ''}
+                            onChange={e => setData('cleanliness_rating', parseInt(e.target.value) || '')}
                             className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                            placeholder="0.0"
-                        />
-                        <p className="text-xs text-neutral-500 mt-1">5 = Pristine, 0 = Poor</p>
+                        >
+                            <option value="">Select rating...</option>
+                            <option value="1">1 - Poor</option>
+                            <option value="2">2 - Fair</option>
+                            <option value="3">3 - Good</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="5">5 - Pristine</option>
+                        </select>
+                        {errors.cleanliness_rating && <p className="text-red-500 text-sm mt-1">{errors.cleanliness_rating}</p>}
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-neutral-700 mb-2">
-                            Sunbed Condition Rating (0-5)
+                            Sunbed Condition Rating (1-5)
                         </label>
-                        <input
-                            type="number"
-                            step="0.1"
-                            min="0"
-                            max="5"
-                            value={data.sunbed_condition_rating || ''}
-                            onChange={e => setData('sunbed_condition_rating', e.target.value)}
+                        <select
+                            value={data.sunbed_condition_rating ? Math.round(Number(data.sunbed_condition_rating)) : ''}
+                            onChange={e => setData('sunbed_condition_rating', parseInt(e.target.value) || '')}
                             className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                            placeholder="0.0"
-                        />
-                        <p className="text-xs text-neutral-500 mt-1">5 = Brand New, 0 = Very Old</p>
+                        >
+                            <option value="">Select rating...</option>
+                            <option value="1">1 - Very Old</option>
+                            <option value="2">2 - Worn</option>
+                            <option value="3">3 - Good</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="5">5 - Brand New</option>
+                        </select>
+                        {errors.sunbed_condition_rating && <p className="text-red-500 text-sm mt-1">{errors.sunbed_condition_rating}</p>}
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-neutral-700 mb-2">
-                            Tiling/Grounds Rating (0-5)
+                            Tiling/Grounds Rating (1-5)
                         </label>
-                        <input
-                            type="number"
-                            step="0.1"
-                            min="0"
-                            max="5"
-                            value={data.tiling_condition_rating || ''}
-                            onChange={e => setData('tiling_condition_rating', e.target.value)}
+                        <select
+                            value={data.tiling_condition_rating ? Math.round(Number(data.tiling_condition_rating)) : ''}
+                            onChange={e => setData('tiling_condition_rating', parseInt(e.target.value) || '')}
                             className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                            placeholder="0.0"
-                        />
-                        <p className="text-xs text-neutral-500 mt-1">5 = Excellent, 0 = Poor</p>
+                        >
+                            <option value="">Select rating...</option>
+                            <option value="1">1 - Poor</option>
+                            <option value="2">2 - Fair</option>
+                            <option value="3">3 - Good</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="5">5 - Excellent</option>
+                        </select>
+                        {errors.tiling_condition_rating && <p className="text-red-500 text-sm mt-1">{errors.tiling_condition_rating}</p>}
                     </div>
                 </div>
             </Section>
@@ -608,17 +617,21 @@ export default function PoolCriteriaTab({ data, setData, errors }) {
                         {data.has_kids_pool && (
                             <div>
                                 <label className="block text-sm font-medium text-neutral-700 mb-2">
-                                    Kids Pool Depth (meters)
+                                    Kids Pool Depth (meters) <span className="text-neutral-400 font-normal">max 2m</span>
                                 </label>
                                 <input
                                     type="number"
-                                    step="0.1"
+                                    step="0.01"
                                     min="0"
+                                    max="2"
                                     value={data.kids_pool_depth_m || ''}
                                     onChange={e => setData('kids_pool_depth_m', e.target.value)}
                                     className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                                     placeholder="e.g. 0.5"
                                 />
+                                {errors?.kids_pool_depth_m && (
+                                    <p className="mt-1 text-sm text-red-600">{errors.kids_pool_depth_m}</p>
+                                )}
                             </div>
                         )}
                     </div>
