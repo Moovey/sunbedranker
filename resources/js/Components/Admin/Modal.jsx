@@ -15,18 +15,20 @@ export default function Modal({ show, title, children, onClose, maxWidth = 'md' 
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className={`bg-white rounded-xl shadow-xl w-full ${maxWidthClasses[maxWidth] || maxWidthClasses.md}`}>
-                <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4">
+            <div className={`bg-white rounded-xl shadow-xl w-full ${maxWidthClasses[maxWidth] || maxWidthClasses.md} max-h-[90vh] overflow-y-auto`}>
+                <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-200 sticky top-0 bg-white rounded-t-xl">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900">{title}</h3>
                     <button 
                         onClick={onClose} 
-                        className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                        className="p-1.5 sm:p-1 text-gray-400 hover:text-gray-600 transition-colors"
                     >
                         <CloseIcon />
                     </button>
                 </div>
-                {children}
+                <div className="p-3 sm:p-4 md:p-5">
+                    {children}
+                </div>
             </div>
         </div>
     );

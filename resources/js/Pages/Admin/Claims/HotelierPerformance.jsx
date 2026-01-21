@@ -9,38 +9,38 @@ export default function HotelierPerformance({ hotelier, hotels, performance, dai
             <div className="min-h-screen bg-gray-50 font-sans">
                 <AdminNav />
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
                     {/* Breadcrumb */}
-                    <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+                    <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
                         <Link href={route('admin.claims.index')} className="hover:text-gray-700">
                             Hoteliers
                         </Link>
                         <span>/</span>
-                        <span className="text-gray-900">{hotelier.name}</span>
+                        <span className="text-gray-900 truncate max-w-[150px] sm:max-w-none">{hotelier.name}</span>
                     </div>
 
                     {/* Header */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div className="flex items-center gap-4">
-                                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold text-2xl">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-5 md:p-6 mb-4 sm:mb-6">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                            <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                                <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold text-lg sm:text-xl md:text-2xl flex-shrink-0">
                                     {hotelier.name.charAt(0).toUpperCase()}
                                 </div>
-                                <div>
-                                    <div className="flex items-center gap-3">
-                                        <h1 className="text-2xl font-bold text-gray-900">{hotelier.name}</h1>
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                                        <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 truncate">{hotelier.name}</h1>
                                         <TierBadge tier={hotelier.subscription_tier} />
                                     </div>
-                                    <p className="text-gray-500">{hotelier.email}</p>
-                                    <p className="text-sm text-gray-400 mt-1">
+                                    <p className="text-gray-500 text-sm sm:text-base truncate">{hotelier.email}</p>
+                                    <p className="text-xs sm:text-sm text-gray-400 mt-0.5 sm:mt-1">
                                         Member since {formatDate(hotelier.created_at)}
                                     </p>
                                 </div>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 w-full sm:w-auto">
                                 <Link
                                     href={`mailto:${hotelier.email}`}
-                                    className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                                    className="flex-1 sm:flex-none text-center px-3 sm:px-4 py-2 text-xs sm:text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                                 >
                                     Contact
                                 </Link>
@@ -49,7 +49,7 @@ export default function HotelierPerformance({ hotelier, hotels, performance, dai
                     </div>
 
                     {/* Performance Overview */}
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
                         <StatCard 
                             label="Profile Views" 
                             value={formatNumber(performance.total_views)}
@@ -84,30 +84,30 @@ export default function HotelierPerformance({ hotelier, hotels, performance, dai
 
                     {/* Subscription Details */}
                     {hotelier.active_subscription && (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-                            <h2 className="text-lg font-semibold text-gray-900 mb-4">Current Subscription</h2>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-5 md:p-6 mb-4 sm:mb-6">
+                            <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Current Subscription</h2>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
                                 <div>
-                                    <p className="text-sm text-gray-500">Plan</p>
-                                    <p className="text-lg font-semibold text-gray-900 capitalize">
+                                    <p className="text-xs sm:text-sm text-gray-500">Plan</p>
+                                    <p className="text-base sm:text-lg font-semibold text-gray-900 capitalize">
                                         {hotelier.active_subscription.tier}
                                     </p>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-gray-500">Period</p>
-                                    <p className="text-lg font-semibold text-gray-900">
+                                    <p className="text-xs sm:text-sm text-gray-500">Period</p>
+                                    <p className="text-base sm:text-lg font-semibold text-gray-900">
                                         {hotelier.active_subscription.period_months} months
                                     </p>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-gray-500">Amount Paid</p>
-                                    <p className="text-lg font-semibold text-gray-900">
+                                    <p className="text-xs sm:text-sm text-gray-500">Amount Paid</p>
+                                    <p className="text-base sm:text-lg font-semibold text-gray-900">
                                         €{hotelier.active_subscription.total_amount}
                                     </p>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-gray-500">Expires</p>
-                                    <p className={`text-lg font-semibold ${
+                                    <p className="text-xs sm:text-sm text-gray-500">Expires</p>
+                                    <p className={`text-base sm:text-lg font-semibold ${
                                         new Date(hotelier.active_subscription.ends_at) < new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
                                             ? 'text-red-600'
                                             : 'text-gray-900'
@@ -120,48 +120,48 @@ export default function HotelierPerformance({ hotelier, hotels, performance, dai
                     )}
 
                     {/* Hotels */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-                        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-5 md:p-6 mb-4 sm:mb-6">
+                        <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
                             Managed Hotels ({hotels.length})
                         </h2>
                         
                         {hotels.length === 0 ? (
-                            <p className="text-gray-500 text-center py-8">No hotels managed yet</p>
+                            <p className="text-gray-500 text-center py-6 sm:py-8 text-sm">No hotels managed yet</p>
                         ) : (
-                            <div className="grid gap-4">
+                            <div className="grid gap-3 sm:gap-4">
                                 {hotels.map((hotel) => (
                                     <div 
                                         key={hotel.id} 
-                                        className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors"
+                                        className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors gap-3 sm:gap-4"
                                     >
-                                        <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-3 sm:gap-4">
                                             <img 
                                                 src={hotel.main_image || '/images/default-hotel.jpg'}
                                                 alt={hotel.name}
-                                                className="w-16 h-12 rounded-lg object-cover"
+                                                className="w-14 h-10 sm:w-16 sm:h-12 rounded-lg object-cover flex-shrink-0"
                                             />
-                                            <div>
-                                                <p className="font-medium text-gray-900">{hotel.name}</p>
-                                                <p className="text-sm text-gray-500">{hotel.destination?.name}</p>
+                                            <div className="min-w-0">
+                                                <p className="font-medium text-gray-900 text-sm sm:text-base truncate">{hotel.name}</p>
+                                                <p className="text-xs sm:text-sm text-gray-500 truncate">{hotel.destination?.name}</p>
                                             </div>
                                         </div>
                                         
-                                        <div className="flex items-center gap-6 text-sm text-gray-500">
+                                        <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm text-gray-500">
                                             <div className="text-center">
                                                 <p className="font-semibold text-gray-900">{formatNumber(hotel.view_count)}</p>
-                                                <p className="text-xs">Views</p>
+                                                <p className="text-[10px] sm:text-xs">Views</p>
                                             </div>
                                             <div className="text-center">
                                                 <p className="font-semibold text-gray-900">{formatNumber(hotel.click_count)}</p>
-                                                <p className="text-xs">Clicks</p>
+                                                <p className="text-[10px] sm:text-xs">Clicks</p>
                                             </div>
                                             <div className="text-center">
                                                 <p className="font-semibold text-orange-600">{hotel.overall_score ? Number(hotel.overall_score).toFixed(1) : 'N/A'}</p>
-                                                <p className="text-xs">Score</p>
+                                                <p className="text-[10px] sm:text-xs">Score</p>
                                             </div>
                                             <Link
                                                 href={route('admin.hotels.edit', hotel.id)}
-                                                className="px-3 py-1.5 text-sm text-orange-600 border border-orange-300 rounded-lg hover:bg-orange-50 transition-colors"
+                                                className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm text-orange-600 border border-orange-300 rounded-lg hover:bg-orange-50 transition-colors whitespace-nowrap"
                                             >
                                                 Edit
                                             </Link>
@@ -173,49 +173,73 @@ export default function HotelierPerformance({ hotelier, hotels, performance, dai
                     </div>
 
                     {/* Claims History */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-5 md:p-6">
+                        <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
                             Claims History ({claims.length})
                         </h2>
                         
                         {claims.length === 0 ? (
-                            <p className="text-gray-500 text-center py-8">No claims submitted</p>
+                            <p className="text-gray-500 text-center py-6 sm:py-8 text-sm">No claims submitted</p>
                         ) : (
-                            <div className="overflow-x-auto">
-                                <table className="min-w-full">
-                                    <thead className="bg-gray-50 border-b border-gray-100">
-                                        <tr>
-                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hotel</th>
-                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Submitted</th>
-                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-100">
-                                        {claims.map((claim) => (
-                                            <tr key={claim.id} className="hover:bg-gray-50">
-                                                <td className="px-4 py-3">
-                                                    <p className="text-sm font-medium text-gray-900">{claim.hotel?.name}</p>
-                                                </td>
-                                                <td className="px-4 py-3">
-                                                    <StatusBadge status={claim.status} />
-                                                </td>
-                                                <td className="px-4 py-3 text-sm text-gray-500">
-                                                    {formatDate(claim.created_at)}
-                                                </td>
-                                                <td className="px-4 py-3">
-                                                    <Link
-                                                        href={route('admin.claims.show', claim.id)}
-                                                        className="text-orange-600 hover:text-orange-700 text-sm font-medium"
-                                                    >
-                                                        View
-                                                    </Link>
-                                                </td>
+                            <>
+                                {/* Desktop Table */}
+                                <div className="hidden sm:block overflow-x-auto">
+                                    <table className="min-w-full">
+                                        <thead className="bg-gray-50 border-b border-gray-100">
+                                            <tr>
+                                                <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase">Hotel</th>
+                                                <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                                <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase">Submitted</th>
+                                                <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-100">
+                                            {claims.map((claim) => (
+                                                <tr key={claim.id} className="hover:bg-gray-50">
+                                                    <td className="px-3 sm:px-4 py-2 sm:py-3">
+                                                        <p className="text-xs sm:text-sm font-medium text-gray-900">{claim.hotel?.name}</p>
+                                                    </td>
+                                                    <td className="px-3 sm:px-4 py-2 sm:py-3">
+                                                        <StatusBadge status={claim.status} />
+                                                    </td>
+                                                    <td className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-500">
+                                                        {formatDate(claim.created_at)}
+                                                    </td>
+                                                    <td className="px-3 sm:px-4 py-2 sm:py-3">
+                                                        <Link
+                                                            href={route('admin.claims.show', claim.id)}
+                                                            className="text-orange-600 hover:text-orange-700 text-xs sm:text-sm font-medium"
+                                                        >
+                                                            View
+                                                        </Link>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                {/* Mobile Cards */}
+                                <div className="sm:hidden space-y-3">
+                                    {claims.map((claim) => (
+                                        <div key={claim.id} className="border border-gray-100 rounded-lg p-3">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <p className="text-sm font-medium text-gray-900 truncate flex-1 mr-2">{claim.hotel?.name}</p>
+                                                <StatusBadge status={claim.status} />
+                                            </div>
+                                            <div className="flex items-center justify-between text-xs text-gray-500">
+                                                <span>{formatDate(claim.created_at)}</span>
+                                                <Link
+                                                    href={route('admin.claims.show', claim.id)}
+                                                    className="text-orange-600 hover:text-orange-700 font-medium"
+                                                >
+                                                    View
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
                         )}
                     </div>
                 </div>
@@ -235,14 +259,14 @@ function StatCard({ label, value, icon, color }) {
     };
 
     return (
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-            <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg ${colors[color]}`}>
+        <div className="bg-white rounded-xl p-3 sm:p-4 shadow-sm border border-gray-100">
+            <div className="flex items-center gap-2 sm:gap-3">
+                <div className={`p-1.5 sm:p-2 rounded-lg ${colors[color]} [&>svg]:w-4 [&>svg]:h-4 sm:[&>svg]:w-5 sm:[&>svg]:h-5`}>
                     {icon}
                 </div>
-                <div>
-                    <div className="text-xl font-bold text-gray-900">{value}</div>
-                    <div className="text-xs text-gray-500">{label}</div>
+                <div className="min-w-0">
+                    <div className="text-base sm:text-lg md:text-xl font-bold text-gray-900 truncate">{value}</div>
+                    <div className="text-[10px] sm:text-xs text-gray-500 truncate">{label}</div>
                 </div>
             </div>
         </div>

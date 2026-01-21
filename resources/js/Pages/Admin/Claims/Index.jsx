@@ -88,7 +88,7 @@ export default function ClaimsIndex({ claims, hoteliers, subscriptions, filters,
             <div className="min-h-screen bg-gray-50 font-sans">
                 <AdminNav stats={{ pending_claims: stats.pending_claims }} />
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
                     {/* Page Header */}
                     <PageHeader />
 
@@ -156,10 +156,10 @@ export default function ClaimsIndex({ claims, hoteliers, subscriptions, filters,
 // Page Sub-Components
 function PageHeader() {
     return (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
             <div>
-                <h1 className="text-2xl font-bold text-gray-900">Hoteliers & Subscriptions</h1>
-                <p className="text-gray-500 text-sm mt-1">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Hoteliers & Subscriptions</h1>
+                <p className="text-gray-500 text-xs sm:text-sm mt-1">
                     Manage hotel claims, hotelier accounts, and subscriptions
                 </p>
             </div>
@@ -169,7 +169,7 @@ function PageHeader() {
 
 function StatsGrid({ stats }) {
     return (
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
             <StatCard 
                 label="Pending Claims" 
                 value={stats.pending_claims} 
@@ -213,25 +213,25 @@ function StatsGrid({ stats }) {
 function TabsNavigation({ activeTab, onTabChange, pendingCount }) {
     return (
         <div className="bg-gray-50 rounded-t-xl border border-gray-100 border-b-0 shadow-sm">
-            <div className="flex gap-1 px-4 pt-4 overflow-x-auto">
+            <div className="flex gap-0.5 sm:gap-1 px-2 sm:px-3 md:px-4 pt-3 sm:pt-4 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300">
                 <TabButton 
                     active={activeTab === 'claims'} 
                     onClick={() => onTabChange('claims')}
                     badge={pendingCount}
                 >
-                    Hotel Claims
+                    <span className="text-xs sm:text-sm">Hotel Claims</span>
                 </TabButton>
                 <TabButton 
                     active={activeTab === 'hoteliers'} 
                     onClick={() => onTabChange('hoteliers')}
                 >
-                    Hoteliers
+                    <span className="text-xs sm:text-sm">Hoteliers</span>
                 </TabButton>
                 <TabButton 
                     active={activeTab === 'subscriptions'} 
                     onClick={() => onTabChange('subscriptions')}
                 >
-                    Subscriptions
+                    <span className="text-xs sm:text-sm">Subscriptions</span>
                 </TabButton>
             </div>
         </div>
@@ -240,15 +240,15 @@ function TabsNavigation({ activeTab, onTabChange, pendingCount }) {
 
 function FilterBar({ searchTerm, setSearchTerm, onSearch, onFilter, onClear, activeTab, filters }) {
     return (
-        <div className="p-4 border-b border-gray-100">
-            <form onSubmit={onSearch} className="flex flex-col sm:flex-row gap-3">
+        <div className="p-3 sm:p-4 border-b border-gray-100">
+            <form onSubmit={onSearch} className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                 <div className="flex-1">
                     <input
                         type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="Search by name, email, or hotel..."
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
+                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-xs sm:text-sm"
                     />
                 </div>
                 
@@ -256,7 +256,7 @@ function FilterBar({ searchTerm, setSearchTerm, onSearch, onFilter, onClear, act
                     <select
                         value={filters.status}
                         onChange={(e) => onFilter('status', e.target.value)}
-                        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
+                        className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-xs sm:text-sm"
                     >
                         <option value="pending">Pending</option>
                         <option value="approved">Approved</option>
@@ -269,7 +269,7 @@ function FilterBar({ searchTerm, setSearchTerm, onSearch, onFilter, onClear, act
                     <select
                         value={filters.tier}
                         onChange={(e) => onFilter('tier', e.target.value)}
-                        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
+                        className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-xs sm:text-sm"
                     >
                         <option value="all">All Tiers</option>
                         <option value="free">Free</option>
@@ -278,19 +278,21 @@ function FilterBar({ searchTerm, setSearchTerm, onSearch, onFilter, onClear, act
                     </select>
                 )}
                 
-                <button
-                    type="submit"
-                    className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-sm font-medium"
-                >
-                    Search
-                </button>
-                <button
-                    type="button"
-                    onClick={onClear}
-                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
-                >
-                    Clear
-                </button>
+                <div className="flex gap-2">
+                    <button
+                        type="submit"
+                        className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-xs sm:text-sm font-medium"
+                    >
+                        Search
+                    </button>
+                    <button
+                        type="button"
+                        onClick={onClear}
+                        className="flex-1 sm:flex-none px-3 sm:px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-xs sm:text-sm"
+                    >
+                        Clear
+                    </button>
+                </div>
             </form>
         </div>
     );
