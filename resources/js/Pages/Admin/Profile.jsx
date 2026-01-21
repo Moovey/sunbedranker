@@ -89,30 +89,30 @@ export default function AdminProfile({ stats }) {
             <div className="min-h-screen bg-gray-50 font-sans">
                 <AdminNav stats={stats} />
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-5 md:py-6">
                     {/* Header */}
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center justify-between mb-4 sm:mb-5 md:mb-6">
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Admin Profile</h1>
-                            <p className="text-sm text-gray-500">Manage your administrator account</p>
+                            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">Admin Profile</h1>
+                            <p className="text-xs sm:text-sm text-gray-500">Manage your administrator account</p>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
                         {/* Left Column - Profile Card */}
-                        <div className="lg:col-span-1 space-y-6">
+                        <div className="lg:col-span-1 space-y-3 sm:space-y-4 md:space-y-6">
                             {/* User Card */}
                             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                                <div className="bg-orange-500 px-6 py-8 text-white text-center">
+                                <div className="bg-orange-500 px-4 sm:px-6 py-6 sm:py-8 text-white text-center">
                                     <div className="relative inline-block group">
                                         {imagePreview ? (
                                             <img 
                                                 src={imagePreview} 
                                                 alt={user.name}
-                                                className="w-20 h-20 rounded-full object-cover border-4 border-white/30 mx-auto"
+                                                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-4 border-white/30 mx-auto"
                                             />
                                         ) : (
-                                            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-3xl font-bold border-4 border-white/30 mx-auto">
+                                            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 rounded-full flex items-center justify-center text-2xl sm:text-3xl font-bold border-4 border-white/30 mx-auto">
                                                 {user.name.charAt(0).toUpperCase()}
                                             </div>
                                         )}
@@ -121,46 +121,48 @@ export default function AdminProfile({ stats }) {
                                             onClick={() => fileInputRef.current?.click()}
                                             className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                                         >
-                                            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                                             </svg>
                                         </button>
                                     </div>
-                                    <h2 className="text-xl font-semibold mt-4">{user.name}</h2>
-                                    <p className="text-orange-100 text-sm">{user.email}</p>
-                                    <span className="inline-block mt-2 px-3 py-1 bg-white/20 rounded-full text-xs font-medium">
+                                    <h2 className="text-base sm:text-lg md:text-xl font-semibold mt-3 sm:mt-4 truncate px-2">{user.name}</h2>
+                                    <p className="text-orange-100 text-xs sm:text-sm truncate px-2">{user.email}</p>
+                                    <span className="inline-block mt-2 px-2.5 sm:px-3 py-1 bg-white/20 rounded-full text-[10px] sm:text-xs font-medium">
                                         Administrator
                                     </span>
                                 </div>
                             </div>
 
-                            {/* Stats Cards */}
-                            <div className="bg-orange-50 rounded-xl p-4 flex items-center gap-3">
-                                <svg className="w-5 h-5 text-orange-600" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
-                                </svg>
-                                <div>
-                                    <div className="text-xl font-bold text-gray-900">{stats?.total_hotels || 0}</div>
-                                    <div className="text-xs text-gray-500 font-medium">HOTELS</div>
+                            {/* Stats Cards - Horizontal on mobile, vertical on larger */}
+                            <div className="grid grid-cols-3 lg:grid-cols-1 gap-2 sm:gap-3 md:gap-4 lg:gap-6">
+                                <div className="bg-orange-50 rounded-xl p-3 sm:p-4 flex flex-col lg:flex-row items-center lg:items-center gap-1 sm:gap-2 lg:gap-3 text-center lg:text-left">
+                                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
+                                    </svg>
+                                    <div className="min-w-0">
+                                        <div className="text-base sm:text-lg md:text-xl font-bold text-gray-900">{stats?.total_hotels || 0}</div>
+                                        <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 font-medium">HOTELS</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="bg-cyan-50 rounded-xl p-4 flex items-center gap-3">
-                                <svg className="w-5 h-5 text-cyan-600" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-                                </svg>
-                                <div>
-                                    <div className="text-xl font-bold text-gray-900">{stats?.total_users || 0}</div>
-                                    <div className="text-xs text-gray-500 font-medium">USERS</div>
+                                <div className="bg-cyan-50 rounded-xl p-3 sm:p-4 flex flex-col lg:flex-row items-center lg:items-center gap-1 sm:gap-2 lg:gap-3 text-center lg:text-left">
+                                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-600 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                                    </svg>
+                                    <div className="min-w-0">
+                                        <div className="text-base sm:text-lg md:text-xl font-bold text-gray-900">{stats?.total_users || 0}</div>
+                                        <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 font-medium">USERS</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="bg-yellow-50 rounded-xl p-4 flex items-center gap-3">
-                                <svg className="w-5 h-5 text-yellow-600" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-                                </svg>
-                                <div>
-                                    <div className="text-xl font-bold text-gray-900">{stats?.pending_claims || 0}</div>
-                                    <div className="text-xs text-gray-500 font-medium">PENDING CLAIMS</div>
+                                <div className="bg-yellow-50 rounded-xl p-3 sm:p-4 flex flex-col lg:flex-row items-center lg:items-center gap-1 sm:gap-2 lg:gap-3 text-center lg:text-left">
+                                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-600 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                                    </svg>
+                                    <div className="min-w-0">
+                                        <div className="text-base sm:text-lg md:text-xl font-bold text-gray-900">{stats?.pending_claims || 0}</div>
+                                        <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 font-medium whitespace-nowrap">PENDING</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -172,48 +174,50 @@ export default function AdminProfile({ stats }) {
                                 <div className="flex border-b border-gray-100">
                                     <button
                                         onClick={() => setActiveTab('profile')}
-                                        className={`flex-1 px-6 py-3 font-medium text-sm transition-colors ${
+                                        className={`flex-1 px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 font-medium text-xs sm:text-sm transition-colors ${
                                             activeTab === 'profile'
                                                 ? 'text-orange-600 border-b-2 border-orange-500 bg-orange-50'
                                                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                                         }`}
                                     >
-                                        Profile Information
+                                        <span className="hidden sm:inline">Profile Information</span>
+                                        <span className="sm:hidden">Profile</span>
                                     </button>
                                     <button
                                         onClick={() => setActiveTab('password')}
-                                        className={`flex-1 px-6 py-3 font-medium text-sm transition-colors ${
+                                        className={`flex-1 px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 font-medium text-xs sm:text-sm transition-colors ${
                                             activeTab === 'password'
                                                 ? 'text-orange-600 border-b-2 border-orange-500 bg-orange-50'
                                                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                                         }`}
                                     >
-                                        Change Password
+                                        <span className="hidden sm:inline">Change Password</span>
+                                        <span className="sm:hidden">Password</span>
                                     </button>
                                 </div>
 
                                 {/* Tab Content */}
-                                <div className="p-6">
+                                <div className="p-4 sm:p-5 md:p-6">
                                     {activeTab === 'profile' && (
-                                        <form onSubmit={handleProfileSubmit} className="space-y-5">
+                                        <form onSubmit={handleProfileSubmit} className="space-y-4 sm:space-y-5">
                                             {/* Profile Picture Upload */}
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-2">Profile Picture</label>
-                                                <div className="flex items-center gap-4">
-                                                    <div className="relative">
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Profile Picture</label>
+                                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+                                                    <div className="relative flex-shrink-0">
                                                         {imagePreview ? (
                                                             <img 
                                                                 src={imagePreview} 
                                                                 alt="Profile preview"
-                                                                className="w-16 h-16 rounded-lg object-cover border border-gray-200"
+                                                                className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover border border-gray-200"
                                                             />
                                                         ) : (
-                                                            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-2xl font-semibold text-gray-400 border border-gray-200">
+                                                            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gray-100 rounded-lg flex items-center justify-center text-xl sm:text-2xl font-semibold text-gray-400 border border-gray-200">
                                                                 {user.name.charAt(0).toUpperCase()}
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <div className="flex-1 space-y-2">
+                                                    <div className="flex-1 space-y-1.5 sm:space-y-2 w-full sm:w-auto">
                                                         <input
                                                             ref={fileInputRef}
                                                             type="file"
@@ -225,7 +229,7 @@ export default function AdminProfile({ stats }) {
                                                             <button
                                                                 type="button"
                                                                 onClick={() => fileInputRef.current?.click()}
-                                                                className="px-3 py-1.5 bg-orange-50 text-orange-700 font-medium rounded-lg hover:bg-orange-100 transition-colors text-sm"
+                                                                className="px-2.5 sm:px-3 py-1.5 bg-orange-50 text-orange-700 font-medium rounded-lg hover:bg-orange-100 transition-colors text-xs sm:text-sm"
                                                             >
                                                                 Upload New Photo
                                                             </button>
@@ -233,66 +237,66 @@ export default function AdminProfile({ stats }) {
                                                                 <button
                                                                     type="button"
                                                                     onClick={handleRemoveImage}
-                                                                    className="px-3 py-1.5 bg-red-50 text-red-700 font-medium rounded-lg hover:bg-red-100 transition-colors text-sm"
+                                                                    className="px-2.5 sm:px-3 py-1.5 bg-red-50 text-red-700 font-medium rounded-lg hover:bg-red-100 transition-colors text-xs sm:text-sm"
                                                                 >
                                                                     Remove
                                                                 </button>
                                                             )}
                                                         </div>
-                                                        <p className="text-xs text-gray-500">JPG, PNG, GIF or WEBP. Max 2MB.</p>
+                                                        <p className="text-[10px] sm:text-xs text-gray-500">JPG, PNG, GIF or WEBP. Max 2MB.</p>
                                                     </div>
                                                 </div>
-                                                {errors.profile_picture && <p className="mt-1 text-red-600 text-sm">{errors.profile_picture}</p>}
+                                                {errors.profile_picture && <p className="mt-1 text-red-600 text-xs sm:text-sm">{errors.profile_picture}</p>}
                                             </div>
 
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Name</label>
                                                 <input
                                                     type="text"
                                                     value={data.name}
                                                     onChange={(e) => setData('name', e.target.value)}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors"
+                                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors"
                                                 />
-                                                {errors.name && <p className="mt-1 text-red-600 text-sm">{errors.name}</p>}
+                                                {errors.name && <p className="mt-1 text-red-600 text-xs sm:text-sm">{errors.name}</p>}
                                             </div>
 
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Email Address</label>
                                                 <input
                                                     type="email"
                                                     value={data.email}
                                                     onChange={(e) => setData('email', e.target.value)}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors"
+                                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors"
                                                 />
-                                                {errors.email && <p className="mt-1 text-red-600 text-sm">{errors.email}</p>}
+                                                {errors.email && <p className="mt-1 text-red-600 text-xs sm:text-sm">{errors.email}</p>}
                                             </div>
 
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Role</label>
                                                     <input
                                                         type="text"
                                                         value="Administrator"
                                                         disabled
-                                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500"
+                                                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-500"
                                                     />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Account Created</label>
+                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Account Created</label>
                                                     <input
                                                         type="text"
                                                         value={new Date(user.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                                                         disabled
-                                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500"
+                                                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-500"
                                                     />
                                                 </div>
                                             </div>
 
-                                            <div className="pt-4 border-t border-gray-100">
+                                            <div className="pt-3 sm:pt-4 border-t border-gray-100">
                                                 <button
                                                     type="submit"
                                                     disabled={processing}
-                                                    className="px-4 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50"
+                                                    className="w-full sm:w-auto px-4 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 text-sm"
                                                 >
                                                     {processing ? 'Saving...' : 'Update Profile'}
                                                 </button>
@@ -301,44 +305,44 @@ export default function AdminProfile({ stats }) {
                                     )}
 
                                     {activeTab === 'password' && (
-                                        <form onSubmit={handlePasswordSubmit} className="space-y-5">
+                                        <form onSubmit={handlePasswordSubmit} className="space-y-4 sm:space-y-5">
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Current Password</label>
                                                 <input
                                                     type="password"
                                                     value={passwordData.current_password}
                                                     onChange={(e) => setPasswordData('current_password', e.target.value)}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors"
+                                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors"
                                                 />
-                                                {passwordErrors.current_password && <p className="mt-1 text-red-600 text-sm">{passwordErrors.current_password}</p>}
+                                                {passwordErrors.current_password && <p className="mt-1 text-red-600 text-xs sm:text-sm">{passwordErrors.current_password}</p>}
                                             </div>
 
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">New Password</label>
                                                 <input
                                                     type="password"
                                                     value={passwordData.password}
                                                     onChange={(e) => setPasswordData('password', e.target.value)}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors"
+                                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors"
                                                 />
-                                                {passwordErrors.password && <p className="mt-1 text-red-600 text-sm">{passwordErrors.password}</p>}
+                                                {passwordErrors.password && <p className="mt-1 text-red-600 text-xs sm:text-sm">{passwordErrors.password}</p>}
                                             </div>
 
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
                                                 <input
                                                     type="password"
                                                     value={passwordData.password_confirmation}
                                                     onChange={(e) => setPasswordData('password_confirmation', e.target.value)}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors"
+                                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors"
                                                 />
                                             </div>
 
-                                            <div className="pt-4 border-t border-gray-100">
+                                            <div className="pt-3 sm:pt-4 border-t border-gray-100">
                                                 <button
                                                     type="submit"
                                                     disabled={passwordProcessing}
-                                                    className="px-4 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50"
+                                                    className="w-full sm:w-auto px-4 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 text-sm"
                                                 >
                                                     {passwordProcessing ? 'Updating...' : 'Update Password'}
                                                 </button>
