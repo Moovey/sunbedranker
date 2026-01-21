@@ -142,88 +142,88 @@ export default function ContentIndex({ posts, categories, tags, allCategories, f
             <div className="min-h-screen bg-gray-50 font-sans">
                 <AdminNav stats={{ pending_claims: 0 }} />
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
                     {/* Header */}
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Content & Guides</h1>
-                            <p className="mt-1 text-sm text-gray-500">
+                            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">Content & Guides</h1>
+                            <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm text-gray-500">
                                 Manage blog posts, categories, and tags for SEO and platform authority
                             </p>
                         </div>
                         {activeTab === 'posts' && (
                             <a
                                 href={route('admin.content.posts.create')}
-                                className="inline-flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition-colors"
+                                className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs sm:text-sm font-medium rounded-lg transition-colors"
                             >
-                                <Icons.Plus className="w-5 h-5 mr-2" />
+                                <Icons.Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                                 New Post
                             </a>
                         )}
                         {activeTab === 'categories' && (
                             <button
                                 onClick={handleCreateCategory}
-                                className="inline-flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition-colors"
+                                className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs sm:text-sm font-medium rounded-lg transition-colors"
                             >
-                                <Icons.Plus className="w-5 h-5 mr-2" />
+                                <Icons.Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                                 New Category
                             </button>
                         )}
                         {activeTab === 'tags' && (
                             <button
                                 onClick={handleCreateTag}
-                                className="inline-flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition-colors"
+                                className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs sm:text-sm font-medium rounded-lg transition-colors"
                             >
-                                <Icons.Plus className="w-5 h-5 mr-2" />
+                                <Icons.Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                                 New Tag
                             </button>
                         )}
                     </div>
 
                     {/* Stats */}
-                    <div className="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
                         <StatCard
                             label="Total Posts"
                             value={stats.total_posts}
-                            icon={<Icons.Document className="w-5 h-5" />}
+                            icon={<Icons.Document className="w-4 h-4 sm:w-5 sm:h-5" />}
                             color="blue"
                         />
                         <StatCard
                             label="Published"
                             value={stats.published_posts}
-                            icon={<Icons.Check className="w-5 h-5" />}
+                            icon={<Icons.Check className="w-4 h-4 sm:w-5 sm:h-5" />}
                             color="green"
                         />
                         <StatCard
                             label="Drafts"
                             value={stats.draft_posts}
-                            icon={<Icons.Pending className="w-5 h-5" />}
+                            icon={<Icons.Pending className="w-4 h-4 sm:w-5 sm:h-5" />}
                             color="yellow"
                         />
                         <StatCard
                             label="Categories"
                             value={stats.total_categories}
-                            icon={<Icons.Category className="w-5 h-5" />}
+                            icon={<Icons.Category className="w-4 h-4 sm:w-5 sm:h-5" />}
                             color="purple"
                         />
                         <StatCard
                             label="Tags"
                             value={stats.total_tags}
-                            icon={<Icons.Tag className="w-5 h-5" />}
+                            icon={<Icons.Tag className="w-4 h-4 sm:w-5 sm:h-5" />}
                             color="orange"
                         />
                         <StatCard
                             label="Total Views"
                             value={stats.total_views.toLocaleString()}
-                            icon={<Icons.Eye className="w-5 h-5" />}
+                            icon={<Icons.Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
                             color="emerald"
                         />
                     </div>
 
                     {/* Tabs */}
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-                        <div className="border-b border-gray-200">
-                            <nav className="flex -mb-px">
+                        <div className="border-b border-gray-200 overflow-x-auto scrollbar-hide">
+                            <nav className="flex -mb-px min-w-max">
                                 <TabButton
                                     active={activeTab === 'posts'}
                                     onClick={() => handleTabChange('posts')}
@@ -249,55 +249,57 @@ export default function ContentIndex({ posts, categories, tags, allCategories, f
                         </div>
 
                         {/* Search & Filters */}
-                        <div className="p-4 border-b border-gray-200">
-                            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4">
-                                <div className="flex-1 relative">
-                                    <Icons.Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                    <input
-                                        type="text"
-                                        value={search}
-                                        onChange={(e) => setSearch(e.target.value)}
-                                        placeholder={`Search ${activeTab}...`}
-                                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                                    />
+                        <div className="p-3 sm:p-4 border-b border-gray-200">
+                            <form onSubmit={handleSearch} className="flex flex-col gap-2 sm:gap-3 md:gap-4">
+                                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4">
+                                    <div className="flex-1 relative">
+                                        <Icons.Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                                        <input
+                                            type="text"
+                                            value={search}
+                                            onChange={(e) => setSearch(e.target.value)}
+                                            placeholder={`Search ${activeTab}...`}
+                                            className="w-full pl-9 sm:pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                        />
+                                    </div>
+                                    
+                                    {activeTab === 'posts' && (
+                                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4">
+                                            <select
+                                                value={statusFilter}
+                                                onChange={(e) => {
+                                                    setStatusFilter(e.target.value);
+                                                    handleFilterChange({ status: e.target.value, category: categoryFilter });
+                                                }}
+                                                className="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                            >
+                                                <option value="all">All Status</option>
+                                                <option value="published">Published</option>
+                                                <option value="draft">Draft</option>
+                                                <option value="scheduled">Scheduled</option>
+                                            </select>
+                                            <select
+                                                value={categoryFilter}
+                                                onChange={(e) => {
+                                                    setCategoryFilter(e.target.value);
+                                                    handleFilterChange({ status: statusFilter, category: e.target.value });
+                                                }}
+                                                className="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                            >
+                                                <option value="all">All Categories</option>
+                                                {allCategories.map((cat) => (
+                                                    <option key={cat.id} value={cat.id}>
+                                                        {cat.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
                                 </div>
-                                
-                                {activeTab === 'posts' && (
-                                    <>
-                                        <select
-                                            value={statusFilter}
-                                            onChange={(e) => {
-                                                setStatusFilter(e.target.value);
-                                                handleFilterChange({ status: e.target.value, category: categoryFilter });
-                                            }}
-                                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                                        >
-                                            <option value="all">All Status</option>
-                                            <option value="published">Published</option>
-                                            <option value="draft">Draft</option>
-                                            <option value="scheduled">Scheduled</option>
-                                        </select>
-                                        <select
-                                            value={categoryFilter}
-                                            onChange={(e) => {
-                                                setCategoryFilter(e.target.value);
-                                                handleFilterChange({ status: statusFilter, category: e.target.value });
-                                            }}
-                                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                                        >
-                                            <option value="all">All Categories</option>
-                                            {allCategories.map((cat) => (
-                                                <option key={cat.id} value={cat.id}>
-                                                    {cat.name}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </>
-                                )}
                                 
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
+                                    className="w-full sm:w-auto px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors"
                                 >
                                     Search
                                 </button>
@@ -305,7 +307,7 @@ export default function ContentIndex({ posts, categories, tags, allCategories, f
                         </div>
 
                         {/* Tab Content */}
-                        <div className="p-4">
+                        <div className="p-3 sm:p-4">
                             {activeTab === 'posts' && (
                                 <PostsTab
                                     posts={posts}
@@ -353,30 +355,30 @@ export default function ContentIndex({ posts, categories, tags, allCategories, f
                 title={`Delete ${deleteItem?.type}`}
                 maxWidth="sm"
             >
-                <div className="p-6">
-                    <div className="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
-                        <Icons.Trash className="w-6 h-6 text-red-600" />
+                <div className="p-4 sm:p-6">
+                    <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 mx-auto bg-red-100 rounded-full mb-3 sm:mb-4">
+                        <Icons.Trash className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
                     </div>
-                    <p className="text-center text-gray-600 mb-6">
+                    <p className="text-center text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
                         Are you sure you want to delete this {deleteItem?.type}?
                         {deleteItem?.type === 'post' && ' This action cannot be undone.'}
                         {deleteItem?.type === 'category' && deleteItem?.item?.posts_count > 0 && (
-                            <span className="block mt-2 text-red-600">
+                            <span className="block mt-2 text-red-600 text-xs sm:text-sm">
                                 This category has {deleteItem.item.posts_count} posts and cannot be deleted.
                             </span>
                         )}
                     </p>
-                    <div className="flex justify-center gap-3">
+                    <div className="flex flex-col-reverse sm:flex-row justify-center gap-2 sm:gap-3">
                         <button
                             onClick={() => setShowDeleteModal(false)}
-                            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                            className="w-full sm:w-auto px-4 py-2 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50"
                         >
                             Cancel
                         </button>
                         <button
                             onClick={confirmDelete}
                             disabled={deleteItem?.type === 'category' && deleteItem?.item?.posts_count > 0}
-                            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full sm:w-auto px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Delete
                         </button>

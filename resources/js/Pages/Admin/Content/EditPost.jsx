@@ -101,23 +101,23 @@ export default function EditPost({ post, categories, tags }) {
             <div className="min-h-screen bg-gray-50 font-sans">
                 <AdminNav stats={{ pending_claims: 0 }} />
 
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div className="max-w-5xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
                     {/* Header */}
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
                         <div>
                             <Link
                                 href={route('admin.content.index')}
-                                className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-2"
+                                className="inline-flex items-center text-xs sm:text-sm text-gray-500 hover:text-gray-700 mb-1.5 sm:mb-2"
                             >
-                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                                 </svg>
                                 Back to Content
                             </Link>
-                            <h1 className="text-2xl font-bold text-gray-900">Edit Post</h1>
+                            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">Edit Post</h1>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <span className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium ${
                                 post.status === 'published'
                                     ? 'bg-green-100 text-green-800'
                                     : post.status === 'scheduled'
@@ -127,67 +127,67 @@ export default function EditPost({ post, categories, tags }) {
                                 {post.status.charAt(0).toUpperCase() + post.status.slice(1)}
                             </span>
                             {post.views_count > 0 && (
-                                <span className="flex items-center text-sm text-gray-500">
-                                    <Icons.Eye className="w-4 h-4 mr-1" />
+                                <span className="flex items-center text-xs sm:text-sm text-gray-500">
+                                    <Icons.Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
                                     {post.views_count.toLocaleString()} views
                                 </span>
                             )}
                         </div>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                             {/* Main Content */}
-                            <div className="lg:col-span-2 space-y-6">
+                            <div className="lg:col-span-2 space-y-4 sm:space-y-6">
                                 {/* Title & Slug */}
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                                    <div className="space-y-4">
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-5 md:p-6">
+                                    <div className="space-y-3 sm:space-y-4">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                                 Title <span className="text-red-500">*</span>
                                             </label>
                                             <input
                                                 type="text"
                                                 value={formData.title}
                                                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
+                                                className={`w-full px-3 sm:px-4 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
                                                     errors.title ? 'border-red-500' : 'border-gray-300'
                                                 }`}
                                                 placeholder="Enter post title..."
                                             />
                                             {errors.title && (
-                                                <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+                                                <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.title}</p>
                                             )}
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                                 Slug
                                             </label>
                                             <div className="flex items-center">
-                                                <span className="text-sm text-gray-500 mr-2">/blog/</span>
+                                                <span className="text-xs sm:text-sm text-gray-500 mr-1.5 sm:mr-2">/blog/</span>
                                                 <input
                                                     type="text"
                                                     value={formData.slug}
                                                     onChange={(e) =>
                                                         setFormData({ ...formData, slug: generateSlug(e.target.value) })
                                                     }
-                                                    className={`flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
+                                                    className={`flex-1 px-3 sm:px-4 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
                                                         errors.slug ? 'border-red-500' : 'border-gray-300'
                                                     }`}
                                                     placeholder="post-url-slug"
                                                 />
                                             </div>
                                             {errors.slug && (
-                                                <p className="mt-1 text-sm text-red-600">{errors.slug}</p>
+                                                <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.slug}</p>
                                             )}
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Excerpt */}
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-5 md:p-6">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                         Excerpt
                                     </label>
                                     <textarea
@@ -195,44 +195,44 @@ export default function EditPost({ post, categories, tags }) {
                                         onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
                                         rows={3}
                                         maxLength={500}
-                                        className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
+                                        className={`w-full px-3 sm:px-4 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
                                             errors.excerpt ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                         placeholder="Brief summary of the post..."
                                     />
-                                    <p className="mt-1 text-xs text-gray-500">
+                                    <p className="mt-1 text-[10px] sm:text-xs text-gray-500">
                                         {(formData.excerpt || '').length}/500 characters
                                     </p>
                                     {errors.excerpt && (
-                                        <p className="mt-1 text-sm text-red-600">{errors.excerpt}</p>
+                                        <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.excerpt}</p>
                                     )}
                                 </div>
 
                                 {/* Content */}
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-5 md:p-6">
+                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                         Content <span className="text-red-500">*</span>
                                     </label>
                                     <textarea
                                         value={formData.content}
                                         onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                        rows={15}
-                                        className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 font-mono text-sm ${
+                                        rows={12}
+                                        className={`w-full px-3 sm:px-4 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 font-mono ${
                                             errors.content ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                         placeholder="Write your content here... (Markdown supported)"
                                     />
                                     {errors.content && (
-                                        <p className="mt-1 text-sm text-red-600">{errors.content}</p>
+                                        <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.content}</p>
                                     )}
                                 </div>
 
                                 {/* SEO */}
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                                    <h3 className="text-lg font-medium text-gray-900 mb-4">SEO Settings</h3>
-                                    <div className="space-y-4">
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-5 md:p-6">
+                                    <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">SEO Settings</h3>
+                                    <div className="space-y-3 sm:space-y-4">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                                 Meta Title
                                             </label>
                                             <input
@@ -242,15 +242,15 @@ export default function EditPost({ post, categories, tags }) {
                                                     setFormData({ ...formData, meta_title: e.target.value })
                                                 }
                                                 maxLength={60}
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                                className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                                                 placeholder="Custom title for search engines..."
                                             />
-                                            <p className="mt-1 text-xs text-gray-500">
+                                            <p className="mt-1 text-[10px] sm:text-xs text-gray-500">
                                                 {(formData.meta_title || '').length}/60 characters
                                             </p>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                                 Meta Description
                                             </label>
                                             <textarea
@@ -260,10 +260,10 @@ export default function EditPost({ post, categories, tags }) {
                                                 }
                                                 rows={2}
                                                 maxLength={160}
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                                className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                                                 placeholder="Description for search engine results..."
                                             />
-                                            <p className="mt-1 text-xs text-gray-500">
+                                            <p className="mt-1 text-[10px] sm:text-xs text-gray-500">
                                                 {(formData.meta_description || '').length}/160 characters
                                             </p>
                                         </div>
@@ -272,13 +272,13 @@ export default function EditPost({ post, categories, tags }) {
                             </div>
 
                             {/* Sidebar */}
-                            <div className="space-y-6">
+                            <div className="space-y-4 sm:space-y-6">
                                 {/* Publish */}
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                                    <h3 className="text-lg font-medium text-gray-900 mb-4">Publish</h3>
-                                    <div className="space-y-4">
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-5 md:p-6">
+                                    <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Publish</h3>
+                                    <div className="space-y-3 sm:space-y-4">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                                 Status
                                             </label>
                                             <select
@@ -286,7 +286,7 @@ export default function EditPost({ post, categories, tags }) {
                                                 onChange={(e) =>
                                                     setFormData({ ...formData, status: e.target.value })
                                                 }
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                                className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                                             >
                                                 <option value="draft">Draft</option>
                                                 <option value="published">Published</option>
@@ -296,7 +296,7 @@ export default function EditPost({ post, categories, tags }) {
 
                                         {formData.status === 'scheduled' && (
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                                     Publish Date
                                                 </label>
                                                 <input
@@ -305,7 +305,7 @@ export default function EditPost({ post, categories, tags }) {
                                                     onChange={(e) =>
                                                         setFormData({ ...formData, published_at: e.target.value })
                                                     }
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                                    className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                                                 />
                                             </div>
                                         )}
@@ -314,7 +314,7 @@ export default function EditPost({ post, categories, tags }) {
                                             <button
                                                 type="submit"
                                                 disabled={processing}
-                                                className="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 transition-colors"
+                                                className="flex-1 px-3 sm:px-4 py-2 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 disabled:opacity-50 transition-colors"
                                             >
                                                 {processing ? 'Saving...' : 'Update Post'}
                                             </button>
@@ -323,27 +323,27 @@ export default function EditPost({ post, categories, tags }) {
                                 </div>
 
                                 {/* Featured Image */}
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                                    <h3 className="text-lg font-medium text-gray-900 mb-4">Featured Image</h3>
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-5 md:p-6">
+                                    <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Featured Image</h3>
                                     {imagePreview ? (
                                         <div className="relative">
                                             <img
                                                 src={imagePreview}
                                                 alt="Preview"
-                                                className="w-full h-40 object-cover rounded-lg"
+                                                className="w-full h-32 sm:h-40 object-cover rounded-lg"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={removeImage}
                                                 className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
                                             >
-                                                <Icons.Close className="w-4 h-4" />
+                                                <Icons.Close className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                             </button>
                                         </div>
                                     ) : (
-                                        <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-orange-500 transition-colors">
-                                            <Icons.Document className="w-10 h-10 text-gray-400" />
-                                            <span className="mt-2 text-sm text-gray-500">
+                                        <label className="flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-orange-500 transition-colors">
+                                            <Icons.Document className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" />
+                                            <span className="mt-2 text-xs sm:text-sm text-gray-500">
                                                 Click to upload
                                             </span>
                                             <input
@@ -355,18 +355,18 @@ export default function EditPost({ post, categories, tags }) {
                                         </label>
                                     )}
                                     {errors.featured_image && (
-                                        <p className="mt-2 text-sm text-red-600">{errors.featured_image}</p>
+                                        <p className="mt-2 text-xs sm:text-sm text-red-600">{errors.featured_image}</p>
                                     )}
                                 </div>
 
                                 {/* Category */}
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h3 className="text-lg font-medium text-gray-900">Category</h3>
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-5 md:p-6">
+                                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                                        <h3 className="text-base sm:text-lg font-medium text-gray-900">Category</h3>
                                         <button
                                             type="button"
                                             onClick={() => setShowCategoryModal(true)}
-                                            className="text-sm text-orange-500 hover:text-orange-600 font-medium"
+                                            className="text-xs sm:text-sm text-orange-500 hover:text-orange-600 font-medium"
                                         >
                                             + Add New
                                         </button>
@@ -376,7 +376,7 @@ export default function EditPost({ post, categories, tags }) {
                                         onChange={(e) =>
                                             setFormData({ ...formData, category_id: e.target.value })
                                         }
-                                        className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
+                                        className={`w-full px-3 sm:px-4 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${
                                             errors.category_id ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                     >
@@ -388,44 +388,44 @@ export default function EditPost({ post, categories, tags }) {
                                         ))}
                                     </select>
                                     {categories.length === 0 && (
-                                        <p className="mt-2 text-sm text-gray-500">No categories available. Create one first.</p>
+                                        <p className="mt-2 text-xs sm:text-sm text-gray-500">No categories available. Create one first.</p>
                                     )}
                                     {errors.category_id && (
-                                        <p className="mt-1 text-sm text-red-600">{errors.category_id}</p>
+                                        <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.category_id}</p>
                                     )}
                                 </div>
 
                                 {/* Tags */}
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h3 className="text-lg font-medium text-gray-900">Tags</h3>
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-5 md:p-6">
+                                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                                        <h3 className="text-base sm:text-lg font-medium text-gray-900">Tags</h3>
                                         <button
                                             type="button"
                                             onClick={() => setShowTagModal(true)}
-                                            className="text-sm text-orange-500 hover:text-orange-600 font-medium"
+                                            className="text-xs sm:text-sm text-orange-500 hover:text-orange-600 font-medium"
                                         >
                                             + Add New
                                         </button>
                                     </div>
-                                    <div className="flex flex-wrap gap-2">
+                                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
                                         {tags.map((tag) => (
                                             <button
                                                 key={tag.id}
                                                 type="button"
                                                 onClick={() => handleTagToggle(tag.id)}
-                                                className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                                                className={`inline-flex items-center px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium transition-colors ${
                                                     formData.tags.includes(tag.id)
                                                         ? 'bg-orange-500 text-white'
                                                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                                 }`}
                                             >
-                                                <Icons.Tag className="w-3.5 h-3.5 mr-1" />
+                                                <Icons.Tag className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1" />
                                                 {tag.name}
                                             </button>
                                         ))}
                                     </div>
                                     {tags.length === 0 && (
-                                        <p className="text-sm text-gray-500">No tags available. Create one first.</p>
+                                        <p className="text-xs sm:text-sm text-gray-500">No tags available. Create one first.</p>
                                     )}
                                 </div>
                             </div>
