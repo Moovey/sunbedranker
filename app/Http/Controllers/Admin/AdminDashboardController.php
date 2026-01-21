@@ -10,6 +10,7 @@ use App\Models\Review;
 use App\Models\User;
 use App\Models\Post;
 use App\Models\AffiliateCampaign;
+use App\Models\Subscription;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\DB;
@@ -29,10 +30,10 @@ class AdminDashboardController extends Controller
             'free_tier' => Hotel::where('subscription_tier', 'free')->count(),
             'enhanced_tier' => Hotel::where('subscription_tier', 'enhanced')->count(),
             'premium_tier' => Hotel::where('subscription_tier', 'premium')->count(),
-            'active_subscriptions' => Hotel::whereIn('subscription_tier', ['enhanced', 'premium'])
+            'active_subscriptions' => Subscription::where('status', Subscription::STATUS_ACTIVE)
                 ->where(function($q) {
-                    $q->whereNull('subscription_expires_at')
-                      ->orWhere('subscription_expires_at', '>=', now());
+                    $q->whereNull('ends_at')
+                      ->orWhere('ends_at', '>=', now());
                 })->count(),
             
             // Claims & Reviews

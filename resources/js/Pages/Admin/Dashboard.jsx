@@ -23,56 +23,78 @@ export default function AdminDashboard({ stats, recentHotels, pendingClaims, pen
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     {/* Top Stats Row - Compact cards like in image */}
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-                        <MiniStatCard
-                            icon={
-                                <svg className="w-5 h-5 text-orange-600" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
-                                </svg>
-                            }
-                            value={stats.total_hotels}
-                            label="HOTELS"
-                            bgColor="bg-orange-50"
-                        />
-                        <MiniStatCard
-                            icon={
-                                <svg className="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                                </svg>
-                            }
-                            value={stats.claimed_hotels || 0}
-                            label="CLAIMED"
-                            bgColor="bg-green-50"
-                        />
-                        <MiniStatCard
-                            icon={
-                                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                                </svg>
-                            }
-                            value={stats.active_subscriptions || 0}
-                            label="SUBSCRIPTIONS"
-                            bgColor="bg-purple-50"
-                        />
-                        <MiniStatCard
-                            icon={
-                                <svg className="w-5 h-5 text-cyan-600" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-                                </svg>
-                            }
-                            value={stats.total_users}
-                            label="USERS"
-                            bgColor="bg-cyan-50"
-                        />
-                        <MiniStatCard
-                            icon={
-                                <svg className="w-5 h-5 text-orange-600" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                                </svg>
-                            }
-                            value={stats.hoteliers}
-                            label="HOTELIERS"
-                            bgColor="bg-orange-50"
-                        />
+                        <Link href="/admin/hotels" className="block">
+                            <MiniStatCard
+                                icon={
+                                    <svg className="w-5 h-5 text-orange-600" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
+                                    </svg>
+                                }
+                                value={stats.total_hotels}
+                                label="HOTELS"
+                                bgColor="bg-orange-50 hover:bg-orange-100 transition-colors cursor-pointer"
+                            />
+                        </Link>
+                        <Link href="/admin/claims" className="block">
+                            <MiniStatCard
+                                icon={
+                                    <svg className="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                    </svg>
+                                }
+                                value={stats.claimed_hotels || 0}
+                                label="CLAIMED"
+                                bgColor="bg-green-50 hover:bg-green-100 transition-colors cursor-pointer"
+                            />
+                        </Link>
+                        <Link href="/admin/claims?tab=subscriptions" className="block">
+                            <MiniStatCard
+                                icon={
+                                    <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                                    </svg>
+                                }
+                                value={stats.active_subscriptions || 0}
+                                label="SUBSCRIPTIONS"
+                                bgColor="bg-purple-50 hover:bg-purple-100 transition-colors cursor-pointer"
+                            />
+                        </Link>
+                        <Link href="/admin/users" className="block">
+                            <MiniStatCard
+                                icon={
+                                    <svg className="w-5 h-5 text-cyan-600" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                                    </svg>
+                                }
+                                value={stats.total_users}
+                                label="USERS"
+                                bgColor="bg-cyan-50 hover:bg-cyan-100 transition-colors cursor-pointer"
+                            />
+                        </Link>
+                        <Link href="/admin/claims?tab=hoteliers" className="block">
+                            <MiniStatCard
+                                icon={
+                                    <svg className="w-5 h-5 text-orange-600" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                    </svg>
+                                }
+                                value={stats.hoteliers}
+                                label="HOTELIERS"
+                                bgColor="bg-orange-50 hover:bg-orange-100 transition-colors cursor-pointer"
+                            />
+                        </Link>
+                        <Link href="/admin/content" className="block">
+                            <MiniStatCard
+                                icon={
+                                    <svg className="w-5 h-5 text-pink-600" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                                    </svg>
+                                }
+                                value={stats.total_posts || 0}
+                                label="CONTENT"
+                                bgColor="bg-pink-50 hover:bg-pink-100 transition-colors cursor-pointer"
+                            />
+                        </Link>
                     </div>
 
                     {/* Second Row - Conversion Rate style cards + Chart area */}
