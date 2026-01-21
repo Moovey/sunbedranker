@@ -49,15 +49,7 @@ export default function Header() {
                             <span className="hidden lg:inline">Guides</span>
                         </Link>
 
-                        {/* Language/Currency - Hidden on smaller screens */}
-                        <button className="hidden lg:flex items-center gap-2 px-3 lg:px-4 py-2 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:bg-neutral-50 transition-all duration-300">
-                            <svg className="w-4 h-4 lg:w-5 lg:h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span className="text-xs lg:text-sm font-medium text-neutral-700">EN · ₱</span>
-                        </button>
-                        
-                        {/* User Profile or Sign In */}
+{/* User Profile or Sign In */}
                         {auth.user ? (
                             <div className="relative" ref={dropdownRef}>
                                 <button
@@ -160,14 +152,6 @@ export default function Header() {
                                 <span className="text-xs lg:text-sm font-medium text-neutral-700">Sign in</span>
                             </Link>
                         )}
-                        
-                        {/* Desktop Menu Button */}
-                        <button className="flex items-center gap-2 px-3 lg:px-4 py-2 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:bg-neutral-50 transition-all duration-300">
-                            <svg className="w-4 h-4 lg:w-5 lg:h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                            <span className="hidden lg:block text-xs lg:text-sm font-medium text-neutral-700">Menu</span>
-                        </button>
                     </div>
 
                     {/* Mobile Menu Button - Visible on mobile/tablet */}
@@ -292,14 +276,6 @@ export default function Header() {
                                             <span>Pool & Sunbed Guides</span>
                                         </div>
                                     </Link>
-                                    <button className="block w-full text-left px-4 py-3 text-sm text-neutral-700 hover:bg-neutral-50">
-                                        <div className="flex items-center gap-3">
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                            <span>Language & Currency</span>
-                                        </div>
-                                    </button>
                                 </div>
                             </div>
                         )}
