@@ -64,6 +64,31 @@ class AdminDashboardController extends Controller
                 ->sum('views'),
         ];
 
+        // Monthly performance data for chart (grouped by year)
+        $currentYear = now()->year;
+        $availableYears = range($currentYear, $currentYear - 4); // Last 5 years
+        
+        $monthlyPerformance = [];
+        foreach ($availableYears as $year) {
+            $yearData = [];
+            for ($month = 1; $month <= 12; $month++) {
+                $startOfMonth = now()->setYear($year)->setMonth($month)->startOfMonth();
+                $endOfMonth = now()->setYear($year)->setMonth($month)->endOfMonth();
+                
+                $monthData = DB::table('hotel_analytics')
+                    ->whereBetween('date', [$startOfMonth, $endOfMonth])
+                    ->selectRaw('COALESCE(SUM(clicks), 0) as clicks, COALESCE(SUM(views), 0) as views')
+                    ->first();
+                
+                $yearData[] = [
+                    'month' => $startOfMonth->format('M'),
+                    'clicks' => (int) ($monthData->clicks ?? 0),
+                    'views' => (int) ($monthData->views ?? 0),
+                ];
+            }
+            $monthlyPerformance[$year] = $yearData;
+        }
+
         // Top performing hotels (by clicks and revenue)
         $topPerformingHotels = Hotel::with('destination')
             ->where('click_count', '>', 0)
@@ -108,6 +133,7 @@ class AdminDashboardController extends Controller
             'pendingClaims' => $pendingClaims,
             'pendingReviews' => $pendingReviews,
             'quickActions' => $quickActions,
+            'monthlyPerformance' => $monthlyPerformance,
         ]);
     }
 }

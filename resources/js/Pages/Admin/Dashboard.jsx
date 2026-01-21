@@ -1,4 +1,5 @@
 import { Link, Head } from '@inertiajs/react';
+import { useState } from 'react';
 import AdminNav from '@/Components/AdminNav';
 
 // Format large numbers with K/M suffixes
@@ -12,7 +13,12 @@ function formatNumber(num) {
     return num?.toLocaleString() || '0';
 }
 
-export default function AdminDashboard({ stats, recentHotels, pendingClaims, pendingReviews, topPerformingHotels, quickActions }) {
+export default function AdminDashboard({ stats, recentHotels, pendingClaims, pendingReviews, topPerformingHotels, quickActions, monthlyPerformance }) {
+    const currentYear = new Date().getFullYear();
+    const [selectedYear, setSelectedYear] = useState(currentYear);
+    const availableYears = Object.keys(monthlyPerformance || {}).map(Number).sort((a, b) => b - a);
+    const yearData = monthlyPerformance?.[selectedYear] || [];
+    
     return (
         <>
             <Head title="Admin Dashboard" />
@@ -139,46 +145,80 @@ export default function AdminDashboard({ stats, recentHotels, pendingClaims, pen
                         <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="font-semibold text-gray-900">Monthly Performance Report</h3>
-                                <div className="flex items-center gap-4 text-sm">
-                                    <span className="flex items-center gap-1">
+                                <div className="flex items-center gap-3 text-sm">
+                                    <span className="flex items-center gap-1.5">
                                         <span className="w-3 h-3 bg-orange-500 rounded-full"></span>
                                         Clicks
                                     </span>
-                                    <span className="flex items-center gap-1">
+                                    <span className="flex items-center gap-1.5">
                                         <span className="w-3 h-3 bg-green-500 rounded-full"></span>
                                         Views
                                     </span>
+                                    <select 
+                                        value={selectedYear}
+                                        onChange={(e) => setSelectedYear(Number(e.target.value))}
+                                        className="border border-gray-200 rounded-lg pl-3 pr-8 py-1 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 cursor-pointer appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20fill%3D%22%236B7280%22%20d%3D%22M7%207l3%203%203-3%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_0.25rem_center]"
+                                    >
+                                        {availableYears.map(year => (
+                                            <option key={year} value={year}>{year}</option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
                             <div className="flex items-baseline gap-4 mb-6">
                                 <div>
-                                    <span className="text-3xl font-bold text-gray-900">{formatNumber(stats.clicks_this_month || 0)}</span>
+                                    <span className="text-3xl font-bold text-gray-900">{formatNumber(yearData.reduce((sum, m) => sum + (m.clicks || 0), 0))}</span>
                                     <span className="text-gray-500 ml-2">Clicks</span>
                                 </div>
                                 <div>
-                                    <span className="text-3xl font-bold text-gray-900">{formatNumber(stats.views_this_month || 0)}</span>
+                                    <span className="text-3xl font-bold text-gray-900">{formatNumber(yearData.reduce((sum, m) => sum + (m.views || 0), 0))}</span>
                                     <span className="text-gray-500 ml-2">Views</span>
                                 </div>
                             </div>
                             {/* Simple visual chart representation */}
                             <div className="h-32 flex items-end justify-between gap-2">
-                                {[40, 55, 35, 70, 45, 80, 60, 90, 50, 75, 85, 65].map((height, i) => (
-                                    <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                                        <div 
-                                            className="w-full bg-orange-100 rounded-t relative overflow-hidden"
-                                            style={{ height: `${height}%` }}
-                                        >
-                                            <div 
-                                                className="absolute bottom-0 w-full bg-orange-500 rounded-t"
-                                                style={{ height: `${height * 0.6}%` }}
-                                            />
-                                        </div>
-                                        <span className="text-xs text-gray-400">
-                                            {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i]}
-                                        </span>
-                                    </div>
-                                ))}
+                                {(() => {
+                                    // Calculate max value for scaling
+                                    const maxValue = Math.max(
+                                        ...((yearData || []).map(m => Math.max(m.clicks || 0, m.views || 0))),
+                                        1 // Prevent division by zero
+                                    );
+                                    
+                                    return (yearData || []).map((data, i) => {
+                                        const clicksHeight = maxValue > 0 ? ((data.clicks || 0) / maxValue) * 100 : 0;
+                                        const viewsHeight = maxValue > 0 ? ((data.views || 0) / maxValue) * 100 : 0;
+                                        
+                                        return (
+                                            <div key={i} className="flex-1 flex flex-col items-center">
+                                                <div className="w-full h-24 flex items-end">
+                                                    <div className="w-full flex gap-0.5 justify-center items-end h-full">
+                                                        {/* Clicks bar (orange) */}
+                                                        <div 
+                                                            className="w-1/2 bg-orange-500 rounded-t"
+                                                            style={{ height: `${Math.max(clicksHeight, data.clicks > 0 ? 8 : 0)}%` }}
+                                                            title={`Clicks: ${formatNumber(data.clicks || 0)}`}
+                                                        />
+                                                        {/* Views bar (green) */}
+                                                        <div 
+                                                            className="w-1/2 bg-green-500 rounded-t"
+                                                            style={{ height: `${Math.max(viewsHeight, data.views > 0 ? 8 : 0)}%` }}
+                                                            title={`Views: ${formatNumber(data.views || 0)}`}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <span className="text-xs text-gray-400 mt-1">
+                                                    {data.month}
+                                                </span>
+                                            </div>
+                                        );
+                                    });
+                                })()}
                             </div>
+                            {(!yearData || yearData.length === 0) && (
+                                <div className="text-center text-gray-400 text-sm mt-2">
+                                    No analytics data available yet
+                                </div>
+                            )}
                         </div>
                     </div>
 
