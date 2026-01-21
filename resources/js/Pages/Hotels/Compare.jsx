@@ -313,7 +313,7 @@ function HotelCompare({ hotels, auth }) {
                             <p className="text-xs sm:text-sm text-gray-600 font-sans">Choose your preferred hotel and start your vacation</p>
                         </div>
                         
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
+                        <div className="flex flex-wrap justify-center gap-4 sm:gap-5 md:gap-6">
                         {hotels.map((hotel) => {
                             const isPremium = hotel.is_premium || hotel.subscription_tier === 'premium';
                             const hasDirectBooking = hotel.direct_booking_url;
@@ -329,7 +329,7 @@ function HotelCompare({ hotels, auth }) {
                             return (
                                 <div 
                                     key={hotel.id} 
-                                    className={`relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 ${
+                                    className={`relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 w-full sm:w-[calc(50%-10px)] lg:w-[280px] xl:w-[300px] ${
                                         isPremium 
                                             ? 'bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-400' 
                                             : 'bg-white border border-gray-200'
