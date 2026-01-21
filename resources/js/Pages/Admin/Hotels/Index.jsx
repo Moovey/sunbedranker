@@ -70,18 +70,18 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
             <div className="min-h-screen bg-gray-50 font-sans">
                 <AdminNav stats={stats} />
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
                     {/* Page Header */}
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Hotel Management</h1>
-                            <p className="text-gray-500 text-sm mt-1">Manage all hotels and their details</p>
+                            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Hotel Management</h1>
+                            <p className="text-gray-500 text-xs sm:text-sm mt-1">Manage all hotels and their details</p>
                         </div>
                         <Link
                             href={route('admin.hotels.create')}
-                            className="inline-flex items-center gap-2 px-4 py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors shadow-sm"
+                            className="inline-flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors shadow-sm text-sm sm:text-base"
                         >
-                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                             </svg>
                             Add New Hotel
@@ -112,9 +112,9 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
 
 function FilterSection({ filterState, updateFilter, destinations, onSearch, onClear }) {
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-            <h2 className="font-semibold text-gray-900 mb-4">Filter Hotels</h2>
-            <form onSubmit={onSearch} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 md:p-6 mb-4 sm:mb-6">
+            <h2 className="font-semibold text-gray-900 mb-3 sm:mb-4 text-sm sm:text-base">Filter Hotels</h2>
+            <form onSubmit={onSearch} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <FilterInput
                     label="Search"
                     type="text"
@@ -140,17 +140,17 @@ function FilterSection({ filterState, updateFilter, destinations, onSearch, onCl
                     options={STATUS_OPTIONS}
                 />
 
-                <div className="flex items-end gap-2">
+                <div className="flex items-end gap-2 sm:col-span-2 lg:col-span-1">
                     <button
                         type="submit"
-                        className="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 font-medium transition-colors"
+                        className="flex-1 px-3 sm:px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 font-medium transition-colors text-sm sm:text-base"
                     >
                         Search
                     </button>
                     <button
                         type="button"
                         onClick={onClear}
-                        className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+                        className="px-3 sm:px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors text-sm sm:text-base"
                     >
                         Clear
                     </button>
@@ -163,12 +163,12 @@ function FilterSection({ filterState, updateFilter, destinations, onSearch, onCl
 function FilterInput({ label, ...props }) {
     return (
         <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-1.5">
                 {label}
             </label>
             <input
                 {...props}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
+                className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-xs sm:text-sm"
             />
         </div>
     );
@@ -177,12 +177,12 @@ function FilterInput({ label, ...props }) {
 function FilterSelect({ label, options, ...props }) {
     return (
         <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-1.5">
                 {label}
             </label>
             <select
                 {...props}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
+                className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-xs sm:text-sm"
             >
                 {options.map(opt => (
                     <option key={opt.value} value={opt.value}>
@@ -197,7 +197,8 @@ function FilterSelect({ label, options, ...props }) {
 function HotelTable({ hotels, onDelete }) {
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full">
                     <TableHeader />
                     <tbody className="divide-y divide-gray-100">
@@ -216,7 +217,105 @@ function HotelTable({ hotels, onDelete }) {
                 </table>
             </div>
 
+            {/* Mobile Card View */}
+            <div className="md:hidden">
+                {hotels.data.length === 0 ? (
+                    <div className="px-4 py-12 text-center">
+                        <p className="text-gray-500 text-sm">No hotels found</p>
+                    </div>
+                ) : (
+                    <div className="divide-y divide-gray-100">
+                        {hotels.data.map(hotel => (
+                            <MobileHotelCard 
+                                key={hotel.id} 
+                                hotel={hotel} 
+                                onDelete={onDelete} 
+                            />
+                        ))}
+                    </div>
+                )}
+            </div>
+
             {hotels.links && <Pagination hotels={hotels} />}
+        </div>
+    );
+}
+
+function MobileHotelCard({ hotel, onDelete }) {
+    const subscriptionStyle = SUBSCRIPTION_STYLES[hotel.subscription_tier] || SUBSCRIPTION_STYLES.free;
+    
+    return (
+        <div className="p-3 sm:p-4 hover:bg-gray-50 transition-colors">
+            {/* Top Row: Image + Hotel Info */}
+            <div className="flex items-start gap-3 mb-3">
+                {hotel.main_image_url ? (
+                    <img
+                        src={hotel.main_image_url}
+                        alt={hotel.name}
+                        className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover flex-shrink-0"
+                    />
+                ) : (
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gray-100 rounded-lg flex-shrink-0"></div>
+                )}
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                            <h3 className="text-sm font-medium text-gray-900 truncate">
+                                {hotel.name}
+                            </h3>
+                            {hotel.star_rating && (
+                                <div className="text-xs text-gray-500 mt-0.5">
+                                    {hotel.star_rating} Star
+                                </div>
+                            )}
+                            <div className="text-xs text-gray-500 mt-0.5 truncate">
+                                {hotel.destination?.name || '-'}
+                            </div>
+                        </div>
+                        <span className={`px-2 py-0.5 text-[10px] sm:text-xs font-medium rounded-full flex-shrink-0 ${subscriptionStyle}`}>
+                            {hotel.subscription_tier || 'free'}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Middle Row: Stats */}
+            <div className="flex items-center gap-3 mb-3 text-xs">
+                <div className="flex items-center gap-1">
+                    <span className="text-gray-500">Score:</span>
+                    <span className="font-medium text-gray-900">
+                        {hotel.overall_score ? `${hotel.overall_score}/100` : 'N/A'}
+                    </span>
+                </div>
+                <div className="flex items-center gap-2">
+                    {hotel.is_active && <StatusBadge type="active" />}
+                    {hotel.is_verified && <StatusBadge type="verified" />}
+                    {hotel.is_featured && <StatusBadge type="featured" />}
+                </div>
+            </div>
+
+            {/* Bottom Row: Actions */}
+            <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
+                <Link
+                    href={route('admin.hotels.edit', hotel.id)}
+                    className="flex-1 px-3 py-1.5 text-center text-xs sm:text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors"
+                >
+                    Edit
+                </Link>
+                <Link
+                    href={`/hotels/${hotel.slug}`}
+                    target="_blank"
+                    className="flex-1 px-3 py-1.5 text-center text-xs sm:text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                    View
+                </Link>
+                <button
+                    onClick={() => onDelete(hotel)}
+                    className="px-3 py-1.5 text-xs sm:text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                >
+                    Delete
+                </button>
+            </div>
         </div>
     );
 }
@@ -228,7 +327,7 @@ function TableHeader() {
                 {TABLE_COLUMNS.map(col => (
                     <th 
                         key={col.key}
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        className="px-3 md:px-4 lg:px-6 py-2.5 md:py-3 text-left text-[10px] md:text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                         {col.label}
                     </th>
@@ -241,8 +340,8 @@ function TableHeader() {
 function EmptyRow() {
     return (
         <tr>
-            <td colSpan={TABLE_COLUMNS.length} className="px-6 py-12 text-center">
-                <p className="text-gray-500 text-sm">No hotels found</p>
+            <td colSpan={TABLE_COLUMNS.length} className="px-4 md:px-6 py-8 md:py-12 text-center">
+                <p className="text-gray-500 text-xs sm:text-sm">No hotels found</p>
             </td>
         </tr>
     );
@@ -263,23 +362,23 @@ function HotelRow({ hotel, onDelete }) {
 
 function HotelInfoCell({ hotel }) {
     return (
-        <td className="px-6 py-4 whitespace-nowrap">
+        <td className="px-3 md:px-4 lg:px-6 py-3 md:py-4 whitespace-nowrap">
             <div className="flex items-center">
                 {hotel.main_image_url ? (
                     <img
                         src={hotel.main_image_url}
                         alt={hotel.name}
-                        className="w-10 h-10 rounded-lg object-cover mr-3"
+                        className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover mr-2 md:mr-3"
                     />
                 ) : (
-                    <div className="w-10 h-10 bg-gray-100 rounded-lg mr-3"></div>
+                    <div className="w-8 h-8 md:w-10 md:h-10 bg-gray-100 rounded-lg mr-2 md:mr-3"></div>
                 )}
-                <div>
-                    <div className="text-sm font-medium text-gray-900">
+                <div className="min-w-0">
+                    <div className="text-xs md:text-sm font-medium text-gray-900 truncate max-w-[120px] lg:max-w-[180px]">
                         {hotel.name}
                     </div>
                     {hotel.star_rating && (
-                        <div className="text-xs text-gray-500">
+                        <div className="text-[10px] md:text-xs text-gray-500">
                             {hotel.star_rating} Star
                         </div>
                     )}
@@ -291,8 +390,8 @@ function HotelInfoCell({ hotel }) {
 
 function DestinationCell({ destination }) {
     return (
-        <td className="px-6 py-4 whitespace-nowrap">
-            <div className="text-sm text-gray-900">
+        <td className="px-3 md:px-4 lg:px-6 py-3 md:py-4 whitespace-nowrap">
+            <div className="text-xs md:text-sm text-gray-900 truncate max-w-[100px] lg:max-w-[150px]">
                 {destination || '-'}
             </div>
         </td>
@@ -301,8 +400,8 @@ function DestinationCell({ destination }) {
 
 function ScoreCell({ score }) {
     return (
-        <td className="px-6 py-4 whitespace-nowrap">
-            <div className="text-sm font-medium text-gray-900">
+        <td className="px-3 md:px-4 lg:px-6 py-3 md:py-4 whitespace-nowrap">
+            <div className="text-xs md:text-sm font-medium text-gray-900">
                 {score ? `${score}/100` : 'N/A'}
             </div>
         </td>
@@ -313,8 +412,8 @@ function SubscriptionCell({ tier }) {
     const style = SUBSCRIPTION_STYLES[tier] || SUBSCRIPTION_STYLES.free;
     
     return (
-        <td className="px-6 py-4 whitespace-nowrap">
-            <span className={`px-2 py-1 text-xs font-medium rounded-full ${style}`}>
+        <td className="px-3 md:px-4 lg:px-6 py-3 md:py-4 whitespace-nowrap">
+            <span className={`px-1.5 md:px-2 py-0.5 md:py-1 text-[10px] md:text-xs font-medium rounded-full ${style}`}>
                 {tier || 'free'}
             </span>
         </td>
@@ -323,8 +422,8 @@ function SubscriptionCell({ tier }) {
 
 function StatusCell({ hotel }) {
     return (
-        <td className="px-6 py-4 whitespace-nowrap">
-            <div className="flex flex-col gap-1">
+        <td className="px-3 md:px-4 lg:px-6 py-3 md:py-4 whitespace-nowrap">
+            <div className="flex flex-col gap-0.5 md:gap-1">
                 {hotel.is_active && <StatusBadge type="active" />}
                 {hotel.is_verified && <StatusBadge type="verified" />}
                 {hotel.is_featured && <StatusBadge type="featured" />}
@@ -347,7 +446,7 @@ function StatusBadge({ type }) {
         },
         featured: {
             color: 'text-purple-600',
-            icon: <StarIcon className="w-3 h-3" />,
+            icon: <StarIcon className="w-2.5 h-2.5 md:w-3 md:h-3" />,
             label: 'Featured',
         },
     };
@@ -355,7 +454,7 @@ function StatusBadge({ type }) {
     const badge = badges[type];
     
     return (
-        <span className={`text-xs ${badge.color} font-medium flex items-center gap-1`}>
+        <span className={`text-[10px] md:text-xs ${badge.color} font-medium flex items-center gap-0.5 md:gap-1`}>
             {badge.icon}
             {badge.label}
         </span>
@@ -364,8 +463,8 @@ function StatusBadge({ type }) {
 
 function ActionsCell({ hotel, onDelete }) {
     return (
-        <td className="px-6 py-4 whitespace-nowrap text-sm">
-            <div className="flex items-center gap-3">
+        <td className="px-3 md:px-4 lg:px-6 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm">
+            <div className="flex items-center gap-2 md:gap-3">
                 <Link
                     href={route('admin.hotels.edit', hotel.id)}
                     className="text-orange-600 hover:text-orange-700 font-medium transition-colors"
@@ -392,8 +491,8 @@ function ActionsCell({ hotel, onDelete }) {
 
 function Pagination({ hotels }) {
     return (
-        <div className="bg-white px-6 py-4 border-t border-gray-100">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="bg-white px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-t border-gray-100">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
                 <PaginationInfo 
                     from={hotels.from} 
                     to={hotels.to} 
@@ -407,7 +506,7 @@ function Pagination({ hotels }) {
 
 function PaginationInfo({ from, to, total }) {
     return (
-        <div className="text-sm text-gray-500">
+        <div className="text-xs sm:text-sm text-gray-500 text-center sm:text-left">
             Showing <span className="font-medium text-gray-900">{from}</span> to{' '}
             <span className="font-medium text-gray-900">{to}</span> of{' '}
             <span className="font-medium text-gray-900">{total}</span> results
@@ -417,7 +516,7 @@ function PaginationInfo({ from, to, total }) {
 
 function PaginationLinks({ links }) {
     return (
-        <div className="flex gap-1 flex-wrap justify-center">
+        <div className="flex gap-0.5 sm:gap-1 flex-wrap justify-center">
             {links.map((link, index) => (
                 <PaginationLink key={index} link={link} />
             ))}
@@ -426,7 +525,7 @@ function PaginationLinks({ links }) {
 }
 
 function PaginationLink({ link }) {
-    const baseClasses = 'px-3 py-1.5 text-sm rounded-lg font-medium transition-colors';
+    const baseClasses = 'px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm rounded-lg font-medium transition-colors';
     
     if (!link.url) {
         return (
@@ -464,7 +563,7 @@ function StarIcon({ className = 'w-6 h-6' }) {
 
 function CheckCircleIcon() {
     return (
-        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+        <svg className="w-2.5 h-2.5 md:w-3 md:h-3" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
         </svg>
     );
@@ -472,7 +571,7 @@ function CheckCircleIcon() {
 
 function ShieldCheckIcon() {
     return (
-        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+        <svg className="w-2.5 h-2.5 md:w-3 md:h-3" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
         </svg>
     );

@@ -183,16 +183,16 @@ export default function CreateHotel({ destinations, stats, errors: serverErrors 
             <div className="min-h-screen bg-gray-50 font-sans">
                 <AdminNav stats={stats} />
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
                     {/* Page Header */}
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Add New Hotel</h1>
-                            <p className="text-gray-500 text-sm mt-1">Create a new hotel listing</p>
+                            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Add New Hotel</h1>
+                            <p className="text-gray-500 text-xs sm:text-sm mt-1">Create a new hotel listing</p>
                         </div>
                         <Link
                             href={route('admin.hotels.index')}
-                            className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                            className="inline-flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto px-3 sm:px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors text-sm sm:text-base"
                         >
                             ← Back to Hotels
                         </Link>
@@ -205,7 +205,7 @@ export default function CreateHotel({ destinations, stats, errors: serverErrors 
                         <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
                         {/* Tab Content */}
-                        <div className="bg-white rounded-b-xl shadow-sm p-6 border border-gray-100 border-t-0">
+                        <div className="bg-white rounded-b-xl shadow-sm p-3 sm:p-4 md:p-6 border border-gray-100 border-t-0">
                             <TabContent 
                                 activeTab={activeTab}
                                 data={data}
@@ -250,25 +250,25 @@ function ValidationErrorsBox({ errors }) {
     if (errorCount === 0) return null;
     
     return (
-        <div className="mb-6 bg-red-50 border border-red-300 rounded-xl p-5 shadow-sm">
+        <div className="mb-4 sm:mb-6 bg-red-50 border border-red-300 rounded-xl p-3 sm:p-4 md:p-5 shadow-sm">
             <div className="flex items-start">
                 <div className="flex-shrink-0">
-                    <svg className="h-6 w-6 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+                    <svg className="h-5 w-5 sm:h-6 sm:w-6 text-red-500" viewBox="0 0 24 24" fill="currentColor">
                         <path fillRule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
                     </svg>
                 </div>
-                <div className="ml-4 flex-1">
-                    <h3 className="text-base font-semibold text-red-800 mb-2">
+                <div className="ml-3 sm:ml-4 flex-1">
+                    <h3 className="text-sm sm:text-base font-semibold text-red-800 mb-1.5 sm:mb-2">
                         Validation Failed - {errorCount} error{errorCount > 1 ? 's' : ''} found
                     </h3>
-                    <div className="bg-white rounded-lg p-4 border border-red-200">
-                        <ul className="space-y-2">
+                    <div className="bg-white rounded-lg p-2.5 sm:p-3 md:p-4 border border-red-200">
+                        <ul className="space-y-1.5 sm:space-y-2">
                             {Object.entries(normalizedErrors).map(([field, message]) => (
-                                <li key={field} className="flex items-start gap-2 text-sm text-red-700">
-                                    <span className="text-red-500">•</span>
-                                    <span>
+                                <li key={field} className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-red-700">
+                                    <span className="text-red-500 flex-shrink-0">•</span>
+                                    <span className="min-w-0">
                                         <span className="font-medium capitalize text-red-800">{field.replace(/_/g, ' ')}:</span>{' '}
-                                        <span className="text-red-600">{message}</span>
+                                        <span className="text-red-600 break-words">{message}</span>
                                     </span>
                                 </li>
                             ))}
@@ -291,7 +291,7 @@ function TabNavigation({ activeTab, setActiveTab }) {
 
     return (
         <div className="bg-gray-50 rounded-t-xl border border-gray-100 border-b-0 shadow-sm">
-            <div className="flex gap-1 px-4 pt-4 overflow-x-auto">
+            <div className="flex gap-0.5 sm:gap-1 px-2 sm:px-3 md:px-4 pt-3 sm:pt-4 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                 {tabConfig.map(tab => (
                     <TabButton 
                         key={tab.id}
@@ -320,20 +320,20 @@ function TabContent({ activeTab, data, setData, errors, destinations }) {
 
 function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab }) {
     return (
-        <div className="mt-6 pt-6 border-t border-gray-200 flex flex-col sm:flex-row gap-3 justify-between">
+        <div className="mt-4 sm:mt-5 md:mt-6 pt-4 sm:pt-5 md:pt-6 border-t border-gray-200 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-between">
             <Link
                 href={route('admin.hotels.index')}
-                className="px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors text-center text-sm"
+                className="px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors text-center text-xs sm:text-sm"
             >
                 Cancel
             </Link>
             
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                 {!isFirstTab && (
                     <button
                         type="button"
                         onClick={onPrevTab}
-                        className="px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors text-center text-sm"
+                        className="px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors text-center text-xs sm:text-sm"
                     >
                         Previous
                     </button>
@@ -343,7 +343,7 @@ function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab
                     <button
                         type="button"
                         onClick={onNextTab}
-                        className="px-4 py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors text-center text-sm"
+                        className="px-3 sm:px-4 py-2 sm:py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors text-center text-xs sm:text-sm"
                     >
                         Next
                     </button>
@@ -351,7 +351,7 @@ function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab
                     <button
                         type="submit"
                         disabled={processing}
-                        className="px-4 py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors text-center text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3 sm:px-4 py-2 sm:py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors text-center text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {processing ? 'Creating...' : 'Create Hotel'}
                     </button>
