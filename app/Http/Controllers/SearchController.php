@@ -43,7 +43,7 @@ class SearchController extends Controller
                 switch ($poolVibe) {
                     case 'family':
                         $q->where('has_kids_pool', true)
-                          ->orWhere('has_water_slides', true);
+                          ->orWhere('has_waterslide', true);
                         break;
                     case 'quiet':
                         $q->where('atmosphere', 'quiet')

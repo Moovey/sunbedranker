@@ -17,7 +17,7 @@ export default function Home({
     quietSunHotels, 
     partyHotels,
     latestPosts 
-}) {
+}) {    
     const { auth } = usePage().props;
     const isHotelier = auth.user?.role === 'hotelier';
 
