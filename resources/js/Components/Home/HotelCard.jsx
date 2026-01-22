@@ -49,6 +49,10 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
                     <img
                         src={hotel.main_image || '/images/default-hotel.jpg'}
                         alt={hotel.name}
+                        width={400}
+                        height={isPremium ? 250 : 300}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
@@ -56,7 +60,7 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
                     {/* Premium Badge */}
                     {!!hotel.is_premium && (
                         <div className="absolute top-4 left-4 bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 animate-pulse z-10">
-                            <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                             </svg>
                             PREMIUM
@@ -66,7 +70,7 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
                     {/* Score Badge */}
                     {score && (
                         <div className="absolute top-4 right-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full font-bold text-base shadow-lg flex items-center gap-1.5">
-                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                 <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
                             </svg>
                             {score}/10
@@ -76,7 +80,7 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
                     {/* Claim Status Badges */}
                     {!!hotel.has_pending_claim && (
                         <div className="absolute bottom-3 left-3 right-3 bg-yellow-500/90 backdrop-blur-sm text-white px-3 py-2 rounded-lg text-xs font-semibold text-center flex items-center justify-center gap-1">
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
                             </svg>
                             Claim under review
@@ -84,7 +88,7 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
                     )}
                     {!!hotel.owned_by && (
                         <div className="absolute bottom-3 left-3 right-3 bg-green-500/90 backdrop-blur-sm text-white px-3 py-2 rounded-lg text-xs font-semibold text-center flex items-center justify-center gap-1">
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                             </svg>
                             Verified Owner
@@ -135,26 +139,25 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
                             )}
                         </div>
                     )}
-                    
-                    {/* Premium CTA Buttons */}
-                    {isPremium && hotel.direct_booking_url && (
-                        <div className="flex gap-2 mt-4">
-                            <a 
-                                href={hotel.direct_booking_url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()}
-                                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-bold text-sm shadow-md hover:from-green-600 hover:to-emerald-700 transition-all"
-                            >
-                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
-                                </svg>
-                                Book Direct
-                            </a>
-                        </div>
-                    )}
                 </div>
             </Link>
+            
+            {/* Premium CTA Buttons - Outside of Link to avoid nested <a> tags */}
+            {isPremium && hotel.direct_booking_url && (
+                <div className="flex gap-2 px-5 sm:px-6 pb-5 sm:pb-6 bg-white">
+                    <a 
+                        href={hotel.direct_booking_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-bold text-sm shadow-md hover:from-green-600 hover:to-emerald-700 transition-all"
+                    >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                        </svg>
+                        Book Direct
+                    </a>
+                </div>
+            )}
 
             {/* Action Buttons */}
             {(onToggleCompare || canClaim) && (

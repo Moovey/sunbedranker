@@ -43,7 +43,7 @@ export default function Header() {
                             href={route('blog.index')} 
                             className="flex items-center gap-2 px-3 lg:px-4 py-2 text-neutral-700 hover:text-orange-600 transition-colors duration-300 font-medium text-sm"
                         >
-                            <svg className="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                             </svg>
                             <span className="hidden lg:inline">Guides</span>
@@ -54,6 +54,9 @@ export default function Header() {
                             <div className="relative" ref={dropdownRef}>
                                 <button
                                     onClick={() => setShowDropdown(!showDropdown)}
+                                    aria-label="User menu"
+                                    aria-expanded={showDropdown}
+                                    aria-haspopup="true"
                                     className="flex items-center gap-2 px-3 lg:px-4 py-2 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:bg-neutral-50 transition-all duration-300"
                                 >
                                     {auth.user.profile_picture_url ? (
@@ -68,7 +71,7 @@ export default function Header() {
                                         </div>
                                     )}
                                     <span className="hidden lg:block text-xs lg:text-sm font-medium text-neutral-700 max-w-[120px] truncate">{auth.user.name}</span>
-                                    <svg className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </button>
@@ -146,7 +149,7 @@ export default function Header() {
                             </div>
                         ) : (
                             <Link href="/login" className="flex items-center gap-2 px-3 lg:px-4 py-2 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:bg-neutral-50 transition-all duration-300">
-                                <svg className="w-4 h-4 lg:w-5 lg:h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-4 h-4 lg:w-5 lg:h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                 </svg>
                                 <span className="text-xs lg:text-sm font-medium text-neutral-700">Sign in</span>
@@ -171,9 +174,11 @@ export default function Header() {
                         )}
                         <button 
                             onClick={() => setShowMobileMenu(!showMobileMenu)}
+                            aria-label={showMobileMenu ? "Close menu" : "Open menu"}
+                            aria-expanded={showMobileMenu}
                             className="flex items-center justify-center w-10 h-10 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-all duration-300"
                         >
-                            <svg className="w-5 h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={showMobileMenu ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
                             </svg>
                         </button>

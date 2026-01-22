@@ -37,8 +37,10 @@ export default function HotelCarousel({ hotels, scoreType = 'overall', isHotelie
                     canScrollLeft ? 'opacity-100 visible' : 'opacity-0 invisible'
                 }`}
                 aria-label="Scroll left"
+                aria-hidden={!canScrollLeft}
+                tabIndex={canScrollLeft ? 0 : -1}
             >
-                <svg className="w-6 h-6 sm:w-7 sm:h-7 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 sm:w-7 sm:h-7 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                 </svg>
             </button>
@@ -50,8 +52,10 @@ export default function HotelCarousel({ hotels, scoreType = 'overall', isHotelie
                     canScrollRight ? 'opacity-100 visible' : 'opacity-0 invisible'
                 }`}
                 aria-label="Scroll right"
+                aria-hidden={!canScrollRight}
+                tabIndex={canScrollRight ? 0 : -1}
             >
-                <svg className="w-6 h-6 sm:w-7 sm:h-7 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 sm:w-7 sm:h-7 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                 </svg>
             </button>
