@@ -43,7 +43,7 @@ export default function LatestPosts({ posts }) {
                     {posts.map((post) => (
                         <article
                             key={post.id}
-                            className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group"
+                            className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200"
                         >
                             <Link href={route('blog.show', post.slug)}>
                                 <div className="aspect-[16/10] overflow-hidden bg-gray-100">
@@ -55,7 +55,7 @@ export default function LatestPosts({ posts }) {
                                             height={250}
                                             loading="lazy"
                                             decoding="async"
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            className="w-full h-full object-cover"
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-orange-200">

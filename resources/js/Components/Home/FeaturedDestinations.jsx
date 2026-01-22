@@ -30,8 +30,7 @@ function DestinationCard({ destination, index }) {
     return (
         <Link
             href={`/destinations/${destination.slug}`}
-            className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 animate-fade-up transform hover:scale-105"
-            style={{ animationDelay: `${index * 100}ms` }}
+            className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-200"
         >
             <div className="relative overflow-hidden aspect-[4/5]">
                 <img
@@ -39,9 +38,10 @@ function DestinationCard({ destination, index }) {
                     alt={destination.name}
                     width={400}
                     height={500}
-                    loading={index < 3 ? "eager" : "lazy"}
+                    loading={index < 2 ? "eager" : "lazy"}
                     decoding="async"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                    fetchpriority={index === 0 ? "high" : "auto"}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 <div className="absolute top-4 right-4 bg-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1">
@@ -51,9 +51,9 @@ function DestinationCard({ destination, index }) {
                     POPULAR
                 </div>
             </div>
-            <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 text-white">
-                <h3 className="text-2xl sm:text-3xl font-bold mb-2">{destination.name}</h3>
-                <p className="text-white font-semibold text-sm sm:text-base">
+            <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 text-white">
+                <h3 className="text-xl sm:text-2xl font-bold mb-1">{destination.name}</h3>
+                <p className="text-white/90 font-medium text-sm">
                     {destination.hotel_count} hotels with pool ratings
                 </p>
             </div>

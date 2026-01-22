@@ -18,17 +18,18 @@ export default function TopRatedHotels({ hotels, isHotelier = false }) {
                     </div>
                     <Link 
                         href="/destinations" 
-                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
+                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
                     >
                         View all →
                     </Link>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-10">
-                    {hotels.map((hotel) => (
+                    {hotels.map((hotel, index) => (
                         <HotelCard 
                             key={hotel.id} 
                             hotel={hotel}
                             isHotelier={isHotelier}
+                            priority={index < 2}
                         />
                     ))}
                 </div>

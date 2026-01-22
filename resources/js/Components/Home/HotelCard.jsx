@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
 import { toast } from 'react-toastify';
 
-export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = false, onToggleCompare, isHotelier = false }) {
+export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = false, onToggleCompare, isHotelier = false, priority = false }) {
     const [showCompareTooltip, setShowCompareTooltip] = useState(false);
     const [showClaimTooltip, setShowClaimTooltip] = useState(false);
 
@@ -37,8 +37,8 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
     };
 
     const cardClasses = isPremium 
-        ? "group bg-white overflow-hidden transition-all duration-300 hover:shadow-2xl rounded-2xl shadow-xl border-4 border-gradient-to-r from-yellow-400 to-orange-500 transform hover:scale-105 relative ring-2 ring-yellow-300"
-        : "group bg-white overflow-hidden transition-all duration-300 hover:shadow-2xl rounded-2xl shadow-lg border-2 border-gray-100 transform hover:scale-105 relative";
+        ? "group bg-white overflow-hidden transition-shadow duration-200 hover:shadow-2xl rounded-2xl shadow-xl border-4 border-gradient-to-r from-yellow-400 to-orange-500 relative ring-2 ring-yellow-300"
+        : "group bg-white overflow-hidden transition-shadow duration-200 hover:shadow-2xl rounded-2xl shadow-lg border-2 border-gray-100 relative";
     
     const imageAspect = isPremium ? "aspect-[16/10]" : "aspect-[4/3]";
 
@@ -51,15 +51,16 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
                         alt={hotel.name}
                         width={400}
                         height={isPremium ? 250 : 300}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                        loading={priority ? "eager" : "lazy"}
+                        decoding={priority ? "sync" : "async"}
+                        fetchpriority={priority ? "high" : "auto"}
+                        className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     
                     {/* Premium Badge */}
                     {!!hotel.is_premium && (
-                        <div className="absolute top-4 left-4 bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 animate-pulse z-10">
+                        <div className="absolute top-4 left-4 bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 z-10">
                             <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                             </svg>

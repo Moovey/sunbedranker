@@ -1,14 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { router } from '@inertiajs/react';
 
-// Use smaller, optimized images with proper sizing
-const backgroundImages = [
-    'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1200&q=75&auto=format',
-    'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1200&q=75&auto=format',
-    'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=75&auto=format',
-    'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1200&q=75&auto=format',
-    'https://images.unsplash.com/photo-1615880484746-a134be9a6ecf?w=1200&q=75&auto=format',
-];
+// Use a simple gradient background instead of external images to dramatically improve LCP
+// This removes the 28+ second LCP caused by loading multiple large external images
 
 const poolVibes = [
     { value: 'family', label: 'Families', shortLabel: 'Family', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> },
@@ -19,22 +13,12 @@ const poolVibes = [
 ];
 
 const getVibeButtonClasses = (vibe, isActive) => {
-    let classes = 'flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300 border-2 shadow-md hover:shadow-lg transform hover:scale-105';
+    const base = 'flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 border';
     
     if (isActive) {
-        const colorMap = {
-            family: ' bg-gradient-to-r from-blue-500 to-blue-600 text-white border-blue-600',
-            quiet: ' bg-gradient-to-r from-green-500 to-green-600 text-white border-green-600',
-            party: ' bg-gradient-to-r from-purple-500 to-purple-600 text-white border-purple-600',
-            luxury: ' bg-gradient-to-r from-yellow-500 to-yellow-600 text-white border-yellow-600',
-            adults: ' bg-gradient-to-r from-red-500 to-red-600 text-white border-red-600',
-        };
-        classes += colorMap[vibe] || '';
-    } else {
-        classes += ' bg-white text-gray-700 hover:bg-gray-50 border-gray-300';
+        return `${base} bg-orange-500 text-white border-orange-500`;
     }
-    
-    return classes;
+    return `${base} bg-white text-gray-700 hover:bg-gray-50 border-gray-300`;
 };
 
 export default function HeroSection() {
@@ -46,17 +30,8 @@ export default function HeroSection() {
         guests: 2
     });
     const [isSearching, setIsSearching] = useState(false);
-    const [currentBgIndex, setCurrentBgIndex] = useState(0);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentBgIndex((prevIndex) => (prevIndex + 1) % backgroundImages.length);
-        }, 6000);
-        
-        return () => clearInterval(interval);
-    }, []);
-
-    const handleSearch = (e) => {
+    const handleSearch = useCallback((e) => {
         e.preventDefault();
         
         if (!searchData.destination) {
@@ -69,40 +44,33 @@ export default function HeroSection() {
         router.get('/search', searchData, {
             onFinish: () => setIsSearching(false)
         });
-    };
+    }, [searchData]);
 
     return (
-        <div className="relative h-auto min-h-[600px] sm:min-h-[700px] lg:min-h-[600px] overflow-hidden bg-gradient-to-b from-blue-50 to-white">
-            {/* Background Images */}
-            {backgroundImages.map((image, index) => (
-                <div
-                    key={index}
-                    className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
-                    style={{
-                        opacity: currentBgIndex === index ? 0.3 : 0,
-                        backgroundImage: `url(${image})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                    }}
-                />
-            ))}
+        <section className="relative min-h-[500px] sm:min-h-[550px] lg:min-h-[500px] overflow-hidden bg-gradient-to-br from-sky-100 via-blue-50 to-orange-50">
+            {/* Decorative elements - CSS only, no external images */}
+            <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+                <div className="absolute -top-24 -right-24 w-96 h-96 bg-orange-200 rounded-full opacity-20 blur-3xl" />
+                <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-200 rounded-full opacity-20 blur-3xl" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-yellow-100 rounded-full opacity-10 blur-3xl" />
+            </div>
             
-            <div className="relative h-full flex items-center justify-center py-12 sm:py-16 md:py-20">
+            <div className="relative h-full flex items-center justify-center py-10 sm:py-14 md:py-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
                     <div className="text-center">
-                        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight text-gray-900">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-5 leading-tight text-gray-900">
                             Will You Struggle to <br className="hidden sm:block" />Get a Sunbed?
                         </h1>
                         
-                        <p className="text-lg sm:text-xl md:text-2xl mb-8 sm:mb-10 text-gray-700 font-medium max-w-3xl mx-auto">
+                        <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 text-gray-700 font-medium max-w-2xl mx-auto">
                             Compare hotels by pool quality, sunbed availability, and sun exposure.
                         </p>
                         
                         {/* Search Box */}
-                        <div className="max-w-5xl mx-auto px-2">
-                            <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 lg:p-10 border-4 border-orange-400">
+                        <div className="max-w-4xl mx-auto px-2">
+                            <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-6 lg:p-8 border-2 border-orange-300">
                                 <form onSubmit={handleSearch}>
-                                    <div className="flex flex-col sm:flex-row gap-4">
+                                    <div className="flex flex-col sm:flex-row gap-3">
                                         <div className="flex-1">
                                             <label htmlFor="destination-input" className="flex items-center gap-2 text-left text-sm font-semibold text-gray-700 mb-2">
                                                 <svg className="w-4 h-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -116,7 +84,7 @@ export default function HeroSection() {
                                                 value={searchData.destination}
                                                 onChange={(e) => setSearchData({...searchData, destination: e.target.value})}
                                                 placeholder="Where to? (e.g., Tenerife)"
-                                                className="w-full px-4 py-3 sm:py-4 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-gray-900 placeholder-gray-400 transition-all duration-300 text-base sm:text-lg font-medium"
+                                                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-gray-900 placeholder-gray-400 transition-all duration-200 text-base font-medium"
                                             />
                                         </div>
 
@@ -124,22 +92,22 @@ export default function HeroSection() {
                                             type="submit"
                                             disabled={isSearching}
                                             aria-label={isSearching ? 'Searching for hotels' : 'Search hotels'}
-                                            className="w-full sm:w-auto px-8 sm:px-12 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-lg rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                                            className="w-full sm:w-auto px-8 py-3 bg-orange-500 text-white font-bold text-base rounded-lg hover:bg-orange-600 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md flex items-center justify-center gap-2"
                                         >
                                             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                                                 <circle cx="11" cy="11" r="8"/>
                                                 <path d="M21 21l-4.35-4.35"/>
                                             </svg>
-                                            {isSearching ? 'Searching...' : 'Search holidays'}
+                                            {isSearching ? 'Searching...' : 'Search'}
                                         </button>
                                     </div>
 
                                     {/* Pool Filters */}
-                                    <div className="mt-6 sm:mt-8 pt-6 border-t-2 border-gray-200">
+                                    <div className="mt-5 pt-5 border-t border-gray-200">
                                         <p className="text-left text-sm font-semibold text-gray-700 mb-3">
                                             Find your perfect stay:
                                         </p>
-                                        <div className="flex flex-wrap gap-2 sm:gap-3">
+                                        <div className="flex flex-wrap gap-2">
                                             {poolVibes.map((vibe) => (
                                                 <button
                                                     key={vibe.value}
@@ -163,6 +131,6 @@ export default function HeroSection() {
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 }
