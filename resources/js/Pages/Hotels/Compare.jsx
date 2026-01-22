@@ -401,7 +401,7 @@ function HotelCompare({ hotels, auth }) {
                                             {/* Primary Booking CTA */}
                                             {isPremium && hasDirectBooking ? (
                                                 <a
-                                                    href={hotel.direct_booking_url}
+                                                    href={route('hotels.click', { hotel: hotel.slug, type: 'direct' })}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-colors duration-200 text-[10px] sm:text-xs"
@@ -410,7 +410,7 @@ function HotelCompare({ hotels, auth }) {
                                                 </a>
                                             ) : hotel.booking_affiliate_url ? (
                                                 <a
-                                                    href={hotel.booking_affiliate_url}
+                                                    href={route('hotels.click', { hotel: hotel.slug, type: 'booking' })}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-colors duration-200 text-[10px] sm:text-xs"

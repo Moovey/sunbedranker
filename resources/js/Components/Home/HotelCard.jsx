@@ -147,7 +147,7 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
             {isPremium && hotel.direct_booking_url && (
                 <div className="flex gap-2 px-5 sm:px-6 pb-5 sm:pb-6 bg-white">
                     <a 
-                        href={hotel.direct_booking_url}
+                        href={route('hotels.click', { hotel: hotel.slug, type: 'direct' })}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-bold text-sm shadow-md hover:from-green-600 hover:to-emerald-700 transition-all"

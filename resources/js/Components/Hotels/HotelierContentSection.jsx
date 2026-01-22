@@ -317,7 +317,7 @@ export function EnhancedProfileSection({ hotel }) {
                         Book directly with the hotel for the best rates and exclusive benefits!
                     </p>
                     <a 
-                        href={hotel.direct_booking_url} 
+                        href={route('hotels.click', { hotel: hotel.slug, type: 'direct' })} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-bold hover:from-green-600 hover:to-emerald-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
