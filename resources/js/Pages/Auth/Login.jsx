@@ -3,6 +3,7 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
+import Header from '@/Components/Header';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -28,32 +29,7 @@ export default function Login({ status, canResetPassword }) {
             <Head title="Log in" />
             
             <div className="min-h-screen bg-white font-sans flex flex-col">
-                {/* Header Navigation */}
-                <nav className="bg-white border-b-2 border-orange-200 shadow-lg">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex items-center justify-between h-16">
-                            {/* Logo */}
-                            <Link href="/" className="flex items-center flex-shrink-0">
-                                <span className="text-xl sm:text-2xl font-black">
-                                    <span className="text-red-500">sun</span>
-                                    <span className="text-orange-500">bed</span>
-                                    <span className="text-blue-500">ranker</span>
-                                </span>
-                            </Link>
-
-                            {/* Back to Home */}
-                            <Link
-                                href="/"
-                                className="text-sm text-orange-600 hover:text-orange-700 font-bold transition-all duration-300 flex items-center gap-1 transform hover:scale-105"
-                            >
-                                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                                </svg>
-                                Back to Home
-                            </Link>
-                        </div>
-                    </div>
-                </nav>
+                <Header />
 
                 {/* Main Content */}
                 <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12 sm:py-16">

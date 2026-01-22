@@ -1,5 +1,6 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
+import Header from '@/Components/Header';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -25,29 +26,7 @@ export default function Register() {
         <div className="min-h-screen bg-white font-sans">
             <Head title="Register" />
             
-            {/* Navigation Header */}
-            <nav className="bg-white border-b-2 border-orange-200 shadow-lg">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                        <Link href="/" className="flex items-center space-x-2">
-                            <span className="text-xl sm:text-2xl font-black">
-                                <span className="text-red-500">sun</span>
-                                <span className="text-orange-500">bed</span>
-                                <span className="text-blue-500">ranker</span>
-                            </span>
-                        </Link>
-                        <Link
-                            href="/"
-                            className="text-sm text-orange-600 hover:text-orange-700 font-bold transition-all duration-300 flex items-center gap-1 transform hover:scale-105"
-                        >
-                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                            </svg>
-                            Back to Home
-                        </Link>
-                    </div>
-                </div>
-            </nav>
+            <Header />
 
             {/* Main Content */}
             <div className="flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
