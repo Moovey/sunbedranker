@@ -3,7 +3,16 @@ import { Link, Head, router } from '@inertiajs/react';
 import Header from '@/Components/Header';
 
 export default function DestinationShow({ destination, hotels, filters = {} }) {
-    const [localFilters, setLocalFilters] = useState(filters);
+    // Ensure all filter values are strings to avoid React warnings on select elements
+    const sanitizeFilters = (f) => {
+        const sanitized = {};
+        for (const key in f) {
+            sanitized[key] = f[key] ?? '';
+        }
+        return sanitized;
+    };
+    
+    const [localFilters, setLocalFilters] = useState(sanitizeFilters(filters));
     const [compareList, setCompareList] = useState([]);
 
     const handleFilterChange = (key, value) => {
@@ -81,7 +90,7 @@ export default function DestinationShow({ destination, hotels, filters = {} }) {
                                         Sort by
                                     </label>
                                     <select
-                                        value={localFilters.sort || 'score'}
+                                        value={localFilters.sort ?? 'score'}
                                         onChange={(e) => handleFilterChange('sort', e.target.value)}
                                         className="w-full px-3 sm:px-4 py-2 sm:py-2.5 md:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 font-sans font-bold text-xs sm:text-sm text-gray-900 transition-all duration-300 bg-white hover:border-orange-300"
                                     >
@@ -99,7 +108,7 @@ export default function DestinationShow({ destination, hotels, filters = {} }) {
                                         Pool Type
                                     </label>
                                     <select
-                                        value={localFilters.pool_type || ''}
+                                        value={localFilters.pool_type ?? ''}
                                         onChange={(e) => handleFilterChange('pool_type', e.target.value)}
                                         className="w-full px-3 sm:px-4 py-2 sm:py-2.5 md:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 font-sans font-bold text-xs sm:text-sm text-gray-900 transition-all duration-300 bg-white hover:border-orange-300"
                                     >
@@ -117,7 +126,7 @@ export default function DestinationShow({ destination, hotels, filters = {} }) {
                                         Atmosphere
                                     </label>
                                     <select
-                                        value={localFilters.atmosphere || ''}
+                                        value={localFilters.atmosphere ?? ''}
                                         onChange={(e) => handleFilterChange('atmosphere', e.target.value)}
                                         className="w-full px-3 sm:px-4 py-2 sm:py-2.5 md:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 font-sans font-bold text-xs sm:text-sm text-gray-900 transition-all duration-300 bg-white hover:border-orange-300"
                                     >
@@ -135,7 +144,7 @@ export default function DestinationShow({ destination, hotels, filters = {} }) {
                                         Minimum Sunbed Ratio
                                     </label>
                                     <select
-                                        value={localFilters.sunbed_ratio || ''}
+                                        value={localFilters.sunbed_ratio ?? ''}
                                         onChange={(e) => handleFilterChange('sunbed_ratio', e.target.value)}
                                         className="w-full px-3 sm:px-4 py-2 sm:py-2.5 md:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 font-sans font-bold text-xs sm:text-sm text-gray-900 transition-all duration-300 bg-white hover:border-orange-300"
                                     >
