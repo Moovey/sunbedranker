@@ -223,14 +223,14 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
 
                         {/* Tags Section */}
                         {post.tags && post.tags.length > 0 && (
-                            <div className="mt-12 pt-8 border-t-2 border-gray-100">
-                                <div className="flex flex-wrap items-center gap-3">
-                                    <span className="text-gray-500 font-medium">Tags:</span>
+                            <div className="mt-8 sm:mt-10 md:mt-12 pt-6 sm:pt-8 border-t-2 border-gray-100">
+                                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                                    <span className="text-gray-500 font-medium text-sm sm:text-base">Tags:</span>
                                     {post.tags.map((tag) => (
                                         <Link
                                             key={tag.id}
                                             href={route('blog.index', { tag: tag.slug })}
-                                            className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium hover:bg-orange-100 hover:text-orange-700 transition-all duration-300 transform hover:scale-105"
+                                            className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 text-gray-700 rounded-full text-xs sm:text-sm font-medium hover:bg-orange-100 hover:text-orange-700 transition-all duration-300 transform hover:scale-105"
                                         >
                                             #{tag.name}
                                         </Link>
@@ -240,15 +240,15 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                         )}
 
                         {/* Share Section */}
-                        <div className="mt-8 pt-8 border-t-2 border-gray-100">
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                                <span className="text-gray-500 font-medium">Share this guide:</span>
-                                <div className="flex gap-3">
+                        <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t-2 border-gray-100">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                                <span className="text-gray-500 font-medium text-sm sm:text-base">Share this guide:</span>
+                                <div className="flex gap-2 sm:gap-3">
                                     <a
                                         href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&text=${encodeURIComponent(post.title)}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-xl hover:bg-black hover:text-white transition-all duration-300 transform hover:scale-110"
+                                        className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-100 rounded-lg sm:rounded-xl hover:bg-black hover:text-white transition-all duration-300 transform hover:scale-110"
                                     >
                                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -258,7 +258,7 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                         href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-xl hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:scale-110"
+                                        className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-100 rounded-lg sm:rounded-xl hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:scale-110"
                                     >
                                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
@@ -268,7 +268,7 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                         href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&title=${encodeURIComponent(post.title)}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-xl hover:bg-blue-700 hover:text-white transition-all duration-300 transform hover:scale-110"
+                                        className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-100 rounded-lg sm:rounded-xl hover:bg-blue-700 hover:text-white transition-all duration-300 transform hover:scale-110"
                                     >
                                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
@@ -279,7 +279,7 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                             navigator.clipboard.writeText(window.location.href);
                                             alert('Link copied to clipboard!');
                                         }}
-                                        className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-xl hover:bg-orange-500 hover:text-white transition-all duration-300 transform hover:scale-110"
+                                        className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-100 rounded-lg sm:rounded-xl hover:bg-orange-500 hover:text-white transition-all duration-300 transform hover:scale-110"
                                     >
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -293,21 +293,21 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
 
                 {/* Post Navigation */}
                 {(previousPost || nextPost) && (
-                    <section className="bg-gradient-to-b from-white to-orange-50 py-12 sm:py-16">
-                        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <section className="bg-gradient-to-b from-white to-orange-50 py-10 sm:py-12 md:py-16">
+                        <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                 {previousPost ? (
                                     <Link
                                         href={route('blog.show', previousPost.slug)}
-                                        className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-gray-100"
+                                        className="group bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-gray-100"
                                     >
-                                        <div className="flex items-center gap-2 text-orange-500 font-semibold mb-3">
-                                            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div className="flex items-center gap-2 text-orange-500 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
+                                            <svg className="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                                             </svg>
                                             Previous Guide
                                         </div>
-                                        <h4 className="font-bold text-gray-900 line-clamp-2 group-hover:text-orange-600 transition-colors text-lg">
+                                        <h4 className="font-bold text-gray-900 line-clamp-2 group-hover:text-orange-600 transition-colors text-base sm:text-lg">
                                             {previousPost.title}
                                         </h4>
                                     </Link>
@@ -317,15 +317,15 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                 {nextPost && (
                                     <Link
                                         href={route('blog.show', nextPost.slug)}
-                                        className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-gray-100 text-right"
+                                        className="group bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-gray-100 text-right"
                                     >
-                                        <div className="flex items-center justify-end gap-2 text-orange-500 font-semibold mb-3">
+                                        <div className="flex items-center justify-end gap-2 text-orange-500 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
                                             Next Guide
-                                            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                             </svg>
                                         </div>
-                                        <h4 className="font-bold text-gray-900 line-clamp-2 group-hover:text-orange-600 transition-colors text-lg">
+                                        <h4 className="font-bold text-gray-900 line-clamp-2 group-hover:text-orange-600 transition-colors text-base sm:text-lg">
                                             {nextPost.title}
                                         </h4>
                                     </Link>
@@ -337,26 +337,26 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
 
                 {/* Related Posts Section */}
                 {relatedPosts.length > 0 && (
-                    <section className="bg-white py-12 sm:py-16 lg:py-20">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 sm:mb-10 md:mb-12 gap-4">
+                    <section className="bg-white py-10 sm:py-12 md:py-16 lg:py-20">
+                        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 sm:mb-8 md:mb-10 lg:mb-12 gap-3 sm:gap-4">
                                 <div>
-                                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+                                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-1 sm:mb-2">
                                         Related Guides
                                     </h2>
-                                    <p className="text-gray-600 text-lg font-medium">
+                                    <p className="text-gray-600 text-sm sm:text-base md:text-lg font-medium">
                                         More tips for your pool experience
                                     </p>
                                 </div>
                                 <Link 
                                     href={route('blog.index')}
-                                    className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
+                                    className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
                                 >
                                     View all →
                                 </Link>
                             </div>
                             
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
                                 {relatedPosts.map((relatedPost) => (
                                     <article
                                         key={relatedPost.id}
@@ -393,18 +393,18 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                             </div>
                                         </Link>
                                         
-                                        <div className="p-5 sm:p-6">
+                                        <div className="p-4 sm:p-5 md:p-6">
                                             <Link href={route('blog.show', relatedPost.slug)}>
-                                                <h3 className="font-bold text-gray-900 line-clamp-2 group-hover:text-orange-600 transition-colors text-lg mb-2">
+                                                <h3 className="font-bold text-gray-900 line-clamp-2 group-hover:text-orange-600 transition-colors text-base sm:text-lg mb-1 sm:mb-2">
                                                     {relatedPost.title}
                                                 </h3>
                                             </Link>
                                             {relatedPost.excerpt && (
-                                                <p className="text-gray-600 text-sm line-clamp-2 mb-4">
+                                                <p className="text-gray-600 text-xs sm:text-sm line-clamp-2 mb-3 sm:mb-4">
                                                     {relatedPost.excerpt}
                                                 </p>
                                             )}
-                                            <div className="flex items-center justify-between text-sm text-gray-500">
+                                            <div className="flex items-center justify-between text-xs sm:text-sm text-gray-500">
                                                 <span>{formatDate(relatedPost.published_at)}</span>
                                                 <Link 
                                                     href={route('blog.show', relatedPost.slug)}
@@ -422,24 +422,24 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                 )}
 
                 {/* CTA Section */}
-                <section className="bg-gradient-to-b from-orange-50 to-white py-12 sm:py-16 md:py-20">
-                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+                <section className="bg-gradient-to-b from-orange-50 to-white py-10 sm:py-12 md:py-16 lg:py-20">
+                    <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 text-center">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
                             Ready to find your perfect pool?
                         </h2>
-                        <p className="text-gray-600 text-lg mb-8 font-medium">
+                        <p className="text-gray-600 text-sm sm:text-base md:text-lg mb-6 sm:mb-8 font-medium">
                             Discover top-rated hotels with the best sunbed experiences
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                             <Link
                                 href="/destinations"
-                                className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4 rounded-lg sm:rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                             >
                                 Explore Destinations
                             </Link>
                             <Link
                                 href={route('blog.index')}
-                                className="bg-white hover:bg-gray-50 text-gray-900 font-bold px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border-2 border-gray-200"
+                                className="bg-white hover:bg-gray-50 text-gray-900 font-bold text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4 rounded-lg sm:rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border-2 border-gray-200"
                             >
                                 More Guides
                             </Link>
