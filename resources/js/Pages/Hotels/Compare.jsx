@@ -22,7 +22,7 @@ function HotelCompare({ hotels, auth }) {
                             </p>
                             <Link
                                 href="/"
-                                className="inline-block px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-3.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-2xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base transform hover:scale-105"
+                                className="inline-block px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-3.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-2xl hover:from-orange-600 hover:to-orange-700 transition-colors duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base"
                             >
                                 Start Searching
                             </Link>
@@ -50,7 +50,7 @@ function HotelCompare({ hotels, auth }) {
                             </div>
                             <Link
                                 href="/"
-                                className="w-full sm:w-auto text-center px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 border-2 border-orange-500 bg-white rounded-2xl hover:bg-orange-50 transition-all duration-300 font-sans text-xs sm:text-sm font-bold text-orange-600 whitespace-nowrap shadow-md hover:shadow-lg transform hover:scale-105 flex items-center justify-center gap-2"
+                                className="w-full sm:w-auto text-center px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 border-2 border-orange-500 bg-white rounded-2xl hover:bg-orange-50 transition-colors duration-200 font-sans text-xs sm:text-sm font-bold text-orange-600 whitespace-nowrap shadow-md hover:shadow-lg flex items-center justify-center gap-2"
                             >
                                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
@@ -65,11 +65,11 @@ function HotelCompare({ hotels, auth }) {
                     {/* Mobile Scroll Hint */}
                     <div className="lg:hidden mb-4 text-center">
                         <p className="text-xs text-gray-700 font-sans font-bold flex items-center justify-center gap-2 bg-gray-50 p-3 rounded-2xl border-2 border-gray-200">
-                            <svg className="w-4 h-4 text-gray-600 animate-pulse" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <svg className="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M6.49 20.13l1.77-1.77 9.9 9.9-1.77 1.77-9.9-9.9zm10.02-10.02l1.77-1.77 9.9 9.9-1.77 1.77-9.9-9.9zM4 12l1.41 1.41L12 6.83l6.59 6.58L20 12l-8-8-8 8z"/>
                             </svg>
                             <span>Swipe left/right to compare all hotels</span>
-                            <svg className="w-4 h-4 text-gray-600 animate-pulse" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <svg className="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
                             </svg>
                         </p>
@@ -329,7 +329,7 @@ function HotelCompare({ hotels, auth }) {
                             return (
                                 <div 
                                     key={hotel.id} 
-                                    className={`relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 w-full sm:w-[calc(50%-10px)] lg:w-[280px] xl:w-[300px] ${
+                                    className={`relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-200 w-full sm:w-[calc(50%-10px)] lg:w-[280px] xl:w-[300px] ${
                                         isPremium 
                                             ? 'bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-400' 
                                             : 'bg-white border border-gray-200'
@@ -340,8 +340,11 @@ function HotelCompare({ hotels, auth }) {
                                         <img
                                             src={hotel.main_image_url || '/images/default-hotel.jpg'}
                                             alt={hotel.name}
-                                            className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
+                                            width={300}
+                                            height={144}
+                                            className="w-full h-full object-cover"
                                             loading="lazy"
+                                            decoding="async"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
                                         
@@ -387,7 +390,7 @@ function HotelCompare({ hotels, auth }) {
                                         <div className="grid grid-cols-2 gap-2">
                                             <Link
                                                 href={`/hotels/${hotel.slug}`}
-                                                className="flex items-center justify-center px-2 py-2 sm:py-2.5 font-sans font-bold rounded-lg text-center transition-all duration-300 text-[10px] sm:text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
+                                                className="flex items-center justify-center px-2 py-2 sm:py-2.5 font-sans font-bold rounded-lg text-center transition-colors duration-200 text-[10px] sm:text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
                                             >
                                                 <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
                                                     <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
@@ -401,7 +404,7 @@ function HotelCompare({ hotels, auth }) {
                                                     href={hotel.direct_booking_url}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 text-[10px] sm:text-xs"
+                                                    className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-colors duration-200 text-[10px] sm:text-xs"
                                                 >
                                                     💰 Direct
                                                 </a>
@@ -410,7 +413,7 @@ function HotelCompare({ hotels, auth }) {
                                                     href={hotel.booking_affiliate_url}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 text-[10px] sm:text-xs"
+                                                    className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-colors duration-200 text-[10px] sm:text-xs"
                                                 >
                                                     Book Now
                                                 </a>
@@ -622,13 +625,16 @@ const HotelHeaderCell = memo(function HotelHeaderCell({ hotel }) {
                     <img
                         src={hotel.main_image_url || '/images/default-hotel.jpg'}
                         alt={hotel.name}
-                        className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-500"
+                        width={260}
+                        height={195}
+                        className="w-full h-full object-cover object-center"
                         loading="lazy"
+                        decoding="async"
                     />
                 </div>
                 <Link
                     href={`/hotels/${hotel.slug}`}
-                    className={`font-sans font-bold text-xs sm:text-sm md:text-base hover:text-orange-600 block transition-colors duration-300 px-1 sm:px-2 line-clamp-2 ${isPremium ? 'text-orange-700' : 'text-gray-900'}`}
+                    className={`font-sans font-bold text-xs sm:text-sm md:text-base hover:text-orange-600 block transition-colors duration-200 px-1 sm:px-2 line-clamp-2 ${isPremium ? 'text-orange-700' : 'text-gray-900'}`}
                 >
                     {hotel.name}
                 </Link>
