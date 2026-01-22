@@ -64,27 +64,27 @@ export default function Subscription({ currentTier, redirectTo }) {
             <div className="min-h-screen bg-gray-50 font-sans">
                 <HotelierNav />
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
                     {/* Page Header */}
-                    <div className="mb-6">
-                        <div className="flex items-center gap-3 mb-2">
+                    <div className="mb-4 sm:mb-6">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-2">
                             <Link
                                 href={route('hotelier.dashboard')}
                                 className="text-gray-500 hover:text-gray-700 transition-colors"
                             >
-                                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                                 </svg>
                             </Link>
-                            <h1 className="text-2xl font-bold text-gray-900">Upgrade Your Subscription</h1>
+                            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">Upgrade Your Subscription</h1>
                         </div>
-                        <p className="text-gray-500 text-sm ml-8">
+                        <p className="text-gray-500 text-xs sm:text-sm ml-6 sm:ml-8">
                             Unlock the ability to claim and manage your hotel profiles. Choose the plan that's right for you.
                         </p>
                         {currentTier === 'free' && (
-                            <div className="mt-3 ml-8 inline-flex items-center gap-2">
-                                <span className="text-sm text-gray-500">Current Plan:</span>
-                                <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-xs font-medium">
+                            <div className="mt-2 sm:mt-3 ml-6 sm:ml-8 inline-flex items-center gap-2">
+                                <span className="text-xs sm:text-sm text-gray-500">Current Plan:</span>
+                                <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-medium">
                                     Free Tier
                                 </span>
                             </div>
@@ -92,65 +92,65 @@ export default function Subscription({ currentTier, redirectTo }) {
                     </div>
 
                     {/* Why Upgrade Section */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-6">
-                        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                            <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
-                                <svg className="w-4 h-4 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 md:p-5 mb-4 sm:mb-6">
+                        <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
+                            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <svg className="w-3 h-3 sm:w-4 sm:h-4 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                                 </svg>
                             </div>
                             Why Upgrade?
                         </h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div className="flex items-start gap-3 p-3 bg-orange-50 rounded-lg">
-                                <div className="flex-shrink-0 w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white">
-                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+                            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 p-2 sm:p-3 bg-orange-50 rounded-lg text-center sm:text-left">
+                                <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white">
+                                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                     </svg>
                                 </div>
                                 <div>
-                                    <p className="font-medium text-gray-900 text-sm">Claim Ownership</p>
-                                    <p className="text-xs text-gray-500">Verify you own your hotel</p>
+                                    <p className="font-medium text-gray-900 text-xs sm:text-sm">Claim Ownership</p>
+                                    <p className="text-[10px] sm:text-xs text-gray-500 hidden sm:block">Verify you own your hotel</p>
                                 </div>
                             </div>
-                            <div className="flex items-start gap-3 p-3 bg-orange-50 rounded-lg">
-                                <div className="flex-shrink-0 w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white">
-                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 p-2 sm:p-3 bg-orange-50 rounded-lg text-center sm:text-left">
+                                <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white">
+                                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                                     </svg>
                                 </div>
                                 <div>
-                                    <p className="font-medium text-gray-900 text-sm">Edit Profile</p>
-                                    <p className="text-xs text-gray-500">Update descriptions & info</p>
+                                    <p className="font-medium text-gray-900 text-xs sm:text-sm">Edit Profile</p>
+                                    <p className="text-[10px] sm:text-xs text-gray-500 hidden sm:block">Update descriptions & info</p>
                                 </div>
                             </div>
-                            <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-                                <div className="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white">
-                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 p-2 sm:p-3 bg-blue-50 rounded-lg text-center sm:text-left">
+                                <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white">
+                                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
                                     </svg>
                                 </div>
                                 <div>
-                                    <p className="font-medium text-gray-900 text-sm">Upload Images</p>
-                                    <p className="text-xs text-gray-500">Add stunning photos</p>
+                                    <p className="font-medium text-gray-900 text-xs sm:text-sm">Upload Images</p>
+                                    <p className="text-[10px] sm:text-xs text-gray-500 hidden sm:block">Add stunning photos</p>
                                 </div>
                             </div>
-                            <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-                                <div className="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white">
-                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 p-2 sm:p-3 bg-blue-50 rounded-lg text-center sm:text-left">
+                                <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white">
+                                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
                                     </svg>
                                 </div>
                                 <div>
-                                    <p className="font-medium text-gray-900 text-sm">Analytics</p>
-                                    <p className="text-xs text-gray-500">Track your performance</p>
+                                    <p className="font-medium text-gray-900 text-xs sm:text-sm">Analytics</p>
+                                    <p className="text-[10px] sm:text-xs text-gray-500 hidden sm:block">Track your performance</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Pricing Cards */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
                         {plans.map((plan) => (
                             <PricingCard 
                                 key={plan.id} 
@@ -162,21 +162,21 @@ export default function Subscription({ currentTier, redirectTo }) {
                     </div>
 
                     {/* Feature Comparison Table */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-6">
-                        <div className="px-6 py-4 border-b border-gray-100">
-                            <h2 className="text-lg font-semibold text-gray-900">
+                    <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-4 sm:mb-6">
+                        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
+                            <h2 className="text-base sm:text-lg font-semibold text-gray-900">
                                 Feature Comparison
                             </h2>
                         </div>
                         <div className="overflow-hidden">
                             <div className="overflow-x-auto">
-                                <table className="w-full">
+                                <table className="w-full min-w-[400px]">
                                     <thead>
                                         <tr className="bg-gray-50 border-b border-gray-100">
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500">Feature</th>
-                                            <th className="px-4 py-3 text-center text-xs font-medium text-gray-500">Free</th>
-                                            <th className="px-4 py-3 text-center text-xs font-medium text-orange-600">Enhanced</th>
-                                            <th className="px-4 py-3 text-center text-xs font-medium text-blue-600">Premium</th>
+                                            <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500">Feature</th>
+                                            <th className="px-2 sm:px-4 py-2 sm:py-3 text-center text-[10px] sm:text-xs font-medium text-gray-500">Free</th>
+                                            <th className="px-2 sm:px-4 py-2 sm:py-3 text-center text-[10px] sm:text-xs font-medium text-orange-600">Enhanced</th>
+                                            <th className="px-2 sm:px-4 py-2 sm:py-3 text-center text-[10px] sm:text-xs font-medium text-blue-600">Premium</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-100">
@@ -199,11 +199,11 @@ export default function Subscription({ currentTier, redirectTo }) {
                     </div>
 
                     {/* FAQ Section */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-                        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                    <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-100 p-4 sm:p-5 md:p-6 mb-4 sm:mb-6">
+                        <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
                             Frequently Asked Questions
                         </h2>
-                        <div className="space-y-3">
+                        <div className="space-y-2 sm:space-y-3">
                             <FAQItem 
                                 question="Can I cancel my subscription anytime?"
                                 answer="Yes, you can cancel your subscription at any time. Your access will continue until the end of your billing period."
@@ -256,45 +256,45 @@ function PricingCard({ plan, currentTier, redirectTo }) {
     const isCurrentPlan = currentTier === plan.id;
 
     return (
-        <div className={`relative bg-white rounded-xl shadow-sm border ${plan.popular ? style.popular : 'border-gray-100'} overflow-hidden transition-all hover:shadow-md`}>
+        <div className={`relative bg-white rounded-lg sm:rounded-xl shadow-sm border ${plan.popular ? style.popular : 'border-gray-100'} overflow-hidden transition-all hover:shadow-md`}>
             {plan.popular && (
-                <div className={`absolute top-0 right-0 ${style.popularBadge} text-white px-3 py-1 text-xs font-medium rounded-bl-lg`}>
+                <div className={`absolute top-0 right-0 ${style.popularBadge} text-white px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-bl-lg`}>
                     MOST POPULAR
                 </div>
             )}
             
-            <div className={`${style.headerBg} p-5 text-white`}>
+            <div className={`${style.headerBg} p-4 sm:p-5 text-white`}>
                 <div className="flex items-center gap-2 mb-1">
-                    <span className="text-2xl">{plan.icon}</span>
-                    <h3 className="text-xl font-semibold">{plan.name}</h3>
+                    <span className="text-xl sm:text-2xl">{plan.icon}</span>
+                    <h3 className="text-lg sm:text-xl font-semibold">{plan.name}</h3>
                 </div>
                 {plan.tagline && (
-                    <p className="text-sm text-white/90 mb-1">"{plan.tagline}"</p>
+                    <p className="text-xs sm:text-sm text-white/90 mb-1">"{plan.tagline}"</p>
                 )}
-                <p className="text-xs text-white/80">{plan.description}</p>
+                <p className="text-[10px] sm:text-xs text-white/80">{plan.description}</p>
             </div>
 
-            <div className="p-5">
-                <div className="flex items-baseline mb-4">
-                    <span className="text-3xl font-bold text-gray-900">{plan.price}</span>
-                    <span className="text-gray-500 text-sm ml-1">{plan.period}</span>
+            <div className="p-4 sm:p-5">
+                <div className="flex items-baseline mb-3 sm:mb-4">
+                    <span className="text-2xl sm:text-3xl font-bold text-gray-900">{plan.price}</span>
+                    <span className="text-gray-500 text-xs sm:text-sm ml-1">{plan.period}</span>
                 </div>
 
-                <ul className="space-y-2 mb-5">
+                <ul className="space-y-1.5 sm:space-y-2 mb-4 sm:mb-5">
                     {plan.features.map((feature, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                            <svg className={`w-4 h-4 ${style.check} flex-shrink-0 mt-0.5`} fill="currentColor" viewBox="0 0 20 20">
+                        <li key={index} className="flex items-start gap-1.5 sm:gap-2">
+                            <svg className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${style.check} flex-shrink-0 mt-0.5`} fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
-                            <span className="text-gray-700 text-sm">{feature}</span>
+                            <span className="text-gray-700 text-xs sm:text-sm">{feature}</span>
                         </li>
                     ))}
                     {plan.notIncluded.map((feature, index) => (
-                        <li key={`not-${index}`} className="flex items-start gap-2 opacity-50">
-                            <svg className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <li key={`not-${index}`} className="flex items-start gap-1.5 sm:gap-2 opacity-50">
+                            <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                             </svg>
-                            <span className="text-gray-400 text-sm line-through">{feature}</span>
+                            <span className="text-gray-400 text-xs sm:text-sm line-through">{feature}</span>
                         </li>
                     ))}
                 </ul>
@@ -302,14 +302,14 @@ function PricingCard({ plan, currentTier, redirectTo }) {
                 {isCurrentPlan ? (
                     <button
                         disabled
-                        className="w-full py-2.5 px-4 rounded-lg font-medium text-sm text-gray-500 bg-gray-100 cursor-not-allowed"
+                        className="w-full py-2 sm:py-2.5 px-4 rounded-lg font-medium text-xs sm:text-sm text-gray-500 bg-gray-100 cursor-not-allowed"
                     >
                         Current Plan
                     </button>
                 ) : (
                     <Link
                         href={route('hotelier.subscribe', { plan: plan.id, redirect: redirectTo })}
-                        className={`block w-full py-2.5 px-4 rounded-lg font-medium text-sm text-white ${style.button} text-center transition-colors`}
+                        className={`block w-full py-2 sm:py-2.5 px-4 rounded-lg font-medium text-xs sm:text-sm text-white ${style.button} text-center transition-colors`}
                     >
                         Choose {plan.name}
                     </Link>
@@ -321,9 +321,9 @@ function PricingCard({ plan, currentTier, redirectTo }) {
 
 function FAQItem({ question, answer }) {
     return (
-        <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
-            <h3 className="font-medium text-gray-900 text-sm mb-1">{question}</h3>
-            <p className="text-gray-500 text-sm">{answer}</p>
+        <div className="p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-100">
+            <h3 className="font-medium text-gray-900 text-xs sm:text-sm mb-0.5 sm:mb-1">{question}</h3>
+            <p className="text-gray-500 text-xs sm:text-sm">{answer}</p>
         </div>
     );
 }
@@ -332,27 +332,27 @@ function ComparisonRow({ feature, free, enhanced, premium }) {
     const renderValue = (value) => {
         if (value === true) {
             return (
-                <svg className="w-4 h-4 text-orange-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
             );
         }
         if (value === false) {
             return (
-                <svg className="w-4 h-4 text-gray-300 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-300 mx-auto" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
             );
         }
-        return <span className="text-xs font-medium text-gray-700">{value}</span>;
+        return <span className="text-[10px] sm:text-xs font-medium text-gray-700">{value}</span>;
     };
 
     return (
         <tr className="hover:bg-gray-50 transition-colors border-b border-gray-50">
-            <td className="px-6 py-2.5 text-sm text-gray-900">{feature}</td>
-            <td className="px-4 py-2.5 text-center">{renderValue(free)}</td>
-            <td className="px-4 py-2.5 text-center bg-orange-50/30">{renderValue(enhanced)}</td>
-            <td className="px-4 py-2.5 text-center bg-blue-50/30">{renderValue(premium)}</td>
+            <td className="px-3 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-900">{feature}</td>
+            <td className="px-2 sm:px-4 py-2 sm:py-2.5 text-center">{renderValue(free)}</td>
+            <td className="px-2 sm:px-4 py-2 sm:py-2.5 text-center bg-orange-50/30">{renderValue(enhanced)}</td>
+            <td className="px-2 sm:px-4 py-2 sm:py-2.5 text-center bg-blue-50/30">{renderValue(premium)}</td>
         </tr>
     );
 }

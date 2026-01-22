@@ -33,13 +33,13 @@ export default function OverviewTab({ analytics, hotel }) {
         : 0;
     
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
             <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1 flex items-center gap-2">
-                    <ChartIcon className="w-5 h-5 text-orange-500" />
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1 flex items-center gap-1.5 sm:gap-2">
+                    <ChartIcon className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
                     Performance Overview
                 </h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-xs sm:text-sm text-gray-500">
                     See how guests interact with your hotel profile on Sunbed Ranker.
                 </p>
             </div>
@@ -48,7 +48,7 @@ export default function OverviewTab({ analytics, hotel }) {
             <PerformanceChart data={chartData} />
 
             {/* Summary Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                 <SummaryCard
                     icon={<EyeIcon className="w-5 h-5 text-orange-500" />}
                     title="Total Profile Views"

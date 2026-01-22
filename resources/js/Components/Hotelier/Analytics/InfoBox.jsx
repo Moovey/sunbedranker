@@ -30,12 +30,12 @@ export default function InfoBox({ color, title, icon, items }) {
     const colors = colorClasses[color] || colorClasses.blue;
 
     return (
-        <div className={`${colors.bg} rounded-xl p-5 border ${colors.border}`}>
-            <h4 className={`font-bold ${colors.title} mb-2 flex items-center gap-2`}>
-                {icon}
+        <div className={`${colors.bg} rounded-xl p-3 sm:p-4 md:p-5 border ${colors.border}`}>
+            <h4 className={`font-bold ${colors.title} mb-1.5 sm:mb-2 flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base`}>
+                <span className="[&>svg]:w-3.5 [&>svg]:h-3.5 sm:[&>svg]:w-4 sm:[&>svg]:h-4">{icon}</span>
                 {title}
             </h4>
-            <ul className={`text-sm ${colors.text} space-y-1`}>
+            <ul className={`text-xs sm:text-sm ${colors.text} space-y-0.5 sm:space-y-1`}>
                 {items.map((item, index) => (
                     <li key={index}>• {item}</li>
                 ))}

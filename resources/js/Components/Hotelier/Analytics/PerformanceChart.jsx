@@ -1,10 +1,10 @@
 export default function PerformanceChart({ data }) {
     return (
-        <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-            <h4 className="font-semibold text-gray-900 mb-4">Last 30 Days</h4>
-            <div className="space-y-4">
+        <div className="bg-white rounded-xl p-3 sm:p-4 md:p-6 border border-gray-100 shadow-sm">
+            <h4 className="font-semibold text-gray-900 text-sm sm:text-base mb-3 sm:mb-4">Last 30 Days</h4>
+            <div className="space-y-3 sm:space-y-4">
                 {/* Simple bar chart */}
-                <div className="flex items-end gap-1 h-40 overflow-x-auto pb-2">
+                <div className="flex items-end gap-0.5 sm:gap-1 h-32 sm:h-40 overflow-x-auto pb-2 scrollbar-hide">
                     {data.map((day, index) => {
                         const maxViews = Math.max(...data.map(d => d.views), 1);
                         const heightPercent = (day.views / maxViews) * 100;
@@ -12,7 +12,7 @@ export default function PerformanceChart({ data }) {
                         return (
                             <div
                                 key={index}
-                                className="flex-shrink-0 w-6 group relative h-full flex items-end"
+                                className="flex-shrink-0 w-4 sm:w-5 md:w-6 group relative h-full flex items-end"
                             >
                                 <div
                                     className={`rounded-t w-full transition-all ${
@@ -22,7 +22,7 @@ export default function PerformanceChart({ data }) {
                                     }`}
                                     style={{ height: `${heightPx}px` }}
                                 />
-                                <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                                <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 hidden sm:block">
                                     {day.formatted_date}: {day.views} views
                                 </div>
                             </div>

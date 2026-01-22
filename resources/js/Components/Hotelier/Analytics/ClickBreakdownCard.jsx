@@ -42,22 +42,22 @@ export default function ClickBreakdownCard({ title, icon, value, percent, descri
     const colors = colorClasses[color] || colorClasses.blue;
 
     return (
-        <div className={`${colors.bg} rounded-xl p-5`}>
-            <div className="flex items-center justify-between mb-3">
-                <h4 className={`font-semibold text-sm ${colors.title}`}>{title}</h4>
-                {typeof icon === 'string' ? <span className="text-xl">{icon}</span> : icon}
+        <div className={`${colors.bg} rounded-xl p-3 sm:p-4 md:p-5`}>
+            <div className="flex items-center justify-between mb-2 sm:mb-3 gap-2">
+                <h4 className={`font-semibold text-xs sm:text-sm ${colors.title}`}>{title}</h4>
+                {typeof icon === 'string' ? <span className="text-lg sm:text-xl">{icon}</span> : <span className="[&>svg]:w-5 [&>svg]:h-5 sm:[&>svg]:w-6 sm:[&>svg]:h-6 flex-shrink-0">{icon}</span>}
             </div>
-            <div className={`text-3xl font-bold ${colors.value} mb-2`}>
+            <div className={`text-2xl sm:text-3xl font-bold ${colors.value} mb-2`}>
                 {value.toLocaleString()}
             </div>
             <div className="flex items-center gap-2">
-                <div className={`flex-1 ${colors.progressBg} rounded-full h-2`}>
+                <div className={`flex-1 ${colors.progressBg} rounded-full h-1.5 sm:h-2`}>
                     <div 
-                        className={`${colors.progressFill} h-2 rounded-full transition-all`}
+                        className={`${colors.progressFill} h-1.5 sm:h-2 rounded-full transition-all`}
                         style={{ width: `${percent}%` }}
                     />
                 </div>
-                <span className={`text-sm font-semibold ${colors.percent}`}>{percent}%</span>
+                <span className={`text-xs sm:text-sm font-semibold ${colors.percent}`}>{percent}%</span>
             </div>
             <p className={`text-xs ${colors.description} mt-2`}>{description}</p>
         </div>
