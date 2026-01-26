@@ -214,21 +214,21 @@ function HotelCompare({ hotels, auth }) {
                                     formatValue={(value) => <BooleanBadge value={value} />}
                                 />
 
+                                {/* Jacuzzi/Hot Tub */}
+                                <ComparisonRow
+                                    label="Jacuzzi / Hot Tub"
+                                    icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" fill="currentColor" viewBox="0 0 24 24"><path d="M7 6c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1zm2.5 2c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm8.49 3.14c.42-.15.8-.39 1.12-.7l1.07 1.07c-.67.66-1.5 1.14-2.45 1.36-.71 4.19-4.23 7.36-8.48 7.36A8.757 8.757 0 010 10.5h2c0 3.72 3.01 6.75 6.75 6.75 2.94 0 5.45-1.89 6.37-4.51-1.92-.14-3.46-1.69-3.59-3.61H9.38C8.62 9.06 8 9.61 8 10.3v1.2H6v-1.2c0-1.76 1.5-3.2 3.38-3.3h5.12c.3-2.08 2.08-3.67 4.25-3.67 2.37 0 4.28 1.89 4.28 4.22 0 1.48-.77 2.78-1.93 3.54l-.11.05z"/></svg>}
+                                    hotels={hotels}
+                                    getValue={(hotel) => hotel.pool_criteria?.has_jacuzzi}
+                                    formatValue={(value) => <BooleanBadge value={value} />}
+                                />
+
                                 {/* Pool Bar */}
                                 <ComparisonRow
                                     label="Pool Bar"
                                     icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M21 5V3H3v2l8 9v5H6v2h12v-2h-5v-5l8-9zM7.43 7L5.66 5h12.69l-1.78 2H7.43z"/></svg>}
                                     hotels={hotels}
                                     getValue={(hotel) => hotel.pool_criteria?.has_pool_bar}
-                                    formatValue={(value) => <BooleanBadge value={value} />}
-                                />
-
-                                {/* Lazy River */}
-                                <ComparisonRow
-                                    label="Lazy River"
-                                    icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M22 21c-1.11 0-1.73-.37-2.18-.64-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.45.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.45.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36s-.78.13-1.15.36c-.46.27-1.08.64-2.19.64v-2c.56 0 .78-.13 1.15-.36.46-.27 1.08-.64 2.19-.64s1.73.37 2.18.64c.37.23.59.36 1.15.36.56 0 .78-.13 1.15-.36.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36s.78-.13 1.15-.36c.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.23.59.36 1.15.36v2z"/></svg>}
-                                    hotels={hotels}
-                                    getValue={(hotel) => hotel.pool_criteria?.has_lazy_river}
                                     formatValue={(value) => <BooleanBadge value={value} />}
                                 />
 
@@ -244,19 +244,19 @@ function HotelCompare({ hotels, auth }) {
                                     formatValue={(value) => <BooleanBadge value={value} />}
                                 />
 
-                                {/* Splash Area */}
+                                {/* Waterslide */}
                                 <ComparisonRow
-                                    label="Splash Area"
-                                    icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>}
+                                    label="Waterslide"
+                                    icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-500" fill="currentColor" viewBox="0 0 24 24"><path d="M18 4l-2 3h3l-4 5h3l-6 8v-6H9l4-5H9l5-5h4z"/></svg>}
                                     hotels={hotels}
-                                    getValue={(hotel) => hotel.pool_criteria?.has_splash_area}
+                                    getValue={(hotel) => hotel.pool_criteria?.has_waterslide}
                                     formatValue={(value) => <BooleanBadge value={value} />}
                                 />
 
                                 {/* Lifeguard */}
                                 <ComparisonRow
                                     label="Lifeguard on Duty"
-                                    icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>}
+                                    icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>}
                                     hotels={hotels}
                                     getValue={(hotel) => hotel.pool_criteria?.has_lifeguard}
                                     formatValue={(value) => <BooleanBadge value={value} />}
@@ -264,41 +264,50 @@ function HotelCompare({ hotels, auth }) {
 
                                 {/* Adults Only */}
                                 <ComparisonRow
-                                    label="Adults Only"
-                                    icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>}
+                                    label="Adults Only Area"
+                                    icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>}
                                     hotels={hotels}
-                                    getValue={(hotel) => hotel.pool_criteria?.is_adults_only}
+                                    getValue={(hotel) => hotel.pool_criteria?.is_adults_only || hotel.pool_criteria?.has_adult_sun_terrace}
                                     formatValue={(value) => <BooleanBadge value={value} />}
                                 />
 
                                 {/* Section Header - Comfort */}
-                                <SectionHeader title="Comfort & Amenities" color="orange" />
+                                <SectionHeader title="Comfort & Service" color="orange" />
+
+                                {/* Luxury Cabanas */}
+                                <ComparisonRow
+                                    label="Luxury Cabanas"
+                                    icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h14v-8h3L12 3zm0 12.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>}
+                                    hotels={hotels}
+                                    getValue={(hotel) => hotel.pool_criteria?.has_luxury_cabanas}
+                                    formatValue={(value) => <BooleanBadge value={value} />}
+                                />
+
+                                {/* Waiter Service */}
+                                <ComparisonRow
+                                    label="Poolside Waiter Service"
+                                    icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24"><path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05l-2.97 1.99-.73-2.88L21.22 3l-2.22 1.5L17.07 0l-1.93 4.17-2.01-1.32 1.49 5.91-2.6 1.73c-.94-1.41-2.62-2.34-4.56-2.09-2.02.26-3.69 1.87-4.01 3.88-.42 2.67 1.56 4.99 4.03 5.29v2.26a4 4 0 01-4 4H2v2h4c3.31 0 6-2.69 6-6v-2.29c.82-.12 1.58-.42 2.24-.85l2.4 5.24 1.42-1.08z"/></svg>}
+                                    hotels={hotels}
+                                    getValue={(hotel) => hotel.pool_criteria?.has_waiter_service}
+                                    formatValue={(value) => <BooleanBadge value={value} />}
+                                />
 
                                 {/* Shade Areas */}
                                 <ComparisonRow
                                     label="Shade Areas"
                                     icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M14.5 6.92L13 5.77V3.4c0-.26.22-.48.5-.48s.5.21.5.48V4h1v-.6C15 2.07 13.88 1 12.5 1S10 2.07 10 3.4v2.37L8.5 6.92 6 6.07l5.05 15.25c.15.45.55.68.95.68s.8-.23.95-.69L18 6.07l-3.5.85zM13.28 8.5l.76.58.92-.23L13 14.8V8.29l.28.21z"/></svg>}
                                     hotels={hotels}
-                                    getValue={(hotel) => hotel.pool_criteria?.has_shade_areas}
+                                    getValue={(hotel) => hotel.pool_criteria?.shade_options?.length > 0}
                                     formatValue={(value) => <BooleanBadge value={value} />}
                                 />
 
-                                {/* Towel Service */}
+                                {/* Towel Policy */}
                                 <ComparisonRow
                                     label="Towel Service"
                                     icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"/></svg>}
                                     hotels={hotels}
-                                    getValue={(hotel) => hotel.pool_criteria?.has_towel_service}
-                                    formatValue={(value) => <BooleanBadge value={value} />}
-                                />
-
-                                {/* Food Service */}
-                                <ComparisonRow
-                                    label="Poolside Food Service"
-                                    icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>}
-                                    hotels={hotels}
-                                    getValue={(hotel) => hotel.pool_criteria?.has_food_service}
-                                    formatValue={(value) => <BooleanBadge value={value} />}
+                                    getValue={(hotel) => hotel.pool_criteria?.towel_reservation_policy}
+                                    formatValue={(value) => value ? (value === 'free' ? '✅ Free' : value === 'deposit' ? '💰 Deposit' : value.charAt(0).toUpperCase() + value.slice(1)) : '-'}
                                 />
                             </tbody>
                         </table>
