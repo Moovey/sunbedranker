@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -23,8 +24,21 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // First, set a dummy password for users with NULL passwords
+        DB::table('users')->whereNull('password')->update([
+            'password' => bcrypt('temporary_password_' . time())
+        ]);
+
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['google_id', 'avatar']);
+            if (Schema::hasColumn('users', 'google_id')) {
+                $table->dropColumn('google_id');
+            }
+            if (Schema::hasColumn('users', 'avatar')) {
+                $table->dropColumn('avatar');
+            }
+        });
+
+        Schema::table('users', function (Blueprint $table) {
             $table->string('password')->nullable(false)->change();
         });
     }
