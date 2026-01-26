@@ -1,10 +1,28 @@
 import Header from '@/Components/Header';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
 
 export default function ForgotPassword({ status }) {
     const { data, setData, post, processing, errors } = useForm({
         email: '',
     });
+
+    const [cooldown, setCooldown] = useState(0);
+
+    // Cooldown timer effect
+    useEffect(() => {
+        if (cooldown > 0) {
+            const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [cooldown]);
+
+    // Start cooldown when email is sent successfully
+    useEffect(() => {
+        if (status) {
+            setCooldown(60); // 60 second cooldown after successful send
+        }
+    }, [status]);
 
     const submit = (e) => {
         e.preventDefault();
@@ -80,10 +98,10 @@ export default function ForgotPassword({ status }) {
 
                                     <button
                                         type="submit"
-                                        disabled={processing}
+                                        disabled={processing || cooldown > 0}
                                         className="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 hover:shadow-xl transform hover:scale-105 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
                                     >
-                                        {processing ? 'Sending...' : 'Send Reset Link'}
+                                        {processing ? 'Sending...' : cooldown > 0 ? `Wait ${cooldown}s` : 'Send Reset Link'}
                                     </button>
                                 </div>
                             </form>

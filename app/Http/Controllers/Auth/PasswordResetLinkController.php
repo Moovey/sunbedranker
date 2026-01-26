@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -32,6 +33,19 @@ class PasswordResetLinkController extends Controller
         $request->validate([
             'email' => 'required|email',
         ]);
+
+        // Rate limiting: 3 attempts per minute per email
+        $key = 'password-reset:' . $request->ip() . ':' . $request->email;
+        
+        if (RateLimiter::tooManyAttempts($key, 3)) {
+            $seconds = RateLimiter::availableIn($key);
+            
+            throw ValidationException::withMessages([
+                'email' => ["Too many reset attempts. Please wait {$seconds} seconds before trying again."],
+            ]);
+        }
+
+        RateLimiter::hit($key, 60); // 60 seconds decay
 
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
