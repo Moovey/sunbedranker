@@ -49,6 +49,8 @@ class User extends Authenticatable
         'role',
         'last_login_at',
         'profile_picture',
+        'google_id',
+        'avatar',
     ];
 
     /**
