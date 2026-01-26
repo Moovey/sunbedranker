@@ -7,6 +7,10 @@
         <meta name="description" content="Find the best hotel pools and sunbeds. Compare hotels by pool quality, sunbed availability, sun exposure, and atmosphere ratings." />
         <meta name="robots" content="index, follow" />
 
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" href="/images/logo.png">
+        <link rel="apple-touch-icon" href="/images/logo.png">
+
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts - Preconnect and preload for faster loading -->
