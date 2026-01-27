@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -17,6 +18,11 @@ use Illuminate\Http\RedirectResponse;
 
 class ContentManagementController extends Controller
 {
+    /**
+     * Cache keys for content management
+     */
+    public const CACHE_KEY_STATS = 'admin.content.stats';
+    private const STATS_TTL_MINUTES = 10;
     /**
      * Display content management dashboard
      */
@@ -61,15 +67,8 @@ class ContentManagementController extends Controller
         // All categories for filter dropdown
         $allCategories = Category::orderBy('name')->get();
 
-        // Stats
-        $stats = [
-            'total_posts' => Post::count(),
-            'published_posts' => Post::where('status', 'published')->count(),
-            'draft_posts' => Post::where('status', 'draft')->count(),
-            'total_categories' => Category::count(),
-            'total_tags' => Tag::count(),
-            'total_views' => Post::sum('views_count'),
-        ];
+        // Get cached stats
+        $stats = $this->getCachedStats();
 
         return Inertia::render('Admin/Content/Index', [
             'posts' => $posts,
@@ -425,5 +424,30 @@ class ContentManagementController extends Controller
         ]);
 
         return back()->with('success', 'Post status updated to ' . $newStatus);
+    }
+
+    /**
+     * Get cached stats (10 min TTL)
+     */
+    private function getCachedStats(): array
+    {
+        return Cache::remember(self::CACHE_KEY_STATS, now()->addMinutes(self::STATS_TTL_MINUTES), function () {
+            return [
+                'total_posts' => Post::count(),
+                'published_posts' => Post::where('status', 'published')->count(),
+                'draft_posts' => Post::where('status', 'draft')->count(),
+                'total_categories' => Category::count(),
+                'total_tags' => Tag::count(),
+                'total_views' => Post::sum('views_count'),
+            ];
+        });
+    }
+
+    /**
+     * Clear stats cache
+     */
+    public static function clearStatsCache(): void
+    {
+        Cache::forget(self::CACHE_KEY_STATS);
     }
 }

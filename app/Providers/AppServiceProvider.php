@@ -12,9 +12,11 @@ use App\Listeners\SendSubscriptionUpdatedNotification;
 use App\Listeners\SendTemporaryAccessGrantedNotification;
 use App\Models\Hotel;
 use App\Models\HotelClaim;
+use App\Models\Post;
 use App\Models\Review;
 use App\Observers\HotelObserver;
 use App\Observers\HotelClaimObserver;
+use App\Observers\PostObserver;
 use App\Observers\ReviewObserver;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -43,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
         // Register model observers for cache invalidation
         Hotel::observe(HotelObserver::class);
         HotelClaim::observe(HotelClaimObserver::class);
+        Post::observe(PostObserver::class);
         Review::observe(ReviewObserver::class);
 
         // Register event listeners
