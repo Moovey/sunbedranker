@@ -12,7 +12,9 @@ use App\Models\PoolCriteria;
 use App\Models\Badge;
 use App\Services\HotelScoringService;
 use App\Services\AmadeusService;
+use App\Jobs\ProcessHotelImages;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
@@ -26,6 +28,12 @@ use Illuminate\Database\Eloquent\Builder;
 
 class HotelManagementController extends Controller
 {
+    /**
+     * Cache keys for hotel management
+     */
+    public const CACHE_KEY_DESTINATIONS = 'admin.hotels.destinations';
+    private const DESTINATIONS_TTL_MINUTES = 10;
+
     public function __construct(
         protected HotelScoringService $scoringService,
         protected AmadeusService $amadeusService
@@ -66,11 +74,23 @@ class HotelManagementController extends Controller
     }
 
     /**
-     * Get active destinations for dropdown.
+     * Get active destinations for dropdown (cached).
      */
     private function getActiveDestinations()
     {
-        return Destination::orderBy('name')->get();
+        return Cache::remember(
+            self::CACHE_KEY_DESTINATIONS,
+            now()->addMinutes(self::DESTINATIONS_TTL_MINUTES),
+            fn () => Destination::orderBy('name')->get()
+        );
+    }
+
+    /**
+     * Clear destinations cache.
+     */
+    public static function clearDestinationsCache(): void
+    {
+        Cache::forget(self::CACHE_KEY_DESTINATIONS);
     }
 
     public function create(): Response
@@ -188,6 +208,10 @@ class HotelManagementController extends Controller
 
             // Handle image uploads
             $validated = $this->handleImageUploads($request, $validated);
+            
+            // Extract uploaded paths for background processing
+            $uploadedPaths = $validated['_uploaded_paths'] ?? ['main' => null, 'gallery' => []];
+            unset($validated['_uploaded_paths']);
 
             // Separate pool criteria from hotel data
             $poolCriteriaData = $this->extractPoolCriteriaData($validated);
@@ -212,6 +236,9 @@ class HotelManagementController extends Controller
                 $this->scoringService->calculateAndUpdateScores($hotel->fresh());
             }
 
+            // Dispatch image processing job for background optimization
+            $this->dispatchImageProcessingJob($hotel, $uploadedPaths);
+
             return redirect()->route('admin.hotels.index')
                 ->with('success', 'Hotel created successfully with pool criteria scores calculated.');
 
@@ -235,13 +262,16 @@ class HotelManagementController extends Controller
 
     /**
      * Handle image uploads for hotel creation/update.
+     * Returns array with validated data and uploaded paths for processing.
      */
     private function handleImageUploads(Request $request, array $validated): array
     {
         $disk = config('filesystems.public_uploads', 'public');
+        $uploadedPaths = ['main' => null, 'gallery' => []];
         
         if ($request->hasFile('main_image')) {
             $validated['main_image'] = $request->file('main_image')->store('hotels/main', $disk);
+            $uploadedPaths['main'] = $validated['main_image'];
         }
 
         if ($request->hasFile('gallery_images')) {
@@ -250,8 +280,10 @@ class HotelManagementController extends Controller
                 $galleryPaths[] = $image->store('hotels/gallery', $disk);
             }
             $validated['images'] = $galleryPaths;
+            $uploadedPaths['gallery'] = $galleryPaths;
         }
 
+        $validated['_uploaded_paths'] = $uploadedPaths;
         return $validated;
     }
 
@@ -414,6 +446,10 @@ class HotelManagementController extends Controller
 
             // Handle image uploads
             $validated = $this->handleImageUploadsForUpdate($request, $validated, $hotel);
+            
+            // Extract uploaded paths for background processing
+            $uploadedPaths = $validated['_uploaded_paths'] ?? ['main' => null, 'gallery' => []];
+            unset($validated['_uploaded_paths']);
 
             // Extract pool criteria from validated data
             $poolCriteriaData = $this->extractPoolCriteriaData($validated);
@@ -439,6 +475,9 @@ class HotelManagementController extends Controller
                 // Recalculate scores
                 $this->scoringService->calculateAndUpdateScores($hotel->fresh());
             }
+
+            // Dispatch image processing job for background optimization
+            $this->dispatchImageProcessingJob($hotel, $uploadedPaths);
 
             return redirect()->route('admin.hotels.edit', $hotel->id)->with('success', 'Hotel updated successfully!');
 
@@ -467,10 +506,12 @@ class HotelManagementController extends Controller
 
     /**
      * Handle image uploads for hotel update.
+     * Returns array with validated data and uploaded paths for processing.
      */
     private function handleImageUploadsForUpdate(Request $request, array $validated, Hotel $hotel): array
     {
         $disk = config('filesystems.public_uploads', 'public');
+        $uploadedPaths = ['main' => null, 'gallery' => []];
         
         if ($request->hasFile('main_image')) {
             // Delete old image if exists and it's a local storage path (not a URL)
@@ -478,6 +519,7 @@ class HotelManagementController extends Controller
                 Storage::disk($disk)->delete($hotel->main_image);
             }
             $validated['main_image'] = $request->file('main_image')->store('hotels/main', $disk);
+            $uploadedPaths['main'] = $validated['main_image'];
         } else {
             // Remove from validated to preserve existing image
             unset($validated['main_image']);
@@ -490,12 +532,37 @@ class HotelManagementController extends Controller
             }
             $currentGallery = $hotel->images ?? [];
             $validated['images'] = array_merge($currentGallery, $galleryPaths);
+            $uploadedPaths['gallery'] = $galleryPaths;
         }
 
         // Remove gallery_images key from hotel data (it's not a model field)
         unset($validated['gallery_images']);
 
+        $validated['_uploaded_paths'] = $uploadedPaths;
         return $validated;
+    }
+
+    /**
+     * Dispatch image processing job for background optimization.
+     */
+    private function dispatchImageProcessingJob(Hotel $hotel, array $uploadedPaths): void
+    {
+        $imagesToProcess = [];
+
+        // Add main image if uploaded
+        if (!empty($uploadedPaths['main'])) {
+            $imagesToProcess[] = $uploadedPaths['main'];
+        }
+
+        // Add gallery images if uploaded
+        if (!empty($uploadedPaths['gallery'])) {
+            $imagesToProcess = array_merge($imagesToProcess, $uploadedPaths['gallery']);
+        }
+
+        // Dispatch job if there are images to process
+        if (!empty($imagesToProcess)) {
+            ProcessHotelImages::dispatch($hotel, $imagesToProcess);
+        }
     }
 
     public function updatePoolCriteria(Request $request, Hotel $hotel): RedirectResponse

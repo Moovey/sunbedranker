@@ -10,10 +10,12 @@ use App\Listeners\SendClaimApprovedNotification;
 use App\Listeners\SendClaimRejectedNotification;
 use App\Listeners\SendSubscriptionUpdatedNotification;
 use App\Listeners\SendTemporaryAccessGrantedNotification;
+use App\Models\Destination;
 use App\Models\Hotel;
 use App\Models\HotelClaim;
 use App\Models\Post;
 use App\Models\Review;
+use App\Observers\DestinationObserver;
 use App\Observers\HotelObserver;
 use App\Observers\HotelClaimObserver;
 use App\Observers\PostObserver;
@@ -43,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
         Vite::prefetch(concurrency: 3);
 
         // Register model observers for cache invalidation
+        Destination::observe(DestinationObserver::class);
         Hotel::observe(HotelObserver::class);
         HotelClaim::observe(HotelClaimObserver::class);
         Post::observe(PostObserver::class);

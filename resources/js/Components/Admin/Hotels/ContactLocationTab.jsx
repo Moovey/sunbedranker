@@ -56,7 +56,11 @@ function LocationMarker({ position, setPosition, onLocationSelect }) {
         },
     });
 
-    return position ? <Marker position={position} /> : null;
+    // Only render marker if position is valid
+    if (!position || !isValidLatLng(position[0], position[1])) {
+        return null;
+    }
+    return <Marker position={position} />;
 }
 
 // Component to recenter map when coordinates change externally
@@ -64,7 +68,7 @@ function MapController({ center }) {
     const map = useMap();
     
     useEffect(() => {
-        if (center && center[0] && center[1]) {
+        if (center && isValidLatLng(center[0], center[1])) {
             map.setView(center, 15);
         }
     }, [center, map]);
@@ -72,10 +76,21 @@ function MapController({ center }) {
     return null;
 }
 
+// Helper function to validate latitude and longitude values
+function isValidLatLng(lat, lng) {
+    const latNum = typeof lat === 'number' ? lat : parseFloat(lat);
+    const lngNum = typeof lng === 'number' ? lng : parseFloat(lng);
+    return !isNaN(latNum) && !isNaN(lngNum) && 
+           latNum >= -90 && latNum <= 90 && 
+           lngNum >= -180 && lngNum <= 180;
+}
+
 export default function ContactLocationTab({ data, setData, errors }) {
-    const [markerPosition, setMarkerPosition] = useState(
-        data.latitude && data.longitude ? [parseFloat(data.latitude), parseFloat(data.longitude)] : null
-    );
+    const [markerPosition, setMarkerPosition] = useState(() => {
+        const lat = parseFloat(data.latitude);
+        const lng = parseFloat(data.longitude);
+        return isValidLatLng(lat, lng) ? [lat, lng] : null;
+    });
     const [isSearching, setIsSearching] = useState(false);
 
     // Default center (world view or existing coordinates)
@@ -163,9 +178,12 @@ export default function ContactLocationTab({ data, setData, errors }) {
                         type="text"
                         value={data.latitude}
                         onChange={e => {
-                            setData('latitude', e.target.value);
-                            if (e.target.value && data.longitude) {
-                                setMarkerPosition([parseFloat(e.target.value), parseFloat(data.longitude)]);
+                            const value = e.target.value;
+                            setData('latitude', value);
+                            const lat = parseFloat(value);
+                            const lng = parseFloat(data.longitude);
+                            if (isValidLatLng(lat, lng)) {
+                                setMarkerPosition([lat, lng]);
                             }
                         }}
                         className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-blue-500 font-light"
@@ -182,9 +200,12 @@ export default function ContactLocationTab({ data, setData, errors }) {
                         type="text"
                         value={data.longitude}
                         onChange={e => {
-                            setData('longitude', e.target.value);
-                            if (data.latitude && e.target.value) {
-                                setMarkerPosition([parseFloat(data.latitude), parseFloat(e.target.value)]);
+                            const value = e.target.value;
+                            setData('longitude', value);
+                            const lat = parseFloat(data.latitude);
+                            const lng = parseFloat(value);
+                            if (isValidLatLng(lat, lng)) {
+                                setMarkerPosition([lat, lng]);
                             }
                         }}
                         className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-blue-500 font-light"
