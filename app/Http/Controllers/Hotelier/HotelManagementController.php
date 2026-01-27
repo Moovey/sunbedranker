@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Hotelier;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ProcessHotelImages;
+use App\Jobs\RecalculateHotelScores;
 use App\Models\Hotel;
 use App\Services\HotelScoringService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
@@ -278,21 +281,30 @@ class HotelManagementController extends Controller
     private function handleImageUploads(Request $request, Hotel $hotel): void
     {
         $disk = config('filesystems.public_disk', 'public');
+        $uploadedPaths = [];
 
         // Main image
         if ($request->hasFile('main_image')) {
             $this->deleteOldMainImage($hotel, $disk);
             $path = $request->file('main_image')->store('hotels', $disk);
             $hotel->update(['main_image' => $path]);
+            $uploadedPaths[] = $path;
         }
 
         // Gallery images
         if ($request->hasFile('gallery_images')) {
             $galleryImages = $hotel->images ?? [];
             foreach ($request->file('gallery_images') as $image) {
-                $galleryImages[] = $image->store('hotels', $disk);
+                $path = $image->store('hotels', $disk);
+                $galleryImages[] = $path;
+                $uploadedPaths[] = $path;
             }
             $hotel->update(['images' => $galleryImages]);
+        }
+
+        // Dispatch image optimization job if images were uploaded
+        if (!empty($uploadedPaths)) {
+            ProcessHotelImages::dispatch($hotel, $uploadedPaths);
         }
     }
 
@@ -333,6 +345,11 @@ class HotelManagementController extends Controller
             return;
         }
 
+        // Initialize promotional fields with null coalescing
+        $promotionalBanner = $validated['promotional_banner'] ?? null;
+        $specialOffer = $validated['special_offer'] ?? null;
+        $specialOfferExpiresAt = $validated['special_offer_expires_at'] ?? null;
+
         // Handle multiple promotions (Premium feature)
         $promotions = null;
         if (!empty($validated['promotions'])) {
@@ -350,20 +367,20 @@ class HotelManagementController extends Controller
             
             // Also set the first promotion to legacy single fields for backward compatibility
             if (!empty($promotions[0])) {
-                $validated['promotional_banner'] = $promotions[0]['promotional_banner'] ?? null;
-                $validated['special_offer'] = $promotions[0]['special_offer'] ?? null;
-                $validated['special_offer_expires_at'] = $promotions[0]['special_offer_expires_at'] ?? null;
+                $promotionalBanner = $promotions[0]['promotional_banner'] ?? null;
+                $specialOffer = $promotions[0]['special_offer'] ?? null;
+                $specialOfferExpiresAt = $promotions[0]['special_offer_expires_at'] ?? null;
             }
         }
 
         $hotel->update([
-            'promotional_banner' => $validated['promotional_banner'] ?: null,
-            'special_offer' => $validated['special_offer'] ?: null,
-            'special_offer_expires_at' => !empty($validated['special_offer_expires_at']) ? $validated['special_offer_expires_at'] : null,
+            'promotional_banner' => $promotionalBanner ?: null,
+            'special_offer' => $specialOffer ?: null,
+            'special_offer_expires_at' => !empty($specialOfferExpiresAt) ? $specialOfferExpiresAt : null,
             'promotions' => !empty($promotions) ? $promotions : null,
-            'video_url' => $validated['video_url'] ?: null,
-            'video_360_url' => $validated['video_360_url'] ?: null,
-            'direct_booking_url' => $validated['direct_booking_url'] ?: null,
+            'video_url' => ($validated['video_url'] ?? null) ?: null,
+            'video_360_url' => ($validated['video_360_url'] ?? null) ?: null,
+            'direct_booking_url' => ($validated['direct_booking_url'] ?? null) ?: null,
             'show_verified_badge' => $validated['show_verified_badge'] ?? false,
         ]);
     }
@@ -436,12 +453,12 @@ class HotelManagementController extends Controller
     }
 
     /**
-     * Recalculate hotel scores after update.
+     * Recalculate hotel scores after update (async via job queue).
      */
     private function recalculateScores(Hotel $hotel): void
     {
-        $scoringService = new HotelScoringService();
-        $scoringService->calculateAndUpdateScores($hotel);
+        // Dispatch to queue for async processing
+        RecalculateHotelScores::dispatch([$hotel->id]);
     }
 
     /**
@@ -454,7 +471,30 @@ class HotelManagementController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
         
-        // Get analytics data for different time periods
+        // Cache analytics data for 5 minutes
+        $cacheKey = "hotelier.analytics.{$hotel->id}";
+        $analyticsData = Cache::remember($cacheKey, 300, function () use ($hotel) {
+            return $this->getAnalyticsData($hotel);
+        });
+
+        $subscription = [
+            'tier' => $user->subscription_tier ?? 'free',
+            'hasEnhanced' => $user->hasAtLeastEnhancedTier(),
+            'hasPremium' => $user->hasPremiumTier(),
+        ];
+
+        return Inertia::render('Hotelier/Analytics', [
+            'hotel' => $hotel->load('destination'),
+            'subscription' => $subscription,
+            'analytics' => $analyticsData,
+        ]);
+    }
+
+    /**
+     * Get analytics data for a hotel.
+     */
+    private function getAnalyticsData(Hotel $hotel): array
+    {
         $today = now()->toDateString();
         $weekAgo = now()->subDays(7)->toDateString();
         $monthAgo = now()->subDays(30)->toDateString();
@@ -500,42 +540,40 @@ class HotelManagementController extends Controller
             'direct' => $allTimeStats['direct_clicks'],
         ];
 
-        $subscription = [
-            'tier' => $user->subscription_tier ?? 'free',
-            'hasEnhanced' => $user->hasAtLeastEnhancedTier(),
-            'hasPremium' => $user->hasPremiumTier(),
-        ];
-
-        return Inertia::render('Hotelier/Analytics', [
-            'hotel' => $hotel->load('destination'),
-            'subscription' => $subscription,
-            'analytics' => [
-                'daily' => $dailyAnalytics,
-                'today' => [
-                    'views' => $todayStats->views ?? 0,
-                    'clicks' => $todayStats->clicks ?? 0,
-                    'affiliate_clicks' => $todayStats->affiliate_clicks ?? 0,
-                    'direct_clicks' => $todayStats->direct_clicks ?? 0,
-                    'comparisons' => $todayStats->comparisons ?? 0,
-                    'ctr' => $todayStats->ctr ?? 0,
-                ],
-                'weekly' => [
-                    'views' => (int) ($weeklyStats->views ?? 0),
-                    'clicks' => (int) ($weeklyStats->clicks ?? 0),
-                    'affiliate_clicks' => (int) ($weeklyStats->affiliate_clicks ?? 0),
-                    'direct_clicks' => (int) ($weeklyStats->direct_clicks ?? 0),
-                    'comparisons' => (int) ($weeklyStats->comparisons ?? 0),
-                ],
-                'monthly' => [
-                    'views' => (int) ($monthlyStats->views ?? 0),
-                    'clicks' => (int) ($monthlyStats->clicks ?? 0),
-                    'affiliate_clicks' => (int) ($monthlyStats->affiliate_clicks ?? 0),
-                    'direct_clicks' => (int) ($monthlyStats->direct_clicks ?? 0),
-                    'comparisons' => (int) ($monthlyStats->comparisons ?? 0),
-                ],
-                'allTime' => $allTimeStats,
-                'clickBreakdown' => $clickBreakdown,
+        return [
+            'daily' => $dailyAnalytics,
+            'today' => [
+                'views' => $todayStats->views ?? 0,
+                'clicks' => $todayStats->clicks ?? 0,
+                'affiliate_clicks' => $todayStats->affiliate_clicks ?? 0,
+                'direct_clicks' => $todayStats->direct_clicks ?? 0,
+                'comparisons' => $todayStats->comparisons ?? 0,
+                'ctr' => $todayStats->ctr ?? 0,
             ],
-        ]);
+            'weekly' => [
+                'views' => (int) ($weeklyStats->views ?? 0),
+                'clicks' => (int) ($weeklyStats->clicks ?? 0),
+                'affiliate_clicks' => (int) ($weeklyStats->affiliate_clicks ?? 0),
+                'direct_clicks' => (int) ($weeklyStats->direct_clicks ?? 0),
+                'comparisons' => (int) ($weeklyStats->comparisons ?? 0),
+            ],
+            'monthly' => [
+                'views' => (int) ($monthlyStats->views ?? 0),
+                'clicks' => (int) ($monthlyStats->clicks ?? 0),
+                'affiliate_clicks' => (int) ($monthlyStats->affiliate_clicks ?? 0),
+                'direct_clicks' => (int) ($monthlyStats->direct_clicks ?? 0),
+                'comparisons' => (int) ($monthlyStats->comparisons ?? 0),
+            ],
+            'allTime' => $allTimeStats,
+            'clickBreakdown' => $clickBreakdown,
+        ];
+    }
+
+    /**
+     * Clear analytics cache for a hotel.
+     */
+    public static function clearAnalyticsCache(int $hotelId): void
+    {
+        Cache::forget("hotelier.analytics.{$hotelId}");
     }
 }

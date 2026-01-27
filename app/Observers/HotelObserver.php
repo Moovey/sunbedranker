@@ -3,6 +3,8 @@
 namespace App\Observers;
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Hotelier\HotelierDashboardController;
+use App\Http\Controllers\Hotelier\HotelManagementController;
 use App\Models\Hotel;
 
 class HotelObserver
@@ -20,7 +22,18 @@ class HotelObserver
      */
     public function updated(Hotel $hotel): void
     {
-        // Only clear cache if relevant fields changed
+        // Clear hotelier analytics cache if analytics-related fields changed
+        $analyticsFields = ['view_count', 'click_count', 'affiliate_click_count', 'direct_click_count'];
+        if ($hotel->wasChanged($analyticsFields)) {
+            HotelManagementController::clearAnalyticsCache($hotel->id);
+        }
+
+        // Clear hotelier dashboard cache if score changed
+        if ($hotel->wasChanged(['overall_score', 'family_score', 'quiet_score', 'party_score'])) {
+            HotelierDashboardController::clearCacheForHotel($hotel->id);
+        }
+
+        // Only clear admin cache if relevant fields changed
         $relevantFields = [
             'is_active',
             'subscription_tier',
@@ -40,6 +53,7 @@ class HotelObserver
     public function deleted(Hotel $hotel): void
     {
         AdminDashboardController::clearHotelCaches();
+        HotelManagementController::clearAnalyticsCache($hotel->id);
     }
 
     /**
