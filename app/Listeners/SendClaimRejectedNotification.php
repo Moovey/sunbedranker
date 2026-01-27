@@ -4,10 +4,9 @@ namespace App\Listeners;
 
 use App\Events\ClaimRejected;
 use App\Notifications\ClaimRejectedNotification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
-class SendClaimRejectedNotification implements ShouldQueue
+class SendClaimRejectedNotification
 {
     /**
      * Handle the event.

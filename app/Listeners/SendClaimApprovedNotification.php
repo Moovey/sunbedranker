@@ -4,10 +4,9 @@ namespace App\Listeners;
 
 use App\Events\ClaimApproved;
 use App\Notifications\ClaimApprovedNotification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
-class SendClaimApprovedNotification implements ShouldQueue
+class SendClaimApprovedNotification
 {
     /**
      * Handle the event.

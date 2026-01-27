@@ -4,10 +4,9 @@ namespace App\Listeners;
 
 use App\Events\TemporaryAccessGranted;
 use App\Notifications\TemporaryAccessGrantedNotification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
-class SendTemporaryAccessGrantedNotification implements ShouldQueue
+class SendTemporaryAccessGrantedNotification
 {
     /**
      * Handle the event.

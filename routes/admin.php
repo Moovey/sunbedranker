@@ -75,6 +75,10 @@ Route::middleware(['auth', 'admin', 'throttle:admin'])->prefix('admin')->name('a
     Route::post('/scoring/badges/apply-all', [ScoringSettingsController::class, 'applyAllBadges'])
         ->middleware('throttle:admin-bulk')
         ->name('scoring.badges.apply-all');
+    
+    // Job progress endpoint for AJAX polling
+    Route::get('/scoring/job-progress', [ScoringSettingsController::class, 'getJobProgress'])
+        ->name('scoring.job-progress');
 
     // Hotel Claims
     Route::get('/claims', [ClaimManagementController::class, 'index'])->name('claims.index');

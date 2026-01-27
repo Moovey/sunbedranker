@@ -4,10 +4,9 @@ namespace App\Listeners;
 
 use App\Events\SubscriptionUpdated;
 use App\Notifications\SubscriptionUpdatedNotification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
-class SendSubscriptionUpdatedNotification implements ShouldQueue
+class SendSubscriptionUpdatedNotification
 {
     /**
      * Handle the event.

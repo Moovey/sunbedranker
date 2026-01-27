@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ApplyBadgesToHotels;
+use App\Jobs\RecalculateHotelScores;
 use App\Models\Badge;
 use App\Models\Hotel;
 use App\Models\ScoringWeight;
 use App\Services\HotelScoringService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -29,14 +33,22 @@ class ScoringSettingsController extends Controller
         $weights = ScoringWeight::orderBy('order')->get();
         $badges = Badge::orderBy('priority', 'desc')->orderBy('name')->get();
         
-        // Get stats
-        $stats = [
-            'total_metrics' => $weights->count(),
-            'active_metrics' => $weights->where('is_active', true)->count(),
-            'visible_metrics' => $weights->where('is_visible', true)->count(),
-            'total_badges' => $badges->count(),
-            'active_badges' => $badges->where('is_active', true)->count(),
-            'hotels_with_badges' => DB::table('badge_hotel')->distinct('hotel_id')->count(),
+        // Get cached stats (10 minutes TTL)
+        $stats = Cache::remember('admin.scoring.stats', 600, function () use ($weights, $badges) {
+            return [
+                'total_metrics' => $weights->count(),
+                'active_metrics' => $weights->where('is_active', true)->count(),
+                'visible_metrics' => $weights->where('is_visible', true)->count(),
+                'total_badges' => $badges->count(),
+                'active_badges' => $badges->where('is_active', true)->count(),
+                'hotels_with_badges' => DB::table('badge_hotel')->distinct('hotel_id')->count(),
+            ];
+        });
+
+        // Get job progress status
+        $jobProgress = [
+            'recalculation' => Cache::get('scoring.recalculation.progress'),
+            'badges' => Cache::get('scoring.badges.progress'),
         ];
 
         // Available criteria for badge rules
@@ -65,6 +77,7 @@ class ScoringSettingsController extends Controller
             'badges' => $badges,
             'stats' => $stats,
             'availableCriteria' => $availableCriteria,
+            'jobProgress' => $jobProgress,
         ]);
     }
 
@@ -97,6 +110,9 @@ class ScoringSettingsController extends Controller
             
             // Clear cached weights in the scoring service
             $this->scoringService->clearWeightsCache();
+            
+            // Clear stats cache
+            self::clearStatsCache();
 
             return back()->with('success', 'Scoring weights updated successfully! Click "Recalculate All Scores" to apply changes to hotels.');
         } catch (\Exception $e) {
@@ -289,63 +305,103 @@ class ScoringSettingsController extends Controller
     }
 
     /**
-     * Apply badge to all matching hotels
+     * Apply badge to all matching hotels (queued)
      */
     public function applyBadgeToHotels(Badge $badge)
     {
-        try {
-            $matchingHotels = $this->getHotelsMatchingCriteria($badge->criteria);
-            
-            // Sync hotels - this will add new ones and remove non-matching ones
-            $badge->hotels()->sync($matchingHotels->pluck('id'));
+        $userId = request()->user()?->id;
+        
+        // Rate limit check
+        $key = 'admin-scoring-bulk:' . $userId;
+        if (RateLimiter::tooManyAttempts($key, 1)) {
+            $seconds = RateLimiter::availableIn($key);
+            return back()->withErrors([
+                'message' => "Please wait {$seconds} seconds before starting another bulk operation."
+            ]);
+        }
+        RateLimiter::hit($key, 60);
 
-            return back()->with('success', "Badge applied to {$matchingHotels->count()} hotels!");
+        try {
+            // Dispatch the job
+            ApplyBadgesToHotels::dispatch($badge->id, $userId);
+
+            return back()->with('success', "Badge assignment job queued! Check progress on this page.");
         } catch (\Exception $e) {
-            return back()->withErrors(['message' => 'Failed to apply badge: ' . $e->getMessage()]);
+            return back()->withErrors(['message' => 'Failed to queue badge job: ' . $e->getMessage()]);
         }
     }
 
     /**
-     * Apply all active badges to all hotels
+     * Apply all active badges to all hotels (queued)
      */
     public function applyAllBadges()
     {
+        $userId = request()->user()?->id;
+        
+        // Rate limit check
+        $key = 'admin-scoring-bulk:' . $userId;
+        if (RateLimiter::tooManyAttempts($key, 1)) {
+            $seconds = RateLimiter::availableIn($key);
+            return back()->withErrors([
+                'message' => "Please wait {$seconds} seconds before starting another bulk operation."
+            ]);
+        }
+        RateLimiter::hit($key, 60);
+
         try {
-            $badges = Badge::where('is_active', true)->get();
-            $totalAssignments = 0;
+            // Dispatch the job for all badges
+            ApplyBadgesToHotels::dispatch(null, $userId);
 
-            foreach ($badges as $badge) {
-                $matchingHotels = $this->getHotelsMatchingCriteria($badge->criteria);
-                $badge->hotels()->sync($matchingHotels->pluck('id'));
-                $totalAssignments += $matchingHotels->count();
-            }
-
-            return back()->with('success', "All badges applied! Total assignments: {$totalAssignments}");
+            return back()->with('success', "Badge assignment job queued for all active badges! Check progress on this page.");
         } catch (\Exception $e) {
-            return back()->withErrors(['message' => 'Failed to apply badges: ' . $e->getMessage()]);
+            return back()->withErrors(['message' => 'Failed to queue badges job: ' . $e->getMessage()]);
         }
     }
 
     /**
-     * Recalculate all hotel scores
+     * Recalculate all hotel scores (queued)
      */
     public function recalculateAllScores()
     {
-        try {
-            $hotels = Hotel::with('poolCriteria')->get();
-            $count = 0;
-
-            foreach ($hotels as $hotel) {
-                if ($hotel->poolCriteria) {
-                    $this->scoringService->calculateAndUpdateScores($hotel);
-                    $count++;
-                }
-            }
-
-            return back()->with('success', "Recalculated scores for {$count} hotels!");
-        } catch (\Exception $e) {
-            return back()->withErrors(['message' => 'Failed to recalculate scores: ' . $e->getMessage()]);
+        $userId = request()->user()?->id;
+        
+        // Rate limit check
+        $key = 'admin-scoring-bulk:' . $userId;
+        if (RateLimiter::tooManyAttempts($key, 1)) {
+            $seconds = RateLimiter::availableIn($key);
+            return back()->withErrors([
+                'message' => "Please wait {$seconds} seconds before starting another bulk operation."
+            ]);
         }
+        RateLimiter::hit($key, 60);
+
+        try {
+            // Dispatch the job
+            RecalculateHotelScores::dispatch(null, $userId);
+
+            return back()->with('success', "Score recalculation job queued! Check progress on this page.");
+        } catch (\Exception $e) {
+            return back()->withErrors(['message' => 'Failed to queue recalculation job: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Get job progress status (for AJAX polling)
+     */
+    public function getJobProgress()
+    {
+        return response()->json([
+            'recalculation' => Cache::get('scoring.recalculation.progress'),
+            'badges' => Cache::get('scoring.badges.progress'),
+        ]);
+    }
+
+    /**
+     * Clear the stats cache (called by observers)
+     */
+    public static function clearStatsCache(): void
+    {
+        Cache::forget('admin.scoring.stats');
     }
 
     /**

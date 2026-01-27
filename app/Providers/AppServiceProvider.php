@@ -10,16 +10,20 @@ use App\Listeners\SendClaimApprovedNotification;
 use App\Listeners\SendClaimRejectedNotification;
 use App\Listeners\SendSubscriptionUpdatedNotification;
 use App\Listeners\SendTemporaryAccessGrantedNotification;
+use App\Models\Badge;
 use App\Models\Destination;
 use App\Models\Hotel;
 use App\Models\HotelClaim;
 use App\Models\Post;
 use App\Models\Review;
+use App\Models\ScoringWeight;
+use App\Observers\BadgeObserver;
 use App\Observers\DestinationObserver;
 use App\Observers\HotelObserver;
 use App\Observers\HotelClaimObserver;
 use App\Observers\PostObserver;
 use App\Observers\ReviewObserver;
+use App\Observers\ScoringWeightObserver;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
@@ -45,11 +49,13 @@ class AppServiceProvider extends ServiceProvider
         Vite::prefetch(concurrency: 3);
 
         // Register model observers for cache invalidation
+        Badge::observe(BadgeObserver::class);
         Destination::observe(DestinationObserver::class);
         Hotel::observe(HotelObserver::class);
         HotelClaim::observe(HotelClaimObserver::class);
         Post::observe(PostObserver::class);
         Review::observe(ReviewObserver::class);
+        ScoringWeight::observe(ScoringWeightObserver::class);
 
         // Register event listeners
         $this->registerEventListeners();
@@ -90,6 +96,18 @@ class AppServiceProvider extends ServiceProvider
         // 5 requests per minute (e.g., recalculate all scores)
         RateLimiter::for('admin-bulk', function (Request $request) {
             return Limit::perMinute(5)->by($request->user()?->id ?: $request->ip());
+        });
+
+        // Scoring bulk operations rate limiter - very strict
+        // 1 request per minute for heavy operations like recalculating all scores
+        RateLimiter::for('admin-scoring-bulk', function (Request $request) {
+            return Limit::perMinute(1)
+                ->by($request->user()?->id ?: $request->ip())
+                ->response(function () {
+                    return back()->withErrors([
+                        'message' => 'Please wait at least 1 minute between bulk scoring operations. A job may already be running.'
+                    ]);
+                });
         });
     }
 }
