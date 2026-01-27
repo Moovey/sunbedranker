@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Hotelier;
 
+use App\Events\SubscriptionUpdated;
 use App\Http\Controllers\Controller;
 use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Inertia\Inertia;
 
 class SubscriptionController extends Controller
@@ -72,6 +75,17 @@ class SubscriptionController extends Controller
      */
     public function payment(Request $request, string $plan)
     {
+        $user = Auth::user();
+        
+        // Rate limiting: 5 payment intent creations per minute
+        $key = 'subscription-payment:' . $user->id;
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = RateLimiter::availableIn($key);
+            return redirect()->route('hotelier.subscription')
+                ->with('error', "Too many payment attempts. Please wait {$seconds} seconds.");
+        }
+        RateLimiter::hit($key, 60);
+
         // Validate the plan
         if (!isset($this->pricing[$plan])) {
             return redirect()->route('hotelier.subscription')
@@ -101,6 +115,17 @@ class SubscriptionController extends Controller
         $originalTotal = $originalMonthlyPrice * $periodMonths;
         $totalAmount = $discountedMonthlyPrice * $periodMonths;
         $savings = $originalTotal - $totalAmount;
+
+        // Audit log: Payment intent creation
+        Log::channel('admin_audit')->info('Subscription payment initiated', [
+            'user_id' => $user->id,
+            'user_email' => $user->email,
+            'plan' => $plan,
+            'period_months' => $periodMonths,
+            'total_amount' => $totalAmount,
+            'ip_address' => $request->ip(),
+            'timestamp' => now()->toISOString(),
+        ]);
 
         // Create Stripe Payment Intent
         \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
@@ -174,6 +199,15 @@ class SubscriptionController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
+        // Rate limiting: 5 subscription completions per minute (prevent duplicate submissions)
+        $key = 'subscription-complete:' . $user->id;
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = RateLimiter::availableIn($key);
+            return redirect()->route('hotelier.subscription')
+                ->with('error', "Too many attempts. Please wait {$seconds} seconds.");
+        }
+        RateLimiter::hit($key, 60);
+
         // Validate the plan
         if (!isset($this->pricing[$plan])) {
             return redirect()->route('hotelier.subscription')
@@ -243,6 +277,34 @@ class SubscriptionController extends Controller
             'billing_address' => $validated['address'],
             'billing_city' => $validated['city'],
             'billing_zip' => $validated['zip_code'],
+        ]);
+
+        // Dispatch subscription event for notifications/side effects
+        // Note: For self-purchase, the user is both hotelier and admin (triggerer)
+        event(new SubscriptionUpdated(
+            hotelier: $user,
+            subscription: $subscription,
+            tier: $plan,
+            periodMonths: $periodMonths,
+            admin: $user, // Self-purchase
+            reason: 'Self-service subscription purchase'
+        ));
+
+        // Audit log: Subscription purchased
+        Log::channel('admin_audit')->info('Subscription purchased', [
+            'user_id' => $user->id,
+            'user_email' => $user->email,
+            'subscription_id' => $subscription->id,
+            'plan' => $plan,
+            'tier' => $planConfig['name'],
+            'period_months' => $periodMonths,
+            'total_amount' => $totalAmount,
+            'payment_method' => $validated['payment_method'],
+            'transaction_id' => $validated['payment_intent_id'] ?? null,
+            'starts_at' => $subscription->starts_at,
+            'ends_at' => $subscription->ends_at,
+            'ip_address' => $request->ip(),
+            'timestamp' => now()->toISOString(),
         ]);
 
         // In production, you would:
