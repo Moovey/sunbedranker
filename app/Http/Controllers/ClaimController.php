@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\HotelClaimSubmitted;
 use App\Models\Hotel;
 use App\Models\HotelClaim;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
@@ -112,13 +114,13 @@ class ClaimController extends Controller
             }
         }
 
-        // Rate limiting - max 3 attempts per hour per IP
-        $rateLimitKey = 'claim_attempts:' . $request->ip();
-        $attempts = Cache::get($rateLimitKey, 0);
-        
-        if ($attempts >= 3) {
+        // Rate limiting - max 3 attempts per hour per IP using RateLimiter facade
+        $rateLimitKey = 'claim-submission:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 3)) {
+            $seconds = RateLimiter::availableIn($rateLimitKey);
+            $minutes = ceil($seconds / 60);
             throw ValidationException::withMessages([
-                'rate_limit' => 'Too many claim attempts. Please try again later.',
+                'rate_limit' => "Too many claim attempts. Please try again in {$minutes} minute(s).",
             ]);
         }
 
@@ -137,10 +139,25 @@ class ClaimController extends Controller
                 'claim_attempts' => 1,
             ]);
 
-            // Increment rate limiter
-            Cache::put($rateLimitKey, $attempts + 1, now()->addHour());
+            // Increment rate limiter (1 hour decay)
+            RateLimiter::hit($rateLimitKey, 3600);
 
             DB::commit();
+
+            // Dispatch event to notify admins
+            event(new HotelClaimSubmitted($claim, $user));
+
+            // Audit log
+            Log::channel('admin_audit')->info('Hotel claim submitted', [
+                'claim_id' => $claim->id,
+                'hotel_id' => $hotel->id,
+                'hotel_name' => $hotel->name,
+                'user_id' => $user->id,
+                'user_email' => $user->email,
+                'official_email' => $validated['official_email'],
+                'ip_address' => $request->ip(),
+                'timestamp' => now()->toISOString(),
+            ]);
 
             return redirect()->route('hotelier.dashboard')
                 ->with('success', 'Hotel claim submitted successfully! Our team will review it within 24-48 hours.');

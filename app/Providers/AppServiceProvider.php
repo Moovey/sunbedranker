@@ -4,10 +4,12 @@ namespace App\Providers;
 
 use App\Events\ClaimApproved;
 use App\Events\ClaimRejected;
+use App\Events\HotelClaimSubmitted;
 use App\Events\SubscriptionUpdated;
 use App\Events\TemporaryAccessGranted;
 use App\Listeners\SendClaimApprovedNotification;
 use App\Listeners\SendClaimRejectedNotification;
+use App\Listeners\SendNewClaimNotificationToAdmins;
 use App\Listeners\SendSubscriptionUpdatedNotification;
 use App\Listeners\SendTemporaryAccessGrantedNotification;
 use App\Models\Badge;
@@ -71,6 +73,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Event::listen(ClaimApproved::class, SendClaimApprovedNotification::class);
         Event::listen(ClaimRejected::class, SendClaimRejectedNotification::class);
+        Event::listen(HotelClaimSubmitted::class, SendNewClaimNotificationToAdmins::class);
         Event::listen(SubscriptionUpdated::class, SendSubscriptionUpdatedNotification::class);
         Event::listen(TemporaryAccessGranted::class, SendTemporaryAccessGrantedNotification::class);
     }
