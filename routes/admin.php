@@ -9,7 +9,7 @@ use App\Http\Controllers\Admin\ScoringSettingsController;
 use App\Http\Controllers\Admin\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin', 'throttle:admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
@@ -30,7 +30,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Hotel Pool Criteria & Scoring
     Route::post('/hotels/{hotel:id}/pool-criteria', [HotelManagementController::class, 'updatePoolCriteria'])->name('hotels.pool-criteria');
     Route::post('/hotels/{hotel:id}/recalculate-score', [HotelManagementController::class, 'recalculateScore'])->name('hotels.recalculate-score');
-    Route::post('/hotels/recalculate-all-scores', [HotelManagementController::class, 'recalculateAllScores'])->name('hotels.recalculate-all-scores');
+    
+    // Bulk operations with stricter rate limiting
+    Route::post('/hotels/recalculate-all-scores', [HotelManagementController::class, 'recalculateAllScores'])
+        ->middleware('throttle:admin-bulk')
+        ->name('hotels.recalculate-all-scores');
     
     // Hotel Images
     Route::post('/hotels/{hotel:id}/upload-main-image', [HotelManagementController::class, 'uploadMainImage'])->name('hotels.upload-main-image');
@@ -53,7 +57,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/scoring/weights', [ScoringSettingsController::class, 'updateWeights'])->name('scoring.weights.update');
     Route::put('/scoring/visibility', [ScoringSettingsController::class, 'updateVisibility'])->name('scoring.visibility.update');
     Route::put('/scoring/order', [ScoringSettingsController::class, 'updateOrder'])->name('scoring.order.update');
-    Route::post('/scoring/recalculate', [ScoringSettingsController::class, 'recalculateAllScores'])->name('scoring.recalculate');
+    
+    // Bulk recalculate with stricter rate limiting
+    Route::post('/scoring/recalculate', [ScoringSettingsController::class, 'recalculateAllScores'])
+        ->middleware('throttle:admin-bulk')
+        ->name('scoring.recalculate');
     
     // Badge Management
     Route::post('/scoring/badges', [ScoringSettingsController::class, 'storeBadge'])->name('scoring.badges.store');
@@ -62,7 +70,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/scoring/badges/{badge}/toggle', [ScoringSettingsController::class, 'toggleBadge'])->name('scoring.badges.toggle');
     Route::post('/scoring/badges/{badge}/apply', [ScoringSettingsController::class, 'applyBadgeToHotels'])->name('scoring.badges.apply');
     Route::post('/scoring/badges/preview', [ScoringSettingsController::class, 'previewBadge'])->name('scoring.badges.preview');
-    Route::post('/scoring/badges/apply-all', [ScoringSettingsController::class, 'applyAllBadges'])->name('scoring.badges.apply-all');
+    
+    // Apply all badges - bulk operation with stricter rate limiting
+    Route::post('/scoring/badges/apply-all', [ScoringSettingsController::class, 'applyAllBadges'])
+        ->middleware('throttle:admin-bulk')
+        ->name('scoring.badges.apply-all');
 
     // Hotel Claims
     Route::get('/claims', [ClaimManagementController::class, 'index'])->name('claims.index');
