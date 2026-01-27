@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Hotelier\HotelierDashboardController;
 use App\Models\Review;
 
 class ReviewObserver
@@ -13,6 +14,7 @@ class ReviewObserver
     public function created(Review $review): void
     {
         AdminDashboardController::clearReviewCaches();
+        HotelierDashboardController::clearCacheForHotel($review->hotel_id);
     }
 
     /**
@@ -24,6 +26,7 @@ class ReviewObserver
         if ($review->wasChanged('status')) {
             AdminDashboardController::clearReviewCaches();
         }
+        HotelierDashboardController::clearCacheForHotel($review->hotel_id);
     }
 
     /**
@@ -32,6 +35,7 @@ class ReviewObserver
     public function deleted(Review $review): void
     {
         AdminDashboardController::clearReviewCaches();
+        HotelierDashboardController::clearCacheForHotel($review->hotel_id);
     }
 
     /**
@@ -40,6 +44,7 @@ class ReviewObserver
     public function restored(Review $review): void
     {
         AdminDashboardController::clearReviewCaches();
+        HotelierDashboardController::clearCacheForHotel($review->hotel_id);
     }
 
     /**
