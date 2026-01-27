@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Hotel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -29,6 +30,16 @@ class ComparisonController extends Controller
 
     public function add(Request $request, Hotel $hotel)
     {
+        // Rate limiting: 10 additions per minute per session
+        $key = 'comparison-add:' . $request->session()->getId();
+        if (RateLimiter::tooManyAttempts($key, 10)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Too many requests. Please slow down.',
+            ], 429);
+        }
+        RateLimiter::hit($key, 60);
+
         $currentHotels = session()->get('comparison_hotels', []);
         
         if (!in_array($hotel->id, $currentHotels) && count($currentHotels) < 4) {
