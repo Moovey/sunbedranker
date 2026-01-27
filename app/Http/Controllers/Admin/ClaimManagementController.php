@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ClaimApproved;
+use App\Events\ClaimRejected;
+use App\Events\SubscriptionUpdated;
+use App\Events\TemporaryAccessGranted;
 use App\Http\Controllers\Controller;
 use App\Models\HotelClaim;
 use App\Models\User;
@@ -9,6 +13,7 @@ use App\Models\Hotel;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -16,6 +21,12 @@ use Illuminate\Http\RedirectResponse;
 
 class ClaimManagementController extends Controller
 {
+    /**
+     * Cache keys for claim management stats
+     */
+    public const CACHE_KEY_STATS = 'admin.claims.stats';
+    private const STATS_TTL_MINUTES = 10;
+
     public function index(Request $request): Response
     {
         $tab = $request->get('tab', 'claims');
@@ -95,36 +106,8 @@ class ClaimManagementController extends Controller
             ->latest()
             ->paginate(15);
 
-        // Calculate stats
-        $stats = [
-            // Claims stats
-            'pending_claims' => HotelClaim::where('status', 'pending')->count(),
-            'approved_claims' => HotelClaim::where('status', 'approved')->count(),
-            'rejected_claims' => HotelClaim::where('status', 'rejected')->count(),
-            
-            // Hotelier stats
-            'total_hoteliers' => User::where('role', 'hotelier')->count(),
-            'active_hoteliers' => User::where('role', 'hotelier')
-                ->whereHas('activeSubscription')
-                ->count(),
-            
-            // Subscription stats
-            'free_tier' => User::where('role', 'hotelier')
-                ->whereDoesntHave('activeSubscription')
-                ->count(),
-            'enhanced_tier' => Subscription::active()->where('tier', 'enhanced')->count(),
-            'premium_tier' => Subscription::active()->where('tier', 'premium')->count(),
-            
-            // Revenue stats
-            'total_revenue' => Subscription::where('status', 'active')->sum('total_amount'),
-            'monthly_revenue' => Subscription::where('status', 'active')
-                ->where('starts_at', '>=', now()->startOfMonth())
-                ->sum('total_amount'),
-            
-            // Engagement stats
-            'total_hotel_views' => Hotel::whereNotNull('owned_by')->sum('view_count'),
-            'total_hotel_clicks' => Hotel::whereNotNull('owned_by')->sum('click_count'),
-        ];
+        // Get cached stats
+        $stats = $this->getCachedStats();
 
         return Inertia::render('Admin/Claims/Index', [
             'claims' => $claims,
@@ -190,6 +173,12 @@ class ClaimManagementController extends Controller
 
             DB::commit();
 
+            // Dispatch event for notification and audit logging
+            ClaimApproved::dispatch($claim, $request->user());
+
+            // Clear cached stats
+            self::clearStatsCache();
+
             return redirect()->route('admin.claims.index')
                 ->with('success', 'Claim approved successfully! Hotel ownership has been assigned.');
 
@@ -214,6 +203,12 @@ class ClaimManagementController extends Controller
             $claim->reject($request->user(), $validated['admin_notes']);
 
             DB::commit();
+
+            // Dispatch event for notification and audit logging
+            ClaimRejected::dispatch($claim, $request->user(), $validated['admin_notes']);
+
+            // Clear cached stats
+            self::clearStatsCache();
 
             return redirect()->route('admin.claims.index')
                 ->with('success', 'Claim rejected successfully.');
@@ -242,9 +237,10 @@ class ClaimManagementController extends Controller
                 'status' => Subscription::STATUS_CANCELLED,
             ]);
 
+            $subscription = null;
             if ($validated['tier'] !== 'free') {
                 // Create new subscription
-                Subscription::create([
+                $subscription = Subscription::create([
                     'user_id' => $user->id,
                     'tier' => $validated['tier'],
                     'period_months' => $validated['period_months'],
@@ -259,6 +255,19 @@ class ClaimManagementController extends Controller
             }
 
             DB::commit();
+
+            // Dispatch event for notification and audit logging
+            SubscriptionUpdated::dispatch(
+                $user,
+                $subscription,
+                $validated['tier'],
+                $validated['period_months'],
+                $request->user(),
+                $validated['reason'] ?? null
+            );
+
+            // Clear cached stats
+            self::clearStatsCache();
 
             return back()->with('success', "Subscription updated to {$validated['tier']} for {$validated['period_months']} months.");
 
@@ -282,7 +291,7 @@ class ClaimManagementController extends Controller
         DB::beginTransaction();
         try {
             // Create temporary subscription
-            Subscription::create([
+            $subscription = Subscription::create([
                 'user_id' => $user->id,
                 'tier' => $validated['tier'],
                 'period_months' => 0,
@@ -296,6 +305,19 @@ class ClaimManagementController extends Controller
             ]);
 
             DB::commit();
+
+            // Dispatch event for notification and audit logging
+            TemporaryAccessGranted::dispatch(
+                $user,
+                $subscription,
+                $validated['tier'],
+                $validated['days'],
+                $request->user(),
+                $validated['reason'] ?? null
+            );
+
+            // Clear cached stats
+            self::clearStatsCache();
 
             return back()->with('success', "Granted {$validated['days']} days of {$validated['tier']} access.");
 
@@ -317,6 +339,9 @@ class ClaimManagementController extends Controller
         $subscription->update([
             'status' => Subscription::STATUS_CANCELLED,
         ]);
+
+        // Clear cached stats
+        self::clearStatsCache();
 
         return back()->with('success', 'Subscription cancelled successfully.');
     }
@@ -369,5 +394,54 @@ class ClaimManagementController extends Controller
             'dailyStats' => $dailyStats,
             'claims' => $claims,
         ]);
+    }
+
+    /**
+     * Get cached stats (10 min TTL)
+     */
+    private function getCachedStats(): array
+    {
+        return Cache::remember(self::CACHE_KEY_STATS, now()->addMinutes(self::STATS_TTL_MINUTES), function () {
+            return [
+                // Claims stats
+                'pending_claims' => HotelClaim::where('status', 'pending')->count(),
+                'approved_claims' => HotelClaim::where('status', 'approved')->count(),
+                'rejected_claims' => HotelClaim::where('status', 'rejected')->count(),
+                
+                // Hotelier stats
+                'total_hoteliers' => User::where('role', 'hotelier')->count(),
+                'active_hoteliers' => User::where('role', 'hotelier')
+                    ->whereHas('activeSubscription')
+                    ->count(),
+                
+                // Subscription stats
+                'free_tier' => User::where('role', 'hotelier')
+                    ->whereDoesntHave('activeSubscription')
+                    ->count(),
+                'enhanced_tier' => Subscription::active()->where('tier', 'enhanced')->count(),
+                'premium_tier' => Subscription::active()->where('tier', 'premium')->count(),
+                
+                // Revenue stats
+                'total_revenue' => Subscription::where('status', 'active')->sum('total_amount'),
+                'monthly_revenue' => Subscription::where('status', 'active')
+                    ->where('starts_at', '>=', now()->startOfMonth())
+                    ->sum('total_amount'),
+                
+                // Engagement stats
+                'total_hotel_views' => Hotel::whereNotNull('owned_by')->sum('view_count'),
+                'total_hotel_clicks' => Hotel::whereNotNull('owned_by')->sum('click_count'),
+            ];
+        });
+    }
+
+    /**
+     * Clear stats cache
+     */
+    public static function clearStatsCache(): void
+    {
+        Cache::forget(self::CACHE_KEY_STATS);
+        
+        // Also clear dashboard stats since they overlap
+        Cache::forget(AdminDashboardController::CACHE_KEY_STATS);
     }
 }

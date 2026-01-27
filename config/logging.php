@@ -127,6 +127,23 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        /*
+        |--------------------------------------------------------------------------
+        | Admin Audit Log Channel
+        |--------------------------------------------------------------------------
+        |
+        | This channel is used to log admin actions for audit purposes.
+        | Logs are kept for 90 days and stored in a separate file.
+        |
+        */
+        'admin_audit' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/admin-audit.log'),
+            'level' => 'info',
+            'days' => 90,
+            'replace_placeholders' => true,
+        ],
+
     ],
 
 ];

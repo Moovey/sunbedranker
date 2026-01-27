@@ -2,6 +2,14 @@
 
 namespace App\Providers;
 
+use App\Events\ClaimApproved;
+use App\Events\ClaimRejected;
+use App\Events\SubscriptionUpdated;
+use App\Events\TemporaryAccessGranted;
+use App\Listeners\SendClaimApprovedNotification;
+use App\Listeners\SendClaimRejectedNotification;
+use App\Listeners\SendSubscriptionUpdatedNotification;
+use App\Listeners\SendTemporaryAccessGrantedNotification;
 use App\Models\Hotel;
 use App\Models\HotelClaim;
 use App\Models\Review;
@@ -10,6 +18,7 @@ use App\Observers\HotelClaimObserver;
 use App\Observers\ReviewObserver;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
@@ -36,8 +45,22 @@ class AppServiceProvider extends ServiceProvider
         HotelClaim::observe(HotelClaimObserver::class);
         Review::observe(ReviewObserver::class);
 
+        // Register event listeners
+        $this->registerEventListeners();
+
         // Configure rate limiters
         $this->configureRateLimiting();
+    }
+
+    /**
+     * Register event listeners for the application.
+     */
+    protected function registerEventListeners(): void
+    {
+        Event::listen(ClaimApproved::class, SendClaimApprovedNotification::class);
+        Event::listen(ClaimRejected::class, SendClaimRejectedNotification::class);
+        Event::listen(SubscriptionUpdated::class, SendSubscriptionUpdatedNotification::class);
+        Event::listen(TemporaryAccessGranted::class, SendTemporaryAccessGrantedNotification::class);
     }
 
     /**
