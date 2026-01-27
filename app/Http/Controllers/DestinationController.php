@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Destination;
 use App\Models\Hotel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -12,11 +13,14 @@ class DestinationController extends Controller
 {
     public function index(): Response
     {
-        $destinations = Destination::where('is_active', true)
-            ->withCount('activeHotels')
-            ->orderBy('name')
-            ->get()
-            ->groupBy('country');
+        // Cache destinations grouped by country (10 minutes)
+        $destinations = Cache::remember('destinations:index', 600, function () {
+            return Destination::where('is_active', true)
+                ->withCount('activeHotels')
+                ->orderBy('name')
+                ->get()
+                ->groupBy('country');
+        });
 
         return Inertia::render('Destinations/Index', [
             'destinations' => $destinations,
