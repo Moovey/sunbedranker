@@ -6,6 +6,8 @@ use App\Models\Post;
 use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\RateLimiter;
 use Inertia\Inertia;
 
 class BlogController extends Controller
@@ -51,41 +53,47 @@ class BlogController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        // Get categories with post counts
-        $categories = Category::withCount(['posts' => function ($q) {
-            $q->where('status', 'published')
-              ->where(function ($sq) {
-                  $sq->whereNull('published_at')
-                    ->orWhere('published_at', '<=', now());
-              });
-        }])
-        ->having('posts_count', '>', 0)
-        ->orderBy('name')
-        ->get();
+        // Get categories with post counts (cached 10 minutes)
+        $categories = Cache::remember('blog:categories', 600, function () {
+            return Category::withCount(['posts' => function ($q) {
+                $q->where('status', 'published')
+                  ->where(function ($sq) {
+                      $sq->whereNull('published_at')
+                        ->orWhere('published_at', '<=', now());
+                  });
+            }])
+            ->having('posts_count', '>', 0)
+            ->orderBy('name')
+            ->get();
+        });
 
-        // Get popular tags
-        $tags = Tag::withCount(['posts' => function ($q) {
-            $q->where('status', 'published')
-              ->where(function ($sq) {
-                  $sq->whereNull('published_at')
-                    ->orWhere('published_at', '<=', now());
-              });
-        }])
-        ->having('posts_count', '>', 0)
-        ->orderByDesc('posts_count')
-        ->limit(20)
-        ->get();
+        // Get popular tags (cached 10 minutes)
+        $tags = Cache::remember('blog:tags', 600, function () {
+            return Tag::withCount(['posts' => function ($q) {
+                $q->where('status', 'published')
+                  ->where(function ($sq) {
+                      $sq->whereNull('published_at')
+                        ->orWhere('published_at', '<=', now());
+                  });
+            }])
+            ->having('posts_count', '>', 0)
+            ->orderByDesc('posts_count')
+            ->limit(20)
+            ->get();
+        });
 
-        // Get featured/recent posts for sidebar
-        $featuredPosts = Post::with(['category:id,name,slug'])
-            ->where('status', 'published')
-            ->where(function ($q) {
-                $q->whereNull('published_at')
-                  ->orWhere('published_at', '<=', now());
-            })
-            ->orderByDesc('views_count')
-            ->limit(5)
-            ->get(['id', 'title', 'slug', 'featured_image', 'published_at', 'category_id']);
+        // Get featured/recent posts for sidebar (cached 5 minutes)
+        $featuredPosts = Cache::remember('blog:featured', 300, function () {
+            return Post::with(['category:id,name,slug'])
+                ->where('status', 'published')
+                ->where(function ($q) {
+                    $q->whereNull('published_at')
+                      ->orWhere('published_at', '<=', now());
+                })
+                ->orderByDesc('views_count')
+                ->limit(5)
+                ->get(['id', 'title', 'slug', 'featured_image', 'published_at', 'category_id']);
+        });
 
         return Inertia::render('Blog/Index', [
             'posts' => $posts,
@@ -115,8 +123,13 @@ class BlogController extends Controller
             abort(404);
         }
 
-        // Increment view count
-        $post->increment('views_count');
+        // Rate-limited view count increment (1 per IP per post per 5 minutes)
+        // Prevents artificial view inflation
+        $viewKey = 'blog-view:' . $post->id . ':' . request()->ip();
+        if (!RateLimiter::tooManyAttempts($viewKey, 1)) {
+            $post->increment('views_count');
+            RateLimiter::hit($viewKey, 300); // 5 minute cooldown
+        }
 
         // Load relationships
         $post->load([
@@ -171,19 +184,21 @@ class BlogController extends Controller
     }
 
     /**
-     * Get latest posts for homepage
+     * Get latest posts for homepage (cached 5 minutes)
      */
     public static function getLatestPosts(int $limit = 3)
     {
-        return Post::with(['category:id,name,slug,color'])
-            ->where('status', 'published')
-            ->where(function ($q) {
-                $q->whereNull('published_at')
-                  ->orWhere('published_at', '<=', now());
-            })
-            ->orderByDesc('published_at')
-            ->orderByDesc('created_at')
-            ->limit($limit)
-            ->get(['id', 'title', 'slug', 'excerpt', 'featured_image', 'published_at', 'category_id', 'views_count']);
+        return Cache::remember("blog:latest:{$limit}", 300, function () use ($limit) {
+            return Post::with(['category:id,name,slug,color'])
+                ->where('status', 'published')
+                ->where(function ($q) {
+                    $q->whereNull('published_at')
+                      ->orWhere('published_at', '<=', now());
+                })
+                ->orderByDesc('published_at')
+                ->orderByDesc('created_at')
+                ->limit($limit)
+                ->get(['id', 'title', 'slug', 'excerpt', 'featured_image', 'published_at', 'category_id', 'views_count']);
+        });
     }
 }
