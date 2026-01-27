@@ -1,5 +1,5 @@
 import { Link, Head, useForm, usePage, router } from '@inertiajs/react';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import HotelierNav from '@/Components/HotelierNav';
 import TabButton from '@/Components/Admin/Hotels/TabButton';
@@ -608,7 +608,15 @@ const FormActions = ({ processing }) => (
 // ============================================================================
 
 export default function ManageHotel({ hotel, flash, subscription, errors: serverErrors = {} }) {
-    const [activeTab, setActiveTab] = useState(TABS.POOL);
+    // Get initial tab from URL query params
+    const getInitialTab = () => {
+        const params = new URLSearchParams(window.location.search);
+        const tab = params.get('tab');
+        const validTabs = Object.values(TABS);
+        return validTabs.includes(tab) ? tab : TABS.POOL;
+    };
+
+    const [activeTab, setActiveTab] = useState(getInitialTab);
     const [faqs, setFaqs] = useState(hotel.faqs || []);
     const [validationErrors, setValidationErrors] = useState({});
     const [processing, setProcessing] = useState(false);
@@ -617,6 +625,14 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
     
     const hasEnhanced = subscription?.hasEnhanced || false;
     const hasPremium = subscription?.hasPremium || false;
+
+    // Update URL when tab changes
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        const url = new URL(window.location.href);
+        url.searchParams.set('tab', tab);
+        window.history.replaceState({}, '', url.toString());
+    };
     
     // Initialize promotions state
     const [promotions, setPromotions] = useState(() => {
@@ -797,7 +813,7 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
                                     <TabButton 
                                         key={key} 
                                         active={activeTab === key} 
-                                        onClick={() => setActiveTab(key)}
+                                        onClick={() => handleTabChange(key)}
                                         className={`whitespace-nowrap text-xs sm:text-sm ${requiresEnhanced && !hasEnhanced ? 'opacity-75' : ''}`}
                                     >
                                         <span className="flex items-center gap-1 sm:gap-2">

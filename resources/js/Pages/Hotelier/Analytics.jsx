@@ -1,5 +1,5 @@
-import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, Link, router } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
 import HotelierNav from '@/Components/HotelierNav';
 import {
     QuickStatCard,
@@ -13,7 +13,22 @@ import {
 } from '@/Components/Hotelier/Analytics';
 
 export default function Analytics({ hotel, subscription, analytics }) {
-    const [activeTab, setActiveTab] = useState('overview');
+    // Get initial tab from URL query params
+    const getInitialTab = () => {
+        const params = new URLSearchParams(window.location.search);
+        const tab = params.get('tab');
+        return ['overview', 'views', 'clicks'].includes(tab) ? tab : 'overview';
+    };
+
+    const [activeTab, setActiveTab] = useState(getInitialTab);
+
+    // Update URL when tab changes
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        const url = new URL(window.location.href);
+        url.searchParams.set('tab', tab);
+        window.history.replaceState({}, '', url.toString());
+    };
 
     return (
         <>
@@ -85,15 +100,15 @@ export default function Analytics({ hotel, subscription, analytics }) {
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100">
                         <div className="border-b border-gray-200 px-2 sm:px-4 pt-2 sm:pt-4">
                             <div className="flex gap-0.5 sm:gap-1 overflow-x-auto pb-0 scrollbar-hide">
-                                <TabButton active={activeTab === 'overview'} onClick={() => setActiveTab('overview')}>
+                                <TabButton active={activeTab === 'overview'} onClick={() => handleTabChange('overview')}>
                                     <ChartIcon className="w-4 h-4" />
                                     Overview
                                 </TabButton>
-                                <TabButton active={activeTab === 'views'} onClick={() => setActiveTab('views')}>
+                                <TabButton active={activeTab === 'views'} onClick={() => handleTabChange('views')}>
                                     <EyeIcon className="w-4 h-4" />
                                     Profile Views
                                 </TabButton>
-                                <TabButton active={activeTab === 'clicks'} onClick={() => setActiveTab('clicks')}>
+                                <TabButton active={activeTab === 'clicks'} onClick={() => handleTabChange('clicks')}>
                                     <LinkIcon className="w-4 h-4" />
                                     Booking Clicks
                                 </TabButton>

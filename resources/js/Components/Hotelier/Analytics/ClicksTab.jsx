@@ -65,7 +65,7 @@ export default function ClicksTab({ analytics, hotel }) {
                         <div className="text-center py-3 sm:py-4">
                             <p className="text-gray-500 text-xs sm:text-sm mb-2 sm:mb-3">No direct booking URL set</p>
                             <Link
-                                href={route('hotelier.hotels.manage', hotel.slug)}
+                                href={`${route('hotelier.hotels.manage', hotel.slug)}?tab=enhanced`}
                                 className="inline-block px-3 sm:px-4 py-2 bg-green-500 text-white rounded-lg font-medium text-xs sm:text-sm hover:bg-green-600 transition-colors"
                             >
                                 Add Direct Booking URL
