@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Hotelier\HotelierDashboardController;
 use App\Http\Controllers\Hotelier\HotelManagementController;
 use App\Models\Hotel;
@@ -15,6 +16,7 @@ class HotelObserver
     public function created(Hotel $hotel): void
     {
         AdminDashboardController::clearHotelCaches();
+        HomeController::clearHomeCache();
     }
 
     /**
@@ -31,6 +33,7 @@ class HotelObserver
         // Clear hotelier dashboard cache if score changed
         if ($hotel->wasChanged(['overall_score', 'family_score', 'quiet_score', 'party_score'])) {
             HotelierDashboardController::clearCacheForHotel($hotel->id);
+            HomeController::clearHomeCache(); // Scores affect homepage rankings
         }
 
         // Only clear admin cache if relevant fields changed
@@ -44,6 +47,7 @@ class HotelObserver
 
         if ($hotel->wasChanged($relevantFields)) {
             AdminDashboardController::clearHotelCaches();
+            HomeController::clearHomeCache();
         }
     }
 
@@ -54,6 +58,7 @@ class HotelObserver
     {
         AdminDashboardController::clearHotelCaches();
         HotelManagementController::clearAnalyticsCache($hotel->id);
+        HomeController::clearHomeCache();
     }
 
     /**
@@ -62,6 +67,7 @@ class HotelObserver
     public function restored(Hotel $hotel): void
     {
         AdminDashboardController::clearHotelCaches();
+        HomeController::clearHomeCache();
     }
 
     /**
@@ -70,5 +76,6 @@ class HotelObserver
     public function forceDeleted(Hotel $hotel): void
     {
         AdminDashboardController::clearHotelCaches();
+        HomeController::clearHomeCache();
     }
 }
