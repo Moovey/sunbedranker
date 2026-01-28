@@ -46,8 +46,12 @@ Route::middleware('auth')->group(function () {
 
     // User Profile (new branded profile page)
     Route::get('/my-profile', [UserProfileController::class, 'index'])->name('user.profile');
-    Route::post('/my-profile', [UserProfileController::class, 'update'])->name('user.profile.update');
-    Route::put('/my-profile/password', [UserProfileController::class, 'updatePassword'])->name('user.profile.password');
+    Route::post('/my-profile', [UserProfileController::class, 'update'])
+        ->middleware('throttle:6,1') // 6 attempts per minute
+        ->name('user.profile.update');
+    Route::put('/my-profile/password', [UserProfileController::class, 'updatePassword'])
+        ->middleware('throttle:3,1') // 3 attempts per minute (stricter for password)
+        ->name('user.profile.password');
     Route::delete('/my-profile/picture', [UserProfileController::class, 'removeProfilePicture'])->name('user.profile.picture.remove');
     
     // Keep old profile routes for password/email updates (used by Breeze)
