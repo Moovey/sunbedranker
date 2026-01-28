@@ -15,8 +15,10 @@ use Inertia\Inertia;
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Search
-Route::get('/search', [SearchController::class, 'search'])->name('search');
+// Search (rate limited: 30 requests per minute)
+Route::get('/search', [SearchController::class, 'search'])
+    ->middleware('throttle:30,1')
+    ->name('search');
 
 // Destinations
 Route::get('/destinations', [DestinationController::class, 'index'])->name('destinations.index');

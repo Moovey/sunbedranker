@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Hotel;
 use App\Models\Destination;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Support\Facades\Log;
 
 class SearchController extends Controller
 {
@@ -20,7 +21,42 @@ class SearchController extends Controller
         $poolVibe = $request->input('poolVibe');
         $guests = $request->input('guests', 2);
 
-        // Step 1: Search for hotels in our database first
+        // Generate cache key based on search parameters
+        $cacheKey = 'search:' . md5(json_encode([
+            'destination' => $destination,
+            'poolVibe' => $poolVibe,
+            'guests' => $guests,
+        ]));
+
+        // Cache search results for 10 minutes (hotel data doesn't change frequently)
+        $localHotels = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($destination, $poolVibe) {
+            return $this->executeSearch($destination, $poolVibe);
+        });
+
+        // Amadeus API integration disabled - only showing local database results
+        $amadeusHotels = [];
+        $amadeusError = null;
+
+        return Inertia::render('Search/Results', [
+            'searchParams' => [
+                'destination' => $destination,
+                'checkIn' => $checkIn,
+                'checkOut' => $checkOut,
+                'poolVibe' => $poolVibe,
+                'guests' => $guests,
+            ],
+            'localHotels' => $localHotels,
+            'amadeusHotels' => $amadeusHotels,
+            'amadeusError' => $amadeusError,
+            'hasResults' => $localHotels->count() > 0 || count($amadeusHotels) > 0,
+        ]);
+    }
+
+    /**
+     * Execute the hotel search query.
+     */
+    protected function executeSearch(?string $destination, ?string $poolVibe)
+    {
         // Use table prefix to avoid ambiguity after join with users table
         $query = Hotel::query()->where('hotels.is_active', true);
 
@@ -91,28 +127,9 @@ class SearchController extends Controller
             ->get();
 
         // Add is_premium flag to each hotel
-        $localHotels = $localHotels->map(function ($hotel) {
+        return $localHotels->map(function ($hotel) {
             $hotel->is_premium = $hotel->isPremium();
             return $hotel;
         });
-
-        // Amadeus API integration disabled - only showing local database results
-        // To enable live hotel prices, configure AMADEUS_API_KEY and AMADEUS_API_SECRET environment variables
-        $amadeusHotels = [];
-        $amadeusError = null;
-
-        return Inertia::render('Search/Results', [
-            'searchParams' => [
-                'destination' => $destination,
-                'checkIn' => $checkIn,
-                'checkOut' => $checkOut,
-                'poolVibe' => $poolVibe,
-                'guests' => $guests,
-            ],
-            'localHotels' => $localHotels,
-            'amadeusHotels' => $amadeusHotels,
-            'amadeusError' => $amadeusError,
-            'hasResults' => $localHotels->count() > 0 || count($amadeusHotels) > 0,
-        ]);
     }
 }
