@@ -9,8 +9,36 @@ use App\Http\Controllers\ComparisonController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\BlogController;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+// Health check endpoint for monitoring
+Route::get('/health', function () {
+    try {
+        $dbOk = DB::connection()->getPdo() !== null;
+    } catch (\Exception $e) {
+        $dbOk = false;
+    }
+    
+    try {
+        $cacheOk = Cache::put('health-check', true, 60) && Cache::has('health-check');
+    } catch (\Exception $e) {
+        $cacheOk = false;
+    }
+    
+    $healthy = $dbOk && $cacheOk;
+    
+    return response()->json([
+        'status' => $healthy ? 'healthy' : 'unhealthy',
+        'timestamp' => now()->toISOString(),
+        'checks' => [
+            'database' => $dbOk ? 'ok' : 'error',
+            'cache' => $cacheOk ? 'ok' : 'error',
+        ],
+    ], $healthy ? 200 : 503);
+})->name('health');
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
