@@ -8,6 +8,7 @@ use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Inertia\Inertia;
@@ -307,6 +308,9 @@ class SubscriptionController extends Controller
             'timestamp' => now()->toISOString(),
         ]);
 
+        // Invalidate billing history cache for this user
+        Cache::forget("billing_history:{$user->id}");
+
         // In production, you would:
         // 1. Create Stripe Payment Intent or redirect to PayPal/Google Pay
         // 2. Set status to 'pending'
@@ -323,5 +327,65 @@ class SubscriptionController extends Controller
 
         return redirect()->route('hotelier.dashboard')
             ->with('success', "Successfully subscribed to {$planName} plan for {$totalMonths} months! You can now claim and manage hotels.");
+    }
+
+    /**
+     * Display the billing history page.
+     * Cached for 10 minutes per user to reduce DB load.
+     */
+    public function billingHistory()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        // Cache billing history for 10 minutes per user
+        $cacheKey = "billing_history:{$user->id}";
+        
+        $subscriptions = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($user) {
+            return Subscription::where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->map(function ($subscription) {
+                    return [
+                        'id' => $subscription->id,
+                        'tier' => $subscription->tier,
+                        'tier_name' => ucfirst($subscription->tier),
+                        'period_months' => $subscription->period_months,
+                        'free_months' => $subscription->free_months,
+                        'total_months' => $subscription->period_months + ($subscription->free_months ?? 0),
+                        'monthly_price' => $subscription->monthly_price,
+                        'original_price' => $subscription->original_price,
+                        'total_amount' => $subscription->total_amount,
+                        'savings' => $subscription->savings,
+                        'discount_percent' => $subscription->discount_percent,
+                        'status' => $subscription->status,
+                        'payment_method' => $subscription->payment_method,
+                        'transaction_id' => $subscription->transaction_id,
+                        'starts_at' => $subscription->starts_at?->format('M d, Y'),
+                        'ends_at' => $subscription->ends_at?->format('M d, Y'),
+                        'created_at' => $subscription->created_at->format('M d, Y H:i'),
+                        'is_active' => $subscription->isActive(),
+                        'billing_name' => trim(($subscription->billing_first_name ?? '') . ' ' . ($subscription->billing_last_name ?? '')),
+                        'billing_address' => $subscription->billing_address,
+                        'billing_city' => $subscription->billing_city,
+                        'billing_country' => $subscription->billing_country,
+                    ];
+                })
+                ->toArray(); // Convert to array for cache serialization
+        });
+
+        // Get current active subscription (not cached - needs real-time remaining days)
+        $activeSubscription = $user->activeSubscription;
+
+        return Inertia::render('Hotelier/BillingHistory', [
+            'subscriptions' => $subscriptions,
+            'activeSubscription' => $activeSubscription ? [
+                'id' => $activeSubscription->id,
+                'tier' => $activeSubscription->tier,
+                'tier_name' => ucfirst($activeSubscription->tier),
+                'ends_at' => $activeSubscription->ends_at?->format('M d, Y'),
+                'remaining_days' => $activeSubscription->remainingDays(),
+            ] : null,
+        ]);
     }
 }

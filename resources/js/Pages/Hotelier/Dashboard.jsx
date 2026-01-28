@@ -296,7 +296,7 @@ export default function HotelierDashboard({ hotels, pendingClaim, recentReviews,
                         <h3 className="font-semibold text-gray-900 mb-3 sm:mb-4 text-sm sm:text-base">Quick Actions</h3>
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                             <Link
-                                href="/hotels"
+                                href={route('search')}
                                 className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-orange-50 rounded-lg sm:rounded-xl hover:bg-orange-100 transition-colors group"
                             >
                                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-orange-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
@@ -308,7 +308,7 @@ export default function HotelierDashboard({ hotels, pendingClaim, recentReviews,
                             </Link>
                             {(subscription?.tier === 'premium' || subscription?.tier === 'enhanced') && (
                                 <Link
-                                    href="/hotels"
+                                    href={route('hotelier.claims.index')}
                                     className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-green-50 rounded-lg sm:rounded-xl hover:bg-green-100 transition-colors group"
                                 >
                                     <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
@@ -316,11 +316,11 @@ export default function HotelierDashboard({ hotels, pendingClaim, recentReviews,
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                                         </svg>
                                     </div>
-                                    <span className="font-medium text-gray-900 text-[10px] sm:text-sm text-center sm:text-left">Claim Hotel</span>
+                                    <span className="font-medium text-gray-900 text-[10px] sm:text-sm text-center sm:text-left">My Claims</span>
                                 </Link>
                             )}
                             <Link
-                                href="/hotelier/profile"
+                                href={route('hotelier.profile')}
                                 className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-blue-50 rounded-lg sm:rounded-xl hover:bg-blue-100 transition-colors group"
                             >
                                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
@@ -331,7 +331,7 @@ export default function HotelierDashboard({ hotels, pendingClaim, recentReviews,
                                 <span className="font-medium text-gray-900 text-[10px] sm:text-sm text-center sm:text-left">My Profile</span>
                             </Link>
                             <Link
-                                href="/hotelier/upgrade"
+                                href={route('hotelier.upgrade')}
                                 className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-purple-50 rounded-lg sm:rounded-xl hover:bg-purple-100 transition-colors group"
                             >
                                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">

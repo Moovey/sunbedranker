@@ -14,6 +14,7 @@ Route::middleware(['auth', 'hotelier'])->prefix('hotelier')->name('hotelier.')->
     // Subscription
     Route::get('/subscription', [SubscriptionController::class, 'index'])->name('subscription');
     Route::get('/upgrade', [SubscriptionController::class, 'index'])->name('upgrade'); // Alias for subscription
+    Route::get('/billing', [SubscriptionController::class, 'billingHistory'])->name('billing')->middleware('throttle:30,1');
     Route::get('/subscribe/{plan}', [SubscriptionController::class, 'checkout'])->name('subscribe');
     Route::post('/subscribe/{plan}', [SubscriptionController::class, 'subscribe'])->name('subscribe.process');
     Route::get('/subscribe/{plan}/payment', [SubscriptionController::class, 'payment'])->name('subscribe.payment');
