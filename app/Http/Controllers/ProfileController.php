@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserAccountDeleted;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -50,6 +51,9 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        // Dispatch event before deletion for audit logging and cleanup
+        UserAccountDeleted::dispatch($user);
 
         Auth::logout();
 

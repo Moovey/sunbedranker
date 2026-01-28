@@ -50,8 +50,12 @@ Route::middleware('auth')->group(function () {
     
     // Keep old profile routes for password/email updates (used by Breeze)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->middleware('throttle:6,1') // 6 attempts per minute
+        ->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->middleware('throttle:3,1') // 3 attempts per minute (stricter for deletion)
+        ->name('profile.destroy');
 });
 
 // Admin routes
