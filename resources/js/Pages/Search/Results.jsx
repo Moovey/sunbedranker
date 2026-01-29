@@ -526,6 +526,20 @@ function HotelCard({ hotel, isInCompare, onToggleCompare, isHotelier }) {
                                     </span>
                                 </div>
                             )}
+                            
+                            {/* Atmosphere Badge */}
+                            {hotel.pool_criteria.atmosphere && (
+                                <div className="flex items-center justify-between">
+                                    <span className="text-neutral-600 font-light text-xs sm:text-sm">Atmosphere:</span>
+                                    <span className="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 bg-purple-100 text-purple-700 rounded-full font-semibold capitalize text-[10px] sm:text-xs">
+                                        <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                                        </svg>
+                                        {hotel.pool_criteria.atmosphere}
+                                    </span>
+                                </div>
+                            )}
+                            
                             <div className="flex gap-1.5 sm:gap-2 flex-wrap">
                                 {hotel.pool_criteria.has_infinity_pool && (
                                     <span className="px-2 sm:px-2.5 md:px-3 py-0.5 sm:py-1 md:py-1.5 bg-neutral-50 text-neutral-700 border border-neutral-200 font-light tracking-wide text-[9px] sm:text-[10px]">∞ Pool</span>
