@@ -33,6 +33,7 @@ class UserProfileController extends Controller
         return Inertia::render('User/Profile', [
             'reviews' => $reviews,
             'savedHotels' => $savedHotels,
+            'isGoogleUser' => !empty($user->google_id),
         ]);
     }
 
