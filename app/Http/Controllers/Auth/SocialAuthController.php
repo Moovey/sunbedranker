@@ -80,8 +80,11 @@ class SocialAuthController extends Controller
         Auth::login($user, true);
 
         // Redirect based on user role
-        $redirectRoute = $user->role === 'hotelier' ? 'hotelier.dashboard' : 'dashboard';
+        // Hoteliers go to their dashboard, travelers/users go to homepage
+        if ($user->role === 'hotelier') {
+            return redirect()->intended(route('hotelier.dashboard'));
+        }
         
-        return redirect()->intended(route($redirectRoute));
+        return redirect()->intended('/');
     }
 }
