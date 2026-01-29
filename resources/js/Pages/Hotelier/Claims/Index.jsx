@@ -4,26 +4,36 @@ import HotelierNav from '@/Components/HotelierNav';
 export default function HotelierClaimsIndex({ claims, subscription }) {
     const { auth } = usePage().props;
 
-    const getStatusBadge = (status) => {
+    const getStatusBadge = (claim) => {
+        // Check if email verification is needed
+        if (claim.needs_verification) {
+            return (
+                <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                    Verify Email
+                </span>
+            );
+        }
+        
         const badges = {
             pending: 'bg-yellow-100 text-yellow-700',
             approved: 'bg-green-100 text-green-700',
             rejected: 'bg-red-100 text-red-700',
         };
         const labels = {
-            pending: 'Pending',
+            pending: 'Pending Review',
             approved: 'Approved',
             rejected: 'Rejected',
         };
         return (
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${badges[status]}`}>
-                {labels[status]}
+            <span className={`px-2 py-1 rounded-full text-xs font-medium ${badges[claim.status]}`}>
+                {labels[claim.status]}
             </span>
         );
     };
 
     // Count claims by status
-    const pendingCount = claims.filter(c => c.status === 'pending').length;
+    const needsVerificationCount = claims.filter(c => c.needs_verification).length;
+    const pendingCount = claims.filter(c => c.status === 'pending' && !c.needs_verification).length;
     const approvedCount = claims.filter(c => c.status === 'approved').length;
     const rejectedCount = claims.filter(c => c.status === 'rejected').length;
 
@@ -50,7 +60,20 @@ export default function HotelierClaimsIndex({ claims, subscription }) {
                     </div>
 
                     {/* Stats Row */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
+                        {needsVerificationCount > 0 && (
+                            <div className="bg-blue-50 rounded-xl p-3 sm:p-4 flex items-center gap-2 sm:gap-3">
+                                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <div className="min-w-0">
+                                    <div className="text-lg sm:text-xl font-bold text-gray-900">{needsVerificationCount}</div>
+                                    <div className="text-xs text-blue-600 font-medium">VERIFY EMAIL</div>
+                                </div>
+                            </div>
+                        )}
                         <div className="bg-yellow-50 rounded-xl p-3 sm:p-4 flex items-center gap-2 sm:gap-3">
                             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
                                 <svg className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-600" viewBox="0 0 24 24" fill="currentColor">
@@ -131,7 +154,7 @@ export default function HotelierClaimsIndex({ claims, subscription }) {
                                                         <h3 className="text-xs sm:text-sm font-semibold text-gray-900 truncate">{claim.hotel.name}</h3>
                                                         <p className="text-xs text-gray-500">{claim.hotel.destination?.name}</p>
                                                     </div>
-                                                    {getStatusBadge(claim.status)}
+                                                    {getStatusBadge(claim)}
                                                 </div>
 
                                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 text-xs mb-2 sm:mb-3">
@@ -166,6 +189,24 @@ export default function HotelierClaimsIndex({ claims, subscription }) {
                                                     <div className="mb-2 sm:mb-3 p-2 sm:p-3 bg-orange-50 rounded-lg">
                                                         <p className="text-xs text-gray-500 mb-1">Admin Notes</p>
                                                         <p className="text-xs text-gray-700 break-words">{claim.admin_notes}</p>
+                                                    </div>
+                                                )}
+
+                                                {/* Verify Email Button for unverified claims */}
+                                                {claim.needs_verification && (
+                                                    <div className="flex flex-wrap items-center gap-2">
+                                                        <Link
+                                                            href={route('hotelier.claims.verify', claim.id)}
+                                                            className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium transition-colors text-xs"
+                                                        >
+                                                            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                            </svg>
+                                                            Verify Email
+                                                        </Link>
+                                                        <span className="text-xs text-gray-500">
+                                                            Check your inbox at {claim.official_email}
+                                                        </span>
                                                     </div>
                                                 )}
 

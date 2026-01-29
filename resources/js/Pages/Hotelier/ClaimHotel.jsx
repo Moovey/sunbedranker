@@ -106,7 +106,7 @@ export default function ClaimHotel({ hotel }) {
                                 <h3 className="font-semibold text-gray-900 text-xs sm:text-sm mb-1.5 sm:mb-2">Verification Required</h3>
                                 <ul className="text-[10px] sm:text-xs text-gray-600 space-y-0.5 sm:space-y-1">
                                     <li className="break-words">• You must use an official email from the hotel's domain{hotelDomain && ` (@${hotelDomain})`}</li>
-                                    <li>• Phone verification will be required</li>
+                                    <li>• A verification code will be sent to your official email</li>
                                     <li>• Our admin team will review your claim within 24-48 hours</li>
                                     <li>• Only one owner per hotel is allowed</li>
                                     <li>• False claims will result in account suspension</li>
@@ -146,7 +146,7 @@ export default function ClaimHotel({ hotel }) {
                                 Hotel Contact Phone *
                             </label>
                             <p className="text-[10px] sm:text-xs text-gray-500 mb-1.5 sm:mb-2">
-                                We'll send a verification code to this number
+                                Your contact number for verification purposes
                             </p>
                             <input
                                 type="tel"

@@ -17,6 +17,9 @@ class HotelClaim extends Model
         'claim_message',
         'official_email',
         'phone',
+        'email_verification_code',
+        'email_verification_code_expires_at',
+        'email_verified_at',
         'phone_verified_at',
         'proof_document',
         'admin_notes',
@@ -31,6 +34,8 @@ class HotelClaim extends Model
     protected $casts = [
         'reviewed_at' => 'datetime',
         'phone_verified_at' => 'datetime',
+        'email_verification_code_expires_at' => 'datetime',
+        'email_verified_at' => 'datetime',
         'claimed_at' => 'datetime',
         'last_claim_attempt_at' => 'datetime',
     ];

@@ -34,8 +34,9 @@ class ClaimManagementController extends Controller
         $search = $request->get('search', '');
         $tier = $request->get('tier', 'all');
 
-        // Claims data
+        // Claims data - only show claims where email has been verified
         $claims = HotelClaim::with(['hotel.destination', 'user', 'reviewer'])
+            ->whereNotNull('email_verified_at') // Only show email-verified claims to admin
             ->when($status !== 'all', function ($query) use ($status) {
                 $query->where('status', $status);
             })
@@ -403,10 +404,10 @@ class ClaimManagementController extends Controller
     {
         return Cache::remember(self::CACHE_KEY_STATS, now()->addMinutes(self::STATS_TTL_MINUTES), function () {
             return [
-                // Claims stats
-                'pending_claims' => HotelClaim::where('status', 'pending')->count(),
-                'approved_claims' => HotelClaim::where('status', 'approved')->count(),
-                'rejected_claims' => HotelClaim::where('status', 'rejected')->count(),
+                // Claims stats - only count email-verified claims
+                'pending_claims' => HotelClaim::where('status', 'pending')->whereNotNull('email_verified_at')->count(),
+                'approved_claims' => HotelClaim::where('status', 'approved')->whereNotNull('email_verified_at')->count(),
+                'rejected_claims' => HotelClaim::where('status', 'rejected')->whereNotNull('email_verified_at')->count(),
                 
                 // Hotelier stats
                 'total_hoteliers' => User::where('role', 'hotelier')->count(),

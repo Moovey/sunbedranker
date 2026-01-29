@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Events\HotelClaimSubmitted;
 use App\Models\Hotel;
 use App\Models\HotelClaim;
+use App\Notifications\ClaimVerificationCodeNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -30,7 +33,13 @@ class ClaimController extends Controller
         $claims = HotelClaim::with(['hotel.destination'])
             ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get()
+            ->map(function ($claim) {
+                // Add email verification status for frontend
+                $claim->email_verified = !is_null($claim->email_verified_at);
+                $claim->needs_verification = is_null($claim->email_verified_at) && $claim->status === 'pending';
+                return $claim;
+            });
 
         $subscription = [
             'tier' => $user->subscription_tier ?? 'free',
@@ -127,6 +136,9 @@ class ClaimController extends Controller
         // Create claim with transaction
         DB::beginTransaction();
         try {
+            // Generate 6-digit verification code
+            $verificationCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            
             $claim = HotelClaim::create([
                 'hotel_id' => $hotel->id,
                 'user_id' => Auth::id(),
@@ -134,6 +146,8 @@ class ClaimController extends Controller
                 'official_email' => $validated['official_email'],
                 'phone' => $validated['phone'],
                 'claim_message' => $validated['claim_message'] ?? null,
+                'email_verification_code' => $verificationCode,
+                'email_verification_code_expires_at' => now()->addMinutes(30),
                 'ip_address' => $request->ip(),
                 'last_claim_attempt_at' => now(),
                 'claim_attempts' => 1,
@@ -143,6 +157,10 @@ class ClaimController extends Controller
             RateLimiter::hit($rateLimitKey, 3600);
 
             DB::commit();
+
+            // Send verification code to official email
+            Notification::route('mail', $validated['official_email'])
+                ->notify(new ClaimVerificationCodeNotification($claim, $verificationCode));
 
             // Dispatch event to notify admins
             event(new HotelClaimSubmitted($claim, $user));
@@ -159,13 +177,112 @@ class ClaimController extends Controller
                 'timestamp' => now()->toISOString(),
             ]);
 
-            return redirect()->route('hotelier.dashboard')
-                ->with('success', 'Hotel claim submitted successfully! Our team will review it within 24-48 hours.');
+            return redirect()->route('hotelier.claims.verify', $claim->id)
+                ->with('success', 'A verification code has been sent to ' . $validated['official_email']);
 
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
         }
+    }
+
+    /**
+     * Show verification code entry form
+     */
+    public function showVerify(HotelClaim $claim)
+    {
+        // Only claim owner can verify
+        if ($claim->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        // If already verified, redirect to claims
+        if ($claim->email_verified_at) {
+            return redirect()->route('hotelier.claims.index')
+                ->with('info', 'This claim has already been verified.');
+        }
+
+        return Inertia::render('Hotelier/Claims/Verify', [
+            'claim' => $claim->load('hotel'),
+            'email' => $claim->official_email,
+        ]);
+    }
+
+    /**
+     * Verify the email verification code
+     */
+    public function verify(Request $request, HotelClaim $claim)
+    {
+        // Only claim owner can verify
+        if ($claim->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        $request->validate([
+            'code' => 'required|string|size:6',
+        ]);
+
+        // Check if code expired
+        if ($claim->email_verification_code_expires_at && $claim->email_verification_code_expires_at->isPast()) {
+            throw ValidationException::withMessages([
+                'code' => 'Verification code has expired. Please request a new one.',
+            ]);
+        }
+
+        // Check if code matches
+        if ($claim->email_verification_code !== $request->code) {
+            throw ValidationException::withMessages([
+                'code' => 'Invalid verification code. Please try again.',
+            ]);
+        }
+
+        // Mark as verified
+        $claim->update([
+            'email_verified_at' => now(),
+            'email_verification_code' => null, // Clear the code
+        ]);
+
+        // Clear admin stats cache so pending count updates
+        \App\Http\Controllers\Admin\ClaimManagementController::clearStatsCache();
+
+        return redirect()->route('hotelier.claims.index')
+            ->with('success', 'Email verified successfully! Your claim is now under review.');
+    }
+
+    /**
+     * Resend verification code
+     */
+    public function resendCode(HotelClaim $claim)
+    {
+        // Only claim owner can resend
+        if ($claim->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Rate limit resend (max 3 per 10 minutes)
+        $rateLimitKey = 'resend-verification:' . Auth::id() . ':' . $claim->id;
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 3)) {
+            $seconds = RateLimiter::availableIn($rateLimitKey);
+            throw ValidationException::withMessages([
+                'resend' => "Too many resend attempts. Please wait " . ceil($seconds / 60) . " minute(s).",
+            ]);
+        }
+
+        // Generate new code
+        $verificationCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        
+        $claim->update([
+            'email_verification_code' => $verificationCode,
+            'email_verification_code_expires_at' => now()->addMinutes(30),
+        ]);
+
+        // Send new code
+        Notification::route('mail', $claim->official_email)
+            ->notify(new ClaimVerificationCodeNotification($claim, $verificationCode));
+
+        RateLimiter::hit($rateLimitKey, 600); // 10 minute window
+
+        return back()->with('success', 'A new verification code has been sent to ' . $claim->official_email);
     }
 
     /**

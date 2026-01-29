@@ -28,6 +28,9 @@ Route::middleware(['auth', 'hotelier'])->prefix('hotelier')->name('hotelier.')->
 
     // Hotel Claims
     Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
+    Route::get('/claims/{claim}/verify', [ClaimController::class, 'showVerify'])->name('claims.verify');
+    Route::post('/claims/{claim}/verify', [ClaimController::class, 'verify'])->name('claims.verify.submit');
+    Route::post('/claims/{claim}/resend-code', [ClaimController::class, 'resendCode'])->name('claims.resend');
     Route::get('/hotels/{hotel}/claim', [ClaimController::class, 'create'])->name('hotels.claim');
     Route::post('/hotels/{hotel}/claim', [ClaimController::class, 'store'])->name('hotels.claim.store');
 
