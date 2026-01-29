@@ -131,7 +131,7 @@ export default function UserProfile({ reviews, savedHotels }) {
                                     <h2 className="text-lg sm:text-xl font-semibold mt-3 sm:mt-4">{user.name}</h2>
                                     <p className="text-orange-100 text-xs sm:text-sm truncate max-w-full px-2">{user.email}</p>
                                     <span className="inline-block mt-2 px-2.5 sm:px-3 py-0.5 sm:py-1 bg-white/20 rounded-full text-[10px] sm:text-xs font-medium">
-                                        Member
+                                        Traveller
                                     </span>
                                 </div>
                             </div>
@@ -332,7 +332,7 @@ export default function UserProfile({ reviews, savedHotels }) {
                                                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Account Type</label>
                                                     <input
                                                         type="text"
-                                                        value="Member"
+                                                        value="Traveller"
                                                         disabled
                                                         className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500 text-sm"
                                                     />
