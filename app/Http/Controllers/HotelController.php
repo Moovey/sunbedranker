@@ -29,6 +29,9 @@ class HotelController extends Controller
         $hotel->load([
             'destination',
             'poolCriteria',
+            'badges' => function ($query) {
+                $query->where('is_active', true)->orderBy('priority', 'desc');
+            },
             'approvedReviews' => function ($query) {
                 $query->latest()->limit(10);
             },

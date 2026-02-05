@@ -35,7 +35,7 @@ class HomeController extends Controller
         $topRatedHotels = Cache::remember('home:top-rated', 300, function () {
             return Hotel::active()
                 ->topRated()
-                ->with(['destination', 'poolCriteria', 'owner'])
+                ->with(['destination', 'poolCriteria', 'owner', 'badges' => fn($q) => $q->where('is_active', true)->orderBy('priority', 'desc')])
                 ->limit(8)
                 ->get();
         });
@@ -45,7 +45,7 @@ class HomeController extends Controller
         $familyFriendlyHotels = Cache::remember('home:family-friendly', 300, function () {
             return Hotel::active()
                 ->forFamilies()
-                ->with(['destination', 'poolCriteria', 'owner'])
+                ->with(['destination', 'poolCriteria', 'owner', 'badges' => fn($q) => $q->where('is_active', true)->orderBy('priority', 'desc')])
                 ->limit(6)
                 ->get();
         });
@@ -55,7 +55,7 @@ class HomeController extends Controller
         $quietSunHotels = Cache::remember('home:quiet-sun', 300, function () {
             return Hotel::active()
                 ->quietSun()
-                ->with(['destination', 'poolCriteria', 'owner'])
+                ->with(['destination', 'poolCriteria', 'owner', 'badges' => fn($q) => $q->where('is_active', true)->orderBy('priority', 'desc')])
                 ->limit(6)
                 ->get();
         });
@@ -65,7 +65,7 @@ class HomeController extends Controller
         $partyHotels = Cache::remember('home:party', 300, function () {
             return Hotel::active()
                 ->partyPools()
-                ->with(['destination', 'poolCriteria', 'owner'])
+                ->with(['destination', 'poolCriteria', 'owner', 'badges' => fn($q) => $q->where('is_active', true)->orderBy('priority', 'desc')])
                 ->limit(6)
                 ->get();
         });

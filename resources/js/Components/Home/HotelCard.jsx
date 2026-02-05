@@ -106,6 +106,30 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
                         {hotel.destination?.name}
                     </p>
                     
+                    {/* Award Badges */}
+                    {hotel.badges && hotel.badges.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mb-3">
+                            {hotel.badges.slice(0, 3).map((badge) => (
+                                <span
+                                    key={badge.id}
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium"
+                                    style={{
+                                        backgroundColor: `${badge.color}15`,
+                                        color: badge.color,
+                                    }}
+                                    title={badge.description || badge.name}
+                                >
+                                    {badge.name}
+                                </span>
+                            ))}
+                            {hotel.badges.length > 3 && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                                    +{hotel.badges.length - 3}
+                                </span>
+                            )}
+                        </div>
+                    )}
+                    
                     {/* Pool Info */}
                     {hotel.pool_criteria && (
                         <div className="flex flex-wrap gap-2 text-xs">

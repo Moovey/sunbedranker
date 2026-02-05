@@ -51,25 +51,73 @@ class ScoringSettingsController extends Controller
             'badges' => Cache::get('scoring.badges.progress'),
         ];
 
-        // Available criteria for badge rules
+        // Available criteria for badge rules - matching hotel show page sections
         $availableCriteria = [
-            ['key' => 'sunbed_ratio', 'label' => 'Sunbed to Guest Ratio', 'type' => 'number'],
-            ['key' => 'sun_exposure_score', 'label' => 'Sun Exposure Score', 'type' => 'number'],
-            ['key' => 'pool_size_sqm', 'label' => 'Pool Size (sqm)', 'type' => 'number'],
-            ['key' => 'number_of_pools', 'label' => 'Number of Pools', 'type' => 'number'],
-            ['key' => 'cleanliness_score', 'label' => 'Cleanliness Score', 'type' => 'number'],
-            ['key' => 'atmosphere_score', 'label' => 'Atmosphere Score', 'type' => 'number'],
-            ['key' => 'accessibility_score', 'label' => 'Accessibility Score', 'type' => 'number'],
-            ['key' => 'family_score', 'label' => 'Family Score', 'type' => 'number'],
-            ['key' => 'luxury_score', 'label' => 'Luxury Score', 'type' => 'number'],
-            ['key' => 'overall_score', 'label' => 'Overall Score', 'type' => 'number'],
-            ['key' => 'has_infinity_pool', 'label' => 'Has Infinity Pool', 'type' => 'boolean'],
-            ['key' => 'has_heated_pool', 'label' => 'Has Heated Pool', 'type' => 'boolean'],
-            ['key' => 'has_kids_pool', 'label' => 'Has Kids Pool', 'type' => 'boolean'],
-            ['key' => 'has_swim_up_bar', 'label' => 'Has Swim-Up Bar', 'type' => 'boolean'],
-            ['key' => 'has_private_cabanas', 'label' => 'Has Private Cabanas', 'type' => 'boolean'],
-            ['key' => 'has_lifeguard', 'label' => 'Has Lifeguard', 'type' => 'boolean'],
-            ['key' => 'towels_included', 'label' => 'Towels Included', 'type' => 'boolean'],
+            // ============================================
+            // HOTEL SCORES (from Hotel model)
+            // ============================================
+            ['key' => 'overall_score', 'label' => 'Overall Score (0-100)', 'type' => 'number', 'group' => 'Hotel Scores'],
+            ['key' => 'family_score', 'label' => 'Family Score (0-100)', 'type' => 'number', 'group' => 'Hotel Scores'],
+            ['key' => 'quiet_score', 'label' => 'Quiet Score (0-100)', 'type' => 'number', 'group' => 'Hotel Scores'],
+            ['key' => 'party_score', 'label' => 'Party Score (0-100)', 'type' => 'number', 'group' => 'Hotel Scores'],
+            
+            // ============================================
+            // 1. SUNBED AVAILABILITY (SunbedAvailabilitySection)
+            // ============================================
+            ['key' => 'sunbed_count', 'label' => 'Total Sunbeds', 'type' => 'number', 'group' => 'Sunbed Availability'],
+            ['key' => 'sunbed_to_guest_ratio', 'label' => 'Sunbed Ratio (per guest)', 'type' => 'decimal', 'group' => 'Sunbed Availability'],
+            
+            // ============================================
+            // 3. POOL SIZE & VARIETY (PoolSizeSection)
+            // ============================================
+            ['key' => 'pool_size_sqm', 'label' => 'Main Pool Size (m²)', 'type' => 'number', 'group' => 'Pool Size & Variety'],
+            ['key' => 'number_of_pools', 'label' => 'Number of Pools', 'type' => 'number', 'group' => 'Pool Size & Variety'],
+            ['key' => 'has_infinity_pool', 'label' => 'Has Infinity Pool', 'type' => 'boolean', 'group' => 'Pool Size & Variety'],
+            ['key' => 'has_rooftop_pool', 'label' => 'Has Rooftop Pool', 'type' => 'boolean', 'group' => 'Pool Size & Variety'],
+            
+            // ============================================
+            // 5. POOL FACILITIES & COMFORT (FacilitiesSection)
+            // ============================================
+            ['key' => 'has_pool_bar', 'label' => 'Has Pool Bar', 'type' => 'boolean', 'group' => 'Pool Facilities'],
+            ['key' => 'has_waiter_service', 'label' => 'Has Waiter Service', 'type' => 'boolean', 'group' => 'Pool Facilities'],
+            
+            // ============================================
+            // 7. CLEANLINESS & MAINTENANCE (CleanlinessSection)
+            // ============================================
+            ['key' => 'cleanliness_rating', 'label' => 'Cleanliness Rating (1-5 stars)', 'type' => 'number', 'group' => 'Cleanliness'],
+            ['key' => 'sunbed_condition_rating', 'label' => 'Sunbed Condition Rating (1-5 stars)', 'type' => 'number', 'group' => 'Cleanliness'],
+            ['key' => 'tiling_condition_rating', 'label' => 'Tiling Condition Rating (1-5 stars)', 'type' => 'number', 'group' => 'Cleanliness'],
+            
+            // ============================================
+            // 8. ACCESSIBILITY FEATURES (AccessibilitySection)
+            // ============================================
+            ['key' => 'has_accessibility_ramp', 'label' => 'Has Accessibility Ramp', 'type' => 'boolean', 'group' => 'Accessibility'],
+            ['key' => 'has_pool_hoist', 'label' => 'Has Pool Hoist', 'type' => 'boolean', 'group' => 'Accessibility'],
+            ['key' => 'has_step_free_access', 'label' => 'Has Step-Free Access', 'type' => 'boolean', 'group' => 'Accessibility'],
+            ['key' => 'has_elevator_to_rooftop', 'label' => 'Has Elevator to Rooftop', 'type' => 'boolean', 'group' => 'Accessibility'],
+            
+            // ============================================
+            // 9. KIDS & FAMILY FEATURES (KidsFeaturesSection)
+            // ============================================
+            ['key' => 'has_kids_pool', 'label' => 'Has Kids Pool', 'type' => 'boolean', 'group' => 'Kids & Family'],
+            ['key' => 'has_splash_park', 'label' => 'Has Splash Park', 'type' => 'boolean', 'group' => 'Kids & Family'],
+            ['key' => 'has_waterslide', 'label' => 'Has Water Slides', 'type' => 'boolean', 'group' => 'Kids & Family'],
+            ['key' => 'has_lifeguard', 'label' => 'Has Lifeguard on Duty', 'type' => 'boolean', 'group' => 'Kids & Family'],
+            
+            // ============================================
+            // 10. LUXURY & PREMIUM FEATURES (LuxuryFeaturesSection)
+            // ============================================
+            ['key' => 'has_luxury_cabanas', 'label' => 'Has Luxury Cabanas', 'type' => 'boolean', 'group' => 'Luxury Features'],
+            ['key' => 'has_cabana_service', 'label' => 'Has Cabana Service', 'type' => 'boolean', 'group' => 'Luxury Features'],
+            ['key' => 'has_heated_pool', 'label' => 'Has Heated Pool', 'type' => 'boolean', 'group' => 'Luxury Features'],
+            ['key' => 'has_jacuzzi', 'label' => 'Has Jacuzzi', 'type' => 'boolean', 'group' => 'Luxury Features'],
+            ['key' => 'has_adult_sun_terrace', 'label' => 'Has Adult Sun Terrace', 'type' => 'boolean', 'group' => 'Luxury Features'],
+            
+            // ============================================
+            // ADDITIONAL POOL FLAGS
+            // ============================================
+            ['key' => 'is_adults_only', 'label' => 'Adults Only Pool', 'type' => 'boolean', 'group' => 'Other'],
+            ['key' => 'has_entertainment', 'label' => 'Has Entertainment Activities', 'type' => 'boolean', 'group' => 'Other'],
         ];
 
         return Inertia::render('Admin/Scoring/Index', [
