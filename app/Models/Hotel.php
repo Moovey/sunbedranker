@@ -98,7 +98,7 @@ class Hotel extends Model
         'promotions' => 'array',
     ];
 
-    protected $appends = ['main_image_url', 'gallery_images_urls', 'has_pending_claim', 'is_premium'];
+    protected $appends = ['main_image_url', 'gallery_images_urls', 'has_pending_claim', 'is_premium', 'active_promotions'];
 
     public function destination(): BelongsTo
     {
@@ -303,5 +303,30 @@ class Hotel extends Model
     public function getIsPremiumAttribute(): bool
     {
         return $this->isPremium();
+    }
+
+    /**
+     * Get active (non-expired) promotions only
+     * Filters out promotions where special_offer_expires_at is in the past
+     */
+    public function getActivePromotionsAttribute(): array
+    {
+        $promotions = $this->promotions ?? [];
+        
+        if (empty($promotions)) {
+            return [];
+        }
+
+        $today = now()->startOfDay();
+
+        return array_values(array_filter($promotions, function ($promo) use ($today) {
+            // Keep promotions without expiry date or with future/today expiry
+            if (empty($promo['special_offer_expires_at'])) {
+                return true;
+            }
+            
+            $expiryDate = \Carbon\Carbon::parse($promo['special_offer_expires_at'])->startOfDay();
+            return $expiryDate >= $today;
+        }));
     }
 }

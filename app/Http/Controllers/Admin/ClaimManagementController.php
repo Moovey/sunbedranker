@@ -49,7 +49,7 @@ class ClaimManagementController extends Controller
                 });
             })
             ->latest()
-            ->paginate(15);
+            ->paginate(10);
 
         // Hoteliers with their subscriptions, hotels, and performance data
         $hoteliersQuery = User::where('role', 'hotelier')
@@ -79,7 +79,7 @@ class ClaimManagementController extends Controller
             }
         }
 
-        $hoteliers = $hoteliersQuery->latest()->paginate(15);
+        $hoteliers = $hoteliersQuery->latest()->paginate(10);
 
         // Add hotel stats for each hotelier
         $hoteliers->getCollection()->transform(function ($hotelier) {
@@ -105,7 +105,7 @@ class ClaimManagementController extends Controller
                 });
             })
             ->latest()
-            ->paginate(15);
+            ->paginate(10);
 
         // Get cached stats
         $stats = $this->getCachedStats();

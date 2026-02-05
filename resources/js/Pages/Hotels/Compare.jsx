@@ -481,24 +481,16 @@ function SpecialOffersRow({ hotels }) {
             {hotels.map((hotel) => {
                 const isPremium = hotel.is_premium || hotel.subscription_tier === 'premium';
                 
-                // Get promotions
-                const promotions = hotel.promotions && hotel.promotions.length > 0 
-                    ? hotel.promotions 
+                // Use server-filtered active_promotions, with fallback to legacy format
+                const promotions = hotel.active_promotions && hotel.active_promotions.length > 0 
+                    ? hotel.active_promotions 
                     : (hotel.promotional_banner || hotel.special_offer) 
                         ? [{ promotional_banner: hotel.promotional_banner, special_offer: hotel.special_offer, special_offer_expires_at: hotel.special_offer_expires_at }]
                         : [];
                 
-                // Filter active promotions
+                // Filter to only show promotions with actual content
                 const activePromotions = promotions.filter(promo => {
-                    const hasContent = promo.promotional_banner || promo.special_offer;
-                    if (!hasContent) return false;
-                    if (promo.special_offer_expires_at) {
-                        const expiryDate = new Date(promo.special_offer_expires_at);
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
-                        if (expiryDate < today) return false;
-                    }
-                    return true;
+                    return promo.promotional_banner || promo.special_offer;
                 });
 
                 if (activePromotions.length === 0) {

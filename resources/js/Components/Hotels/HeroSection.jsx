@@ -198,9 +198,9 @@ const isYouTubeUrl = (url) => {
 // Special Offer Banner Component - Displayed above image gallery
 // Supports multiple promotions for Premium hoteliers
 function SpecialOfferBanner({ hotel }) {
-    // Get promotions from the new array format, or fall back to legacy single promotion
-    const promotions = hotel.promotions && hotel.promotions.length > 0 
-        ? hotel.promotions 
+    // Use server-filtered active_promotions (excludes expired), with fallback to legacy format
+    const promotions = hotel.active_promotions && hotel.active_promotions.length > 0 
+        ? hotel.active_promotions 
         : (hotel.promotional_banner || hotel.special_offer) 
             ? [{
                 promotional_banner: hotel.promotional_banner,
@@ -209,19 +209,9 @@ function SpecialOfferBanner({ hotel }) {
             }]
             : [];
 
-    // Filter to only show non-expired promotions with content
+    // Filter to only show promotions with actual content
     const activePromotions = promotions.filter(promo => {
-        const hasContent = promo.promotional_banner || promo.special_offer;
-        if (!hasContent) return false;
-        
-        // Check if promotion has expired
-        if (promo.special_offer_expires_at) {
-            const expiryDate = new Date(promo.special_offer_expires_at);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            if (expiryDate < today) return false;
-        }
-        return true;
+        return promo.promotional_banner || promo.special_offer;
     });
 
     if (activePromotions.length === 0) {
