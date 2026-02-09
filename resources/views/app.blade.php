@@ -25,6 +25,16 @@
         @viteReactRefresh
         @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
         @inertiaHead
+
+        <!-- Travelpayouts Verification -->
+        <script data-noptimize="1" data-cfasync="false" data-wpfc-render="false">
+            (function () {
+                var script = document.createElement("script");
+                script.async = 1;
+                script.src = 'https://tpembars.com/NDk2NzYw.js?t=496760';
+                document.head.appendChild(script);
+            })();
+        </script>
     </head>
     <body class="font-sans antialiased">
         @inertia
