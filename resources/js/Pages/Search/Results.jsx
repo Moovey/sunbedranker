@@ -2,7 +2,7 @@ import { Link, Head, usePage } from '@inertiajs/react';
 import { useState, useMemo } from 'react';
 import Header from '@/Components/Header';
 
-export default function SearchResults({ searchParams, localHotels, amadeusHotels, amadeusError, hasResults }) {
+export default function SearchResults({ searchParams, localHotels, hasResults }) {
     const { auth } = usePage().props;
     const [compareList, setCompareList] = useState([]);
     const [filters, setFilters] = useState({
@@ -185,13 +185,6 @@ export default function SearchResults({ searchParams, localHotels, amadeusHotels
                                 </svg>
                                 Start New Search
                             </Link>
-                        </div>
-                    )}
-
-                    {/* Amadeus Error Message */}
-                    {amadeusError && (
-                        <div className="mb-4 sm:mb-6 p-4 sm:p-5 bg-amber-50 border border-amber-200 rounded-lg">
-                            <p className="text-amber-800 font-light text-sm sm:text-base">{amadeusError}</p>
                         </div>
                     )}
 
@@ -441,20 +434,6 @@ export default function SearchResults({ searchParams, localHotels, amadeusHotels
                             </div>
                         </div>
                     )}
-
-                    {/* Amadeus Hotels with Prices */}
-                    {amadeusHotels && amadeusHotels.length > 0 && (
-                        <section className="mt-8 sm:mt-10 md:mt-12 lg:mt-16">
-                            <h2 className="font-serif-luxury text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-light text-neutral-900 mb-4 sm:mb-6 md:mb-8 lg:mb-10 tracking-tight">
-                                💰 Hotels with Live Prices
-                            </h2>
-                            <div className="space-y-3 sm:space-y-4 md:space-y-6">
-                                {amadeusHotels.map((offer, index) => (
-                                    <AmadeusHotelCard key={index} offer={offer} />
-                                ))}
-                            </div>
-                        </section>
-                    )}
                 </div>
             </div>
         </>
@@ -591,62 +570,6 @@ function HotelCard({ hotel, isInCompare, onToggleCompare, isHotelier }) {
                     </Link>
                 )}
             </div>
-        </div>
-    );
-}
-
-function AmadeusHotelCard({ offer }) {
-    const hotel = offer.hotel;
-    const lowestOffer = offer.offers?.[0];
-    
-    return (
-        <div className="bg-white rounded-lg shadow-sm border border-neutral-100 p-3 sm:p-4 md:p-6 lg:p-8 hover:shadow-xl transition-all duration-500">
-            <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4 md:gap-6">
-                <div className="flex-1 w-full sm:w-auto">
-                    <h3 className="font-serif-luxury text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-neutral-900 mb-1.5 sm:mb-2">{hotel.name}</h3>
-                    {hotel.cityCode && (
-                        <p className="text-[10px] sm:text-xs md:text-sm text-neutral-500 mb-2 sm:mb-3 font-light tracking-wide uppercase">{hotel.cityCode}</p>
-                    )}
-                    
-                    {hotel.rating && (
-                        <div className="flex items-center gap-1.5 sm:gap-2 mb-3 sm:mb-4">
-                            <div className="flex">
-                                {[...Array(parseInt(hotel.rating))].map((_, i) => (
-                                    <span key={i} className="text-amber-400 text-sm sm:text-base md:text-lg">★</span>
-                                ))}
-                            </div>
-                            <span className="text-[10px] sm:text-xs md:text-sm text-neutral-600 font-light">{hotel.rating} stars</span>
-                        </div>
-                    )}
-                </div>
-                
-                {lowestOffer && (
-                    <div className="text-left sm:text-right w-full sm:w-auto sm:ml-4">
-                        <div className="text-[10px] sm:text-xs text-neutral-500 font-light tracking-wide uppercase">from</div>
-                        <div className="text-2xl sm:text-3xl md:text-4xl font-serif-luxury font-light text-neutral-900 mt-1">
-                            {lowestOffer.price.currency} {lowestOffer.price.total}
-                        </div>
-                        <div className="text-xs sm:text-sm text-neutral-600 font-light mb-3 sm:mb-4">per stay</div>
-                        <a
-                            href={lowestOffer.self || '#'}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-block w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-neutral-900 text-white font-normal rounded-xl hover:bg-neutral-800 transition-all duration-300 text-xs sm:text-sm tracking-wide uppercase hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] text-center"
-                        >
-                            View Deal
-                        </a>
-                    </div>
-                )}
-            </div>
-            
-            {lowestOffer?.room && (
-                <div className="mt-3 sm:mt-4 md:mt-6 pt-3 sm:pt-4 md:pt-6 border-t border-neutral-100">
-                    <p className="text-[10px] sm:text-xs md:text-sm text-neutral-700 font-light leading-relaxed">
-                        <strong className="font-normal">Room:</strong> {lowestOffer.room.typeEstimated?.category || 'Standard'}
-                        {lowestOffer.room.description?.text && ` - ${lowestOffer.room.description.text}`}
-                    </p>
-                </div>
-            )}
         </div>
     );
 }

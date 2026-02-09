@@ -35,12 +35,6 @@ return [
         ],
     ],
 
-    'amadeus' => [
-        'api_key' => env('AMADEUS_API_KEY'),
-        'api_secret' => env('AMADEUS_API_SECRET'),
-        'base_url' => env('AMADEUS_BASE_URL', 'https://test.api.amadeus.com'),
-    ],
-
     'stripe' => [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),

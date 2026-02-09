@@ -11,7 +11,6 @@ use App\Models\Destination;
 use App\Models\PoolCriteria;
 use App\Models\Badge;
 use App\Services\HotelScoringService;
-use App\Services\AmadeusService;
 use App\Jobs\ProcessHotelImages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -35,8 +34,7 @@ class HotelManagementController extends Controller
     private const DESTINATIONS_TTL_MINUTES = 10;
 
     public function __construct(
-        protected HotelScoringService $scoringService,
-        protected AmadeusService $amadeusService
+        protected HotelScoringService $scoringService
     ) {}
 
     /**
@@ -737,85 +735,6 @@ class HotelManagementController extends Controller
                 'success' => false,
                 'message' => 'Failed to delete image: ' . $e->getMessage(),
             ], 500);
-        }
-    }
-
-    /**
-     * Search and import hotel data from Amadeus API
-     */
-    public function searchAmadeus(Request $request): JsonResponse
-    {
-        $request->validate([
-            'query' => 'required|string|min:3',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-        ]);
-
-        try {
-            // Search by geocode if coordinates provided, otherwise search by city
-            if ($request->latitude && $request->longitude) {
-                $results = $this->amadeusService->searchHotelsByGeocode(
-                    $request->latitude,
-                    $request->longitude,
-                    $request->radius ?? 20
-                );
-            } else {
-                $results = $this->amadeusService->searchHotelsByCity(
-                    $request->input('query'),
-                    ['radius' => $request->radius ?? 50]
-                );
-            }
-
-            // Parse results
-            $hotels = array_map(function($hotel) {
-                return $this->amadeusService->parseHotelData($hotel);
-            }, $results);
-
-            return response()->json([
-                'success' => true,
-                'hotels' => $hotels,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to search hotels: ' . $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    /**
-     * Import hotel data from Amadeus
-     */
-    public function importFromAmadeus(Request $request, Hotel $hotel): RedirectResponse
-    {
-        $request->validate([
-            'amadeus_id' => 'required|string',
-        ]);
-
-        try {
-            $hotelData = $this->amadeusService->getHotelDetails($request->amadeus_id);
-
-            if ($hotelData) {
-                $hotel->update([
-                    'external_api_id' => $request->amadeus_id,
-                    'external_api_source' => 'amadeus',
-                    'external_data' => $hotelData,
-                    'name' => $hotelData['name'] ?? $hotel->name,
-                    'description' => $hotelData['description'] ?? $hotel->description,
-                    'address' => $hotelData['address'] ?? $hotel->address,
-                    'latitude' => $hotelData['latitude'] ?? $hotel->latitude,
-                    'longitude' => $hotelData['longitude'] ?? $hotel->longitude,
-                    'phone' => $hotelData['phone'] ?? $hotel->phone,
-                    'email' => $hotelData['email'] ?? $hotel->email,
-                    'star_rating' => $hotelData['rating'] ?? $hotel->star_rating,
-                ]);
-
-                return back()->with('success', 'Hotel data imported from Amadeus successfully.');
-            }
-
-            return back()->with('error', 'Failed to fetch hotel data from Amadeus.');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Failed to import: ' . $e->getMessage());
         }
     }
 

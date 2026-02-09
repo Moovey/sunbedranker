@@ -41,10 +41,6 @@ Route::middleware(['auth', 'admin', 'throttle:admin'])->prefix('admin')->name('a
     Route::post('/hotels/{hotel:id}/upload-gallery-images', [HotelManagementController::class, 'uploadGalleryImages'])->name('hotels.upload-gallery-images');
     Route::delete('/hotels/{hotel:id}/delete-gallery-image', [HotelManagementController::class, 'deleteGalleryImage'])->name('hotels.delete-gallery-image');
     
-    // Amadeus API Integration
-    Route::post('/hotels/search-amadeus', [HotelManagementController::class, 'searchAmadeus'])->name('hotels.search-amadeus');
-    Route::post('/hotels/{hotel:id}/import-amadeus', [HotelManagementController::class, 'importFromAmadeus'])->name('hotels.import-amadeus');
-    
     // Hotel Badges
     Route::post('/hotels/{hotel:id}/update-badges', [HotelManagementController::class, 'updateBadges'])->name('hotels.update-badges');
     Route::post('/hotels/{hotel:id}/auto-assign-badges', [HotelManagementController::class, 'autoAssignBadges'])->name('hotels.auto-assign-badges');

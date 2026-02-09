@@ -33,10 +33,6 @@ class SearchController extends Controller
             return $this->executeSearch($destination, $poolVibe);
         });
 
-        // Amadeus API integration disabled - only showing local database results
-        $amadeusHotels = [];
-        $amadeusError = null;
-
         return Inertia::render('Search/Results', [
             'searchParams' => [
                 'destination' => $destination,
@@ -46,9 +42,7 @@ class SearchController extends Controller
                 'guests' => $guests,
             ],
             'localHotels' => $localHotels,
-            'amadeusHotels' => $amadeusHotels,
-            'amadeusError' => $amadeusError,
-            'hasResults' => $localHotels->count() > 0 || count($amadeusHotels) > 0,
+            'hasResults' => $localHotels->count() > 0,
         ]);
     }
 
