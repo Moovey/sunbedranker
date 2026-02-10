@@ -11,16 +11,14 @@ use Inertia\Response;
 
 class DestinationController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        // Cache destinations grouped by country (10 minutes)
-        $destinations = Cache::remember('destinations:index', 600, function () {
-            return Destination::where('is_active', true)
-                ->withCount('activeHotels')
-                ->orderBy('name')
-                ->get()
-                ->groupBy('country');
-        });
+        $destinations = Destination::where('is_active', true)
+            ->withCount('activeHotels')
+            ->orderBy('country')
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('Destinations/Index', [
             'destinations' => $destinations,

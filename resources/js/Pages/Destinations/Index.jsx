@@ -3,8 +3,17 @@ import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
 export default function DestinationsIndex({ destinations }) {
-    // Convert object to array for iteration
-    const countries = Object.entries(destinations || {});
+    const items = destinations?.data || [];
+
+    // Group paginated results by country
+    const grouped = items.reduce((acc, dest) => {
+        const country = dest.country || 'Other';
+        if (!acc[country]) acc[country] = [];
+        acc[country].push(dest);
+        return acc;
+    }, {});
+    const countries = Object.entries(grouped);
+    const { links } = destinations || {};
 
     return (
         <>
@@ -152,6 +161,31 @@ export default function DestinationsIndex({ destinations }) {
                         </Link>
                     </div>
                 </section>
+
+                {/* Pagination */}
+                {links && links.length > 3 && (
+                    <div className="py-8">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <nav className="flex items-center justify-center gap-1">
+                                {links.map((link, i) => (
+                                    <Link
+                                        key={i}
+                                        href={link.url || '#'}
+                                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                                            link.active
+                                                ? 'bg-orange-500 text-white'
+                                                : link.url
+                                                    ? 'text-gray-700 hover:bg-orange-50 hover:text-orange-600'
+                                                    : 'text-gray-300 cursor-not-allowed'
+                                        }`}
+                                        preserveScroll
+                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                    />
+                                ))}
+                            </nav>
+                        </div>
+                    </div>
+                )}
 
                 <Footer />
             </div>
