@@ -122,6 +122,16 @@ export default function AdminNav({ stats }) {
                                 Users
                             </Link>
                             <Link
+                                href="/admin/destinations"
+                                className={`px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
+                                    route().current('admin.destinations.*')
+                                        ? 'bg-neutral-100 text-neutral-900'
+                                        : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
+                                }`}
+                            >
+                                Destinations
+                            </Link>
+                            <Link
                                 href="/admin/content"
                                 className={`px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
                                     route().current('admin.content.*')
@@ -269,6 +279,17 @@ export default function AdminNav({ stats }) {
                             onClick={() => setShowMobileMenu(false)}
                         >
                             Users
+                        </Link>
+                        <Link
+                            href="/admin/destinations"
+                            className={`block px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
+                                route().current('admin.destinations.*')
+                                    ? 'bg-neutral-100 text-neutral-900'
+                                    : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
+                            }`}
+                            onClick={() => setShowMobileMenu(false)}
+                        >
+                            Destinations
                         </Link>
                         <Link
                             href="/admin/content"

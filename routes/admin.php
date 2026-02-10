@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminProfileController;
 use App\Http\Controllers\Admin\DestinationApiController;
+use App\Http\Controllers\Admin\DestinationManagementController;
 use App\Http\Controllers\Admin\HotelManagementController;
 use App\Http\Controllers\Admin\ClaimManagementController;
 use App\Http\Controllers\Admin\ContentManagementController;
@@ -116,6 +117,14 @@ Route::middleware(['auth', 'admin', 'throttle:admin'])->prefix('admin')->name('a
     Route::post('/content/tags', [ContentManagementController::class, 'storeTag'])->name('content.tags.store');
     Route::put('/content/tags/{tag}', [ContentManagementController::class, 'updateTag'])->name('content.tags.update');
     Route::delete('/content/tags/{tag}', [ContentManagementController::class, 'destroyTag'])->name('content.tags.destroy');
+
+    // Destinations Management
+    Route::get('/destinations', [DestinationManagementController::class, 'index'])->name('destinations.index');
+    Route::get('/destinations/{destination:id}/edit', [DestinationManagementController::class, 'edit'])->name('destinations.edit');
+    Route::put('/destinations/{destination:id}', [DestinationManagementController::class, 'update'])->name('destinations.update');
+    Route::post('/destinations/{destination:id}/toggle-active', [DestinationManagementController::class, 'toggleActive'])->name('destinations.toggle-active');
+    Route::post('/destinations/{destination:id}/toggle-featured', [DestinationManagementController::class, 'toggleFeatured'])->name('destinations.toggle-featured');
+    Route::delete('/destinations/{destination:id}', [DestinationManagementController::class, 'destroy'])->name('destinations.destroy');
 
     // Destination Lookup API (AJAX endpoints for lazy city seeding)
     Route::get('/api/destinations/countries', [DestinationApiController::class, 'countries'])->name('api.destinations.countries');
