@@ -21,8 +21,8 @@ class DestinationLookupService
 
     public function __construct()
     {
-        $this->apiKey = config('services.countrystatecity.key', '');
-        $this->baseUrl = config('services.countrystatecity.base_url', 'https://api.countrystatecity.in/v1');
+        $this->apiKey = config('services.countrystatecity.key') ?? '';
+        $this->baseUrl = config('services.countrystatecity.base_url') ?? 'https://api.countrystatecity.in/v1';
     }
 
     /**
