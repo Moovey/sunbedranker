@@ -1,5 +1,6 @@
 import { Link, Head } from '@inertiajs/react';
 import Header from '@/Components/Header';
+import Footer from '@/Components/Footer';
 import { memo, useCallback, useMemo } from 'react';
 
 function HotelCompare({ hotels, auth }) {
@@ -451,6 +452,8 @@ function HotelCompare({ hotels, auth }) {
                     </div>
                     </div>
                 </main>
+
+                <Footer />
             </div>
         </>
     );

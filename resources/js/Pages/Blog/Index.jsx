@@ -1,6 +1,7 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import Header from '@/Components/Header';
+import Footer from '@/Components/Footer';
 
 export default function BlogIndex({ posts, categories, tags, featuredPosts, filters }) {
     const [search, setSearch] = useState(filters.search || '');
@@ -27,8 +28,30 @@ export default function BlogIndex({ posts, categories, tags, featuredPosts, filt
 
     return (
         <>
-            <Head title="Pool & Sunbed Guides | Expert Tips & Reviews">
-                <meta name="description" content="Expert guides, tips, and insights about hotel pools, sunbeds, and the best places to relax in the sun. Find your perfect pool experience." />
+            <Head title="Travel Guides, Pool Tips & Hotel Reviews | Sunbed Ranker Blog">
+                <meta name="description" content="Expert travel guides, destination tips, pool reviews, and insider knowledge about hotel pools, sunbeds, and the best places to relax in the sun. Updated regularly with fresh travel content." />
+                <meta property="og:title" content="Travel Guides & Hotel Pool Reviews - Sunbed Ranker Blog" />
+                <meta property="og:description" content="Expert travel guides, destination tips, and honest hotel pool reviews. Find your perfect poolside vacation." />
+                <meta property="og:type" content="blog" />
+                <meta property="og:url" content={`${window.location.origin}/guides`} />
+                <meta property="og:image" content={`${window.location.origin}/images/og-default.jpg`} />
+                <meta property="og:site_name" content="Sunbed Ranker" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="Travel Guides & Hotel Pool Reviews - Sunbed Ranker Blog" />
+                <meta name="twitter:description" content="Expert travel guides, destination tips, and honest hotel pool reviews." />
+                <link rel="canonical" href={`${window.location.origin}/guides`} />
+                <script type="application/ld+json">{JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "Blog",
+                    "name": "Sunbed Ranker Travel Blog",
+                    "description": "Expert travel guides, destination tips, and hotel pool reviews.",
+                    "url": `${window.location.origin}/guides`,
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "Sunbed Ranker",
+                        "logo": { "@type": "ImageObject", "url": `${window.location.origin}/images/logo.png` }
+                    }
+                })}</script>
             </Head>
 
             <div className="min-h-screen bg-gray-50 font-sans">
@@ -324,14 +347,7 @@ export default function BlogIndex({ posts, categories, tags, featuredPosts, filt
                     </div>
                 </div>
 
-                {/* Footer */}
-                <footer className="bg-white border-t border-gray-200 mt-8 sm:mt-10 md:mt-12">
-                    <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
-                        <div className="text-center text-gray-500 text-xs sm:text-sm">
-                            © {new Date().getFullYear()} Sunbed Ranker. All rights reserved.
-                        </div>
-                    </div>
-                </footer>
+                <Footer />
             </div>
         </>
     );

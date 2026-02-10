@@ -8,6 +8,8 @@ use App\Http\Controllers\HotelController;
 use App\Http\Controllers\ComparisonController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\StaticPageController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -65,6 +67,19 @@ Route::delete('/compare/clear', [ComparisonController::class, 'clear'])->name('c
 // Blog / Guides
 Route::get('/guides', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/guides/{post:slug}', [BlogController::class, 'show'])->name('blog.show');
+
+// Sitemap
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
+// Static / Editorial Pages
+Route::get('/about', [StaticPageController::class, 'about'])->name('about');
+Route::get('/how-we-rate', [StaticPageController::class, 'howWeRate'])->name('how-we-rate');
+Route::get('/editorial-policy', [StaticPageController::class, 'editorialPolicy'])->name('editorial-policy');
+Route::get('/contact', [StaticPageController::class, 'contact'])->name('contact');
+Route::get('/privacy-policy', [StaticPageController::class, 'privacyPolicy'])->name('privacy-policy');
+Route::get('/terms-of-service', [StaticPageController::class, 'termsOfService'])->name('terms-of-service');
+Route::get('/cookie-policy', [StaticPageController::class, 'cookiePolicy'])->name('cookie-policy');
+Route::get('/affiliate-disclosure', [StaticPageController::class, 'affiliateDisclosure'])->name('affiliate-disclosure');
 
 // Authenticated routes (regular users)
 Route::middleware('auth')->group(function () {

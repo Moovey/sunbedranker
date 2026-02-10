@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, Head, router } from '@inertiajs/react';
 import Header from '@/Components/Header';
+import Footer from '@/Components/Footer';
 
 export default function DestinationShow({ destination, hotels, filters = {} }) {
     // Ensure all filter values are strings to avoid React warnings on select elements
@@ -42,7 +43,24 @@ export default function DestinationShow({ destination, hotels, filters = {} }) {
 
     return (
         <>
-            <Head title={`${destination.name} - Hotels with Great Pools`} />
+            <Head title={`${destination.name} - Hotels with Great Pools`}>
+                <meta name="description" content={`Find the best hotel pools and sunbeds in ${destination.name}. ${hotels.total} hotels ranked by pool quality, sunbed availability, and atmosphere. Expert reviews and ratings.`} />
+                <meta property="og:title" content={`${destination.name} - Best Hotel Pools & Sunbeds | Sunbed Ranker`} />
+                <meta property="og:description" content={`Discover ${hotels.total} hotels in ${destination.name} ranked by pool quality, sunbed ratio, and atmosphere.`} />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content={`${window.location.origin}/destinations/${destination.slug}`} />
+                {destination.image && <meta property="og:image" content={destination.image.startsWith('http') ? destination.image : `${window.location.origin}/storage/${destination.image}`} />}
+                <meta property="og:site_name" content="Sunbed Ranker" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <link rel="canonical" href={`${window.location.origin}/destinations/${destination.slug}`} />
+                <script type="application/ld+json">{JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "TouristDestination",
+                    "name": destination.name,
+                    "description": destination.description || `Hotels with great pools in ${destination.name}`,
+                    "url": `${window.location.origin}/destinations/${destination.slug}`
+                })}</script>
+            </Head>
             
             <div className="min-h-screen bg-white">
                 <Header />
@@ -256,6 +274,8 @@ export default function DestinationShow({ destination, hotels, filters = {} }) {
                         </div>
                     </div>
                 </div>
+
+                <Footer />
             </div>
         </>
     );

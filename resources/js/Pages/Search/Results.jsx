@@ -1,6 +1,7 @@
 import { Link, Head, usePage } from '@inertiajs/react';
 import { useState, useMemo } from 'react';
 import Header from '@/Components/Header';
+import Footer from '@/Components/Footer';
 
 export default function SearchResults({ searchParams, localHotels, hasResults }) {
     const { auth } = usePage().props;
@@ -435,6 +436,8 @@ export default function SearchResults({ searchParams, localHotels, hasResults })
                         </div>
                     )}
                 </div>
+
+                <Footer />
             </div>
         </>
     );

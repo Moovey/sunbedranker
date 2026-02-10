@@ -1,6 +1,7 @@
 import { Head, router } from '@inertiajs/react';
 import { useState, useCallback, useMemo } from 'react';
 import Header from '@/Components/Header';
+import Footer from '@/Components/Footer';
 
 // Import all components from the organized structure
 import {
@@ -90,7 +91,38 @@ export default function HotelShow({ hotel, similarHotels }) {
 
     return (
         <>
-            <Head title={`${hotel.name} - Pool & Sunbed Review`} />
+            <Head title={`${hotel.name} - Pool & Sunbed Review`}>
+                <meta name="description" content={`Detailed pool and sunbed review of ${hotel.name} in ${hotel.destination?.name || ''}. See sunbed-to-guest ratio, sun exposure, atmosphere ratings, pool facilities, and honest traveler reviews.`} />
+                <meta property="og:title" content={`${hotel.name} - Pool & Sunbed Review | Sunbed Ranker`} />
+                <meta property="og:description" content={`Detailed pool and sunbed review of ${hotel.name}. See sunbed ratios, sun exposure, atmosphere ratings, and more.`} />
+                <meta property="og:type" content="article" />
+                <meta property="og:url" content={`${window.location.origin}/hotels/${hotel.slug}`} />
+                {hotel.main_image_url && <meta property="og:image" content={hotel.main_image_url} />}
+                <meta property="og:site_name" content="Sunbed Ranker" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={`${hotel.name} - Pool & Sunbed Review`} />
+                <meta name="twitter:description" content={`Detailed pool review of ${hotel.name}. Sunbed ratios, facilities, and honest reviews.`} />
+                {hotel.main_image_url && <meta name="twitter:image" content={hotel.main_image_url} />}
+                <link rel="canonical" href={`${window.location.origin}/hotels/${hotel.slug}`} />
+                <script type="application/ld+json">{JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "Hotel",
+                    "name": hotel.name,
+                    "description": `Pool and sunbed review of ${hotel.name}`,
+                    "url": `${window.location.origin}/hotels/${hotel.slug}`,
+                    "image": hotel.main_image_url || '',
+                    "address": {
+                        "@type": "PostalAddress",
+                        "addressLocality": hotel.destination?.name || ''
+                    },
+                    ...(hotel.overall_score ? { "aggregateRating": {
+                        "@type": "AggregateRating",
+                        "ratingValue": hotel.overall_score,
+                        "bestRating": 10,
+                        "worstRating": 0
+                    }} : {})
+                })}</script>
+            </Head>
             
             <div className="min-h-screen bg-white">
                 <Header />
@@ -195,6 +227,8 @@ export default function HotelShow({ hotel, similarHotels }) {
                         destinationName={hotel.destination.name} 
                     />
                 </div>
+
+                <Footer />
             </div>
         </>
     );

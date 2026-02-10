@@ -1,2 +1,9 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin
+Disallow: /hotelier
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /my-profile
+
+Sitemap: https://sunbedranker.com/sitemap.xml

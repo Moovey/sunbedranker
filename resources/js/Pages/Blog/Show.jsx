@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import Header from '@/Components/Header';
+import Footer from '@/Components/Footer';
 
 export default function BlogShow({ post, relatedPosts, nextPost, previousPost }) {
     const formatDate = (dateString) => {
@@ -70,6 +71,43 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
         <>
             <Head title={post.meta?.title || post.title}>
                 <meta name="description" content={post.meta?.description || post.excerpt} />
+                <meta property="og:title" content={post.meta?.title || post.title} />
+                <meta property="og:description" content={post.meta?.description || post.excerpt} />
+                <meta property="og:type" content="article" />
+                <meta property="og:url" content={`${window.location.origin}/guides/${post.slug}`} />
+                {post.featured_image_url && <meta property="og:image" content={post.featured_image_url} />}
+                <meta property="og:site_name" content="Sunbed Ranker" />
+                {post.published_at && <meta property="article:published_time" content={post.published_at} />}
+                {post.author && <meta property="article:author" content={post.author.name} />}
+                {post.category && <meta property="article:section" content={post.category.name} />}
+                {post.tags?.map(tag => <meta key={tag.id} property="article:tag" content={tag.name} />)}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={post.meta?.title || post.title} />
+                <meta name="twitter:description" content={post.meta?.description || post.excerpt} />
+                {post.featured_image_url && <meta name="twitter:image" content={post.featured_image_url} />}
+                <link rel="canonical" href={`${window.location.origin}/guides/${post.slug}`} />
+                <script type="application/ld+json">{JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "Article",
+                    "headline": post.title,
+                    "description": post.excerpt || post.meta?.description,
+                    "image": post.featured_image_url || '',
+                    "datePublished": post.published_at,
+                    "dateModified": post.updated_at || post.published_at,
+                    "author": {
+                        "@type": "Person",
+                        "name": post.author?.name || "Sunbed Ranker"
+                    },
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "Sunbed Ranker",
+                        "logo": { "@type": "ImageObject", "url": `${window.location.origin}/images/logo.png` }
+                    },
+                    "mainEntityOfPage": {
+                        "@type": "WebPage",
+                        "@id": `${window.location.origin}/guides/${post.slug}`
+                    }
+                })}</script>
             </Head>
 
             <div className="min-h-screen bg-white font-sans">
@@ -446,6 +484,8 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                         </div>
                     </div>
                 </section>
+
+                <Footer />
             </div>
         </>
     );

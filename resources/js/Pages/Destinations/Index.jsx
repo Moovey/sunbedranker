@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import Header from '@/Components/Header';
+import Footer from '@/Components/Footer';
 
 export default function DestinationsIndex({ destinations }) {
     // Convert object to array for iteration
@@ -7,8 +8,16 @@ export default function DestinationsIndex({ destinations }) {
 
     return (
         <>
-            <Head title="Destinations | Find the Best Pool Hotels">
-                <meta name="description" content="Explore top destinations with the best hotel pools and sunbed experiences. Find your perfect vacation spot." />
+            <Head title="Travel Destinations | Best Hotel Pools & Sunbed Reviews">
+                <meta name="description" content="Explore top travel destinations with the best hotel pools and sunbed experiences. Detailed reviews, pool ratings, and expert travel tips for every destination." />
+                <meta property="og:title" content="Travel Destinations - Best Hotel Pools & Sunbeds | Sunbed Ranker" />
+                <meta property="og:description" content="Explore top travel destinations with the best hotel pools and sunbed experiences worldwide." />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content={`${window.location.origin}/destinations`} />
+                <meta property="og:image" content={`${window.location.origin}/images/og-default.jpg`} />
+                <meta property="og:site_name" content="Sunbed Ranker" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <link rel="canonical" href={`${window.location.origin}/destinations`} />
             </Head>
 
             <div className="min-h-screen bg-white font-sans">
@@ -143,6 +152,8 @@ export default function DestinationsIndex({ destinations }) {
                         </Link>
                     </div>
                 </section>
+
+                <Footer />
             </div>
         </>
     );
