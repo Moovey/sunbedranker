@@ -7,6 +7,7 @@ use App\Models\Destination;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -88,6 +89,8 @@ class DestinationManagementController extends Controller
         $destination->update($validated);
         $destination->updateHotelCount();
 
+        $this->clearHomeCache();
+
         return redirect()->route('admin.destinations.index')
             ->with('success', "Destination \"{$destination->name}\" updated successfully.");
     }
@@ -95,6 +98,8 @@ class DestinationManagementController extends Controller
     public function toggleActive(Destination $destination)
     {
         $destination->update(['is_active' => !$destination->is_active]);
+
+        $this->clearHomeCache();
 
         $status = $destination->is_active ? 'activated' : 'deactivated';
 
@@ -104,6 +109,8 @@ class DestinationManagementController extends Controller
     public function toggleFeatured(Destination $destination)
     {
         $destination->update(['is_featured' => !$destination->is_featured]);
+
+        $this->clearHomeCache();
 
         $status = $destination->is_featured ? 'featured' : 'unfeatured';
 
@@ -121,7 +128,17 @@ class DestinationManagementController extends Controller
         $name = $destination->name;
         $destination->delete();
 
+        $this->clearHomeCache();
+
         return redirect()->route('admin.destinations.index')
             ->with('success', "Destination \"{$name}\" has been deleted.");
+    }
+
+    /**
+     * Clear homepage destination cache so changes appear immediately.
+     */
+    private function clearHomeCache(): void
+    {
+        Cache::forget('home:featured-destinations');
     }
 }

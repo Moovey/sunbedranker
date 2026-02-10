@@ -1,25 +1,92 @@
 import { Link } from '@inertiajs/react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function FeaturedDestinations({ destinations }) {
     if (!destinations?.length) return null;
 
+    const scrollRef = useRef(null);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(true);
+
+    const checkScrollButtons = () => {
+        if (scrollRef.current) {
+            const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+            setCanScrollLeft(scrollLeft > 0);
+            setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+        }
+    };
+
+    useEffect(() => {
+        checkScrollButtons();
+        window.addEventListener('resize', checkScrollButtons);
+        return () => window.removeEventListener('resize', checkScrollButtons);
+    }, []);
+
+    const scroll = (direction) => {
+        if (scrollRef.current) {
+            const cardWidth = 340;
+            const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
+            scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+    };
+
     return (
         <section className="bg-gradient-to-b from-white to-blue-50 py-12 sm:py-16 md:py-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-center">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-center flex items-center justify-center gap-3">
+                    <svg className="w-10 h-10 sm:w-12 sm:h-12 text-orange-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
                     Popular Destinations
                 </h2>
                 <p className="text-center text-gray-600 text-lg mb-8 sm:mb-10 md:mb-12 font-medium">
                     Find your perfect stay...
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
-                    {destinations.map((destination, index) => (
-                        <DestinationCard 
-                            key={destination.id} 
-                            destination={destination} 
-                            index={index} 
-                        />
-                    ))}
+
+                <div className="relative group">
+                    {/* Left Arrow */}
+                    <button
+                        onClick={() => scroll('left')}
+                        className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 sm:w-14 sm:h-14 bg-white/95 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 -translate-x-4 sm:-translate-x-6 ${
+                            canScrollLeft ? 'opacity-100 visible' : 'opacity-0 invisible'
+                        }`}
+                        aria-label="Scroll left"
+                    >
+                        <svg className="w-6 h-6 sm:w-7 sm:h-7 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+
+                    {/* Right Arrow */}
+                    <button
+                        onClick={() => scroll('right')}
+                        className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 sm:w-14 sm:h-14 bg-white/95 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 translate-x-4 sm:translate-x-6 ${
+                            canScrollRight ? 'opacity-100 visible' : 'opacity-0 invisible'
+                        }`}
+                        aria-label="Scroll right"
+                    >
+                        <svg className="w-6 h-6 sm:w-7 sm:h-7 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+
+                    {/* Scrollable Container */}
+                    <div
+                        ref={scrollRef}
+                        onScroll={checkScrollButtons}
+                        className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6"
+                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                    >
+                        {destinations.map((destination, index) => (
+                            <div key={destination.id} className="flex-shrink-0 w-[280px] sm:w-[320px]">
+                                <DestinationCard destination={destination} index={index} />
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Gradient Fade Effects */}
+                    <div className={`absolute left-0 top-0 bottom-4 w-8 bg-gradient-to-r from-white to-transparent pointer-events-none transition-opacity ${canScrollLeft ? 'opacity-100' : 'opacity-0'}`} />
+                    <div className={`absolute right-0 top-0 bottom-4 w-8 bg-gradient-to-l from-blue-50 to-transparent pointer-events-none transition-opacity ${canScrollRight ? 'opacity-100' : 'opacity-0'}`} />
                 </div>
             </div>
         </section>
@@ -34,7 +101,7 @@ function DestinationCard({ destination, index }) {
         >
             <div className="relative overflow-hidden aspect-[4/5]">
                 <img
-                    src={destination.image || '/images/default-destination.jpg'}
+                    src={destination.image ? (destination.image.startsWith('http') ? destination.image : `/storage/${destination.image}`) : '/images/default-destination.svg'}
                     alt={destination.name}
                     width={400}
                     height={500}

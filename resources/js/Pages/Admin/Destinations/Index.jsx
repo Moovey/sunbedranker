@@ -169,20 +169,11 @@ export default function DestinationsIndex({ destinations, filters }) {
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                                                        {destination.image ? (
-                                                            <img
-                                                                src={destination.image.startsWith('http') ? destination.image : `/storage/${destination.image}`}
-                                                                alt={destination.name}
-                                                                className="w-full h-full object-cover"
-                                                            />
-                                                        ) : (
-                                                            <div className="w-full h-full flex items-center justify-center bg-orange-50">
-                                                                <svg className="w-5 h-5 text-orange-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                                </svg>
-                                                            </div>
-                                                        )}
+                                                        <img
+                                                            src={destination.image ? (destination.image.startsWith('http') ? destination.image : `/storage/${destination.image}`) : '/images/default-destination.svg'}
+                                                            alt={destination.name}
+                                                            className="w-full h-full object-cover"
+                                                        />
                                                     </div>
                                                     <div className="min-w-0">
                                                         <p className="text-sm font-medium text-gray-900 truncate">{destination.name}</p>
@@ -284,20 +275,11 @@ export default function DestinationsIndex({ destinations, filters }) {
                             <div key={destination.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                                 <div className="flex items-start gap-3 mb-3">
                                     <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                                        {destination.image ? (
-                                            <img
-                                                src={destination.image.startsWith('http') ? destination.image : `/storage/${destination.image}`}
-                                                alt={destination.name}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center bg-orange-50">
-                                                <svg className="w-6 h-6 text-orange-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                </svg>
-                                            </div>
-                                        )}
+                                        <img
+                                            src={destination.image ? (destination.image.startsWith('http') ? destination.image : `/storage/${destination.image}`) : '/images/default-destination.svg'}
+                                            alt={destination.name}
+                                            className="w-full h-full object-cover"
+                                        />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <h3 className="text-sm font-semibold text-gray-900 truncate">{destination.name}</h3>
