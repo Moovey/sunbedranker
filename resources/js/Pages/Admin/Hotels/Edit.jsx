@@ -7,9 +7,7 @@ import CreateBasicInfoTab from '@/Components/Admin/Hotels/CreateBasicInfoTab';
 import ContactLocationTab from '@/Components/Admin/Hotels/ContactLocationTab';
 import PoolCriteriaTab from '@/Components/Admin/Hotels/PoolCriteriaTab';
 import CreateAffiliateTab from '@/Components/Admin/Hotels/CreateAffiliateTab';
-import SettingsTab from '@/Components/Admin/Hotels/SettingsTab';
 import CreateImagesTab from '@/Components/Admin/Hotels/CreateImagesTab';
-import BadgesTab from '@/Components/Admin/Hotels/BadgesTab';
 
 // Form field groupings for tab switching on validation errors
 const TAB_FIELDS = {
@@ -18,7 +16,6 @@ const TAB_FIELDS = {
     images: ['main_image', 'gallery_images'],
     pool: ['sunbed_count', 'sun_exposure', 'pool_size_category', 'pool_size_sqm', 'number_of_pools'],
     affiliate: ['booking_affiliate_url', 'expedia_affiliate_url', 'affiliate_provider', 'affiliate_tracking_code'],
-    settings: ['is_active', 'is_verified', 'is_featured', 'subscription_tier'],
 };
 
 // Build initial form data from hotel object
@@ -113,7 +110,7 @@ export default function EditHotel({ hotel, destinations, badges, stats, errors: 
     });
     const { props } = usePage();
 
-    const tabs = ['basic', 'contact', 'images', 'pool', 'affiliate', 'settings', 'badges'];
+    const tabs = ['basic', 'contact', 'images', 'pool', 'affiliate'];
 
     // Combine all error sources - server errors, form errors, page props errors, and local state
     const pageErrors = props?.errors || {};
@@ -174,14 +171,6 @@ export default function EditHotel({ hotel, destinations, badges, stats, errors: 
         });
     };
 
-    // Auto-assign badges
-    const autoAssignBadges = () => {
-        router.post(route('admin.hotels.auto-assign-badges', hotel.id), {}, {
-            onSuccess: () => toast.success('Badges auto-assigned successfully!'),
-            onError: () => toast.error('Failed to auto-assign badges'),
-        });
-    };
-
     return (
         <>
             <Head title={`Edit ${hotel.name}`} />
@@ -200,13 +189,6 @@ export default function EditHotel({ hotel, destinations, badges, stats, errors: 
                             <p className="text-gray-500 text-xs sm:text-sm">Edit hotel details and settings</p>
                         </div>
                         <div className="flex gap-2 flex-wrap w-full sm:w-auto">
-                            <button
-                                type="button"
-                                onClick={autoAssignBadges}
-                                className="flex-1 sm:flex-none px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors text-xs sm:text-sm whitespace-nowrap"
-                            >
-                                Auto-Assign Badges
-                            </button>
                             <Link
                                 href={route('hotels.show', hotel.slug)}
                                 target="_blank"
@@ -238,13 +220,22 @@ export default function EditHotel({ hotel, destinations, badges, stats, errors: 
                                 errors={allErrors}
                                 destinations={destinations}
                                 hotel={hotel}
-                                autoAssignBadges={autoAssignBadges}
                             />
 
-                            {/* Action Buttons - Only show for editable tabs */}
-                            {!['badges', 'images'].includes(activeTab) && (
-                                <ActionButtons processing={processing} />
-                            )}
+                            {/* Action Buttons */}
+                            <ActionButtons
+                                isFirstTab={activeTab === 'basic'}
+                                isLastTab={activeTab === 'affiliate'}
+                                processing={processing}
+                                onPrevTab={() => {
+                                    const currentIndex = tabs.indexOf(activeTab);
+                                    if (currentIndex > 0) setActiveTab(tabs[currentIndex - 1]);
+                                }}
+                                onNextTab={() => {
+                                    const currentIndex = tabs.indexOf(activeTab);
+                                    if (currentIndex < tabs.length - 1) setActiveTab(tabs[currentIndex + 1]);
+                                }}
+                            />
                         </div>
                     </form>
                 </div>
@@ -348,8 +339,6 @@ function TabNavigation({ activeTab, setActiveTab }) {
         { id: 'images', label: 'Images' },
         { id: 'pool', label: 'Pool Scoring' },
         { id: 'affiliate', label: 'Affiliate Links' },
-        { id: 'settings', label: 'Settings' },
-        { id: 'badges', label: 'Badges' },
     ];
 
     return (
@@ -369,36 +358,57 @@ function TabNavigation({ activeTab, setActiveTab }) {
     );
 }
 
-function TabContent({ activeTab, data, setData, errors, destinations, hotel, autoAssignBadges }) {
+function TabContent({ activeTab, data, setData, errors, destinations, hotel }) {
     const tabComponents = {
         basic: <CreateBasicInfoTab data={data} setData={setData} errors={errors} destinations={destinations} />,
         contact: <ContactLocationTab data={data} setData={setData} errors={errors} />,
         images: <CreateImagesTab data={data} setData={setData} errors={errors} hotel={hotel} />,
         pool: <PoolCriteriaTab data={data} setData={setData} errors={errors} />,
         affiliate: <CreateAffiliateTab data={data} setData={setData} errors={errors} />,
-        settings: <SettingsTab data={data} setData={setData} errors={errors} />,
-        badges: <BadgesTab hotel={hotel} autoAssignBadges={autoAssignBadges} />,
     };
 
     return tabComponents[activeTab] || null;
 }
 
-function ActionButtons({ processing }) {
+function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab }) {
     return (
-        <div className="mt-4 sm:mt-5 md:mt-6 pt-4 sm:pt-5 md:pt-6 border-t border-gray-200 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-end">
+        <div className="mt-4 sm:mt-5 md:mt-6 pt-4 sm:pt-5 md:pt-6 border-t border-gray-200 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-between">
             <Link
                 href={route('admin.hotels.index')}
                 className="px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors text-center text-xs sm:text-sm"
             >
                 Cancel
             </Link>
-            <button
-                type="submit"
-                disabled={processing}
-                className="px-3 sm:px-4 py-2 sm:py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors text-center text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-                {processing ? 'Updating...' : 'Update Hotel'}
-            </button>
+            
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                {!isFirstTab && (
+                    <button
+                        type="button"
+                        onClick={onPrevTab}
+                        className="px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors text-center text-xs sm:text-sm"
+                    >
+                        Previous
+                    </button>
+                )}
+                
+                {!isLastTab ? (
+                    <button
+                        type="button"
+                        onClick={onNextTab}
+                        className="px-3 sm:px-4 py-2 sm:py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors text-center text-xs sm:text-sm"
+                    >
+                        Next
+                    </button>
+                ) : (
+                    <button
+                        type="submit"
+                        disabled={processing}
+                        className="px-3 sm:px-4 py-2 sm:py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors text-center text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {processing ? 'Updating...' : 'Update Hotel'}
+                    </button>
+                )}
+            </div>
         </div>
     );
 }

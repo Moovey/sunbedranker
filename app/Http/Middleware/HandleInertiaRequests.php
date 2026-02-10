@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\HotelClaim;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -50,7 +52,12 @@ class HandleInertiaRequests extends Middleware
                 'warning' => fn () => $request->session()->get('warning'),
                 'info' => fn () => $request->session()->get('info'),
             ],
-            // Let Inertia handle errors through parent::share() which includes default error handling
+            // Share pending claims count for admin nav badge (only for admin users)
+            'adminStats' => fn () => $user && $user->role === 'admin' ? [
+                'pending_claims' => Cache::remember('admin.nav.pending_claims', now()->addMinutes(2), function () {
+                    return HotelClaim::where('status', 'pending')->count();
+                }),
+            ] : null,
         ];
     }
 }

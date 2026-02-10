@@ -444,5 +444,8 @@ class ClaimManagementController extends Controller
         
         // Also clear dashboard stats since they overlap
         Cache::forget(AdminDashboardController::CACHE_KEY_STATS);
+
+        // Clear nav pending claims cache used by middleware + polling endpoint
+        Cache::forget('admin.nav.pending_claims');
     }
 }

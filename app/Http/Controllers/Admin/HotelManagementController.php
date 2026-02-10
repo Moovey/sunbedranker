@@ -61,7 +61,7 @@ class HotelManagementController extends Controller
      */
     private function buildFilteredHotelQuery(FilterHotelsRequest $request): Builder
     {
-        return Hotel::with('destination')
+        return Hotel::with(['destination', 'claims' => fn ($q) => $q->latest()->limit(1), 'claims.user', 'owner'])
             ->when($request->searchTerm(), fn (Builder $q, string $search) => 
                 $q->where('name', 'like', "%{$search}%")
             )

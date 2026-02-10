@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ClaimManagementController;
 use App\Http\Controllers\Admin\ContentManagementController;
 use App\Http\Controllers\Admin\ScoringSettingsController;
 use App\Http\Controllers\Admin\UserManagementController;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'admin', 'throttle:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -119,4 +120,13 @@ Route::middleware(['auth', 'admin', 'throttle:admin'])->prefix('admin')->name('a
     // Destination Lookup API (AJAX endpoints for lazy city seeding)
     Route::get('/api/destinations/countries', [DestinationApiController::class, 'countries'])->name('api.destinations.countries');
     Route::get('/api/destinations/cities', [DestinationApiController::class, 'searchCities'])->name('api.destinations.cities');
+
+    // Live stats polling endpoint (lightweight JSON)
+    Route::get('/api/stats/pending-claims', function () {
+        return response()->json([
+            'pending_claims' => Cache::remember('admin.nav.pending_claims', now()->addMinutes(2), function () {
+                return \App\Models\HotelClaim::where('status', 'pending')->count();
+            }),
+        ]);
+    })->name('api.stats.pending-claims');
 });

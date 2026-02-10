@@ -10,11 +10,12 @@ const STATUS_OPTIONS = [
     { value: 'inactive', label: 'Inactive' },
 ];
 
-// Subscription tier styling configuration
-const SUBSCRIPTION_STYLES = {
-    premium: 'bg-purple-100 text-purple-700',
-    enhanced: 'bg-blue-100 text-blue-700',
-    free: 'bg-gray-100 text-gray-600',
+// Claim status styling configuration
+const CLAIM_STYLES = {
+    approved: 'bg-green-100 text-green-700',
+    pending: 'bg-yellow-100 text-yellow-700',
+    rejected: 'bg-red-100 text-red-700',
+    unclaimed: 'bg-gray-100 text-gray-500',
 };
 
 // Table column configuration
@@ -22,7 +23,7 @@ const TABLE_COLUMNS = [
     { key: 'hotel', label: 'Hotel' },
     { key: 'destination', label: 'Destination' },
     { key: 'score', label: 'Score' },
-    { key: 'subscription', label: 'Subscription' },
+    { key: 'claim', label: 'Claim Status' },
     { key: 'status', label: 'Status' },
     { key: 'actions', label: 'Actions' },
 ];
@@ -241,8 +242,23 @@ function HotelTable({ hotels, onDelete }) {
     );
 }
 
+function getClaimInfo(hotel) {
+    const latestClaim = hotel.claims?.[0];
+    if (hotel.owned_by || latestClaim?.status === 'approved') {
+        return { label: 'Claimed', status: 'approved', claim: latestClaim, ownerName: latestClaim?.user?.name || hotel.owner?.name || 'Owner' };
+    }
+    if (latestClaim?.status === 'pending') {
+        return { label: 'Pending', status: 'pending', claim: latestClaim, ownerName: latestClaim?.user?.name };
+    }
+    if (latestClaim?.status === 'rejected') {
+        return { label: 'Rejected', status: 'rejected', claim: latestClaim, ownerName: latestClaim?.user?.name };
+    }
+    return { label: 'Unclaimed', status: 'unclaimed', claim: null, ownerName: null };
+}
+
 function MobileHotelCard({ hotel, onDelete }) {
-    const subscriptionStyle = SUBSCRIPTION_STYLES[hotel.subscription_tier] || SUBSCRIPTION_STYLES.free;
+    const claimInfo = getClaimInfo(hotel);
+    const claimStyle = CLAIM_STYLES[claimInfo.status] || CLAIM_STYLES.unclaimed;
     
     return (
         <div className="p-3 sm:p-4 hover:bg-gray-50 transition-colors">
@@ -272,9 +288,18 @@ function MobileHotelCard({ hotel, onDelete }) {
                                 {hotel.destination?.name || '-'}
                             </div>
                         </div>
-                        <span className={`px-2 py-0.5 text-[10px] sm:text-xs font-medium rounded-full flex-shrink-0 ${subscriptionStyle}`}>
-                            {hotel.subscription_tier || 'free'}
-                        </span>
+                        {claimInfo.claim ? (
+                            <Link
+                                href={route('admin.claims.show', claimInfo.claim.id)}
+                                className={`px-2 py-0.5 text-[10px] sm:text-xs font-medium rounded-full flex-shrink-0 hover:opacity-80 transition-opacity ${claimStyle}`}
+                            >
+                                {claimInfo.label}
+                            </Link>
+                        ) : (
+                            <span className={`px-2 py-0.5 text-[10px] sm:text-xs font-medium rounded-full flex-shrink-0 ${claimStyle}`}>
+                                {claimInfo.label}
+                            </span>
+                        )}
                     </div>
                 </div>
             </div>
@@ -353,7 +378,7 @@ function HotelRow({ hotel, onDelete }) {
             <HotelInfoCell hotel={hotel} />
             <DestinationCell destination={hotel.destination?.name} />
             <ScoreCell score={hotel.overall_score} />
-            <SubscriptionCell tier={hotel.subscription_tier} />
+            <ClaimCell hotel={hotel} />
             <StatusCell hotel={hotel} />
             <ActionsCell hotel={hotel} onDelete={onDelete} />
         </tr>
@@ -402,20 +427,37 @@ function ScoreCell({ score }) {
     return (
         <td className="px-3 md:px-4 lg:px-6 py-3 md:py-4 whitespace-nowrap">
             <div className="text-xs md:text-sm font-medium text-gray-900">
-                {score ? `${score}/100` : 'N/A'}
+                {score ? `${score}/10` : 'N/A'}
             </div>
         </td>
     );
 }
 
-function SubscriptionCell({ tier }) {
-    const style = SUBSCRIPTION_STYLES[tier] || SUBSCRIPTION_STYLES.free;
+function ClaimCell({ hotel }) {
+    const claimInfo = getClaimInfo(hotel);
+    const style = CLAIM_STYLES[claimInfo.status] || CLAIM_STYLES.unclaimed;
     
     return (
         <td className="px-3 md:px-4 lg:px-6 py-3 md:py-4 whitespace-nowrap">
-            <span className={`px-1.5 md:px-2 py-0.5 md:py-1 text-[10px] md:text-xs font-medium rounded-full ${style}`}>
-                {tier || 'free'}
-            </span>
+            <div className="flex flex-col gap-0.5">
+                {claimInfo.claim ? (
+                    <Link
+                        href={route('admin.claims.show', claimInfo.claim.id)}
+                        className={`inline-flex px-1.5 md:px-2 py-0.5 md:py-1 text-[10px] md:text-xs font-medium rounded-full hover:opacity-80 transition-opacity w-fit ${style}`}
+                    >
+                        {claimInfo.label}
+                    </Link>
+                ) : (
+                    <span className={`inline-flex px-1.5 md:px-2 py-0.5 md:py-1 text-[10px] md:text-xs font-medium rounded-full w-fit ${style}`}>
+                        {claimInfo.label}
+                    </span>
+                )}
+                {claimInfo.ownerName && (
+                    <span className="text-[10px] md:text-xs text-gray-400 truncate max-w-[120px]">
+                        {claimInfo.ownerName}
+                    </span>
+                )}
+            </div>
         </td>
     );
 }

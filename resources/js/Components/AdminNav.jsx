@@ -2,10 +2,41 @@ import { Link, usePage } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
 
 export default function AdminNav({ stats }) {
-    const { auth } = usePage().props;
+    const { auth, adminStats } = usePage().props;
     const [showUserDropdown, setShowUserDropdown] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
+    const [pendingClaims, setPendingClaims] = useState(
+        stats?.pending_claims ?? adminStats?.pending_claims ?? 0
+    );
     const dropdownRef = useRef(null);
+
+    // Poll for live pending claims count every 30 seconds + on mount
+    useEffect(() => {
+        const poll = () => {
+            fetch(route('admin.api.stats.pending-claims'))
+                .then(res => res.ok ? res.json() : null)
+                .then(data => {
+                    if (data && typeof data.pending_claims === 'number') {
+                        setPendingClaims(data.pending_claims);
+                    }
+                })
+                .catch(() => {}); // silently fail
+        };
+
+        // Fetch immediately on mount / page navigation
+        poll();
+
+        const interval = setInterval(poll, 30000);
+        return () => clearInterval(interval);
+    }, []);
+
+    // Sync when props change (e.g. Inertia page visit)
+    useEffect(() => {
+        const count = stats?.pending_claims ?? adminStats?.pending_claims;
+        if (typeof count === 'number') {
+            setPendingClaims(count);
+        }
+    }, [stats?.pending_claims, adminStats?.pending_claims]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -74,9 +105,9 @@ export default function AdminNav({ stats }) {
                                 }`}
                             >
                                 Hoteliers
-                                {stats?.pending_claims > 0 && (
+                                {pendingClaims > 0 && (
                                     <span className="ml-2 px-2 py-0.5 text-xs font-normal bg-neutral-900 text-white rounded-full">
-                                        {stats.pending_claims}
+                                        {pendingClaims}
                                     </span>
                                 )}
                             </Link>
@@ -222,9 +253,9 @@ export default function AdminNav({ stats }) {
                             onClick={() => setShowMobileMenu(false)}
                         >
                             <span>Hoteliers</span>
-                            {stats?.pending_claims > 0 && (
+                            {pendingClaims > 0 && (
                                 <span className="px-2 py-0.5 text-xs font-normal bg-neutral-900 text-white rounded-full">
-                                    {stats.pending_claims}
+                                    {pendingClaims}
                                 </span>
                             )}
                         </Link>
