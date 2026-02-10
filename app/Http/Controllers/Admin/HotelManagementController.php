@@ -11,6 +11,7 @@ use App\Models\Destination;
 use App\Models\PoolCriteria;
 use App\Models\Badge;
 use App\Services\HotelScoringService;
+use App\Services\DestinationLookupService;
 use App\Jobs\ProcessHotelImages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -34,7 +35,8 @@ class HotelManagementController extends Controller
     private const DESTINATIONS_TTL_MINUTES = 10;
 
     public function __construct(
-        protected HotelScoringService $scoringService
+        protected HotelScoringService $scoringService,
+        protected DestinationLookupService $destinationLookupService
     ) {}
 
     /**
@@ -109,7 +111,9 @@ class HotelManagementController extends Controller
         $rules = [
             // Basic Information
             'name' => 'required|string|max:255',
-            'destination_id' => 'required|exists:destinations,id',
+            'destination_id' => 'nullable|exists:destinations,id',
+            'city_name' => 'nullable|string|max:255',
+            'country_code' => 'nullable|string|size:2',
             'description' => 'nullable|string|max:5000',
             'star_rating' => 'required|integer|min:1|max:5',
             'total_rooms' => 'required|integer|min:1',
@@ -185,6 +189,13 @@ class HotelManagementController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
+        // Custom validation: must have either destination_id or (city_name + country_code)
+        $validator->after(function ($validator) use ($request) {
+            if (!$request->filled('destination_id') && !($request->filled('city_name') && $request->filled('country_code'))) {
+                $validator->errors()->add('destination_id', 'Please select an existing destination or search for a city.');
+            }
+        });
+
         if ($validator->fails()) {
             // Instead of redirecting, render the page directly with errors as props
             // This bypasses any session issues in production
@@ -200,6 +211,9 @@ class HotelManagementController extends Controller
         $validated = $validator->validated();
         
         try {
+            // Resolve destination: find existing or create from API
+            $validated = $this->resolveDestination($validated);
+
             // Generate slug
             $validated['slug'] = Str::slug($validated['name']);
             $validated['is_active'] = $validated['is_active'] ?? true;
@@ -316,6 +330,34 @@ class HotelManagementController extends Controller
         return $poolCriteriaData;
     }
 
+    /**
+     * Resolve destination from validated data.
+     * If destination_id is provided, keeps it. Otherwise uses city_name + country_code
+     * to find or create a destination via the CountryStateCity API.
+     */
+    private function resolveDestination(array $validated): array
+    {
+        $cityName = $validated['city_name'] ?? null;
+        $countryCode = $validated['country_code'] ?? null;
+        $destinationId = $validated['destination_id'] ?? null;
+
+        // Clean up city-specific fields from validated data (they're not hotel columns)
+        unset($validated['city_name'], $validated['country_code']);
+
+        // If an existing destination was explicitly selected, use it
+        if (!empty($destinationId)) {
+            return $validated;
+        }
+
+        // Otherwise, find or create from city_name + country_code
+        if (!empty($cityName) && !empty($countryCode)) {
+            $destination = $this->destinationLookupService->findOrCreateDestination($cityName, $countryCode);
+            $validated['destination_id'] = $destination->id;
+        }
+
+        return $validated;
+    }
+
     public function edit(Hotel $hotel): Response
     {
         $hotel->load(['destination', 'poolCriteria', 'badges']);
@@ -339,7 +381,9 @@ class HotelManagementController extends Controller
             
             // Basic Information
             'name' => 'required|string|max:255',
-            'destination_id' => 'required|exists:destinations,id',
+            'destination_id' => 'nullable|exists:destinations,id',
+            'city_name' => 'nullable|string|max:255',
+            'country_code' => 'nullable|string|size:2',
             'description' => 'nullable|string|max:5000',
             'star_rating' => 'required|integer|min:1|max:5',
             'total_rooms' => 'required|integer|min:1',
@@ -419,6 +463,16 @@ class HotelManagementController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
+        // Custom validation: must have either destination_id or (city_name + country_code)
+        $validator->after(function ($validator) use ($request, $hotel) {
+            if (!$request->filled('destination_id') && !($request->filled('city_name') && $request->filled('country_code'))) {
+                // Allow keeping current destination if neither field changed
+                if (!$hotel->destination_id) {
+                    $validator->errors()->add('destination_id', 'Please select an existing destination or search for a city.');
+                }
+            }
+        });
+
         if ($validator->fails()) {
             // Render the page directly with errors as props - bypasses session issues in production
             $hotel->load('poolCriteria', 'badges', 'destination');
@@ -437,6 +491,14 @@ class HotelManagementController extends Controller
         $validated = $validator->validated();
 
         try {
+            // Resolve destination: find existing or create from API (keep current if no change)
+            if (!empty($validated['city_name']) && !empty($validated['country_code'])) {
+                $validated = $this->resolveDestination($validated);
+            } elseif (empty($validated['destination_id'])) {
+                // Keep current destination
+                $validated['destination_id'] = $hotel->destination_id;
+            }
+
             // Handle slug update if name changed
             if ($hotel->name !== $validated['name']) {
                 $validated['slug'] = Str::slug($validated['name']);

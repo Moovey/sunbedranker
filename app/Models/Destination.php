@@ -23,6 +23,7 @@ class Destination extends Model
         'hotel_count',
         'is_featured',
         'is_active',
+        'is_auto_created',
     ];
 
     protected $casts = [
@@ -30,6 +31,7 @@ class Destination extends Model
         'longitude' => 'decimal:7',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
+        'is_auto_created' => 'boolean',
     ];
 
     public function hotels(): HasMany

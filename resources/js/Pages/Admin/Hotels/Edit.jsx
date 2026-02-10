@@ -13,7 +13,7 @@ import BadgesTab from '@/Components/Admin/Hotels/BadgesTab';
 
 // Form field groupings for tab switching on validation errors
 const TAB_FIELDS = {
-    basic: ['name', 'destination_id', 'description', 'star_rating', 'total_rooms'],
+    basic: ['name', 'destination_id', 'city_name', 'country_code', 'description', 'star_rating', 'total_rooms'],
     contact: ['address', 'latitude', 'longitude', 'phone', 'email', 'website'],
     images: ['main_image', 'gallery_images'],
     pool: ['sunbed_count', 'sun_exposure', 'pool_size_category', 'pool_size_sqm', 'number_of_pools'],
@@ -26,6 +26,8 @@ const buildFormData = (hotel) => ({
     // Basic Info
     name: hotel.name || '',
     destination_id: hotel.destination_id || '',
+    city_name: '',
+    country_code: hotel.destination?.country_code || '',
     description: hotel.description || '',
     star_rating: hotel.star_rating || '',
     total_rooms: hotel.total_rooms || '',

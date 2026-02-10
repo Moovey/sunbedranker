@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminProfileController;
+use App\Http\Controllers\Admin\DestinationApiController;
 use App\Http\Controllers\Admin\HotelManagementController;
 use App\Http\Controllers\Admin\ClaimManagementController;
 use App\Http\Controllers\Admin\ContentManagementController;
@@ -114,4 +115,8 @@ Route::middleware(['auth', 'admin', 'throttle:admin'])->prefix('admin')->name('a
     Route::post('/content/tags', [ContentManagementController::class, 'storeTag'])->name('content.tags.store');
     Route::put('/content/tags/{tag}', [ContentManagementController::class, 'updateTag'])->name('content.tags.update');
     Route::delete('/content/tags/{tag}', [ContentManagementController::class, 'destroyTag'])->name('content.tags.destroy');
+
+    // Destination Lookup API (AJAX endpoints for lazy city seeding)
+    Route::get('/api/destinations/countries', [DestinationApiController::class, 'countries'])->name('api.destinations.countries');
+    Route::get('/api/destinations/cities', [DestinationApiController::class, 'searchCities'])->name('api.destinations.cities');
 });

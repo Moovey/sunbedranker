@@ -46,4 +46,9 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', '/auth/google/callback'),
     ],
 
+    'countrystatecity' => [
+        'key' => env('COUNTRYSTATECITY_API_KEY'),
+        'base_url' => 'https://api.countrystatecity.in/v1',
+    ],
+
 ];
