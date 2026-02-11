@@ -200,7 +200,7 @@ class ContentManagementController extends Controller
             'slug' => 'nullable|string|max:255|unique:posts,slug,' . $post->id,
             'excerpt' => 'nullable|string|max:500',
             'content' => 'required|string',
-            'featured_image' => 'nullable|image|max:2048',
+            'featured_image' => 'nullable|image|max:5120',
             'category_id' => 'required|exists:categories,id',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
@@ -449,5 +449,24 @@ class ContentManagementController extends Controller
     public static function clearStatsCache(): void
     {
         Cache::forget(self::CACHE_KEY_STATS);
+    }
+
+    /**
+     * Upload an image from the rich text editor
+     */
+    public function uploadContentImage(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,gif,webp,svg|max:5120',
+        ]);
+
+        $disk = config('filesystems.public_uploads', 'public');
+        $path = $request->file('image')->store('posts/content', $disk);
+
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
+        $storage = Storage::disk($disk);
+        $url = $storage->url($path);
+
+        return response()->json(['url' => $url]);
     }
 }

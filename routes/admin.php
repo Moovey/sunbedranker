@@ -107,6 +107,7 @@ Route::middleware(['auth', 'admin', 'throttle:admin'])->prefix('admin')->name('a
     Route::put('/content/posts/{post}', [ContentManagementController::class, 'updatePost'])->name('content.posts.update');
     Route::delete('/content/posts/{post}', [ContentManagementController::class, 'destroyPost'])->name('content.posts.destroy');
     Route::post('/content/posts/{post}/toggle-status', [ContentManagementController::class, 'togglePostStatus'])->name('content.posts.toggle-status');
+    Route::post('/content/upload-image', [ContentManagementController::class, 'uploadContentImage'])->name('content.upload-image');
     
     // Categories
     Route::post('/content/categories', [ContentManagementController::class, 'storeCategory'])->name('content.categories.store');

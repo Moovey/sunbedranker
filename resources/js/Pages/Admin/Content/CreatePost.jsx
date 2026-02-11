@@ -6,6 +6,7 @@ import AdminNav from '@/Components/AdminNav';
 import { Icons } from '@/Components/Admin';
 import CategoryModal from '@/Components/Admin/Content/CategoryModal';
 import TagModal from '@/Components/Admin/Content/TagModal';
+import RichTextEditor from '@/Components/Admin/Content/RichTextEditor';
 
 export default function CreatePost({ categories, tags }) {
     const [formData, setFormData] = useState({
@@ -198,14 +199,11 @@ export default function CreatePost({ categories, tags }) {
                                 <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                     Content <span className="text-red-500">*</span>
                                 </label>
-                                <textarea
-                                    value={formData.content}
-                                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                    rows={12}
-                                    className={`w-full px-3 sm:px-4 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 font-mono ${
-                                        errors.content ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                                    placeholder="Write your content here... (Markdown supported)"
+                                <RichTextEditor
+                                    content={formData.content}
+                                    onChange={(html) => setFormData({ ...formData, content: html })}
+                                    placeholder="Start writing your blog post..."
+                                    error={errors.content}
                                 />
                                 {errors.content && (
                                     <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.content}</p>

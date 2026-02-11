@@ -12,10 +12,27 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
         });
     };
 
-    // Simple markdown-like rendering
+    // Detect if content is HTML (from rich text editor) or plain text/markdown
+    const isHtmlContent = (content) => {
+        if (!content) return false;
+        return /<[a-z][\s\S]*>/i.test(content);
+    };
+
+    // Simple markdown-like rendering for legacy plain-text content
     const renderContent = (content) => {
         if (!content) return '';
-        
+
+        // If content is HTML (from TipTap editor), render it directly
+        if (isHtmlContent(content)) {
+            return (
+                <div
+                    className="blog-content"
+                    dangerouslySetInnerHTML={{ __html: content }}
+                />
+            );
+        }
+
+        // Legacy plain-text/markdown rendering
         const paragraphs = content.split('\n\n').filter(p => p.trim());
         
         return paragraphs.map((paragraph, index) => {
