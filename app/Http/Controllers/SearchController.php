@@ -60,6 +60,7 @@ class SearchController extends Controller
                 $q->whereHas('destination', function ($destQuery) use ($destination) {
                     $destQuery->where('name', 'LIKE', "%{$destination}%")
                             ->orWhere('country', 'LIKE', "%{$destination}%")
+                            ->orWhere('country_code', 'LIKE', "%{$destination}%")
                             ->orWhere('region', 'LIKE', "%{$destination}%");
                 })
                 ->orWhere('hotels.name', 'LIKE', "%{$destination}%")

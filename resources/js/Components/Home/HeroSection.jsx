@@ -83,7 +83,7 @@ export default function HeroSection() {
                                                 type="text"
                                                 value={searchData.destination}
                                                 onChange={(e) => setSearchData({...searchData, destination: e.target.value})}
-                                                placeholder="Where to? (e.g., Tenerife)"
+                                                placeholder="Where to? (e.g., Tenerife, Spain, ES)"
                                                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-gray-900 placeholder-gray-400 transition-all duration-200 text-base font-medium"
                                             />
                                         </div>
