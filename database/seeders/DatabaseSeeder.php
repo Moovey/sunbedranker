@@ -13,73 +13,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Only seed in non-production environments with Faker
-        if (app()->environment('production')) {
-            // In production, only create essential data without Faker
-            $this->seedProductionData();
-            return;
-        }
-
-        // Development/Local seeding with Faker
-        $this->seedDevelopmentData();
-    }
-
-    /**
-     * Seed essential production data (no Faker required)
-     */
-    private function seedProductionData(): void
-    {
-        // Create users
         $this->createUsers();
-
-        // Create destinations
         $this->createDestinations();
-
-        // Call SampleHotelsSeeder for hotels and pool criteria
-        $this->call([SampleHotelsSeeder::class]);
-    }
-
-    /**
-     * Seed development data with Faker
-     */
-    private function seedDevelopmentData(): void
-    {
-        // Test User (only if doesn't exist)
-        if (!User::where('email', 'test@example.com')->exists()) {
-            User::factory()->create([
-                'name' => 'Test User',
-                'email' => 'test@example.com',
-                'role' => 'user',
-            ]);
-        }
-
-        // Admin User (only if doesn't exist)
-        if (!User::where('email', 'admin@example.com')->exists()) {
-            User::factory()->create([
-                'name' => 'Admin User',
-                'email' => 'admin@example.com',
-                'role' => 'admin',
-            ]);
-        }
-
-        // Hotelier User (only if doesn't exist)
-        if (!User::where('email', 'hotelier@example.com')->exists()) {
-            User::factory()->create([
-                'name' => 'Hotelier User',
-                'email' => 'hotelier@example.com',
-                'role' => 'hotelier',
-            ]);
-        }
-
-        // Additional random users
-        if (User::count() < 15) {
-            User::factory(10)->create();
-        }
-
-        // Create destinations
-        $this->createDestinations();
-
-        // Call SampleHotelsSeeder for hotels and pool criteria
         $this->call([SampleHotelsSeeder::class]);
     }
 
@@ -88,37 +23,32 @@ class DatabaseSeeder extends Seeder
      */
     private function createUsers(): void
     {
-        // Create admin user if it doesn't exist
-        if (!User::where('email', 'admin@sunbedranker.com')->exists()) {
-            User::create([
+        $users = [
+            [
                 'name' => 'Admin User',
-                'email' => 'admin@sunbedranker.com',
-                'password' => bcrypt(env('ADMIN_PASSWORD', 'Admin@123456')),
-                'email_verified_at' => now(),
+                'email' => env('ADMIN_EMAIL', 'admin@sunbedranker.com'),
+                'password' => bcrypt(env('ADMIN_PASSWORD')),
                 'role' => 'admin',
-            ]);
-        }
-
-        // Create a test user
-        if (!User::where('email', 'user@sunbedranker.com')->exists()) {
-            User::create([
+            ],
+            [
                 'name' => 'Test User',
-                'email' => 'user@sunbedranker.com',
-                'password' => bcrypt('User@123456'),
-                'email_verified_at' => now(),
+                'email' => env('TEST_USER_EMAIL', 'user@sunbedranker.com'),
+                'password' => bcrypt(env('TEST_USER_PASSWORD')),
                 'role' => 'user',
-            ]);
-        }
-
-        // Create hotelier user
-        if (!User::where('email', 'hotelier@sunbedranker.com')->exists()) {
-            User::create([
+            ],
+            [
                 'name' => 'Hotelier User',
-                'email' => 'hotelier@sunbedranker.com',
-                'password' => bcrypt('Hotelier@123456'),
-                'email_verified_at' => now(),
+                'email' => env('HOTELIER_EMAIL', 'hotelier@sunbedranker.com'),
+                'password' => bcrypt(env('HOTELIER_PASSWORD')),
                 'role' => 'hotelier',
-            ]);
+            ],
+        ];
+
+        foreach ($users as $userData) {
+            User::firstOrCreate(
+                ['email' => $userData['email']],
+                array_merge($userData, ['email_verified_at' => now()])
+            );
         }
     }
 
@@ -229,6 +159,58 @@ class DatabaseSeeder extends Seeder
                 'longitude' => -80.1918,
                 'description' => 'Beach city with vibrant pool scenes',
                 'image' => 'https://images.unsplash.com/photo-1506966953602-c20cc11f75e3?w=1200&q=80',
+                'is_featured' => false,
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Tenerife',
+                'slug' => 'tenerife',
+                'country' => 'Spain',
+                'country_code' => 'ES',
+                'region' => 'Canary Islands',
+                'latitude' => 28.2916,
+                'longitude' => -16.6291,
+                'description' => 'The largest Canary Island with year-round sunshine, famous resort pools, and the classic sunbed scramble',
+                'image' => 'https://images.unsplash.com/photo-1580828343064-fde4fc206bc6?w=1200&q=80',
+                'is_featured' => true,
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Gran Canaria',
+                'slug' => 'gran-canaria',
+                'country' => 'Spain',
+                'country_code' => 'ES',
+                'region' => 'Canary Islands',
+                'latitude' => 27.9202,
+                'longitude' => -15.5474,
+                'description' => 'Diverse island with huge resort complexes, bustling pool areas, and legendary sunbed competition',
+                'image' => 'https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=1200&q=80',
+                'is_featured' => true,
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Lanzarote',
+                'slug' => 'lanzarote',
+                'country' => 'Spain',
+                'country_code' => 'ES',
+                'region' => 'Canary Islands',
+                'latitude' => 29.0469,
+                'longitude' => -13.5899,
+                'description' => 'Volcanic island with stunning resort pools and a more relaxed sunbed scene',
+                'image' => 'https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?w=1200&q=80',
+                'is_featured' => true,
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Fuerteventura',
+                'slug' => 'fuerteventura',
+                'country' => 'Spain',
+                'country_code' => 'ES',
+                'region' => 'Canary Islands',
+                'latitude' => 28.3587,
+                'longitude' => -14.0537,
+                'description' => 'Wind-swept paradise with sprawling resort pools and endless sunshine',
+                'image' => 'https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=1200&q=80',
                 'is_featured' => false,
                 'is_active' => true,
             ],

@@ -11,62 +11,6 @@ class SampleHotelsSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create more destinations
-        $destinations = [
-            [
-                'name' => 'Ibiza',
-                'slug' => 'ibiza',
-                'country' => 'Spain',
-                'country_code' => 'ES',
-                'region' => 'Balearic Islands',
-                'description' => 'Party capital with stunning beaches and pools',
-                'is_featured' => true,
-            ],
-            [
-                'name' => 'Mykonos',
-                'slug' => 'mykonos',
-                'country' => 'Greece',
-                'country_code' => 'GR',
-                'region' => 'Cyclades',
-                'description' => 'Luxury Greek island with beautiful pools',
-                'is_featured' => true,
-            ],
-            [
-                'name' => 'Dubai',
-                'slug' => 'dubai',
-                'country' => 'United Arab Emirates',
-                'country_code' => 'AE',
-                'region' => 'Dubai',
-                'description' => 'World-class luxury hotels with incredible pools',
-                'is_featured' => true,
-            ],
-            [
-                'name' => 'Bali',
-                'slug' => 'bali',
-                'country' => 'Indonesia',
-                'country_code' => 'ID',
-                'region' => 'Bali',
-                'description' => 'Tropical paradise with infinity pools',
-                'is_featured' => true,
-            ],
-            [
-                'name' => 'Miami',
-                'slug' => 'miami',
-                'country' => 'United States',
-                'country_code' => 'US',
-                'region' => 'Florida',
-                'description' => 'Beach city with vibrant pool scenes',
-                'is_featured' => false,
-            ],
-        ];
-
-        foreach ($destinations as $destData) {
-            Destination::firstOrCreate(
-                ['slug' => $destData['slug']],
-                $destData
-            );
-        }
-
         // Sample hotels for each destination with complete details
         $hotels = [
             // Ibiza
