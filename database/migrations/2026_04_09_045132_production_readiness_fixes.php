@@ -72,32 +72,56 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Disable FK checks so MySQL allows dropping indexes used by FK constraints
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        // Each operation in its own try/catch — partial rollbacks may have already removed some
+        try {
+            Schema::table('subscriptions', function (Blueprint $table) {
+                $table->dropForeign(['user_id']);
+            });
+        } catch (\Exception $e) {}
 
-        Schema::table('subscriptions', function (Blueprint $table) {
-            $table->dropIndex(['status']);
-            $table->dropIndex(['user_id', 'status']);
-        });
+        try {
+            Schema::table('subscriptions', function (Blueprint $table) {
+                $table->dropIndex(['user_id', 'status']);
+            });
+        } catch (\Exception $e) {}
 
-        Schema::table('reviews', function (Blueprint $table) {
-            $table->dropIndex(['user_id']);
-        });
+        try {
+            Schema::table('subscriptions', function (Blueprint $table) {
+                $table->dropIndex(['status']);
+            });
+        } catch (\Exception $e) {}
 
-        Schema::table('posts', function (Blueprint $table) {
-            $table->dropForeign(['category_id']);
-            $table->dropIndex(['author_id']);
-            $table->dropIndex(['category_id']);
-        });
+        // Re-add the original FK from create_subscriptions migration
+        try {
+            Schema::table('subscriptions', function (Blueprint $table) {
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            });
+        } catch (\Exception $e) {}
 
-        Schema::table('reviews', function (Blueprint $table) {
-            $table->dropForeign(['moderated_by']);
-        });
+        try {
+            Schema::table('reviews', function (Blueprint $table) {
+                $table->dropIndex(['user_id']);
+            });
+        } catch (\Exception $e) {}
 
-        Schema::table('hotel_claims', function (Blueprint $table) {
-            $table->dropForeign(['reviewed_by']);
-        });
+        try {
+            Schema::table('posts', function (Blueprint $table) {
+                $table->dropForeign(['category_id']);
+                $table->dropIndex(['author_id']);
+                $table->dropIndex(['category_id']);
+            });
+        } catch (\Exception $e) {}
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        try {
+            Schema::table('reviews', function (Blueprint $table) {
+                $table->dropForeign(['moderated_by']);
+            });
+        } catch (\Exception $e) {}
+
+        try {
+            Schema::table('hotel_claims', function (Blueprint $table) {
+                $table->dropForeign(['reviewed_by']);
+            });
+        } catch (\Exception $e) {}
     }
 };
