@@ -11,7 +11,7 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
         poolFeatures: [],
         sunbedRatio: ''
     });
-    const [sortBy, setSortBy] = useState('score'); // score, price, distance
+    const [sortBy, setSortBy] = useState('score');
 
     const toggleCompare = (hotelId, event) => {
         event.preventDefault();
@@ -124,13 +124,16 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
             if (sortBy === 'score') {
                 return (b.overall_score || 0) - (a.overall_score || 0);
             }
-            if (sortBy === 'price') {
-                // Placeholder - would integrate with affiliate pricing
-                return 0;
+            if (sortBy === 'sunbed') {
+                const aRatio = parseFloat(a.pool_criteria?.sunbed_to_guest_ratio) || 0;
+                const bRatio = parseFloat(b.pool_criteria?.sunbed_to_guest_ratio) || 0;
+                return bRatio - aRatio;
             }
-            if (sortBy === 'distance') {
-                // Placeholder - would calculate distance to beach
-                return 0;
+            if (sortBy === 'stars') {
+                return (b.star_rating || 0) - (a.star_rating || 0);
+            }
+            if (sortBy === 'name') {
+                return (a.name || '').localeCompare(b.name || '');
             }
             return 0;
         });
@@ -386,8 +389,9 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
                                                 className="flex-1 sm:flex-none px-2.5 sm:px-3 md:px-4 py-2 sm:py-2.5 border-2 border-gray-300 rounded-lg text-xs sm:text-sm font-semibold text-gray-900 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 cursor-pointer bg-white transition-all duration-300 hover:border-gray-400"
                                             >
                                                 <option value="score">Pool & Sun Score (Highest)</option>
-                                                <option value="price">Price (Low to High)</option>
-                                                <option value="distance">Distance to Beach</option>
+                                                <option value="sunbed">Sunbed Ratio (Best)</option>
+                                                <option value="stars">Star Rating (Highest)</option>
+                                                <option value="name">Name (A-Z)</option>
                                             </select>
                                         </div>
                                         <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
