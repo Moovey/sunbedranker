@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\IncrementHotelStats;
 use App\Models\Hotel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,7 @@ class HotelController extends Controller
             // Rate-limited view increment (1 per IP per hotel per 5 minutes)
             $viewKey = 'hotel-view:' . $hotel->id . ':' . request()->ip();
             if (!RateLimiter::tooManyAttempts($viewKey, 1)) {
-                $hotel->incrementViews();
+                IncrementHotelStats::dispatch($hotel->id, 'view');
                 RateLimiter::hit($viewKey, 300); // 5 minute cooldown
             }
         }
@@ -73,9 +74,8 @@ class HotelController extends Controller
             // Prevents click fraud
             $clickKey = 'hotel-click:' . $hotel->id . ':' . $request->ip();
             if (!RateLimiter::tooManyAttempts($clickKey, 3)) {
-                // Determine if this is a direct booking or affiliate click
-                $clickType = $affiliateType === 'direct' ? 'direct' : 'affiliate';
-                $hotel->incrementClicks($clickType);
+                $clickJobType = $affiliateType === 'direct' ? 'click_direct' : 'click_affiliate';
+                IncrementHotelStats::dispatch($hotel->id, $clickJobType);
                 RateLimiter::hit($clickKey, 3600); // 1 hour cooldown
             }
         }

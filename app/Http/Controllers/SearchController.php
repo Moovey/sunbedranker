@@ -254,8 +254,8 @@ class SearchController extends Controller
             'page' => $page,
         ]));
 
-        // Cache search results for 10 minutes (hotel data doesn't change frequently)
-        $localHotels = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($destination, $poolVibe) {
+        // Cache search results for 30 minutes (hotel data doesn't change frequently)
+        $localHotels = Cache::remember($cacheKey, now()->addMinutes(30), function () use ($destination, $poolVibe) {
             return $this->executeSearch($destination, $poolVibe);
         });
 
@@ -297,18 +297,23 @@ class SearchController extends Controller
 
             $query->where(function ($q) use ($escaped, $alias) {
                 $q->whereHas('destination', function ($destQuery) use ($escaped, $alias) {
-                    $destQuery->where('name', 'LIKE', "%{$escaped}%")
-                            ->orWhere('country', 'LIKE', "%{$escaped}%")
-                            ->orWhere('region', 'LIKE', "%{$escaped}%")
-                            ->orWhere('country_code', 'LIKE', "{$escaped}%");
+                    // Use FULLTEXT search for natural language matching (much faster than LIKE)
+                    $destQuery->whereRaw(
+                        'MATCH(name, country, region) AGAINST(? IN BOOLEAN MODE)',
+                        [$escaped . '*']
+                    )
+                    ->orWhere('country_code', 'LIKE', "{$escaped}%");
 
                     if ($alias) {
                         $field = array_key_first($alias);
                         $destQuery->orWhere($field, $alias[$field]);
                     }
                 })
-                ->orWhere('hotels.name', 'LIKE', "%{$escaped}%")
-                ->orWhere('hotels.address', 'LIKE', "%{$escaped}%");
+                // FULLTEXT on hotels name+address
+                ->orWhereRaw(
+                    'MATCH(hotels.name, hotels.address) AGAINST(? IN BOOLEAN MODE)',
+                    [$escaped . '*']
+                );
             });
         }
 
@@ -353,7 +358,8 @@ class SearchController extends Controller
 
         // Get hotels with scores and pool criteria
         // Priority Placement: Premium hotels appear first (based on owner's subscription)
-        $localHotels = $query->with(['destination', 'poolCriteria', 'owner'])
+        // Eager load owner.activeSubscription to avoid N+1 on isPremium()
+        $localHotels = $query->with(['destination', 'poolCriteria', 'owner.activeSubscription'])
             ->withExists(['claims as has_pending_claim' => function ($query) {
                 $query->where('status', 'pending');
             }])

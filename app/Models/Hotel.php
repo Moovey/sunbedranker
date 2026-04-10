@@ -291,18 +291,30 @@ class Hotel extends Model
     }
 
     /**
-     * Check if hotel has a pending claim
+     * Check if hotel has a pending claim.
+     * Uses withExists result if available to avoid extra query.
      */
     public function getHasPendingClaimAttribute(): bool
     {
+        // If already loaded via withExists('claims as has_pending_claim'), use it
+        if (array_key_exists('has_pending_claim', $this->attributes)) {
+            return (bool) $this->attributes['has_pending_claim'];
+        }
+
         return $this->claims()->where('status', 'pending')->exists();
     }
 
     /**
-     * Check if hotel is premium (via owner's subscription)
+     * Check if hotel is premium (via owner's subscription).
+     * Uses eager-loaded owner.activeSubscription to avoid N+1.
      */
     public function getIsPremiumAttribute(): bool
     {
+        // If manually set (e.g. by ->through() in search), use that value
+        if (array_key_exists('is_premium', $this->attributes)) {
+            return (bool) $this->attributes['is_premium'];
+        }
+
         return $this->isPremium();
     }
 
