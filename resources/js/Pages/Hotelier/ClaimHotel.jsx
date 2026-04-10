@@ -9,6 +9,7 @@ export default function ClaimHotel({ hotel }) {
         official_email: '',
         phone: '',
         claim_message: '',
+        hotel_website: '',
     });
 
     const [showPhoneVerification, setShowPhoneVerification] = useState(false);
@@ -36,9 +37,10 @@ export default function ClaimHotel({ hotel }) {
 
     // Get hotel's website domain for email validation hint
     const getHotelDomain = () => {
-        if (!hotel.website) return '';
+        const website = hotel.website || data.hotel_website;
+        if (!website) return '';
         try {
-            const url = new URL(hotel.website.startsWith('http') ? hotel.website : 'https://' + hotel.website);
+            const url = new URL(website.startsWith('http') ? website : 'https://' + website);
             return url.hostname.replace('www.', '');
         } catch {
             return '';
@@ -118,6 +120,29 @@ export default function ClaimHotel({ hotel }) {
                     {/* Claim Form */}
                     <form onSubmit={handleSubmit} className="bg-white rounded-lg sm:rounded-xl shadow-sm p-4 sm:p-5 md:p-6 border border-gray-100">
                         <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Ownership Verification</h3>
+
+                        {/* Hotel Website (only if hotel has no website) */}
+                        {!hotel.website && (
+                            <div className="mb-4 sm:mb-5">
+                                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                                    Hotel Website URL *
+                                </label>
+                                <p className="text-[10px] sm:text-xs text-gray-500 mb-1.5 sm:mb-2">
+                                    Provide your hotel's official website so we can verify your email domain
+                                </p>
+                                <input
+                                    type="url"
+                                    value={data.hotel_website}
+                                    onChange={(e) => setData('hotel_website', e.target.value)}
+                                    className="w-full px-2.5 sm:px-3 py-2 border border-gray-200 rounded-lg focus:ring-orange-500 focus:border-orange-500 text-xs sm:text-sm"
+                                    placeholder="https://www.yourhotel.com"
+                                    required
+                                />
+                                {errors.hotel_website && (
+                                    <p className="text-red-500 text-[10px] sm:text-xs mt-1">{errors.hotel_website}</p>
+                                )}
+                            </div>
+                        )}
 
                         {/* Official Email */}
                         <div className="mb-4 sm:mb-5">

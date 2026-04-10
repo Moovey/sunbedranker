@@ -9,6 +9,7 @@ use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class HotelierDashboardController extends Controller
 {
@@ -17,7 +18,7 @@ class HotelierDashboardController extends Controller
      */
     private const CACHE_TTL = 300; // 5 minutes
 
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $user = $request->user();
         $userId = $user->id;

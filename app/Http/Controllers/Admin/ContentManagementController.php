@@ -34,10 +34,11 @@ class ContentManagementController extends Controller
         $categoryId = $request->get('category', 'all');
 
         // Posts with filters
+        $escapedSearch = $search ? str_replace(['%', '_'], ['\%', '\_'], $search) : '';
         $postsQuery = Post::with(['author', 'category', 'tags'])
-            ->when($search, function ($query) use ($search) {
-                $query->where('title', 'like', "%{$search}%")
-                    ->orWhere('excerpt', 'like', "%{$search}%");
+            ->when($search, function ($query) use ($escapedSearch) {
+                $query->where('title', 'like', "%{$escapedSearch}%")
+                    ->orWhere('excerpt', 'like', "%{$escapedSearch}%");
             })
             ->when($status !== 'all', function ($query) use ($status) {
                 $query->where('status', $status);
@@ -50,16 +51,16 @@ class ContentManagementController extends Controller
 
         // Categories
         $categories = Category::withCount('posts')
-            ->when($search && $tab === 'categories', function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%");
+            ->when($search && $tab === 'categories', function ($query) use ($escapedSearch) {
+                $query->where('name', 'like', "%{$escapedSearch}%");
             })
             ->orderBy('name')
             ->paginate(15);
 
         // Tags
         $tags = Tag::withCount('posts')
-            ->when($search && $tab === 'tags', function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%");
+            ->when($search && $tab === 'tags', function ($query) use ($escapedSearch) {
+                $query->where('name', 'like', "%{$escapedSearch}%");
             })
             ->orderBy('name')
             ->paginate(15);
@@ -170,7 +171,8 @@ class ContentManagementController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['message' => 'Failed to create post: ' . $e->getMessage()]);
+            \Illuminate\Support\Facades\Log::error('Post creation failed', ['error' => $e->getMessage()]);
+            return back()->withErrors(['message' => 'Failed to create post. Please try again.']);
         }
     }
 
@@ -270,7 +272,8 @@ class ContentManagementController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['message' => 'Failed to update post: ' . $e->getMessage()]);
+            \Illuminate\Support\Facades\Log::error('Post update failed', ['error' => $e->getMessage()]);
+            return back()->withErrors(['message' => 'Failed to update post. Please try again.']);
         }
     }
 
@@ -303,7 +306,8 @@ class ContentManagementController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['message' => 'Failed to delete post: ' . $e->getMessage()]);
+            \Illuminate\Support\Facades\Log::error('Post deletion failed', ['error' => $e->getMessage()]);
+            return back()->withErrors(['message' => 'Failed to delete post. Please try again.']);
         }
     }
 

@@ -69,7 +69,6 @@ export default function UserProfile({ reviews, savedHotels, isGoogleUser }) {
                 }
             },
             onError: (errors) => {
-                console.error('Profile update errors:', errors);
                 toast.error('Failed to update profile');
             },
         });

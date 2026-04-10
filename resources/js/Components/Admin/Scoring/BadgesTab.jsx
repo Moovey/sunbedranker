@@ -53,7 +53,7 @@ export default function BadgesTab({ badges, availableCriteria }) {
             const data = await response.json();
             setPreviewResult(data);
         } catch (error) {
-            console.error('Preview failed:', error);
+            // Preview failed silently
         } finally {
             setPreviewLoading(false);
         }

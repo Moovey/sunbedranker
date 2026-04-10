@@ -17,6 +17,10 @@ class HotelObserver
     {
         AdminDashboardController::clearHotelCaches();
         HomeController::clearHomeCache();
+
+        if ($hotel->destination) {
+            $hotel->destination->updateHotelCount();
+        }
     }
 
     /**
@@ -59,6 +63,10 @@ class HotelObserver
         AdminDashboardController::clearHotelCaches();
         HotelManagementController::clearAnalyticsCache($hotel->id);
         HomeController::clearHomeCache();
+
+        if ($hotel->destination) {
+            $hotel->destination->updateHotelCount();
+        }
     }
 
     /**
@@ -68,6 +76,10 @@ class HotelObserver
     {
         AdminDashboardController::clearHotelCaches();
         HomeController::clearHomeCache();
+
+        if ($hotel->destination) {
+            $hotel->destination->updateHotelCount();
+        }
     }
 
     /**
@@ -77,5 +89,9 @@ class HotelObserver
     {
         AdminDashboardController::clearHotelCaches();
         HomeController::clearHomeCache();
+
+        if ($hotel->destination) {
+            $hotel->destination->updateHotelCount();
+        }
     }
 }

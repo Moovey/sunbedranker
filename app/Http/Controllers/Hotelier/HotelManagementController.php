@@ -51,7 +51,9 @@ class HotelManagementController extends Controller
 
         // Use manual validator to ensure errors are properly returned for Inertia
         // This bypasses any session issues in production (Laravel Cloud)
-        $validator = Validator::make($request->all(), $this->getValidationRules());
+        // Convert empty strings to null for nullable select fields (FormData sends '' for unset dropdowns)
+        $data = array_map(fn ($value) => $value === '' ? null : $value, $request->all());
+        $validator = Validator::make($data, $this->getValidationRules());
 
         if ($validator->fails()) {
             // Load hotel relationships needed for the page

@@ -15,7 +15,7 @@ const TAB_FIELDS = {
     contact: ['address', 'latitude', 'longitude', 'phone', 'email', 'website'],
     images: ['main_image', 'gallery_images'],
     pool: ['sunbed_count', 'sun_exposure', 'pool_size_category', 'pool_size_sqm', 'number_of_pools'],
-    affiliate: ['booking_affiliate_url', 'expedia_affiliate_url', 'affiliate_provider', 'affiliate_tracking_code'],
+    affiliate: ['booking_affiliate_url', 'expedia_affiliate_url', 'agoda_hotel_id', 'affiliate_provider', 'affiliate_tracking_code'],
 };
 
 // Initial form state
@@ -44,6 +44,7 @@ const INITIAL_FORM_DATA = {
     // Affiliate Links
     booking_affiliate_url: '',
     expedia_affiliate_url: '',
+    agoda_hotel_id: '',
     affiliate_provider: '',
     affiliate_tracking_code: '',
     

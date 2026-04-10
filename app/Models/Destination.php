@@ -24,6 +24,7 @@ class Destination extends Model
         'is_featured',
         'is_active',
         'is_auto_created',
+        'agoda_city_id',
     ];
 
     protected $casts = [

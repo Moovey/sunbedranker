@@ -82,6 +82,9 @@ class HotelController extends Controller
         
         $url = match($affiliateType) {
             'expedia' => $hotel->expedia_affiliate_url,
+            'agoda' => $hotel->agoda_hotel_id
+                ? app(\App\Services\AgodaService::class)->buildAffiliateUrl($hotel->agoda_hotel_id)
+                : null,
             'direct' => $hotel->direct_booking_url,
             default => $hotel->booking_affiliate_url,
         };

@@ -9,6 +9,7 @@ import {
     HotelCarouselSection,
     WhyChooseUs,
     LatestPosts,
+    AgodaHotelsSection,
 } from '@/Components/Home';
 
 export default function Home({ 
@@ -17,7 +18,8 @@ export default function Home({
     familyFriendlyHotels, 
     quietSunHotels, 
     partyHotels,
-    latestPosts 
+    latestPosts,
+    agodaHotels 
 }) {    
     const { auth } = usePage().props;
     const isHotelier = auth.user?.role === 'hotelier';
@@ -92,6 +94,8 @@ export default function Home({
                         type="party" 
                         isHotelier={isHotelier} 
                     />
+
+                    <AgodaHotelsSection hotels={agodaHotels} />
                     
                     <LatestPosts posts={latestPosts} />
                     

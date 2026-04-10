@@ -26,6 +26,12 @@ Route::middleware(['auth', 'admin', 'throttle:admin'])->prefix('admin')->name('a
     Route::get('/hotels', [HotelManagementController::class, 'index'])->name('hotels.index');
     Route::get('/hotels/create', [HotelManagementController::class, 'create'])->name('hotels.create');
     Route::post('/hotels', [HotelManagementController::class, 'store'])->name('hotels.store');
+    Route::post('/hotels/import-agoda', [HotelManagementController::class, 'importFromAgoda'])
+        ->middleware('throttle:10,1')
+        ->name('hotels.import-agoda');
+    Route::post('/hotels/search-agoda', [HotelManagementController::class, 'searchAgodaHotels'])
+        ->middleware('throttle:10,1')
+        ->name('hotels.search-agoda');
     Route::get('/hotels/{hotel:id}/edit', [HotelManagementController::class, 'edit'])->name('hotels.edit');
     Route::post('/hotels/{hotel:id}', [HotelManagementController::class, 'update'])->name('hotels.update');
     Route::delete('/hotels/{hotel:id}', [HotelManagementController::class, 'destroy'])->name('hotels.destroy');

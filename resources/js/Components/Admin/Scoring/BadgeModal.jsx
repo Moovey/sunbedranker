@@ -225,7 +225,7 @@ export default function BadgeModal({ show, onClose, badge, availableCriteria }) 
             const data = await response.json();
             setPreviewCount(data.count);
         } catch (error) {
-            console.error('Preview failed:', error);
+            // Preview failed silently
         } finally {
             setPreviewLoading(false);
         }

@@ -327,6 +327,7 @@ function HotelCompare({ hotels, auth }) {
                         {hotels.map((hotel) => {
                             const isPremium = hotel.is_premium || hotel.subscription_tier === 'premium';
                             const hasDirectBooking = hotel.direct_booking_url;
+                            const isAgoda = hotel.is_agoda === true;
                             
                             // Get active promotions
                             const promotions = hotel.promotions && hotel.promotions.length > 0 
@@ -369,6 +370,15 @@ function HotelCompare({ hotels, auth }) {
                                                 </span>
                                             </div>
                                         )}
+
+                                        {/* Estimated Badge for Agoda */}
+                                        {isAgoda && (
+                                            <div className="absolute top-2 right-2">
+                                                <span className="bg-blue-600 text-white px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold shadow-lg">
+                                                    Estimated
+                                                </span>
+                                            </div>
+                                        )}
                                         
                                         {/* Hotel Name Overlay */}
                                         <div className="absolute bottom-0 left-0 right-0 p-3">
@@ -377,7 +387,7 @@ function HotelCompare({ hotels, auth }) {
                                             </h3>
                                             {hotel.star_rating && (
                                                 <div className="flex gap-0.5 mt-1">
-                                                    {[...Array(hotel.star_rating)].map((_, i) => (
+                                                    {[...Array(typeof hotel.star_rating === 'number' ? Math.round(hotel.star_rating) : hotel.star_rating)].map((_, i) => (
                                                         <svg key={i} className="w-3 h-3 text-yellow-400 fill-current drop-shadow" viewBox="0 0 24 24">
                                                             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                                                         </svg>
@@ -395,55 +405,81 @@ function HotelCompare({ hotels, auth }) {
                                                 ⭐ {activePromo.promotional_banner || 'Special Offer Available'}
                                             </div>
                                         )}
+
+                                        {/* Agoda Price Display */}
+                                        {isAgoda && hotel.price && (
+                                            <div className="mb-3 text-center">
+                                                <span className="text-lg font-black text-gray-900">{hotel.currency} {Number(hotel.price).toFixed(0)}</span>
+                                                <span className="text-[10px] text-gray-500 ml-1">/night</span>
+                                            </div>
+                                        )}
                                         
-                                        {/* Action Buttons - Grid Layout */}
-                                        <div className="grid grid-cols-2 gap-2">
-                                            <Link
-                                                href={`/hotels/${hotel.slug}`}
-                                                className="flex items-center justify-center px-2 py-2 sm:py-2.5 font-sans font-bold rounded-lg text-center transition-colors duration-200 text-[10px] sm:text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
-                                            >
-                                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                                                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                                                </svg>
-                                                Details
-                                            </Link>
-                                            
-                                            {/* Primary Booking CTA */}
-                                            {isPremium && hasDirectBooking ? (
-                                                <a
-                                                    href={route('hotels.click', { hotel: hotel.slug, type: 'direct' })}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-colors duration-200 text-[10px] sm:text-xs"
-                                                >
-                                                    💰 Direct
-                                                </a>
-                                            ) : hotel.booking_affiliate_url ? (
-                                                <a
-                                                    href={route('hotels.click', { hotel: hotel.slug, type: 'booking' })}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-colors duration-200 text-[10px] sm:text-xs"
-                                                >
-                                                    Book Now
-                                                </a>
-                                            ) : (
-                                                <span className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gray-50 text-gray-400 font-sans font-bold rounded-lg text-[10px] sm:text-xs border border-gray-100">
-                                                    No Link
-                                                </span>
-                                            )}
-                                        </div>
-                                        
-                                        {/* Secondary OTA Link for Premium */}
-                                        {isPremium && hasDirectBooking && hotel.booking_affiliate_url && (
-                                            <a
-                                                href={hotel.booking_affiliate_url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="block mt-2 text-center text-[9px] sm:text-[10px] text-gray-500 hover:text-orange-600 font-semibold transition-colors"
-                                            >
-                                                Compare on Booking.com →
-                                            </a>
+                                        {/* Action Buttons */}
+                                        {isAgoda ? (
+                                            <div className="grid grid-cols-1 gap-2">
+                                                {hotel.landing_url && (
+                                                    <a
+                                                        href={hotel.landing_url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-colors duration-200 text-[10px] sm:text-xs gap-1"
+                                                    >
+                                                        Book on Agoda
+                                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                        </svg>
+                                                    </a>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    <Link
+                                                        href={`/hotels/${hotel.slug}`}
+                                                        className="flex items-center justify-center px-2 py-2 sm:py-2.5 font-sans font-bold rounded-lg text-center transition-colors duration-200 text-[10px] sm:text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
+                                                    >
+                                                        <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                                        </svg>
+                                                        Details
+                                                    </Link>
+                                                    
+                                                    {isPremium && hasDirectBooking ? (
+                                                        <a
+                                                            href={route('hotels.click', { hotel: hotel.slug, type: 'direct' })}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-colors duration-200 text-[10px] sm:text-xs"
+                                                        >
+                                                            💰 Direct
+                                                        </a>
+                                                    ) : hotel.booking_affiliate_url ? (
+                                                        <a
+                                                            href={route('hotels.click', { hotel: hotel.slug, type: 'booking' })}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-colors duration-200 text-[10px] sm:text-xs"
+                                                        >
+                                                            Book Now
+                                                        </a>
+                                                    ) : (
+                                                        <span className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gray-50 text-gray-400 font-sans font-bold rounded-lg text-[10px] sm:text-xs border border-gray-100">
+                                                            No Link
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                
+                                                {isPremium && hasDirectBooking && hotel.booking_affiliate_url && (
+                                                    <a
+                                                        href={hotel.booking_affiliate_url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="block mt-2 text-center text-[9px] sm:text-[10px] text-gray-500 hover:text-orange-600 font-semibold transition-colors"
+                                                    >
+                                                        Compare on Booking.com →
+                                                    </a>
+                                                )}
+                                            </>
                                         )}
                                     </div>
                                 </div>
@@ -621,6 +657,7 @@ function formatSunExposure(exposure) {
 // Hotel Header Cell Component - Memoized for performance
 const HotelHeaderCell = memo(function HotelHeaderCell({ hotel }) {
     const isPremium = hotel.is_premium || hotel.subscription_tier === 'premium';
+    const isAgoda = hotel.is_agoda === true;
     
     return (
         <th className={`p-2 sm:p-3 md:p-4 lg:p-5 text-center ${isPremium ? 'min-w-[150px] sm:min-w-[175px] md:min-w-[220px] lg:min-w-[260px] bg-orange-50' : 'min-w-[140px] sm:min-w-[160px] md:min-w-[200px] lg:min-w-[240px]'}`}>
@@ -636,15 +673,21 @@ const HotelHeaderCell = memo(function HotelHeaderCell({ hotel }) {
                         decoding="async"
                     />
                 </div>
-                <Link
-                    href={`/hotels/${hotel.slug}`}
-                    className={`font-sans font-bold text-xs sm:text-sm md:text-base hover:text-orange-600 block transition-colors duration-200 px-1 sm:px-2 line-clamp-2 ${isPremium ? 'text-orange-700' : 'text-gray-900'}`}
-                >
-                    {hotel.name}
-                </Link>
+                {isAgoda ? (
+                    <span className="font-sans font-bold text-xs sm:text-sm md:text-base text-gray-900 block px-1 sm:px-2 line-clamp-2">
+                        {hotel.name}
+                    </span>
+                ) : (
+                    <Link
+                        href={`/hotels/${hotel.slug}`}
+                        className={`font-sans font-bold text-xs sm:text-sm md:text-base hover:text-orange-600 block transition-colors duration-200 px-1 sm:px-2 line-clamp-2 ${isPremium ? 'text-orange-700' : 'text-gray-900'}`}
+                    >
+                        {hotel.name}
+                    </Link>
+                )}
                 {hotel.star_rating && (
                     <div className="flex justify-center gap-0.5">
-                        {[...Array(hotel.star_rating)].map((_, i) => (
+                        {[...Array(typeof hotel.star_rating === 'number' ? Math.round(hotel.star_rating) : hotel.star_rating)].map((_, i) => (
                             <svg key={i} className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 text-yellow-400 fill-current" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                             </svg>
@@ -657,6 +700,17 @@ const HotelHeaderCell = memo(function HotelHeaderCell({ hotel }) {
                     </svg>
                     <span className="truncate">{hotel.destination?.name}</span>
                 </div>
+                {/* Estimated Badge for Agoda */}
+                {isAgoda && (
+                    <div className="flex justify-center">
+                        <span className="inline-flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[8px] sm:text-[10px] font-bold border border-blue-200">
+                            <svg className="w-2 h-2 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                            </svg>
+                            <span>Estimated Scores</span>
+                        </span>
+                    </div>
+                )}
                 {/* Verified Badge for Premium */}
                 {isPremium && hotel.show_verified_badge && (
                     <div className="flex justify-center">

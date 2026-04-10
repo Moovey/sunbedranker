@@ -33,6 +33,40 @@ class HotelScoringService
     }
 
     /**
+     * Compute scores from PoolCriteria without persisting to database.
+     * Used for virtual/estimated hotels (e.g. Agoda).
+     */
+    public function computeScores(PoolCriteria $criteria): array
+    {
+        $weights = $this->getWeights();
+
+        $criterionScores = [
+            'sunbed_ratio' => $this->scoreSunbedRatio($criteria),
+            'sun_exposure' => $this->scoreSunExposure($criteria),
+            'pool_size' => $this->scorePoolSize($criteria),
+            'pool_variety' => $this->scorePoolVariety($criteria),
+            'facilities' => $this->scoreFacilities($criteria),
+            'atmosphere' => $this->scoreAtmosphere($criteria),
+            'cleanliness' => $this->scoreCleanliness($criteria),
+            'accessibility' => $this->scoreAccessibility($criteria),
+            'kids_features' => $this->scoreKidsFeatures($criteria),
+            'luxury_extras' => $this->scoreLuxuryExtras($criteria),
+        ];
+
+        $categoryScores = [
+            'sun_availability' => $this->calculateSunAvailability($criterionScores, $weights),
+            'comfort' => $this->calculateComfort($criterionScores, $weights),
+            'family_friendly' => $this->calculateFamilyFriendly($criterionScores, $weights),
+            'peace_quiet' => $this->calculatePeaceQuiet($criterionScores, $criteria, $weights),
+            'party_vibe' => $this->calculatePartyVibe($criterionScores, $criteria, $weights),
+        ];
+
+        $overallScore = $this->calculateOverallScore($criterionScores, $weights);
+
+        return array_merge(['overall_score' => $overallScore], $categoryScores);
+    }
+
+    /**
      * Calculate all scores for a hotel
      */
     public function calculateAndUpdateScores(Hotel $hotel): array
@@ -50,44 +84,17 @@ class HotelScoringService
             ];
         }
 
-        // Get dynamic weights from database
-        $weights = $this->getWeights();
-
-        // Calculate individual criterion scores (0-5)
-        $criterionScores = [
-            'sunbed_ratio' => $this->scoreSunbedRatio($criteria),
-            'sun_exposure' => $this->scoreSunExposure($criteria),
-            'pool_size' => $this->scorePoolSize($criteria),
-            'pool_variety' => $this->scorePoolVariety($criteria),
-            'facilities' => $this->scoreFacilities($criteria),
-            'atmosphere' => $this->scoreAtmosphere($criteria),
-            'cleanliness' => $this->scoreCleanliness($criteria),
-            'accessibility' => $this->scoreAccessibility($criteria),
-            'kids_features' => $this->scoreKidsFeatures($criteria),
-            'luxury_extras' => $this->scoreLuxuryExtras($criteria),
-        ];
-
-        // Calculate category scores using dynamic weights (0-10)
-        $categoryScores = [
-            'sun_availability' => $this->calculateSunAvailability($criterionScores, $weights),
-            'comfort' => $this->calculateComfort($criterionScores, $weights),
-            'family_friendly' => $this->calculateFamilyFriendly($criterionScores, $weights),
-            'peace_quiet' => $this->calculatePeaceQuiet($criterionScores, $criteria, $weights),
-            'party_vibe' => $this->calculatePartyVibe($criterionScores, $criteria, $weights),
-        ];
-
-        // Calculate overall score using dynamic weights (0-10)
-        $overallScore = $this->calculateOverallScore($criterionScores, $weights);
+        $scores = $this->computeScores($criteria);
 
         // Update hotel scores
         $hotel->update([
-            'overall_score' => $overallScore,
-            'family_score' => $categoryScores['family_friendly'],
-            'quiet_score' => $categoryScores['peace_quiet'],
-            'party_score' => $categoryScores['party_vibe'],
+            'overall_score' => $scores['overall_score'],
+            'family_score' => $scores['family_friendly'],
+            'quiet_score' => $scores['peace_quiet'],
+            'party_score' => $scores['party_vibe'],
         ]);
 
-        return array_merge(['overall_score' => $overallScore], $categoryScores);
+        return $scores;
     }
 
     /**

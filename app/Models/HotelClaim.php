@@ -31,6 +31,12 @@ class HotelClaim extends Model
         'claim_attempts',
     ];
 
+    protected $hidden = [
+        'ip_address',
+        'email_verification_code',
+        'admin_notes',
+    ];
+
     protected $casts = [
         'reviewed_at' => 'datetime',
         'phone_verified_at' => 'datetime',

@@ -3,14 +3,13 @@ import { useState, useMemo } from 'react';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
-export default function SearchResults({ searchParams, localHotels, hasResults }) {
+export default function SearchResults({ searchParams, localHotels, agodaHotels, hasResults }) {
     const { auth } = usePage().props;
     const [compareList, setCompareList] = useState([]);
     const [filters, setFilters] = useState({
-        poolTypes: [],
-        sunbedRatio: '',
-        atmosphere: '',
-        budget: ''
+        poolVibe: searchParams.poolVibe || '',
+        poolFeatures: [],
+        sunbedRatio: ''
     });
     const [sortBy, setSortBy] = useState('score'); // score, price, distance
 
@@ -29,12 +28,12 @@ export default function SearchResults({ searchParams, localHotels, hasResults })
     };
 
     const toggleFilter = (category, value) => {
-        if (category === 'poolTypes') {
+        if (category === 'poolFeatures') {
             setFilters(prev => ({
                 ...prev,
-                poolTypes: prev.poolTypes.includes(value)
-                    ? prev.poolTypes.filter(v => v !== value)
-                    : [...prev.poolTypes, value]
+                poolFeatures: prev.poolFeatures.includes(value)
+                    ? prev.poolFeatures.filter(v => v !== value)
+                    : [...prev.poolFeatures, value]
             }));
         } else {
             setFilters(prev => ({
@@ -46,28 +45,56 @@ export default function SearchResults({ searchParams, localHotels, hasResults })
 
     const clearFilters = () => {
         setFilters({
-            poolTypes: [],
-            sunbedRatio: '',
-            atmosphere: '',
-            budget: ''
+            poolVibe: '',
+            poolFeatures: [],
+            sunbedRatio: ''
         });
     };
 
     // Filter and sort hotels
     const filteredAndSortedHotels = useMemo(() => {
-        if (!localHotels) return [];
+        const allHotels = [
+            ...(localHotels?.data || []),
+            ...(agodaHotels || []),
+        ];
 
-        let filtered = [...localHotels];
+        if (allHotels.length === 0) return [];
 
-        // Apply filters
-        if (filters.poolTypes.length > 0) {
+        let filtered = [...allHotels];
+
+        // Apply pool vibe filter (matches homepage vibes + backend logic)
+        if (filters.poolVibe) {
             filtered = filtered.filter(hotel => {
                 if (!hotel.pool_criteria) return false;
-                return filters.poolTypes.some(type => {
-                    if (type === 'infinity') return hotel.pool_criteria.has_infinity_pool;
-                    if (type === 'rooftop') return hotel.pool_criteria.has_rooftop_pool;
-                    if (type === 'kids') return hotel.pool_criteria.has_kids_pool;
-                    if (type === 'adults') return hotel.pool_criteria.is_adults_only;
+                const pc = hotel.pool_criteria;
+                switch (filters.poolVibe) {
+                    case 'family':
+                        return pc.has_kids_pool || pc.has_waterslide || pc.atmosphere === 'family';
+                    case 'quiet':
+                        return pc.atmosphere === 'quiet' || pc.atmosphere === 'relaxed' || pc.is_adults_only;
+                    case 'party':
+                        return pc.atmosphere === 'lively' || pc.atmosphere === 'party' || pc.has_pool_bar;
+                    case 'luxury':
+                        return pc.has_infinity_pool || pc.has_rooftop_pool || pc.has_luxury_cabanas;
+                    case 'adults':
+                        return pc.is_adults_only;
+                    default:
+                        return true;
+                }
+            });
+        }
+
+        // Apply pool feature filters
+        if (filters.poolFeatures.length > 0) {
+            filtered = filtered.filter(hotel => {
+                if (!hotel.pool_criteria) return false;
+                return filters.poolFeatures.some(feat => {
+                    if (feat === 'infinity') return hotel.pool_criteria.has_infinity_pool;
+                    if (feat === 'rooftop') return hotel.pool_criteria.has_rooftop_pool;
+                    if (feat === 'kids') return hotel.pool_criteria.has_kids_pool;
+                    if (feat === 'heated') return hotel.pool_criteria.has_heated_pool;
+                    if (feat === 'pool_bar') return hotel.pool_criteria.has_pool_bar;
+                    if (feat === 'waterslide') return hotel.pool_criteria.has_waterslide;
                     return false;
                 });
             });
@@ -76,18 +103,11 @@ export default function SearchResults({ searchParams, localHotels, hasResults })
         if (filters.sunbedRatio) {
             filtered = filtered.filter(hotel => {
                 if (!hotel.pool_criteria?.sunbed_to_guest_ratio) return false;
-                const ratio = hotel.pool_criteria.sunbed_to_guest_ratio;
-                if (filters.sunbedRatio === 'excellent') return ratio >= 1.0;
-                if (filters.sunbedRatio === 'very-good') return ratio >= 0.75 && ratio < 1.0;
-                if (filters.sunbedRatio === 'good') return ratio >= 0.5 && ratio < 0.75;
+                const ratio = parseFloat(hotel.pool_criteria.sunbed_to_guest_ratio);
+                if (filters.sunbedRatio === 'excellent') return ratio >= 0.70;
+                if (filters.sunbedRatio === 'very-good') return ratio >= 0.40;
+                if (filters.sunbedRatio === 'good') return ratio >= 0.20;
                 return true;
-            });
-        }
-
-        if (filters.atmosphere) {
-            filtered = filtered.filter(hotel => {
-                if (!hotel.pool_criteria?.atmosphere) return false;
-                return hotel.pool_criteria.atmosphere === filters.atmosphere;
             });
         }
 
@@ -116,12 +136,11 @@ export default function SearchResults({ searchParams, localHotels, hasResults })
         });
 
         return filtered;
-    }, [localHotels, filters, sortBy]);
+    }, [localHotels, agodaHotels, filters, sortBy]);
 
-    const activeFilterCount = filters.poolTypes.length + 
-        (filters.sunbedRatio ? 1 : 0) + 
-        (filters.atmosphere ? 1 : 0) + 
-        (filters.budget ? 1 : 0);
+    const activeFilterCount = (filters.poolVibe ? 1 : 0) +
+        filters.poolFeatures.length + 
+        (filters.sunbedRatio ? 1 : 0);
 
     return (
         <>
@@ -190,7 +209,7 @@ export default function SearchResults({ searchParams, localHotels, hasResults })
                     )}
 
                     {/* Main Content Area with Sidebar */}
-                    {localHotels && localHotels.length > 0 && (
+                    {(localHotels?.data?.length > 0 || agodaHotels?.length > 0) && (
                         <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 lg:gap-10">
                             {/* Sidebar - Filters */}
                             <aside className="w-full lg:w-64 xl:w-72 2xl:w-80 flex-shrink-0">
@@ -213,39 +232,84 @@ export default function SearchResults({ searchParams, localHotels, hasResults })
                                     </div>
 
                                     <div className="space-y-4 sm:space-y-5 md:space-y-6">
-                                        {/* Pool Types */}
+                                        {/* Pool Vibe - Matches homepage vibes */}
+                                        <div>
+                                            <h4 className="text-xs sm:text-sm font-bold text-gray-900 mb-2 sm:mb-3 md:mb-4 flex items-center gap-1.5 sm:gap-2">
+                                                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+                                                </svg>
+                                                Pool Vibe
+                                            </h4>
+                                            <div className="space-y-1.5 sm:space-y-2">
+                                                {[
+                                                    { value: 'family', label: 'Families', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>, color: 'green' },
+                                                    { value: 'quiet', label: 'Quiet & Relaxed', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>, color: 'blue' },
+                                                    { value: 'party', label: 'Social & Lively', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M7 8h10V6H7v2zm0 4h10v-2H7v2zm0 4h7v-2H7v2zm13.5-10.5v13.09c0 .45-.54.67-.85.35l-2.65-2.65-2.65 2.65c-.31.32-.85.1-.85-.35V5.5c0-.83.67-1.5 1.5-1.5h3.5c.83 0 1.5.67 1.5 1.5z"/></svg>, color: 'orange' },
+                                                    { value: 'luxury', label: 'Luxury', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>, color: 'purple' },
+                                                    { value: 'adults', label: 'Adults Only', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>, color: 'pink' }
+                                                ].map(vibe => {
+                                                    const isChecked = filters.poolVibe === vibe.value;
+                                                    return (
+                                                        <label
+                                                            key={vibe.value}
+                                                            className={`flex items-center gap-2 sm:gap-3 cursor-pointer p-2 sm:p-3 rounded-lg transition-all duration-300 border-2 ${
+                                                                isChecked 
+                                                                    ? `bg-${vibe.color}-50 border-${vibe.color}-300` 
+                                                                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                                            }`}
+                                                        >
+                                                            <input
+                                                                type="radio"
+                                                                name="poolVibe"
+                                                                checked={isChecked}
+                                                                onChange={() => toggleFilter('poolVibe', vibe.value)}
+                                                                className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500 border-gray-300 focus:ring-orange-500"
+                                                            />
+                                                            <span className={isChecked ? `text-${vibe.color}-600` : 'text-gray-600'}>{vibe.icon}</span>
+                                                            <span className="text-xs sm:text-sm font-semibold text-gray-900">{vibe.label}</span>
+                                                        </label>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+
+                                        <div className="border-t-2 border-orange-200"></div>
+
+                                        {/* Pool Features */}
                                         <div>
                                             <h4 className="text-xs sm:text-sm font-bold text-gray-900 mb-2 sm:mb-3 md:mb-4 flex items-center gap-1.5 sm:gap-2">
                                                 <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
                                                     <path d="M22 6.5c-1.1 0-2.2.3-3 .9-.8-.6-1.9-.9-3-.9s-2.2.3-3 .9c-.8-.6-1.9-.9-3-.9s-2.2.3-3 .9c-.8-.6-1.9-.9-3-.9v2c.8 0 1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8s1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8s1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8V6.5z"/>
                                                 </svg>
-                                                Pool Type
+                                                Pool Features
                                             </h4>
                                             <div className="space-y-1.5 sm:space-y-2">
                                                 {[
                                                     { value: 'infinity', label: 'Infinity Pool', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M22 6.5c-1.1 0-2.2.3-3 .9-.8-.6-1.9-.9-3-.9s-2.2.3-3 .9c-.8-.6-1.9-.9-3-.9s-2.2.3-3 .9c-.8-.6-1.9-.9-3-.9v2c.8 0 1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8s1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8s1.6.3 2.2.8l.3.2.3-.2c.6-.5 1.4-.8 2.2-.8V6.5z"/></svg>, color: 'blue' },
                                                     { value: 'rooftop', label: 'Rooftop Pool', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>, color: 'purple' },
-                                                    { value: 'kids', label: 'Kids Pool', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>, color: 'green' },
-                                                    { value: 'adults', label: 'Adults Only', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>, color: 'pink' }
-                                                ].map(type => {
-                                                    const isChecked = filters.poolTypes.includes(type.value);
+                                                    { value: 'kids', label: "Kids Pool", icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>, color: 'green' },
+                                                    { value: 'heated', label: 'Heated Pool', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>, color: 'red' },
+                                                    { value: 'pool_bar', label: 'Pool Bar', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M21 5V3H3v2l8 9v5H6v2h12v-2h-5v-5l8-9zM7.43 7L5.66 5h12.69l-1.78 2H7.43z"/></svg>, color: 'orange' },
+                                                    { value: 'waterslide', label: 'Waterslide', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7z"/></svg>, color: 'teal' }
+                                                ].map(feat => {
+                                                    const isChecked = filters.poolFeatures.includes(feat.value);
                                                     return (
                                                         <label
-                                                            key={type.value}
+                                                            key={feat.value}
                                                             className={`flex items-center gap-2 sm:gap-3 cursor-pointer p-2 sm:p-3 rounded-lg transition-all duration-300 border-2 ${
                                                                 isChecked 
-                                                                    ? `bg-${type.color}-50 border-${type.color}-300` 
+                                                                    ? `bg-${feat.color}-50 border-${feat.color}-300` 
                                                                     : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                                                             }`}
                                                         >
                                                             <input
                                                                 type="checkbox"
                                                                 checked={isChecked}
-                                                                onChange={() => toggleFilter('poolTypes', type.value)}
+                                                                onChange={() => toggleFilter('poolFeatures', feat.value)}
                                                                 className="w-4 h-4 sm:w-5 sm:h-5 rounded border-gray-300 text-orange-500 focus:ring-orange-500"
                                                             />
-                                                            <span className={isChecked ? `text-${type.color}-600` : 'text-gray-600'}>{type.icon}</span>
-                                                            <span className="text-xs sm:text-sm font-semibold text-gray-900">{type.label}</span>
+                                                            <span className={isChecked ? `text-${feat.color}-600` : 'text-gray-600'}>{feat.icon}</span>
+                                                            <span className="text-xs sm:text-sm font-semibold text-gray-900">{feat.label}</span>
                                                         </label>
                                                     );
                                                 })}
@@ -264,9 +328,9 @@ export default function SearchResults({ searchParams, localHotels, hasResults })
                                             </h4>
                                             <div className="space-y-1.5 sm:space-y-2">
                                                 {[
-                                                    { value: 'excellent', label: 'Excellent', sublabel: '1:1 or better', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>, color: 'green' },
-                                                    { value: 'very-good', label: 'Very Good', sublabel: '0.75:1+', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>, color: 'blue' },
-                                                    { value: 'good', label: 'Good', sublabel: '0.5:1+', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>, color: 'yellow' }
+                                                    { value: 'excellent', label: 'Excellent', sublabel: '70%+ ratio', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>, color: 'green' },
+                                                    { value: 'very-good', label: 'Very Good', sublabel: '40%+ ratio', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>, color: 'blue' },
+                                                    { value: 'good', label: 'Good', sublabel: '20%+ ratio', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>, color: 'yellow' }
                                                 ].map(ratio => {
                                                     const isChecked = filters.sunbedRatio === ratio.value;
                                                     return (
@@ -298,82 +362,7 @@ export default function SearchResults({ searchParams, localHotels, hasResults })
                                             </div>
                                         </div>
 
-                                        <div className="border-t-2 border-orange-200"></div>
 
-                                        {/* Atmosphere */}
-                                        <div>
-                                            <h4 className="text-xs sm:text-sm font-bold text-gray-900 mb-2 sm:mb-3 md:mb-4 flex items-center gap-1.5 sm:gap-2">
-                                                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
-                                                </svg>
-                                                Atmosphere
-                                            </h4>
-                                            <div className="space-y-1.5 sm:space-y-2">
-                                                {[
-                                                    { value: 'quiet', label: 'Quiet & Peaceful', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M7 9v6h4l5 5V4l-5 5H7z"/></svg>, color: 'blue' },
-                                                    { value: 'family', label: 'Family Friendly', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>, color: 'green' },
-                                                    { value: 'lively', label: 'Lively & Social', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>, color: 'orange' },
-                                                    { value: 'party', label: 'Party Atmosphere', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M2 22l14-5-9-9z"/><path d="M14.53 12.53l5.59-5.59c.49-.49 1.28-.49 1.77 0l.59.59 1.06-1.06-.59-.59c-1.07-1.07-2.82-1.07-3.89 0l-5.59 5.59 1.06 1.06zM10.06 6.88L9 5.82l-.59.59c-1.07 1.07-1.07 2.82 0 3.89l.59.59 1.06-1.06-.59-.59c-.49-.49-.49-1.28 0-1.77l.59-.59zM17.06 11.88l-1.59 1.59 1.06 1.06 1.59-1.59c.49-.49 1.28-.49 1.77 0l1.61 1.61 1.06-1.06-1.61-1.61c-1.07-1.07-2.82-1.07-3.89 0zM15.06 5.88l-3.59 3.59 1.06 1.06 3.59-3.59 1.59 1.59 1.06-1.06-1.59-1.59c-.98-.97-2.56-.97-3.54 0l-.01.01z"/></svg>, color: 'red' }
-                                                ].map(atm => {
-                                                    const isChecked = filters.atmosphere === atm.value;
-                                                    return (
-                                                        <label
-                                                            key={atm.value}
-                                                            className={`flex items-center gap-2 sm:gap-3 cursor-pointer p-2 sm:p-3 rounded-lg transition-all duration-300 border-2 ${
-                                                                isChecked 
-                                                                    ? `bg-${atm.color}-50 border-${atm.color}-300` 
-                                                                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                                                            }`}
-                                                        >
-                                                            <input
-                                                                type="radio"
-                                                                name="atmosphere"
-                                                                checked={isChecked}
-                                                                onChange={() => toggleFilter('atmosphere', atm.value)}
-                                                                className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500 border-gray-300 focus:ring-orange-500"
-                                                            />
-                                                            <span className={isChecked ? `text-${atm.color}-600` : 'text-gray-600'}>{atm.icon}</span>
-                                                            <span className="text-xs sm:text-sm font-semibold text-gray-900">{atm.label}</span>
-                                                        </label>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-
-                                        <div className="border-t-2 border-orange-200"></div>
-
-                                        {/* Budget - Placeholder */}
-                                        <div>
-                                            <h4 className="text-xs sm:text-sm font-bold text-gray-900 mb-2 sm:mb-3 md:mb-4 flex items-center gap-1.5 sm:gap-2">
-                                                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
-                                                </svg>
-                                                Budget
-                                            </h4>
-                                            <div className="space-y-1.5 sm:space-y-2">
-                                                {[
-                                                    { value: 'budget', label: 'Budget Friendly', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8M12 18V6" fill="white"/></svg>, color: 'green' },
-                                                    { value: 'mid', label: 'Mid Range', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2z"/><circle cx="12" cy="12" r="3" fill="white"/></svg>, color: 'blue' },
-                                                    { value: 'luxury', label: 'Luxury', icon: <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>, color: 'purple' }
-                                                ].map(budget => (
-                                                    <label
-                                                        key={budget.value}
-                                                        className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg cursor-not-allowed opacity-50 border-2 border-gray-200 bg-gray-50"
-                                                        title="Coming soon with affiliate pricing"
-                                                    >
-                                                        <input
-                                                            type="radio"
-                                                            name="budget"
-                                                            disabled
-                                                            className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500 border-gray-300"
-                                                        />
-                                                        <span className="text-gray-400">{budget.icon}</span>
-                                                        <span className="text-xs sm:text-sm font-semibold text-gray-500">{budget.label}</span>
-                                                    </label>
-                                                ))}
-                                            </div>
-                                            <p className="text-[10px] sm:text-xs text-orange-600 mt-2 sm:mt-3 italic font-medium bg-orange-50 p-1.5 sm:p-2 rounded-lg">🎉 Coming soon with live pricing</p>
-                                        </div>
                                     </div>
                                 </div>
                             </aside>
@@ -402,8 +391,11 @@ export default function SearchResults({ searchParams, localHotels, hasResults })
                                             </select>
                                         </div>
                                         <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
-                                            <span className="text-xs sm:text-sm font-bold text-gray-900 bg-orange-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full">
-                                                {filteredAndSortedHotels.length} hotel{filteredAndSortedHotels.length !== 1 ? 's' : ''}
+                                            <span className="text-xs sm:text-sm font-bold text-gray-900 bg-orange-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all duration-300">
+                                                {activeFilterCount > 0 
+                                                    ? `${filteredAndSortedHotels.length} of ${localHotels?.total || 0}`
+                                                    : `${localHotels?.total || filteredAndSortedHotels.length}`
+                                                } hotel{(activeFilterCount > 0 ? filteredAndSortedHotels.length : (localHotels?.total || filteredAndSortedHotels.length)) !== 1 ? 's' : ''}
                                             </span>
                                             {compareList.length > 0 && (
                                                 <Link
@@ -421,17 +413,92 @@ export default function SearchResults({ searchParams, localHotels, hasResults })
                                 </div>
 
                                 {/* Hotel Results */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-                                    {filteredAndSortedHotels.map((hotel) => (
-                                        <HotelCard 
-                                            key={hotel.id} 
-                                            hotel={hotel}
-                                            isInCompare={compareList.includes(hotel.id)}
-                                            onToggleCompare={(e) => toggleCompare(hotel.id, e)}
-                                            isHotelier={auth?.user?.role === 'hotelier'}
-                                        />
-                                    ))}
-                                </div>
+                                {filteredAndSortedHotels.length > 0 ? (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+                                        {filteredAndSortedHotels.map((hotel) => (
+                                            <HotelCard 
+                                                key={hotel.id} 
+                                                hotel={hotel}
+                                                isInCompare={compareList.includes(hotel.id)}
+                                                onToggleCompare={(e) => toggleCompare(hotel.id, e)}
+                                                isHotelier={auth?.user?.role === 'hotelier'}
+                                            />
+                                        ))}
+                                    </div>
+                                ) : activeFilterCount > 0 ? (
+                                    <div className="text-center py-12 sm:py-16 md:py-20 bg-gradient-to-b from-gray-50 to-white rounded-xl sm:rounded-2xl border-2 border-gray-100 transition-all duration-500 animate-fadeIn">
+                                        <div className="relative inline-block mb-4 sm:mb-6">
+                                            <svg className="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-gray-300" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                            </svg>
+                                            <div className="absolute -top-1 -right-1 w-7 h-7 sm:w-8 sm:h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                                                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">
+                                            No matches for these filters
+                                        </h3>
+                                        <p className="text-sm sm:text-base text-gray-500 mb-6 sm:mb-8 max-w-sm mx-auto px-4 leading-relaxed">
+                                            None of the {localHotels?.total || 0} hotels in this area match your current filter combination. Try adjusting or clearing your filters.
+                                        </p>
+                                        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                                            <button
+                                                onClick={clearFilters}
+                                                className="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 text-sm sm:text-base shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
+                                            >
+                                                <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                                                </svg>
+                                                Clear All Filters
+                                            </button>
+                                            <Link
+                                                href="/"
+                                                className="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-white border-2 border-gray-300 text-gray-700 font-bold rounded-lg hover:border-orange-400 hover:text-orange-600 transition-all duration-300 text-sm sm:text-base"
+                                            >
+                                                <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                                                </svg>
+                                                New Search
+                                            </Link>
+                                        </div>
+                                    </div>
+                                ) : null}
+
+                                {/* Pagination */}
+                                {localHotels?.links?.length > 3 && (
+                                    <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                        <p className="text-sm text-gray-600">
+                                            Showing <span className="font-semibold text-gray-900">{localHotels.from}</span> to{' '}
+                                            <span className="font-semibold text-gray-900">{localHotels.to}</span> of{' '}
+                                            <span className="font-semibold text-gray-900">{localHotels.total}</span> results
+                                        </p>
+                                        <div className="flex gap-1 flex-wrap justify-center">
+                                            {localHotels.links.map((link, index) => (
+                                                link.url ? (
+                                                    <Link
+                                                        key={index}
+                                                        href={link.url}
+                                                        preserveScroll
+                                                        className={`px-3 py-2 text-sm rounded-lg font-medium transition-colors ${
+                                                            link.active
+                                                                ? 'bg-orange-500 text-white shadow-md'
+                                                                : 'text-gray-700 hover:bg-orange-50 border border-gray-200'
+                                                        }`}
+                                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                                    />
+                                                ) : (
+                                                    <span
+                                                        key={index}
+                                                        className="px-3 py-2 text-sm text-gray-400"
+                                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                                    />
+                                                )
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}
@@ -446,6 +513,16 @@ export default function SearchResults({ searchParams, localHotels, hasResults })
 function HotelCard({ hotel, isInCompare, onToggleCompare, isHotelier }) {
     const canClaim = isHotelier && !hotel.owned_by && !hotel.has_pending_claim;
     const isPremium = hotel.is_premium;
+    const isAgoda = hotel.is_agoda;
+
+    // Use <a> for Agoda (external link) or <Link> for local hotels
+    const LinkOrA = isAgoda
+        ? ({ children, className }) => (
+            <a href={hotel.landing_url || '#'} target="_blank" rel="noopener noreferrer" className={className}>{children}</a>
+        )
+        : ({ children, className }) => (
+            <Link href={`/hotels/${hotel.slug}`} className={className}>{children}</Link>
+        );
 
     // Premium hotels get larger, more prominent cards
     const cardClasses = isPremium 
@@ -456,14 +533,21 @@ function HotelCard({ hotel, isInCompare, onToggleCompare, isHotelier }) {
 
     return (
         <div className={cardClasses}>
-            <Link href={`/hotels/${hotel.slug}`} className="block">
+            <LinkOrA className="block">
                 <div className={`relative overflow-hidden ${imageAspect}`}>
                     <img
-                        src={hotel.main_image_url || '/images/default-hotel.jpg'}
+                        src={hotel.main_image_url || hotel.main_image || '/images/default-hotel.jpg'}
                         alt={hotel.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    {/* Estimated badge for Agoda */}
+                    {isAgoda && (
+                        <div className="absolute top-3 sm:top-4 left-3 sm:left-4 bg-blue-500/90 text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full font-bold text-[10px] sm:text-xs shadow-lg z-10">
+                            Estimated
+                        </div>
+                    )}
                     
                     {/* Premium Badge */}
                     {hotel.is_premium && (
@@ -535,11 +619,34 @@ function HotelCard({ hotel, isInCompare, onToggleCompare, isHotelier }) {
                             </div>
                         </div>
                     )}
+
+                    {/* Agoda price + book section */}
+                    {isAgoda && (
+                        <div className="flex items-center justify-between pt-3 mt-3 border-t border-gray-100">
+                            {hotel.price ? (
+                                <div>
+                                    <span className="text-xs text-gray-500">from </span>
+                                    <span className="text-sm font-bold text-gray-900">
+                                        {hotel.currency === 'USD' ? '$' : hotel.currency}{Math.round(hotel.price)}
+                                    </span>
+                                    <span className="text-[10px] text-gray-500">/night</span>
+                                </div>
+                            ) : (
+                                <span className="text-xs text-gray-400">Check price</span>
+                            )}
+                            <span className="text-xs font-semibold text-blue-600 flex items-center gap-1">
+                                Book on Agoda
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                            </span>
+                        </div>
+                    )}
                 </div>
-            </Link>
+            </LinkOrA>
             
             {/* Action buttons container */}
-            <div className="absolute top-2 sm:top-3 md:top-4 left-2 sm:left-3 md:left-4 flex gap-1.5 sm:gap-2">
+            <div className={`absolute ${isAgoda ? 'top-12 sm:top-14' : 'top-2 sm:top-3 md:top-4'} left-2 sm:left-3 md:left-4 flex gap-1.5 sm:gap-2`}>
                 {/* Compare Button */}
                 <button
                     onClick={onToggleCompare}
@@ -560,7 +667,7 @@ function HotelCard({ hotel, isInCompare, onToggleCompare, isHotelier }) {
                 </button>
 
                 {/* Claim Hotel Button (Hotelier Only) */}
-                {canClaim && (
+                {canClaim && !isAgoda && (
                     <Link
                         href={`/hotelier/hotels/${hotel.slug}/claim`}
                         onClick={(e) => e.stopPropagation()}

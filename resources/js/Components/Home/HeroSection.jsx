@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { router } from '@inertiajs/react';
 
 // Use a simple gradient background instead of external images to dramatically improve LCP
@@ -30,6 +30,74 @@ export default function HeroSection() {
         guests: 2
     });
     const [isSearching, setIsSearching] = useState(false);
+    const [suggestions, setSuggestions] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [activeIndex, setActiveIndex] = useState(-1);
+    const debounceRef = useRef(null);
+    const wrapperRef = useRef(null);
+
+    // Close suggestions on outside click
+    useEffect(() => {
+        const handler = (e) => {
+            if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+                setShowSuggestions(false);
+            }
+        };
+        document.addEventListener('mousedown', handler);
+        return () => document.removeEventListener('mousedown', handler);
+    }, []);
+
+    const fetchSuggestions = useCallback((text) => {
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+
+        if (text.trim().length < 2) {
+            setSuggestions([]);
+            setShowSuggestions(false);
+            return;
+        }
+
+        debounceRef.current = setTimeout(() => {
+            fetch(`/search/autocomplete?q=${encodeURIComponent(text.trim())}`, {
+                headers: { 'Accept': 'application/json' },
+            })
+                .then(r => r.json())
+                .then(data => {
+                    setSuggestions(data || []);
+                    setShowSuggestions((data || []).length > 0);
+                    setActiveIndex(-1);
+                })
+                .catch(() => {});
+        }, 250);
+    }, []);
+
+    const handleInputChange = (e) => {
+        const val = e.target.value;
+        setSearchData({ ...searchData, destination: val });
+        fetchSuggestions(val);
+    };
+
+    const selectSuggestion = (suggestion) => {
+        setSearchData({ ...searchData, destination: suggestion.value });
+        setShowSuggestions(false);
+        setSuggestions([]);
+    };
+
+    const handleKeyDown = (e) => {
+        if (!showSuggestions || suggestions.length === 0) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setActiveIndex(i => (i < suggestions.length - 1 ? i + 1 : 0));
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setActiveIndex(i => (i > 0 ? i - 1 : suggestions.length - 1));
+        } else if (e.key === 'Enter' && activeIndex >= 0) {
+            e.preventDefault();
+            selectSuggestion(suggestions[activeIndex]);
+        } else if (e.key === 'Escape') {
+            setShowSuggestions(false);
+        }
+    };
 
     const handleSearch = useCallback((e) => {
         e.preventDefault();
@@ -71,7 +139,7 @@ export default function HeroSection() {
                             <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-6 lg:p-8 border-2 border-orange-300">
                                 <form onSubmit={handleSearch}>
                                     <div className="flex flex-col sm:flex-row gap-3">
-                                        <div className="flex-1">
+                                        <div className="flex-1 relative" ref={wrapperRef}>
                                             <label htmlFor="destination-input" className="flex items-center gap-2 text-left text-sm font-semibold text-gray-700 mb-2">
                                                 <svg className="w-4 h-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
@@ -82,10 +150,62 @@ export default function HeroSection() {
                                                 id="destination-input"
                                                 type="text"
                                                 value={searchData.destination}
-                                                onChange={(e) => setSearchData({...searchData, destination: e.target.value})}
-                                                placeholder="Where to? (e.g., Tenerife, Spain, ES)"
+                                                onChange={handleInputChange}
+                                                onKeyDown={handleKeyDown}
+                                                onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+                                                placeholder="Where to? (e.g., Canary Islands, Tenerife)"
                                                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-gray-900 placeholder-gray-400 transition-all duration-200 text-base font-medium"
+                                                autoComplete="off"
+                                                role="combobox"
+                                                aria-expanded={showSuggestions}
+                                                aria-autocomplete="list"
+                                                aria-controls="destination-suggestions"
                                             />
+
+                                            {/* Autocomplete Suggestions */}
+                                            {showSuggestions && suggestions.length > 0 && (
+                                                <ul
+                                                    id="destination-suggestions"
+                                                    role="listbox"
+                                                    className="absolute z-50 left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden max-h-72 overflow-y-auto"
+                                                >
+                                                    {suggestions.map((s, i) => (
+                                                        <li
+                                                            key={`${s.type}-${s.value}`}
+                                                            role="option"
+                                                            aria-selected={i === activeIndex}
+                                                            className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${
+                                                                i === activeIndex ? 'bg-orange-50' : 'hover:bg-gray-50'
+                                                            }`}
+                                                            onClick={() => selectSuggestion(s)}
+                                                            onMouseEnter={() => setActiveIndex(i)}
+                                                        >
+                                                            <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${
+                                                                s.type === 'region' ? 'bg-blue-100 text-blue-600' : 'bg-orange-100 text-orange-600'
+                                                            }`}>
+                                                                {s.type === 'region' ? (
+                                                                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                                                                    </svg>
+                                                                ) : (
+                                                                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                                                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                                                    </svg>
+                                                                )}
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <div className="text-sm font-semibold text-gray-900 truncate">{s.label}</div>
+                                                                {s.sublabel && (
+                                                                    <div className="text-xs text-gray-500 truncate">{s.sublabel}</div>
+                                                                )}
+                                                            </div>
+                                                            <span className="flex-shrink-0 text-xs font-medium text-gray-400">
+                                                                {s.hotel_count} {s.hotel_count === 1 ? 'hotel' : 'hotels'}
+                                                            </span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            )}
                                         </div>
 
                                         <button

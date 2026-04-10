@@ -27,6 +27,14 @@ class DestinationController extends Controller
 
     public function show(Request $request, Destination $destination): Response
     {
+        $request->validate([
+            'pool_type' => 'nullable|string|in:infinity,rooftop,heated,kids',
+            'atmosphere' => 'nullable|string|max:50',
+            'sunbed_ratio' => 'nullable|numeric|min:0|max:10',
+            'adults_only' => 'nullable|boolean',
+            'sort' => 'nullable|string|in:score,family,quiet,party,name',
+        ]);
+
         // Use table prefix to avoid ambiguity after join with users table
         $query = Hotel::where('hotels.destination_id', $destination->id)
             ->where('hotels.is_active', true)

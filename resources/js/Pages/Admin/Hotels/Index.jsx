@@ -1,4 +1,4 @@
-import { Link, Head, router } from '@inertiajs/react';
+import { Link, Head, router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import AdminNav from '@/Components/AdminNav';
@@ -35,6 +35,13 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
         status: filters.status || '',
     });
 
+    const [showImportModal, setShowImportModal] = useState(false);
+
+    const importForm = useForm({
+        agoda_hotel_id: '',
+        destination_id: '',
+    });
+
     const updateFilter = (key, value) => {
         setFilterState(prev => ({ ...prev, [key]: value }));
     };
@@ -64,6 +71,19 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
         });
     };
 
+    const handleImportById = (e) => {
+        e.preventDefault();
+        importForm.post(route('admin.hotels.import-agoda'), {
+            onSuccess: () => {
+                setShowImportModal(false);
+                importForm.reset();
+            },
+            onError: () => {
+                toast.error(importForm.errors.agoda_hotel_id || 'Failed to import hotel.');
+            },
+        });
+    };
+
     return (
         <>
             <Head title="Manage Hotels" />
@@ -78,15 +98,26 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
                             <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Hotel Management</h1>
                             <p className="text-gray-500 text-xs sm:text-sm mt-1">Manage all hotels and their details</p>
                         </div>
-                        <Link
-                            href={route('admin.hotels.create')}
-                            className="inline-flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors shadow-sm text-sm sm:text-base"
-                        >
-                            <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                            </svg>
-                            Add New Hotel
-                        </Link>
+                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+                            <button
+                                onClick={() => setShowImportModal(true)}
+                                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm text-sm sm:text-base"
+                            >
+                                <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                </svg>
+                                Import from Agoda
+                            </button>
+                            <Link
+                                href={route('admin.hotels.create')}
+                                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors shadow-sm text-sm sm:text-base"
+                            >
+                                <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                                </svg>
+                                Add New Hotel
+                            </Link>
+                        </div>
                     </div>
 
                     <FilterSection
@@ -103,6 +134,86 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
                     />
                 </div>
             </div>
+
+            {/* Import from Agoda Modal */}
+            {showImportModal && (
+                <div className="fixed inset-0 z-50 overflow-y-auto">
+                    <div className="flex items-center justify-center min-h-screen px-4">
+                        <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={() => { setShowImportModal(false); importForm.reset(); }} />
+                        
+                        <div className="relative bg-white rounded-xl shadow-xl max-w-md w-full p-6 z-10">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-lg font-semibold text-gray-900">Import Hotel from Agoda</h3>
+                                <button onClick={() => { setShowImportModal(false); importForm.reset(); }} className="text-gray-400 hover:text-gray-600">
+                                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <p className="text-sm text-gray-500 mb-4">
+                                Enter the Agoda Hotel ID to import it. The destination will be auto-detected from the hotel's location.
+                                You can find the ID in the hotel's image URLs on agoda.com
+                                (e.g. <code className="text-xs bg-gray-100 px-1 rounded">hotelImages/<strong>81940</strong>/...</code>).
+                            </p>
+
+                            <form onSubmit={handleImportById} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Agoda Hotel ID *</label>
+                                    <input
+                                        type="number"
+                                        value={importForm.data.agoda_hotel_id}
+                                        onChange={e => importForm.setData('agoda_hotel_id', e.target.value)}
+                                        placeholder="e.g. 81940"
+                                        className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+                                        min="1"
+                                        required
+                                    />
+                                    {importForm.errors.agoda_hotel_id && (
+                                        <p className="mt-1 text-sm text-red-600">{importForm.errors.agoda_hotel_id}</p>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Destination <span className="text-gray-400 font-normal">(optional — auto-detected from coordinates)</span>
+                                    </label>
+                                    <select
+                                        value={importForm.data.destination_id}
+                                        onChange={e => importForm.setData('destination_id', e.target.value)}
+                                        className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+                                    >
+                                        <option value="">Auto-detect from location</option>
+                                        {destinations?.map(dest => (
+                                            <option key={dest.id} value={dest.id}>{dest.name}</option>
+                                        ))}
+                                    </select>
+                                    {importForm.errors.destination_id && (
+                                        <p className="mt-1 text-sm text-red-600">{importForm.errors.destination_id}</p>
+                                    )}
+                                </div>
+
+                                <div className="flex gap-3 pt-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => { setShowImportModal(false); importForm.reset(); }}
+                                        className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={importForm.processing}
+                                        className="flex-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {importForm.processing ? 'Importing...' : 'Import Hotel'}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }

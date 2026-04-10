@@ -1,5 +1,5 @@
 import { Link, Head, useForm, router, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import AdminNav from '@/Components/AdminNav';
 import TabButton from '@/Components/Admin/Hotels/TabButton';
@@ -15,7 +15,7 @@ const TAB_FIELDS = {
     contact: ['address', 'latitude', 'longitude', 'phone', 'email', 'website'],
     images: ['main_image', 'gallery_images'],
     pool: ['sunbed_count', 'sun_exposure', 'pool_size_category', 'pool_size_sqm', 'number_of_pools'],
-    affiliate: ['booking_affiliate_url', 'expedia_affiliate_url', 'affiliate_provider', 'affiliate_tracking_code'],
+    affiliate: ['booking_affiliate_url', 'expedia_affiliate_url', 'agoda_hotel_id', 'affiliate_provider', 'affiliate_tracking_code'],
 };
 
 // Build initial form data from hotel object
@@ -44,6 +44,7 @@ const buildFormData = (hotel) => ({
     // Affiliate Links
     booking_affiliate_url: hotel.booking_affiliate_url || '',
     expedia_affiliate_url: hotel.expedia_affiliate_url || '',
+    agoda_hotel_id: hotel.agoda_hotel_id || '',
     affiliate_provider: hotel.affiliate_provider || '',
     affiliate_tracking_code: hotel.affiliate_tracking_code || '',
     
@@ -109,6 +110,13 @@ export default function EditHotel({ hotel, destinations, badges, stats, errors: 
         ...oldInput, // Restore old input if validation failed
     });
     const { props } = usePage();
+
+    // Show flash messages on page load (e.g. after Agoda import redirect)
+    useEffect(() => {
+        if (props?.flash?.success) {
+            toast.success(props.flash.success);
+        }
+    }, []);
 
     const tabs = ['basic', 'contact', 'images', 'pool', 'affiliate'];
 

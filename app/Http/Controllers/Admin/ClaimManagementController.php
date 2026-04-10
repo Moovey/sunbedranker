@@ -41,11 +41,12 @@ class ClaimManagementController extends Controller
                 $query->where('status', $status);
             })
             ->when($search, function ($query) use ($search) {
-                $query->whereHas('hotel', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                })->orWhereHas('user', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
+                $escaped = str_replace(['%', '_'], ['\%', '\_'], $search);
+                $query->whereHas('hotel', function ($q) use ($escaped) {
+                    $q->where('name', 'like', "%{$escaped}%");
+                })->orWhereHas('user', function ($q) use ($escaped) {
+                    $q->where('name', 'like', "%{$escaped}%")
+                      ->orWhere('email', 'like', "%{$escaped}%");
                 });
             })
             ->latest()
@@ -59,9 +60,10 @@ class ClaimManagementController extends Controller
             ->withCount(['subscriptions']);
 
         if ($search) {
-            $hoteliersQuery->where(function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
+            $escaped = str_replace(['%', '_'], ['\%', '\_'], $search);
+            $hoteliersQuery->where(function ($query) use ($escaped) {
+                $query->where('name', 'like', "%{$escaped}%")
+                      ->orWhere('email', 'like', "%{$escaped}%");
             });
         }
 
@@ -99,9 +101,10 @@ class ClaimManagementController extends Controller
                 $query->where('tier', $tier);
             })
             ->when($search, function ($query) use ($search) {
-                $query->whereHas('user', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
+                $escaped = str_replace(['%', '_'], ['\%', '\_'], $search);
+                $query->whereHas('user', function ($q) use ($escaped) {
+                    $q->where('name', 'like', "%{$escaped}%")
+                      ->orWhere('email', 'like', "%{$escaped}%");
                 });
             })
             ->latest()
@@ -185,7 +188,8 @@ class ClaimManagementController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['message' => 'Failed to approve claim: ' . $e->getMessage()]);
+            \Illuminate\Support\Facades\Log::error('Claim approval failed', ['error' => $e->getMessage()]);
+            return back()->withErrors(['message' => 'Failed to approve claim. Please try again.']);
         }
     }
 
@@ -216,7 +220,8 @@ class ClaimManagementController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['message' => 'Failed to reject claim: ' . $e->getMessage()]);
+            \Illuminate\Support\Facades\Log::error('Claim rejection failed', ['error' => $e->getMessage()]);
+            return back()->withErrors(['message' => 'Failed to reject claim. Please try again.']);
         }
     }
 
@@ -274,7 +279,8 @@ class ClaimManagementController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['message' => 'Failed to update subscription: ' . $e->getMessage()]);
+            \Illuminate\Support\Facades\Log::error('Subscription update failed', ['error' => $e->getMessage()]);
+            return back()->withErrors(['message' => 'Failed to update subscription. Please try again.']);
         }
     }
 
@@ -324,7 +330,8 @@ class ClaimManagementController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['message' => 'Failed to grant access: ' . $e->getMessage()]);
+            \Illuminate\Support\Facades\Log::error('Temporary access grant failed', ['error' => $e->getMessage()]);
+            return back()->withErrors(['message' => 'Failed to grant access. Please try again.']);
         }
     }
 

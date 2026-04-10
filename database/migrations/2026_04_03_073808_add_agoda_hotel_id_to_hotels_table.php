@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
+        Schema::table('hotels', function (Blueprint $table) {
+            $table->unsignedBigInteger('agoda_hotel_id')->nullable()->after('expedia_affiliate_url');
+            $table->index('agoda_hotel_id');
         });
     }
 
@@ -21,8 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
+        Schema::table('hotels', function (Blueprint $table) {
+            $table->dropIndex(['agoda_hotel_id']);
+            $table->dropColumn('agoda_hotel_id');
         });
     }
 };

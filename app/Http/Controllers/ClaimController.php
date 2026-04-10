@@ -15,13 +15,15 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
+use Inertia\Response;
+use Illuminate\Http\RedirectResponse;
 
 class ClaimController extends Controller
 {
     /**
      * Show hotelier's claims
      */
-    public function index()
+    public function index(): Response
     {
         // Only hoteliers can access
         /** @var \App\Models\User $user */
@@ -56,7 +58,7 @@ class ClaimController extends Controller
     /**
      * Show claim form for a hotel
      */
-    public function create(Hotel $hotel)
+    public function create(Hotel $hotel): Response|RedirectResponse
     {
         // Only hoteliers can access
         /** @var \App\Models\User $user */
@@ -84,7 +86,7 @@ class ClaimController extends Controller
     /**
      * Store a new hotel claim
      */
-    public function store(Request $request, Hotel $hotel)
+    public function store(Request $request, Hotel $hotel): RedirectResponse
     {
         // Only hoteliers can claim
         /** @var \App\Models\User $user */
@@ -108,12 +110,20 @@ class ClaimController extends Controller
             'official_email' => 'required|email',
                 'phone' => 'required|string|min:10|max:20',
             'claim_message' => 'nullable|string|max:1000',
+            'hotel_website' => $hotel->website ? 'nullable' : 'required|url|max:255',
         ]);
 
-        // Verify email domain matches hotel website (if website exists)
-        if ($hotel->website) {
+        // If hotel has no website, save the provided one
+        $websiteForValidation = $hotel->website;
+        if (!$hotel->website && !empty($validated['hotel_website'])) {
+            $hotel->update(['website' => $validated['hotel_website']]);
+            $websiteForValidation = $validated['hotel_website'];
+        }
+
+        // Verify email domain matches hotel website
+        if ($websiteForValidation) {
             $emailDomain = substr(strrchr($validated['official_email'], "@"), 1);
-            $websiteDomain = parse_url($hotel->website, PHP_URL_HOST);
+            $websiteDomain = parse_url($websiteForValidation, PHP_URL_HOST);
             $websiteDomain = $websiteDomain ? str_replace('www.', '', $websiteDomain) : null;
 
             if ($websiteDomain && strtolower($emailDomain) !== strtolower($websiteDomain)) {
@@ -189,7 +199,7 @@ class ClaimController extends Controller
     /**
      * Show verification code entry form
      */
-    public function showVerify(HotelClaim $claim)
+    public function showVerify(HotelClaim $claim): Response|RedirectResponse
     {
         // Only claim owner can verify
         if ($claim->user_id !== Auth::id()) {
@@ -211,7 +221,7 @@ class ClaimController extends Controller
     /**
      * Verify the email verification code
      */
-    public function verify(Request $request, HotelClaim $claim)
+    public function verify(Request $request, HotelClaim $claim): RedirectResponse
     {
         // Only claim owner can verify
         if ($claim->user_id !== Auth::id()) {
@@ -221,6 +231,16 @@ class ClaimController extends Controller
         $request->validate([
             'code' => 'required|string|size:6',
         ]);
+
+        // Rate limit code verification attempts (5 per 10 minutes per claim)
+        $rateLimitKey = 'verify-code:' . $claim->id . ':' . $request->ip();
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 5)) {
+            $seconds = RateLimiter::availableIn($rateLimitKey);
+            throw ValidationException::withMessages([
+                'code' => 'Too many attempts. Please wait ' . ceil($seconds / 60) . ' minute(s).',
+            ]);
+        }
+        RateLimiter::hit($rateLimitKey, 600);
 
         // Check if code expired
         if ($claim->email_verification_code_expires_at && $claim->email_verification_code_expires_at->isPast()) {
@@ -252,7 +272,7 @@ class ClaimController extends Controller
     /**
      * Resend verification code
      */
-    public function resendCode(HotelClaim $claim)
+    public function resendCode(HotelClaim $claim): RedirectResponse
     {
         // Only claim owner can resend
         if ($claim->user_id !== Auth::id()) {

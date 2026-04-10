@@ -7,3 +7,4 @@ export { default as HotelCarouselSection } from './HotelCarouselSection';
 export { default as HotelCard } from './HotelCard';
 export { default as WhyChooseUs } from './WhyChooseUs';
 export { default as LatestPosts } from './LatestPosts';
+export { default as AgodaHotelsSection } from './AgodaHotelsSection';

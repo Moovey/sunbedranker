@@ -32,7 +32,10 @@ export default function CreateBasicInfoTab({ data, setData, errors, destinations
     const loadCountries = useCallback(() => {
         if (countriesLoaded || loadingCountries) return;
         setLoadingCountries(true);
-        fetch(route('admin.api.destinations.countries'))
+        fetch(route('admin.api.destinations.countries'), {
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+            credentials: 'same-origin',
+        })
             .then(res => res.json())
             .then(data => {
                 setCountries(data || []);
@@ -54,7 +57,10 @@ export default function CreateBasicInfoTab({ data, setData, errors, destinations
 
         debounceRef.current = setTimeout(() => {
             setLoadingCities(true);
-            fetch(route('admin.api.destinations.cities') + `?country_code=${encodeURIComponent(data.country_code)}&query=${encodeURIComponent(cityQuery)}`)
+            fetch(route('admin.api.destinations.cities') + `?country_code=${encodeURIComponent(data.country_code)}&query=${encodeURIComponent(cityQuery)}`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                credentials: 'same-origin',
+            })
                 .then(res => res.json())
                 .then(results => {
                     setCityResults(results || []);

@@ -22,7 +22,7 @@ class DestinationManagementController extends Controller
 
         // Search filter
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = str_replace(['%', '_'], ['\%', '\_'], $request->search);
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('country', 'like', "%{$search}%")
@@ -57,7 +57,7 @@ class DestinationManagementController extends Controller
         ]);
     }
 
-    public function update(Request $request, Destination $destination)
+    public function update(Request $request, Destination $destination): \Illuminate\Http\RedirectResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -71,6 +71,7 @@ class DestinationManagementController extends Controller
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'is_featured' => ['boolean'],
             'is_active' => ['boolean'],
+            'agoda_city_id' => ['nullable', 'integer', 'min:1'],
         ]);
 
         // Handle image upload
@@ -95,7 +96,7 @@ class DestinationManagementController extends Controller
             ->with('success', "Destination \"{$destination->name}\" updated successfully.");
     }
 
-    public function toggleActive(Destination $destination)
+    public function toggleActive(Destination $destination): \Illuminate\Http\RedirectResponse
     {
         $destination->update(['is_active' => !$destination->is_active]);
 
@@ -106,7 +107,7 @@ class DestinationManagementController extends Controller
         return back()->with('success', "Destination \"{$destination->name}\" has been {$status}.");
     }
 
-    public function toggleFeatured(Destination $destination)
+    public function toggleFeatured(Destination $destination): \Illuminate\Http\RedirectResponse
     {
         $destination->update(['is_featured' => !$destination->is_featured]);
 
@@ -117,7 +118,7 @@ class DestinationManagementController extends Controller
         return back()->with('success', "Destination \"{$destination->name}\" has been {$status}.");
     }
 
-    public function destroy(Destination $destination)
+    public function destroy(Destination $destination): \Illuminate\Http\RedirectResponse
     {
         $hotelCount = $destination->activeHotels()->count();
 

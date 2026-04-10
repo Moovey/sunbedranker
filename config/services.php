@@ -51,4 +51,10 @@ return [
         'base_url' => 'https://api.countrystatecity.in/v1',
     ],
 
+    'agoda' => [
+        'site_id' => env('AGODA_SITE_ID'),
+        'api_key' => env('AGODA_API_KEY'),
+        'endpoint' => env('AGODA_API_ENDPOINT', 'http://affiliateapi7643.agoda.com/affiliateservice/lt_v1'),
+    ],
+
 ];

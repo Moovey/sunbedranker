@@ -50,6 +50,10 @@ Route::get('/search', [SearchController::class, 'search'])
     ->middleware('throttle:30,1')
     ->name('search');
 
+Route::get('/search/autocomplete', [SearchController::class, 'autocomplete'])
+    ->middleware('throttle:60,1')
+    ->name('search.autocomplete');
+
 // Destinations
 Route::get('/destinations', [DestinationController::class, 'index'])->name('destinations.index');
 Route::get('/destinations/{destination:slug}', [DestinationController::class, 'show'])->name('destinations.show');

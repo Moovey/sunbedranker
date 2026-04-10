@@ -74,7 +74,7 @@ export default function HotelShow({ hotel, similarHotels }) {
 
     // Memoized handlers
     const handleBookingClick = useCallback((type) => {
-        router.get(`/hotels/${hotel.slug}/click?type=${type}`);
+        window.location.href = `/hotels/${hotel.slug}/click?type=${type}`;
     }, [hotel.slug]);
 
     const toggleFaq = useCallback((index) => {

@@ -9,13 +9,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\RateLimiter;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class BlogController extends Controller
 {
     /**
      * Display blog listing with filters
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $query = Post::with(['author:id,name,profile_picture', 'category:id,name,slug,color', 'tags:id,name,slug'])
             ->where('status', 'published')
@@ -40,7 +41,7 @@ class BlogController extends Controller
 
         // Search
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = str_replace(['%', '_'], ['\%', '\_'], $request->search);
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
                   ->orWhere('excerpt', 'like', "%{$search}%")
@@ -111,7 +112,7 @@ class BlogController extends Controller
     /**
      * Display a single blog post
      */
-    public function show(Post $post)
+    public function show(Post $post): Response
     {
         // Only show published posts
         if ($post->status !== 'published') {

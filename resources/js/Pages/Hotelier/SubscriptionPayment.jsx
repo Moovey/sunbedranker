@@ -16,7 +16,6 @@ function PaymentForm({ plan, period, orderSummary, clientSecret, billingData, on
         e.preventDefault();
 
         if (!stripe || !elements) {
-            console.error('Stripe not loaded');
             return;
         }
 
@@ -33,14 +32,12 @@ function PaymentForm({ plan, period, orderSummary, clientSecret, billingData, on
         });
 
         if (stripeError) {
-            console.error('Stripe error:', stripeError);
             setError(stripeError.message);
             setProcessing(false);
             return;
         }
 
         if (paymentIntent && paymentIntent.status === 'succeeded') {
-            console.log('Payment succeeded! Intent ID:', paymentIntent.id);
             // Payment successful - submit to backend to create subscription
             router.post(route('hotelier.subscribe.complete', { plan }), {
                 ...billingData,
@@ -51,7 +48,6 @@ function PaymentForm({ plan, period, orderSummary, clientSecret, billingData, on
                 preserveScroll: true,
             });
         } else if (paymentIntent) {
-            console.log('Payment status:', paymentIntent.status);
             setError(`Payment requires additional action. Please try again.`);
             setProcessing(false);
         }

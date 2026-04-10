@@ -13,7 +13,13 @@ export default function AdminNav({ stats }) {
     // Poll for live pending claims count every 30 seconds + on mount
     useEffect(() => {
         const poll = () => {
-            fetch(route('admin.api.stats.pending-claims'))
+            fetch(route('admin.api.stats.pending-claims'), {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                },
+                credentials: 'same-origin',
+            })
                 .then(res => res.ok ? res.json() : null)
                 .then(data => {
                     if (data && typeof data.pending_claims === 'number') {

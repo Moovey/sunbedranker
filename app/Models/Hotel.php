@@ -41,6 +41,7 @@ class Hotel extends Model
         'images',
         'booking_affiliate_url',
         'expedia_affiliate_url',
+        'agoda_hotel_id',
         'direct_booking_url',
         'is_active',
         'is_verified',

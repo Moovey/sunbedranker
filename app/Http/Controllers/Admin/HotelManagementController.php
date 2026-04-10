@@ -12,6 +12,8 @@ use App\Models\PoolCriteria;
 use App\Models\Badge;
 use App\Services\HotelScoringService;
 use App\Services\DestinationLookupService;
+use App\Services\AgodaService;
+use App\Services\PoolEstimationService;
 use App\Jobs\ProcessHotelImages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -134,6 +136,7 @@ class HotelManagementController extends Controller
             // Affiliate Links
             'booking_affiliate_url' => 'nullable|url|max:500',
             'expedia_affiliate_url' => 'nullable|url|max:500',
+            'agoda_hotel_id' => 'nullable|integer',
             'direct_booking_url' => 'nullable|url|max:500',
             'affiliate_provider' => 'nullable|string|max:255',
             'affiliate_tracking_code' => 'nullable|string|max:255',
@@ -187,7 +190,10 @@ class HotelManagementController extends Controller
             'has_adult_sun_terrace' => 'boolean',
         ];
 
-        $validator = Validator::make($request->all(), $rules);
+        // Convert empty strings to null for nullable select fields (FormData sends '' for unset dropdowns)
+        $data = array_map(fn ($value) => $value === '' ? null : $value, $request->all());
+
+        $validator = Validator::make($data, $rules);
 
         // Custom validation: must have either destination_id or (city_name + country_code)
         $validator->after(function ($validator) use ($request) {
@@ -266,7 +272,7 @@ class HotelManagementController extends Controller
             
             return Inertia::render('Admin/Hotels/Create', [
                 'destinations' => $destinations,
-                'errors' => ['error' => 'Failed to create hotel: ' . $e->getMessage()],
+                'errors' => ['error' => 'Failed to create hotel. Please try again.'],
                 'oldInput' => $request->except(['main_image', 'gallery_images']),
             ]);
         }
@@ -372,7 +378,7 @@ class HotelManagementController extends Controller
         ]);
     }
 
-    public function update(Request $request, Hotel $hotel): RedirectResponse|Response
+    public function update(Request $request, Hotel $hotel): RedirectResponse
     {
         // Manual validation to ensure errors are properly returned for Inertia in production
         $rules = [
@@ -404,6 +410,7 @@ class HotelManagementController extends Controller
             // Affiliate Links
             'booking_affiliate_url' => 'nullable|url|max:500',
             'expedia_affiliate_url' => 'nullable|url|max:500',
+            'agoda_hotel_id' => 'nullable|integer',
             'direct_booking_url' => 'nullable|url|max:500',
             'affiliate_provider' => 'nullable|string|max:255',
             'affiliate_tracking_code' => 'nullable|string|max:255',
@@ -461,7 +468,10 @@ class HotelManagementController extends Controller
             'has_adult_sun_terrace' => 'boolean',
         ];
 
-        $validator = Validator::make($request->all(), $rules);
+        // Convert empty strings to null for nullable select fields (FormData sends '' for unset dropdowns)
+        $data = array_map(fn ($value) => $value === '' ? null : $value, $request->all());
+
+        $validator = Validator::make($data, $rules);
 
         // Custom validation: must have either destination_id or (city_name + country_code)
         $validator->after(function ($validator) use ($request, $hotel) {
@@ -474,18 +484,9 @@ class HotelManagementController extends Controller
         });
 
         if ($validator->fails()) {
-            // Render the page directly with errors as props - bypasses session issues in production
-            $hotel->load('poolCriteria', 'badges', 'destination');
-            $destinations = Destination::where('is_active', true)->orderBy('name')->get();
-            $badges = Badge::orderBy('name')->get();
-            
-            return Inertia::render('Admin/Hotels/Edit', [
-                'hotel' => $hotel,
-                'destinations' => $destinations,
-                'badges' => $badges,
-                'errors' => $validator->errors()->toArray(),
-                'oldInput' => $request->except(['main_image', 'gallery_images', '_method']),
-            ]);
+            return redirect()->route('admin.hotels.edit', $hotel->id)
+                ->withErrors($validator)
+                ->withInput($request->except(['main_image', 'gallery_images', '_method']));
         }
 
         $validated = $validator->validated();
@@ -549,18 +550,9 @@ class HotelManagementController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            // Render the edit page with error
-            $hotel->load('poolCriteria', 'badges', 'destination');
-            $destinations = Destination::where('is_active', true)->orderBy('name')->get();
-            $badges = Badge::orderBy('name')->get();
-            
-            return Inertia::render('Admin/Hotels/Edit', [
-                'hotel' => $hotel,
-                'destinations' => $destinations,
-                'badges' => $badges,
-                'errors' => ['error' => 'Failed to update hotel: ' . $e->getMessage()],
-                'oldInput' => $request->except(['main_image', 'gallery_images', '_method']),
-            ]);
+            return redirect()->route('admin.hotels.edit', $hotel->id)
+                ->withErrors(['error' => 'Failed to update hotel. Please try again.'])
+                ->withInput($request->except(['main_image', 'gallery_images', '_method']));
         }
     }
 
@@ -692,9 +684,9 @@ class HotelManagementController extends Controller
 
     public function recalculateAllScores(): RedirectResponse
     {
-        $this->scoringService->recalculateAllScores();
+        \App\Jobs\RecalculateHotelScores::dispatch(null, Auth::id());
 
-        return back()->with('success', 'All hotel scores recalculated successfully.');
+        return back()->with('success', 'Score recalculation has been queued and will complete shortly.');
     }
 
     /**
@@ -778,6 +770,14 @@ class HotelManagementController extends Controller
             $images = $hotel->images ?? [];
             $imageToDelete = $request->image_path;
 
+            // Validate the image belongs to this hotel (prevent path traversal)
+            if (!in_array($imageToDelete, $images, true)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Image not found in this hotel.',
+                ], 403);
+            }
+
             // Remove from array
             $images = array_filter($images, fn($img) => $img !== $imageToDelete);
             
@@ -795,7 +795,7 @@ class HotelManagementController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete image: ' . $e->getMessage(),
+                'message' => 'Failed to delete image.',
             ], 500);
         }
     }
@@ -891,11 +891,431 @@ class HotelManagementController extends Controller
             'subscription_expires_at' => 'nullable|date|after:today',
         ]);
 
+        $oldTier = $hotel->subscription_tier;
+
         $hotel->update([
             'subscription_tier' => $request->subscription_tier,
             'subscription_expires_at' => $request->subscription_expires_at,
         ]);
 
+        Log::info('Hotel subscription tier updated by admin', [
+            'hotel_id' => $hotel->id,
+            'hotel_name' => $hotel->name,
+            'old_tier' => $oldTier,
+            'new_tier' => $request->subscription_tier,
+            'expires_at' => $request->subscription_expires_at,
+            'admin_id' => Auth::id(),
+        ]);
+
         return back()->with('success', 'Subscription updated successfully.');
+    }
+
+    /**
+     * Search Agoda hotels by destination city ID and optional name filter.
+     * Returns JSON results for the import modal search.
+     */
+    public function searchAgodaHotels(Request $request): JsonResponse
+    {
+        $request->validate([
+            'destination_id' => 'required|exists:destinations,id',
+            'search' => 'nullable|string|max:255',
+        ]);
+
+        $destination = Destination::findOrFail($request->destination_id);
+
+        if (!$destination->agoda_city_id) {
+            return response()->json([
+                'error' => 'This destination does not have an Agoda City ID configured.',
+                'results' => [],
+            ]);
+        }
+
+        $agodaService = app(AgodaService::class);
+
+        if (!$agodaService->isConfigured()) {
+            return response()->json(['error' => 'Agoda API is not configured.', 'results' => []]);
+        }
+
+        $checkIn = now()->addDays(7)->format('Y-m-d');
+        $checkOut = now()->addDays(8)->format('Y-m-d');
+
+        try {
+            $cacheKey = 'agoda:search:' . $destination->agoda_city_id;
+            $response = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($agodaService, $destination, $checkIn, $checkOut) {
+                return $agodaService->searchByCity(
+                    (int) $destination->agoda_city_id,
+                    $checkIn,
+                    $checkOut,
+                    maxResults: 50
+                );
+            });
+
+            if (!$response || empty($response['results'])) {
+                return response()->json(['results' => []]);
+            }
+
+            $results = collect($response['results']);
+
+            // Filter by name if search term provided
+            $search = trim($request->search ?? '');
+            if ($search !== '') {
+                $results = $results->filter(function ($hotel) use ($search) {
+                    $name = $hotel['hotelName'] ?? $hotel['name'] ?? '';
+                    return stripos($name, $search) !== false;
+                });
+            }
+
+            // Check which ones are already imported
+            $existingAgodaIds = Hotel::whereIn('agoda_hotel_id', $results->pluck('hotelId')->filter())
+                ->pluck('agoda_hotel_id')
+                ->map(fn ($id) => (int) $id)
+                ->toArray();
+
+            $mapped = $results->values()->map(function ($hotel) use ($existingAgodaIds) {
+                $hotelId = (int) ($hotel['hotelId'] ?? 0);
+                return [
+                    'hotel_id' => $hotelId,
+                    'name' => $hotel['hotelName'] ?? $hotel['name'] ?? 'Unknown',
+                    'star_rating' => $hotel['starRating'] ?? 0,
+                    'image' => $hotel['imageURL'] ?? $hotel['imageUrl'] ?? null,
+                    'review_score' => $hotel['reviewScore'] ?? null,
+                    'price' => $hotel['dailyRate'] ?? null,
+                    'currency' => $hotel['currency'] ?? 'USD',
+                    'already_imported' => in_array($hotelId, $existingAgodaIds),
+                ];
+            });
+
+            return response()->json(['results' => $mapped]);
+
+        } catch (\Throwable $e) {
+            Log::error('Agoda search failed', ['message' => $e->getMessage()]);
+            return response()->json(['error' => 'Search failed: ' . $e->getMessage(), 'results' => []]);
+        }
+    }
+
+    /**
+     * Import a hotel from Agoda by hotel ID.
+     * Fetches details from Agoda API, creates Hotel + estimated PoolCriteria, calculates scores.
+     */
+    public function importFromAgoda(Request $request): RedirectResponse|JsonResponse
+    {
+        $request->validate([
+            'agoda_hotel_id' => 'required|integer|min:1',
+            'destination_id' => 'nullable|exists:destinations,id',
+        ]);
+
+        $agodaHotelId = (int) $request->agoda_hotel_id;
+
+        // Check if already imported (including soft-deleted)
+        $existing = Hotel::withTrashed()->where('agoda_hotel_id', $agodaHotelId)->first();
+        if ($existing && !$existing->trashed()) {
+            return back()->withErrors([
+                'agoda_hotel_id' => "This Agoda hotel (ID: {$agodaHotelId}) has already been imported as \"{$existing->name}\".",
+            ]);
+        }
+
+        // If previously deleted, force-delete the old record so we can re-import fresh
+        if ($existing && $existing->trashed()) {
+            $existing->forceDelete();
+        }
+
+        $agodaService = app(AgodaService::class);
+
+        if (!$agodaService->isConfigured()) {
+            return back()->withErrors(['agoda_hotel_id' => 'Agoda API is not configured.']);
+        }
+
+        // Fetch hotel data from Agoda API
+        $checkIn = now()->addDays(7)->format('Y-m-d');
+        $checkOut = now()->addDays(8)->format('Y-m-d');
+
+        try {
+            $response = $agodaService->searchByHotelIds([$agodaHotelId], $checkIn, $checkOut);
+
+            if (!$response || empty($response['results'])) {
+                return back()->withErrors([
+                    'agoda_hotel_id' => "No hotel found on Agoda with ID: {$agodaHotelId}. Please check the ID and try again.",
+                ]);
+            }
+
+            $agodaHotel = $response['results'][0];
+
+            // Auto-detect destination from hotel coordinates, or use manually selected one
+            $destination = $this->resolveImportDestination($request->destination_id, $agodaHotel);
+            if (!$destination) {
+                return back()->withErrors([
+                    'destination_id' => 'Could not auto-detect destination (hotel may lack coordinates). Please select one manually.',
+                ])->withInput();
+            }
+
+            $starRating = (int) round($agodaHotel['starRating'] ?? 3);
+            $starRating = max(1, min(5, $starRating));
+
+            // Create the hotel record
+            $hotelName = $agodaHotel['hotelName'] ?? $agodaHotel['name'] ?? 'Imported Agoda Hotel';
+            $hotel = Hotel::create([
+                'name' => $hotelName,
+                'slug' => Str::slug($hotelName) . '-' . $agodaHotelId,
+                'destination_id' => $destination->id,
+                'star_rating' => $starRating,
+                'total_rooms' => $this->estimateTotalRooms($starRating),
+                'address' => $agodaHotel['address'] ?? $destination->name,
+                'latitude' => $agodaHotel['latitude'] ?? null,
+                'longitude' => $agodaHotel['longitude'] ?? null,
+                'main_image' => $agodaHotel['imageURL'] ?? $agodaHotel['imageUrl'] ?? null,
+                'agoda_hotel_id' => $agodaHotelId,
+                'booking_affiliate_url' => $agodaHotel['landingURL'] ?? $agodaHotel['landingUrl'] ?? null,
+                'is_active' => true,
+                'is_verified' => false,
+                'external_api_id' => (string) $agodaHotelId,
+                'external_api_source' => 'agoda',
+            ]);
+
+            // Create estimated pool criteria
+            $estimationService = app(PoolEstimationService::class);
+            $estimatedCriteria = $estimationService->estimate((float) $starRating);
+
+            $criteriaData = [
+                'hotel_id' => $hotel->id,
+                // Core metrics
+                'sunbed_count' => $estimatedCriteria->sunbed_count,
+                'sunbed_to_guest_ratio' => $estimatedCriteria->sunbed_to_guest_ratio,
+                'sunbed_types' => $estimatedCriteria->sunbed_types,
+                'sun_exposure' => $estimatedCriteria->sun_exposure,
+                'sunny_areas' => $estimatedCriteria->sunny_areas,
+                // Pool details
+                'pool_size_category' => $estimatedCriteria->pool_size_category,
+                'pool_size_sqm' => $estimatedCriteria->pool_size_sqm,
+                'number_of_pools' => $estimatedCriteria->number_of_pools,
+                'pool_types' => $estimatedCriteria->pool_types,
+                // Atmosphere & entertainment
+                'atmosphere' => $estimatedCriteria->atmosphere,
+                'music_level' => $estimatedCriteria->music_level,
+                'has_entertainment' => $estimatedCriteria->has_entertainment ?? false,
+                'entertainment_types' => $estimatedCriteria->entertainment_types,
+                // Service & facilities
+                'has_pool_bar' => $estimatedCriteria->has_pool_bar ?? false,
+                'has_waiter_service' => $estimatedCriteria->has_waiter_service ?? false,
+                'shade_options' => $estimatedCriteria->shade_options,
+                'bar_distance' => $estimatedCriteria->bar_distance,
+                'toilet_distance' => $estimatedCriteria->toilet_distance,
+                'towel_reservation_policy' => $estimatedCriteria->towel_reservation_policy,
+                'towel_service_cost' => $estimatedCriteria->towel_service_cost,
+                'pool_opening_hours' => $estimatedCriteria->pool_opening_hours,
+                // Pool type flags
+                'has_infinity_pool' => $estimatedCriteria->has_infinity_pool ?? false,
+                'has_rooftop_pool' => $estimatedCriteria->has_rooftop_pool ?? false,
+                'is_adults_only' => $estimatedCriteria->is_adults_only ?? false,
+                // Kids features
+                'has_kids_pool' => $estimatedCriteria->has_kids_pool ?? false,
+                'kids_pool_depth_m' => $estimatedCriteria->kids_pool_depth_m,
+                'has_splash_park' => $estimatedCriteria->has_splash_park ?? false,
+                'has_waterslide' => $estimatedCriteria->has_waterslide ?? false,
+                'has_lifeguard' => $estimatedCriteria->has_lifeguard ?? false,
+                'lifeguard_hours' => $estimatedCriteria->lifeguard_hours,
+                // Luxury extras
+                'has_luxury_cabanas' => $estimatedCriteria->has_luxury_cabanas ?? false,
+                'has_cabana_service' => $estimatedCriteria->has_cabana_service ?? false,
+                'has_heated_pool' => $estimatedCriteria->has_heated_pool ?? false,
+                'has_jacuzzi' => $estimatedCriteria->has_jacuzzi ?? false,
+                'has_adult_sun_terrace' => $estimatedCriteria->has_adult_sun_terrace ?? false,
+                // Condition ratings
+                'cleanliness_rating' => $estimatedCriteria->cleanliness_rating,
+                'sunbed_condition_rating' => $estimatedCriteria->sunbed_condition_rating,
+                'tiling_condition_rating' => $estimatedCriteria->tiling_condition_rating,
+                // Accessibility
+                'has_accessibility_ramp' => $estimatedCriteria->has_accessibility_ramp ?? false,
+                'has_pool_hoist' => $estimatedCriteria->has_pool_hoist ?? false,
+                'has_step_free_access' => $estimatedCriteria->has_step_free_access ?? false,
+                'has_elevator_to_rooftop' => $estimatedCriteria->has_elevator_to_rooftop ?? false,
+            ];
+
+            PoolCriteria::create($criteriaData);
+
+            // Calculate and save scores
+            $this->scoringService->calculateAndUpdateScores($hotel->fresh());
+
+            Log::info('Hotel imported from Agoda', [
+                'hotel_id' => $hotel->id,
+                'agoda_hotel_id' => $agodaHotelId,
+                'name' => $hotel->name,
+                'user_id' => Auth::id(),
+            ]);
+
+            return redirect()->route('admin.hotels.edit', $hotel->id)
+                ->with('success', "Hotel \"{$hotel->name}\" imported from Agoda successfully! You can now edit the details and refine the pool criteria.");
+
+        } catch (\Throwable $e) {
+            Log::error('Agoda import failed', [
+                'agoda_hotel_id' => $agodaHotelId,
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return back()->withErrors([
+                'agoda_hotel_id' => 'Failed to import hotel: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Estimate total rooms based on star rating for imported hotels.
+     */
+    private function estimateTotalRooms(int $starRating): int
+    {
+        return match (true) {
+            $starRating >= 5 => 200,
+            $starRating >= 4 => 150,
+            $starRating >= 3 => 100,
+            default => 60,
+        };
+    }
+
+    /**
+     * Estimate sunbed count based on star rating for imported hotels.
+     */
+    private function estimateSunbedCount(int $starRating): int
+    {
+        return match (true) {
+            $starRating >= 5 => 150,
+            $starRating >= 4 => 100,
+            $starRating >= 3 => 50,
+            default => 25,
+        };
+    }
+
+    /**
+     * Resolve destination: use manually selected one, auto-detect from coordinates,
+     * or create a new one via reverse geocoding.
+     */
+    private function resolveImportDestination(?string $destinationId, array $agodaHotel): ?Destination
+    {
+        // If admin manually selected a destination, use it
+        if ($destinationId) {
+            return Destination::find($destinationId);
+        }
+
+        $lat = $agodaHotel['latitude'] ?? null;
+        $lng = $agodaHotel['longitude'] ?? null;
+
+        if (!$lat || !$lng) {
+            return null;
+        }
+
+        // Find the nearest existing destination using Haversine formula (within 5km)
+        $destination = Destination::whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->where('is_active', true)
+            ->selectRaw('*, (
+                6371 * acos(
+                    cos(radians(?)) * cos(radians(latitude)) *
+                    cos(radians(longitude) - radians(?)) +
+                    sin(radians(?)) * sin(radians(latitude))
+                )
+            ) AS distance_km', [$lat, $lng, $lat])
+            ->having('distance_km', '<', 5)
+            ->orderBy('distance_km')
+            ->first();
+
+        if ($destination) {
+            return $destination;
+        }
+
+        // No nearby destination found — reverse geocode and create one
+        return $this->createDestinationFromCoordinates($lat, $lng);
+    }
+
+    /**
+     * Reverse geocode coordinates using OpenStreetMap Nominatim (free, no API key)
+     * and create a new Destination.
+     */
+    private function createDestinationFromCoordinates(float $lat, float $lng): ?Destination
+    {
+        try {
+            $response = \Illuminate\Support\Facades\Http::withHeaders([
+                'User-Agent' => 'SunbedRanker/1.0',
+            ])->timeout(10)->get('https://nominatim.openstreetmap.org/reverse', [
+                'lat' => $lat,
+                'lon' => $lng,
+                'format' => 'json',
+                'zoom' => 10,
+                'addressdetails' => 1,
+            ]);
+
+            if (!$response->successful()) {
+                Log::warning('Nominatim reverse geocode failed', ['status' => $response->status()]);
+                return null;
+            }
+
+            $data = $response->json();
+            $address = $data['address'] ?? [];
+
+            // Determine city name: try city, town, municipality, county, state
+            $cityName = $address['city']
+                ?? $address['town']
+                ?? $address['municipality']
+                ?? $address['county']
+                ?? $address['state']
+                ?? null;
+
+            $country = $address['country'] ?? null;
+            $countryCode = isset($address['country_code']) ? strtoupper($address['country_code']) : null;
+            $region = $address['state'] ?? $address['region'] ?? null;
+
+            if (!$cityName || !$countryCode) {
+                Log::warning('Nominatim: insufficient address data for destination', ['data' => $data]);
+                return null;
+            }
+
+            // Check if this destination already exists (case-insensitive match)
+            $existing = Destination::where('country_code', $countryCode)
+                ->whereRaw('LOWER(name) = ?', [mb_strtolower($cityName)])
+                ->first();
+
+            if ($existing) {
+                return $existing;
+            }
+
+            // Generate unique slug
+            $baseSlug = Str::slug($cityName);
+            $slug = $baseSlug;
+            $counter = 1;
+            while (Destination::where('slug', $slug)->exists()) {
+                $slug = "{$baseSlug}-{$countryCode}-" . ($counter > 1 ? $counter : '');
+                $slug = rtrim($slug, '-');
+                $counter++;
+            }
+
+            $destination = Destination::create([
+                'name' => $cityName,
+                'slug' => $slug,
+                'country' => $country,
+                'country_code' => $countryCode,
+                'region' => $region,
+                'latitude' => $lat,
+                'longitude' => $lng,
+                'is_active' => true,
+                'is_auto_created' => true,
+            ]);
+
+            Log::info('Destination auto-created from Agoda import via reverse geocoding', [
+                'destination_id' => $destination->id,
+                'name' => $cityName,
+                'country' => $country,
+            ]);
+
+            // Clear destinations cache
+            Cache::forget(self::CACHE_KEY_DESTINATIONS);
+
+            return $destination;
+
+        } catch (\Throwable $e) {
+            Log::error('Reverse geocoding failed during Agoda import', [
+                'lat' => $lat,
+                'lng' => $lng,
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
     }
 }

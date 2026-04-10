@@ -65,7 +65,6 @@ export default function AdminProfile({ stats }) {
                 }
             },
             onError: (errors) => {
-                console.error('Profile update errors:', errors);
                 toast.error('Failed to update profile');
             },
         });

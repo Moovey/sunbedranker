@@ -48,7 +48,6 @@ function LocationMarker({ position, setPosition, onLocationSelect }) {
                 const address = data.display_name || '';
                 onLocationSelect(lat, lng, address);
             } catch (error) {
-                console.error('Geocoding error:', error);
                 onLocationSelect(lat, lng, '');
             } finally {
                 setIsLoading(false);
@@ -135,7 +134,7 @@ export default function ContactLocationTab({ data, setData, errors }) {
                 setData('address', display_name);
             }
         } catch (error) {
-            console.error('Search error:', error);
+            // Search failed silently
         } finally {
             setIsSearching(false);
         }
