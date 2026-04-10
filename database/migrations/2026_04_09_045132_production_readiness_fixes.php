@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -71,6 +72,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Disable FK checks so MySQL allows dropping indexes used by FK constraints
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
         Schema::table('subscriptions', function (Blueprint $table) {
             $table->dropIndex(['status']);
             $table->dropIndex(['user_id', 'status']);
@@ -93,5 +97,7 @@ return new class extends Migration
         Schema::table('hotel_claims', function (Blueprint $table) {
             $table->dropForeign(['reviewed_by']);
         });
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }
 };
