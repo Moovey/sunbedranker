@@ -1,13 +1,41 @@
+import { useState } from 'react';
+import imageCompression from 'browser-image-compression';
+
+const compressionOptions = {
+    maxSizeMB: 2,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true,
+};
+
 export default function CreateImagesTab({ data, setData, errors, hotel }) {
-    const handleMainImageChange = (e) => {
+    const [compressing, setCompressing] = useState(false);
+
+    const handleMainImageChange = async (e) => {
         if (e.target.files && e.target.files[0]) {
-            setData('main_image', e.target.files[0]);
+            setCompressing(true);
+            try {
+                const compressed = await imageCompression(e.target.files[0], compressionOptions);
+                setData('main_image', compressed);
+            } catch {
+                setData('main_image', e.target.files[0]);
+            }
+            setCompressing(false);
         }
     };
 
-    const handleGalleryChange = (e) => {
+    const handleGalleryChange = async (e) => {
         if (e.target.files && e.target.files.length > 0) {
-            setData('gallery_images', Array.from(e.target.files));
+            setCompressing(true);
+            try {
+                const files = Array.from(e.target.files);
+                const compressed = await Promise.all(
+                    files.map(file => imageCompression(file, compressionOptions).catch(() => file))
+                );
+                setData('gallery_images', [...(data.gallery_images || []), ...compressed]);
+            } catch {
+                setData('gallery_images', [...(data.gallery_images || []), ...Array.from(e.target.files)]);
+            }
+            setCompressing(false);
         }
     };
 
@@ -95,12 +123,12 @@ export default function CreateImagesTab({ data, setData, errors, hotel }) {
                         />
                         <label
                             htmlFor="main-image-upload"
-                            className="px-4 py-2 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 cursor-pointer inline-block transition-colors"
+                            className={`px-4 py-2 rounded-lg cursor-pointer inline-block transition-colors ${compressing ? 'bg-neutral-400 cursor-wait' : 'bg-neutral-900 hover:bg-neutral-800'} text-white`}
                         >
-                            Upload Main Image
+                            {compressing ? 'Compressing...' : 'Upload Main Image'}
                         </label>
                         <p className="text-sm text-neutral-500 mt-2">
-                            Recommended: 1200x800px
+                            Recommended: 1200x800px. Large images are auto-compressed before upload.
                         </p>
                     </div>
                 )}
@@ -184,12 +212,12 @@ export default function CreateImagesTab({ data, setData, errors, hotel }) {
                     />
                     <label
                         htmlFor="gallery-upload"
-                        className="px-4 py-2 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 cursor-pointer inline-block transition-colors"
+                        className={`px-4 py-2 rounded-lg cursor-pointer inline-block transition-colors ${compressing ? 'bg-neutral-400 cursor-wait' : 'bg-neutral-900 hover:bg-neutral-800'} text-white`}
                     >
-                        {data.gallery_images && data.gallery_images.length > 0 ? 'Add More Images' : 'Upload Gallery Images'}
+                        {compressing ? 'Compressing images...' : (data.gallery_images && data.gallery_images.length > 0 ? 'Add More Images' : 'Upload Gallery Images')}
                     </label>
                     <p className="text-sm text-neutral-500 mt-2">
-                        You can select multiple images at once. Recommended: 1200x800px each
+                        You can select multiple images at once. Large images are auto-compressed before upload.
                     </p>
                 </div>
                 {errors.gallery_images && (
