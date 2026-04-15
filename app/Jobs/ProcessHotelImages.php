@@ -82,67 +82,74 @@ class ProcessHotelImages implements ShouldQueue
 
     /**
      * Process a single image - optimize and create thumbnail.
+     * Works with both local and remote (S3/R2) storage.
      */
     private function processImage(object $manager, string $disk, string $imagePath): void
     {
-        $fullPath = Storage::disk($disk)->path($imagePath);
+        $storage = Storage::disk($disk);
 
-        if (!file_exists($fullPath)) {
+        if (!$storage->exists($imagePath)) {
             Log::warning('ProcessHotelImages: Image file not found', [
                 'path' => $imagePath,
+                'disk' => $disk,
             ]);
             return;
         }
 
-        // Get original file size for logging
-        $originalSize = filesize($fullPath);
+        // Download to temp file (works for both local and remote disks)
+        $tempFile = tempnam(sys_get_temp_dir(), 'hotel_img_');
+        file_put_contents($tempFile, $storage->get($imagePath));
 
-        // Load and optimize the image
-        $image = $manager->read($fullPath);
+        try {
+            $originalSize = filesize($tempFile);
 
-        // Resize if larger than max dimensions (maintaining aspect ratio)
-        $image->scaleDown(width: self::MAX_WIDTH, height: self::MAX_HEIGHT);
+            // Load and optimize the image
+            $image = $manager->read($tempFile);
+            $image->scaleDown(width: self::MAX_WIDTH, height: self::MAX_HEIGHT);
+            $image->toJpeg(quality: self::QUALITY)->save($tempFile);
 
-        // Save optimized image (overwrites original)
-        $image->toJpeg(quality: self::QUALITY)->save($fullPath);
+            // Upload optimized image back to storage
+            $storage->put($imagePath, file_get_contents($tempFile), 'public');
 
-        // Create thumbnail
-        $this->createThumbnail($manager, $disk, $imagePath, $fullPath);
+            // Create thumbnail
+            $this->createThumbnail($manager, $storage, $imagePath, $tempFile);
 
-        // Log optimization results
-        $newSize = filesize($fullPath);
-        $savings = $originalSize - $newSize;
-        $savingsPercent = $originalSize > 0 ? round(($savings / $originalSize) * 100, 1) : 0;
+            // Log optimization results
+            $newSize = filesize($tempFile);
+            $savings = $originalSize - $newSize;
+            $savingsPercent = $originalSize > 0 ? round(($savings / $originalSize) * 100, 1) : 0;
 
-        Log::info('ProcessHotelImages: Image optimized', [
-            'hotel_id' => $this->hotel->id,
-            'path' => $imagePath,
-            'original_size' => $this->formatBytes($originalSize),
-            'new_size' => $this->formatBytes($newSize),
-            'savings' => $this->formatBytes($savings) . " ({$savingsPercent}%)",
-        ]);
+            Log::info('ProcessHotelImages: Image optimized', [
+                'hotel_id' => $this->hotel->id,
+                'path' => $imagePath,
+                'original_size' => $this->formatBytes($originalSize),
+                'new_size' => $this->formatBytes($newSize),
+                'savings' => $this->formatBytes($savings) . " ({$savingsPercent}%)",
+            ]);
+        } finally {
+            @unlink($tempFile);
+        }
     }
 
     /**
      * Create a thumbnail version of the image.
      */
-    private function createThumbnail(object $manager, string $disk, string $imagePath, string $fullPath): void
+    private function createThumbnail(object $manager, $storage, string $imagePath, string $tempFile): void
     {
-        // Generate thumbnail path
         $pathInfo = pathinfo($imagePath);
         $thumbnailPath = $pathInfo['dirname'] . '/thumbnails/' . $pathInfo['filename'] . '_thumb.jpg';
-        $thumbnailFullPath = Storage::disk($disk)->path($thumbnailPath);
 
-        // Ensure thumbnail directory exists
-        $thumbnailDir = dirname($thumbnailFullPath);
-        if (!is_dir($thumbnailDir)) {
-            mkdir($thumbnailDir, 0755, true);
+        $tempThumb = tempnam(sys_get_temp_dir(), 'hotel_thumb_');
+        try {
+            $thumbnail = $manager->read($tempFile);
+            $thumbnail->cover(self::THUMBNAIL_WIDTH, self::THUMBNAIL_HEIGHT);
+            $thumbnail->toJpeg(quality: self::QUALITY)->save($tempThumb);
+
+            // Upload thumbnail to storage
+            $storage->put($thumbnailPath, file_get_contents($tempThumb), 'public');
+        } finally {
+            @unlink($tempThumb);
         }
-
-        // Create and save thumbnail
-        $thumbnail = $manager->read($fullPath);
-        $thumbnail->cover(self::THUMBNAIL_WIDTH, self::THUMBNAIL_HEIGHT);
-        $thumbnail->toJpeg(quality: self::QUALITY)->save($thumbnailFullPath);
     }
 
     /**
