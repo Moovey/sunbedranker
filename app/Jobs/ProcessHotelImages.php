@@ -50,11 +50,9 @@ class ProcessHotelImages implements ShouldQueue
     {
         $disk = config('filesystems.public_uploads', 'public');
 
-        // Check if Intervention Image is available
         if (!class_exists(\Intervention\Image\ImageManager::class)) {
             Log::info('ProcessHotelImages: Intervention Image not installed, skipping optimization', [
                 'hotel_id' => $this->hotel->id,
-                'tip' => 'Run: composer require intervention/image',
             ]);
             return;
         }

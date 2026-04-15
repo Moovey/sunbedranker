@@ -35,7 +35,7 @@ export default function ImagesTab({
                             {uploadingMain ? 'Uploading...' : 'Upload Main Image'}
                         </label>
                         <p className="text-sm text-neutral-500 mt-2">
-                            Recommended: 1200x800px, max 5MB
+                            Recommended: 1200x800px
                         </p>
                     </div>
                 </div>

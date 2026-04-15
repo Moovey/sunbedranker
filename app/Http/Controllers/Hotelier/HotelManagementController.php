@@ -95,7 +95,7 @@ class HotelManagementController extends Controller
         $this->checkSubscriptionTier();
 
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp',
             'type' => 'required|in:main,gallery',
         ]);
 
@@ -194,9 +194,9 @@ class HotelManagementController extends Controller
     {
         return [
             // Images
-            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,webp',
             'gallery_images' => 'nullable|array',
-            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
+            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp',
 
             // Descriptions
             'pool_description' => 'nullable|string|max:5000',

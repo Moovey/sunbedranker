@@ -59,9 +59,9 @@ class UpdateHotelRequest extends FormRequest
             'website' => 'nullable|url|max:500',
             
             // Images (optional for update - hotel already has images)
-            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'gallery_images' => 'nullable|array|max:10',
-            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
+            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'gallery_images' => 'nullable|array',
+            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp',
             
             // Affiliate Links
             'booking_affiliate_url' => 'nullable|url|max:500',

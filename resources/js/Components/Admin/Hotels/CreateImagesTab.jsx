@@ -100,7 +100,7 @@ export default function CreateImagesTab({ data, setData, errors, hotel }) {
                             Upload Main Image
                         </label>
                         <p className="text-sm text-neutral-500 mt-2">
-                            Recommended: 1200x800px, max 5MB
+                            Recommended: 1200x800px
                         </p>
                     </div>
                 )}
@@ -189,7 +189,7 @@ export default function CreateImagesTab({ data, setData, errors, hotel }) {
                         {data.gallery_images && data.gallery_images.length > 0 ? 'Add More Images' : 'Upload Gallery Images'}
                     </label>
                     <p className="text-sm text-neutral-500 mt-2">
-                        You can select multiple images at once. Recommended: 1200x800px each, max 5MB per image
+                        You can select multiple images at once. Recommended: 1200x800px each
                     </p>
                 </div>
                 {errors.gallery_images && (

@@ -94,8 +94,10 @@ export default function ContactLocationTab({ data, setData, errors }) {
 
     // Default center (world view or existing coordinates)
     const defaultCenter = useMemo(() => {
-        if (data.latitude && data.longitude) {
-            return [parseFloat(data.latitude), parseFloat(data.longitude)];
+        const lat = parseFloat(data.latitude);
+        const lng = parseFloat(data.longitude);
+        if (isValidLatLng(lat, lng)) {
+            return [lat, lng];
         }
         return [20, 0]; // Default world center
     }, []);

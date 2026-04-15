@@ -78,9 +78,9 @@ class StoreHotelRequest extends FormRequest
             'website' => 'nullable|url|max:500',
             
             // Images
-            'main_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'gallery_images' => 'nullable|array|max:10',
-            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
+            'main_image' => 'required|image|mimes:jpeg,png,jpg,webp',
+            'gallery_images' => 'nullable|array',
+            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp',
             
             // Affiliate Links
             'booking_affiliate_url' => 'nullable|url|max:500',

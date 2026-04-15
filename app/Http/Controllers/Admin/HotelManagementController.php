@@ -129,9 +129,9 @@ class HotelManagementController extends Controller
             'website' => 'nullable|url|max:500',
             
             // Images
-            'main_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'gallery_images' => 'nullable|array|max:10',
-            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
+            'main_image' => 'required|image|mimes:jpeg,png,jpg,webp',
+            'gallery_images' => 'nullable|array',
+            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp',
             
             // Affiliate Links
             'booking_affiliate_url' => 'nullable|url|max:500',
@@ -280,7 +280,6 @@ class HotelManagementController extends Controller
 
     /**
      * Handle image uploads for hotel creation/update.
-     * Returns array with validated data and uploaded paths for processing.
      */
     private function handleImageUploads(Request $request, array $validated): array
     {
@@ -403,9 +402,9 @@ class HotelManagementController extends Controller
             'website' => 'nullable|url|max:500',
             
             // Images (optional for update)
-            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'gallery_images' => 'nullable|array|max:10',
-            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
+            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'gallery_images' => 'nullable|array',
+            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp',
             
             // Affiliate Links
             'booking_affiliate_url' => 'nullable|url|max:500',
@@ -695,23 +694,26 @@ class HotelManagementController extends Controller
     public function uploadMainImage(Request $request, Hotel $hotel): JsonResponse
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120', // 5MB max
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp',
         ]);
 
         try {
+            /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
+            $storage = Storage::disk(config('filesystems.public_uploads', 'public'));
+
             // Delete old image if exists
-            if ($hotel->main_image && Storage::disk('public')->exists($hotel->main_image)) {
-                Storage::disk('public')->delete($hotel->main_image);
+            if ($hotel->main_image && $storage->exists($hotel->main_image)) {
+                $storage->delete($hotel->main_image);
             }
 
             // Store new image
-            $path = $request->file('image')->store('hotels/main', 'public');
+            $path = $request->file('image')->store('hotels/main', config('filesystems.public_uploads', 'public'));
             
             $hotel->update(['main_image' => $path]);
 
             return response()->json([
                 'success' => true,
-                'image_url' => Storage::url($path),
+                'image_url' => $storage->url($path),
                 'message' => 'Main image uploaded successfully',
             ]);
         } catch (\Exception $e) {
@@ -728,16 +730,18 @@ class HotelManagementController extends Controller
     public function uploadGalleryImages(Request $request, Hotel $hotel): JsonResponse
     {
         $request->validate([
-            'images' => 'required|array|max:10',
-            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
+            'images' => 'required|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp',
         ]);
 
         try {
+            /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
+            $storage = Storage::disk(config('filesystems.public_uploads', 'public'));
             $existingImages = $hotel->images ?? [];
             $newImages = [];
 
             foreach ($request->file('images') as $image) {
-                $path = $image->store('hotels/gallery', 'public');
+                $path = $image->store('hotels/gallery', config('filesystems.public_uploads', 'public'));
                 $newImages[] = $path;
             }
 
@@ -746,7 +750,7 @@ class HotelManagementController extends Controller
 
             return response()->json([
                 'success' => true,
-                'images' => array_map(fn($path) => Storage::url($path), $allImages),
+                'images' => array_map(fn($path) => $storage->url($path), $allImages),
                 'message' => count($newImages) . ' image(s) uploaded successfully',
             ]);
         } catch (\Exception $e) {
@@ -782,8 +786,9 @@ class HotelManagementController extends Controller
             $images = array_filter($images, fn($img) => $img !== $imageToDelete);
             
             // Delete file
-            if (Storage::disk('public')->exists($imageToDelete)) {
-                Storage::disk('public')->delete($imageToDelete);
+            $disk = config('filesystems.public_uploads', 'public');
+            if (Storage::disk($disk)->exists($imageToDelete)) {
+                Storage::disk($disk)->delete($imageToDelete);
             }
 
             $hotel->update(['images' => array_values($images)]);
