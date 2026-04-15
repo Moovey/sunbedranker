@@ -367,10 +367,32 @@ function TabNavigation({ activeTab, setActiveTab }) {
 }
 
 function TabContent({ activeTab, data, setData, errors, destinations, hotel }) {
+    const handleDeleteImage = (imagePath) => {
+        fetch(route('admin.hotels.delete-gallery-image', { hotel: hotel.id }), {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({ image_path: imagePath }),
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    toast.success(data.message || 'Image deleted successfully!');
+                    router.reload({ only: ['hotel'], preserveScroll: true });
+                } else {
+                    toast.error(data.message || 'Failed to delete image.');
+                }
+            })
+            .catch(() => toast.error('Failed to delete image.'));
+    };
+
     const tabComponents = {
         basic: <CreateBasicInfoTab data={data} setData={setData} errors={errors} destinations={destinations} />,
         contact: <ContactLocationTab data={data} setData={setData} errors={errors} />,
-        images: <CreateImagesTab data={data} setData={setData} errors={errors} hotel={hotel} />,
+        images: <CreateImagesTab data={data} setData={setData} errors={errors} hotel={hotel} onDeleteImage={handleDeleteImage} />,
         pool: <PoolCriteriaTab data={data} setData={setData} errors={errors} />,
         affiliate: <CreateAffiliateTab data={data} setData={setData} errors={errors} />,
     };

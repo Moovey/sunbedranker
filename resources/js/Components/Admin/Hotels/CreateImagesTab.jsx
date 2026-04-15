@@ -7,7 +7,7 @@ const compressionOptions = {
     useWebWorker: true,
 };
 
-export default function CreateImagesTab({ data, setData, errors, hotel }) {
+export default function CreateImagesTab({ data, setData, errors, hotel, onDeleteImage }) {
     const [compressing, setCompressing] = useState(false);
 
     const handleMainImageChange = async (e) => {
@@ -154,6 +154,8 @@ export default function CreateImagesTab({ data, setData, errors, hotel }) {
                                 const imageUrl = hotel.gallery_images_urls 
                                     ? imageUrlOrPath 
                                     : (imageUrlOrPath.startsWith('http') ? imageUrlOrPath : `/storage/${imageUrlOrPath}`);
+                                // Get the raw path for deletion
+                                const rawPath = hotel.images?.[index];
                                 return (
                                     <div key={`existing-${index}`} className="relative group">
                                         <img
@@ -161,6 +163,21 @@ export default function CreateImagesTab({ data, setData, errors, hotel }) {
                                             alt={`Gallery image ${index + 1}`}
                                             className="w-full h-32 object-cover rounded-lg border border-neutral-200"
                                         />
+                                        {rawPath && onDeleteImage && (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    if (confirm('Are you sure you want to delete this image?')) {
+                                                        onDeleteImage(rawPath);
+                                                    }
+                                                }}
+                                                className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700"
+                                            >
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        )}
                                         <div className="absolute bottom-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-xs">
                                             {index + 1}
                                         </div>

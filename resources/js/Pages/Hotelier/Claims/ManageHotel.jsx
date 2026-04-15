@@ -718,10 +718,10 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     return;
                 }
-                // Show success toast directly in callback like Admin Edit does
-                if (page?.props?.flash?.success) {
-                    toast.success(page.props.flash.success);
-                }
+                // Reset image fields so they don't show as duplicates of now-saved images
+                setData(prev => ({ ...prev, main_image: null, gallery_images: [] }));
+                // Show success toast - use flash if available, otherwise show default
+                toast.success(page?.props?.flash?.success || 'Hotel updated successfully!');
             },
             onError: (errors) => {
                 setProcessing(false);
@@ -735,13 +735,24 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
         });
     }, [data, hotel.slug]);
 
+    // Delete an existing gallery image
+    const handleDeleteImage = useCallback((imagePath) => {
+        router.delete(route('hotelier.hotels.deleteImage', { hotel: hotel.slug }), {
+            data: { image_path: imagePath },
+            preserveScroll: true,
+            onSuccess: (page) => {
+                toast.success(page?.props?.flash?.success || 'Image deleted successfully!');
+            },
+        });
+    }, [hotel.slug]);
+
     // Render tab content
     const renderTabContent = () => {
         switch (activeTab) {
             case TABS.POOL:
                 return <PoolCriteriaTab data={data} setData={setData} errors={allErrors} />;
             case TABS.IMAGES:
-                return <CreateImagesTab data={data} setData={setData} errors={allErrors} hotel={hotel} />;
+                return <CreateImagesTab data={data} setData={setData} errors={allErrors} hotel={hotel} onDeleteImage={handleDeleteImage} />;
             case TABS.DESCRIPTIONS:
                 return <DescriptionsTab data={data} setData={setData} errors={allErrors} />;
             case TABS.FAQS:

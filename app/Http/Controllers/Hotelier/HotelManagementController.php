@@ -117,16 +117,21 @@ class HotelManagementController extends Controller
     /**
      * Delete a gallery image from the hotel.
      */
-    public function deleteImage(Request $request, Hotel $hotel, $image)
+    public function deleteImage(Request $request, Hotel $hotel)
     {
         $this->authorizeOwnership($hotel);
         $this->checkSubscriptionTier();
 
-        $images = $hotel->images ?? [];
-        $imageToDelete = urldecode($image);
+        $request->validate([
+            'image_path' => 'required|string',
+        ]);
 
-        if (in_array($imageToDelete, $images)) {
-            Storage::disk('public')->delete($imageToDelete);
+        $images = $hotel->images ?? [];
+        $imageToDelete = $request->input('image_path');
+
+        if (in_array($imageToDelete, $images, true)) {
+            $disk = config('filesystems.public_uploads', 'public');
+            Storage::disk($disk)->delete($imageToDelete);
             $images = array_values(array_filter($images, fn($img) => $img !== $imageToDelete));
             $hotel->update(['images' => $images]);
 
