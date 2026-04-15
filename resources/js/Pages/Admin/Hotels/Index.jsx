@@ -1,5 +1,5 @@
-import { Link, Head, router, useForm } from '@inertiajs/react';
-import { useState } from 'react';
+import { Link, Head, router, useForm, usePage } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import AdminNav from '@/Components/AdminNav';
 
@@ -29,6 +29,13 @@ const TABLE_COLUMNS = [
 ];
 
 export default function HotelsIndex({ hotels, destinations, filters, stats }) {
+    const { flash } = usePage().props;
+
+    useEffect(() => {
+        if (flash?.success) toast.success(flash.success);
+        if (flash?.error) toast.error(flash.error);
+    }, [flash]);
+
     const [filterState, setFilterState] = useState({
         search: filters.search || '',
         destination_id: filters.destination_id || '',
@@ -66,7 +73,7 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
         
         router.delete(route('admin.hotels.destroy', hotel.id), {
             preserveScroll: true,
-            onSuccess: () => toast.success(`Hotel "${hotel.name}" has been deleted successfully!`),
+            onSuccess: () => {},
             onError: () => toast.error('Failed to delete hotel. Please try again.'),
         });
     };

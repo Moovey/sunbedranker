@@ -217,15 +217,20 @@ class HotelManagementController extends Controller
         $validated = $validator->validated();
         
         try {
+            $t = microtime(true);
+
             // Resolve destination: find existing or create from API
             $validated = $this->resolveDestination($validated);
+            Log::debug('Hotel store timing: resolveDestination', ['ms' => round((microtime(true) - $t) * 1000)]);
 
             // Generate slug
             $validated['slug'] = Str::slug($validated['name']);
             $validated['is_active'] = $validated['is_active'] ?? true;
 
             // Handle image uploads
+            $t2 = microtime(true);
             $validated = $this->handleImageUploads($request, $validated);
+            Log::debug('Hotel store timing: handleImageUploads', ['ms' => round((microtime(true) - $t2) * 1000)]);
             
             // Extract uploaded paths for background processing
             $uploadedPaths = $validated['_uploaded_paths'] ?? ['main' => null, 'gallery' => []];
@@ -246,16 +251,22 @@ class HotelManagementController extends Controller
             unset($validated['gallery_images']);
 
             // Create hotel
+            $t3 = microtime(true);
             $hotel = Hotel::create($validated);
+            Log::debug('Hotel store timing: Hotel::create', ['ms' => round((microtime(true) - $t3) * 1000)]);
 
             // Create pool criteria and calculate scores
             if (!empty($poolCriteriaData)) {
+                $t4 = microtime(true);
                 PoolCriteria::create(array_merge(['hotel_id' => $hotel->id], $poolCriteriaData));
                 $this->scoringService->calculateAndUpdateScores($hotel->fresh());
+                Log::debug('Hotel store timing: poolCriteria+scoring', ['ms' => round((microtime(true) - $t4) * 1000)]);
             }
 
             // Dispatch image processing job for background optimization
             $this->dispatchImageProcessingJob($hotel, $uploadedPaths);
+
+            Log::debug('Hotel store timing: TOTAL', ['ms' => round((microtime(true) - $t) * 1000)]);
 
             return redirect()->route('admin.hotels.index')
                 ->with('success', 'Hotel created successfully with pool criteria scores calculated.');

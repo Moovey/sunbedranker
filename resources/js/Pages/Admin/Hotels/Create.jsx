@@ -160,9 +160,7 @@ export default function CreateHotel({ destinations, stats, errors: serverErrors 
                     return;
                 }
                 // Only show success if there's a success flash message
-                if (page?.props?.flash?.success) {
-                    toast.success(page.props.flash.success);
-                }
+                // (toast is shown on Index page via flash listener)
             },
             onError: (errors) => {
                 // Store errors in local state to ensure they display
