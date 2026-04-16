@@ -1,33 +1,33 @@
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
+import SeoHead from '@/Components/SeoHead';
+import { useAppUrl } from '@/hooks/useAppUrl';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
 export default function About() {
+    const appUrl = useAppUrl();
+
     return (
         <>
-            <Head title="About Us - Sunbed Ranker">
-                <meta name="description" content="Learn about Sunbed Ranker - the leading independent travel resource for hotel pool and sunbed reviews. Our mission, team, and commitment to honest travel advice." />
-                <meta property="og:title" content="About Us - Sunbed Ranker" />
-                <meta property="og:description" content="The leading independent travel resource for hotel pool and sunbed reviews." />
-                <meta property="og:type" content="website" />
-                <meta property="og:url" content={`${window.location.origin}/about`} />
-                <meta property="og:site_name" content="Sunbed Ranker" />
-                <link rel="canonical" href={`${window.location.origin}/about`} />
-                <script type="application/ld+json">{JSON.stringify({
+            <SeoHead
+                title="About Us"
+                description="Learn about Sunbed Ranker - the leading independent travel resource for hotel pool and sunbed reviews. Our mission, team, and commitment to honest travel advice."
+                path="/about"
+                schema={{
                     "@context": "https://schema.org",
                     "@type": "AboutPage",
                     "name": "About Sunbed Ranker",
                     "description": "The leading independent travel resource for hotel pool and sunbed reviews.",
-                    "url": `${window.location.origin}/about`,
+                    "url": `${appUrl}/about`,
                     "publisher": {
                         "@type": "Organization",
                         "name": "Sunbed Ranker",
-                        "logo": { "@type": "ImageObject", "url": `${window.location.origin}/images/logo.png` },
+                        "logo": { "@type": "ImageObject", "url": `${appUrl}/images/logo.png` },
                         "foundingDate": "2024",
                         "description": "Independent travel guide specializing in hotel pool and sunbed reviews."
                     }
-                })}</script>
-            </Head>
+                }}
+            />
 
             <div className="min-h-screen bg-white font-sans">
                 <Header />

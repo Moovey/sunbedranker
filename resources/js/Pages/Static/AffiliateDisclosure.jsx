@@ -1,18 +1,15 @@
-import { Head } from '@inertiajs/react';
+import SeoHead from '@/Components/SeoHead';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
 export default function AffiliateDisclosure() {
     return (
         <>
-            <Head title="Affiliate Disclosure - Sunbed Ranker">
-                <meta name="description" content="Sunbed Ranker's affiliate disclosure. Learn how we earn revenue through affiliate partnerships and how this supports our independent travel reviews." />
-                <meta property="og:title" content="Affiliate Disclosure - Sunbed Ranker" />
-                <meta property="og:type" content="website" />
-                <meta property="og:url" content={`${window.location.origin}/affiliate-disclosure`} />
-                <meta property="og:site_name" content="Sunbed Ranker" />
-                <link rel="canonical" href={`${window.location.origin}/affiliate-disclosure`} />
-            </Head>
+            <SeoHead
+                title="Affiliate Disclosure"
+                description="Sunbed Ranker's affiliate disclosure. Learn how we earn revenue through affiliate partnerships and how this supports our independent travel reviews."
+                path="/affiliate-disclosure"
+            />
 
             <div className="min-h-screen bg-white font-sans">
                 <Header />

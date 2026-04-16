@@ -1,8 +1,10 @@
 import { Head, Link } from '@inertiajs/react';
+import { useAppUrl } from '@/hooks/useAppUrl';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
 export default function BlogShow({ post, relatedPosts, nextPost, previousPost }) {
+    const appUrl = useAppUrl();
     const formatDate = (dateString) => {
         if (!dateString) return '';
         return new Date(dateString).toLocaleDateString('en-US', {
@@ -91,7 +93,7 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                 <meta property="og:title" content={post.meta?.title || post.title} />
                 <meta property="og:description" content={post.meta?.description || post.excerpt} />
                 <meta property="og:type" content="article" />
-                <meta property="og:url" content={`${window.location.origin}/guides/${post.slug}`} />
+                <meta property="og:url" content={`${appUrl}/guides/${post.slug}`} />
                 {post.featured_image_url && <meta property="og:image" content={post.featured_image_url} />}
                 <meta property="og:site_name" content="Sunbed Ranker" />
                 {post.published_at && <meta property="article:published_time" content={post.published_at} />}
@@ -102,7 +104,7 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                 <meta name="twitter:title" content={post.meta?.title || post.title} />
                 <meta name="twitter:description" content={post.meta?.description || post.excerpt} />
                 {post.featured_image_url && <meta name="twitter:image" content={post.featured_image_url} />}
-                <link rel="canonical" href={`${window.location.origin}/guides/${post.slug}`} />
+                <link rel="canonical" href={`${appUrl}/guides/${post.slug}`} />
                 <script type="application/ld+json">{JSON.stringify({
                     "@context": "https://schema.org",
                     "@type": "Article",
@@ -118,11 +120,11 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                     "publisher": {
                         "@type": "Organization",
                         "name": "Sunbed Ranker",
-                        "logo": { "@type": "ImageObject", "url": `${window.location.origin}/images/logo.png` }
+                        "logo": { "@type": "ImageObject", "url": `${appUrl}/images/logo.png` }
                     },
                     "mainEntityOfPage": {
                         "@type": "WebPage",
-                        "@id": `${window.location.origin}/guides/${post.slug}`
+                        "@id": `${appUrl}/guides/${post.slug}`
                     }
                 })}</script>
             </Head>

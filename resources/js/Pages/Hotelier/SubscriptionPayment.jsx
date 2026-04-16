@@ -4,8 +4,10 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import HotelierNav from '@/Components/HotelierNav';
 
+import { useAppUrl } from '@/hooks/useAppUrl';
+
 // Payment Form Component (uses Stripe hooks)
-function PaymentForm({ plan, period, orderSummary, clientSecret, billingData, onBack }) {
+function PaymentForm({ plan, period, orderSummary, clientSecret, billingData, onBack, appUrl }) {
     const stripe = useStripe();
     const elements = useElements();
     const [processing, setProcessing] = useState(false);
@@ -26,7 +28,7 @@ function PaymentForm({ plan, period, orderSummary, clientSecret, billingData, on
         const { error: stripeError, paymentIntent } = await stripe.confirmPayment({
             elements,
             confirmParams: {
-                return_url: `${window.location.origin}/hotelier`,
+                return_url: `${appUrl}/hotelier`,
             },
             redirect: 'if_required',
         });
@@ -122,6 +124,7 @@ function PaymentForm({ plan, period, orderSummary, clientSecret, billingData, on
 
 // Main Component
 export default function SubscriptionPayment({ plan, period, orderSummary, stripeKey, clientSecret, redirectTo }) {
+    const appUrl = useAppUrl();
     const [activeStep, setActiveStep] = useState(1);
     const [stripePromise, setStripePromise] = useState(null);
 
@@ -395,6 +398,7 @@ export default function SubscriptionPayment({ plan, period, orderSummary, stripe
                                             clientSecret={clientSecret}
                                             billingData={data}
                                             onBack={() => setActiveStep(1)}
+                                            appUrl={appUrl}
                                         />
                                     </Elements>
                                 )}

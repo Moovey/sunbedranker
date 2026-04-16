@@ -1,9 +1,12 @@
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
+import SeoHead from '@/Components/SeoHead';
+import { useAppUrl } from '@/hooks/useAppUrl';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
 export default function DestinationsIndex({ destinations }) {
     const items = destinations?.data || [];
+    const appUrl = useAppUrl();
 
     // Group paginated results by country
     const grouped = items.reduce((acc, dest) => {
@@ -14,20 +17,30 @@ export default function DestinationsIndex({ destinations }) {
     }, {});
     const countries = Object.entries(grouped);
     const { links } = destinations || {};
+    const nextUrl = destinations?.next_page_url;
+    const prevUrl = destinations?.prev_page_url;
 
     return (
         <>
-            <Head title="Travel Destinations | Best Hotel Pools & Sunbed Reviews">
-                <meta name="description" content="Explore top travel destinations with the best hotel pools and sunbed experiences. Detailed reviews, pool ratings, and expert travel tips for every destination." />
-                <meta property="og:title" content="Travel Destinations - Best Hotel Pools & Sunbeds | Sunbed Ranker" />
-                <meta property="og:description" content="Explore top travel destinations with the best hotel pools and sunbed experiences worldwide." />
-                <meta property="og:type" content="website" />
-                <meta property="og:url" content={`${window.location.origin}/destinations`} />
-                <meta property="og:image" content={`${window.location.origin}/images/og-default.jpg`} />
-                <meta property="og:site_name" content="Sunbed Ranker" />
-                <meta name="twitter:card" content="summary_large_image" />
-                <link rel="canonical" href={`${window.location.origin}/destinations`} />
-            </Head>
+            <SeoHead
+                title="Travel Destinations | Best Hotel Pools & Sunbed Reviews"
+                description="Explore top travel destinations with the best hotel pools and sunbed experiences. Detailed reviews, pool ratings, and expert travel tips for every destination."
+                path="/destinations"
+                prev={prevUrl}
+                next={nextUrl}
+                schema={{
+                    "@context": "https://schema.org",
+                    "@type": "CollectionPage",
+                    "name": "Travel Destinations",
+                    "description": "Explore top travel destinations with the best hotel pools and sunbed experiences worldwide.",
+                    "url": `${appUrl}/destinations`,
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "Sunbed Ranker",
+                        "logo": { "@type": "ImageObject", "url": `${appUrl}/images/logo.png` }
+                    }
+                }}
+            />
 
             <div className="min-h-screen bg-white font-sans">
                 <Header />

@@ -29,7 +29,7 @@ class StaticPageController extends Controller
 
     public function privacyPolicy(): Response
     {
-        return Inertia::render('Static/PrivacyPolicy');
+        return Inertia::render('Static/PrivacyInfo');
     }
 
     public function termsOfService(): Response
@@ -39,7 +39,7 @@ class StaticPageController extends Controller
 
     public function cookiePolicy(): Response
     {
-        return Inertia::render('Static/CookiePolicy');
+        return Inertia::render('Static/CookiesInfo');
     }
 
     public function affiliateDisclosure(): Response

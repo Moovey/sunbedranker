@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import SeoHead from '@/Components/SeoHead';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
@@ -18,15 +18,11 @@ export default function HowWeRate() {
 
     return (
         <>
-            <Head title="How We Rate Hotels - Our Scoring Methodology">
-                <meta name="description" content="Learn how Sunbed Ranker rates and scores hotel pools. Our transparent 10-point scoring system evaluates sunbed ratios, sun exposure, atmosphere, cleanliness, and more." />
-                <meta property="og:title" content="How We Rate Hotels - Sunbed Ranker Methodology" />
-                <meta property="og:description" content="Our transparent 10-point scoring system for hotel pool reviews." />
-                <meta property="og:type" content="website" />
-                <meta property="og:url" content={`${window.location.origin}/how-we-rate`} />
-                <meta property="og:site_name" content="Sunbed Ranker" />
-                <link rel="canonical" href={`${window.location.origin}/how-we-rate`} />
-            </Head>
+            <SeoHead
+                title="How We Rate Hotels - Our Scoring Methodology"
+                description="Learn how Sunbed Ranker rates and scores hotel pools. Our transparent 10-point scoring system evaluates sunbed ratios, sun exposure, atmosphere, cleanliness, and more."
+                path="/how-we-rate"
+            />
 
             <div className="min-h-screen bg-white font-sans">
                 <Header />

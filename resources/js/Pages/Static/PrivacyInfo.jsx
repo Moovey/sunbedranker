@@ -1,18 +1,15 @@
-import { Head } from '@inertiajs/react';
+import SeoHead from '@/Components/SeoHead';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
 export default function PrivacyPolicy() {
     return (
         <>
-            <Head title="Privacy Policy - Sunbed Ranker">
-                <meta name="description" content="Sunbed Ranker's privacy policy. Learn how we collect, use, and protect your personal information." />
-                <meta property="og:title" content="Privacy Policy - Sunbed Ranker" />
-                <meta property="og:type" content="website" />
-                <meta property="og:url" content={`${window.location.origin}/privacy-policy`} />
-                <meta property="og:site_name" content="Sunbed Ranker" />
-                <link rel="canonical" href={`${window.location.origin}/privacy-policy`} />
-            </Head>
+            <SeoHead
+                title="Privacy Policy"
+                description="Sunbed Ranker's privacy policy. Learn how we collect, use, and protect your personal information."
+                path="/privacy-policy"
+            />
 
             <div className="min-h-screen bg-white font-sans">
                 <Header />

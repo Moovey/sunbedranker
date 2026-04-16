@@ -1,4 +1,5 @@
 import { Head, usePage } from '@inertiajs/react';
+import { useAppUrl } from '@/hooks/useAppUrl';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 import {
@@ -23,6 +24,7 @@ export default function Home({
 }) {    
     const { auth } = usePage().props;
     const isHotelier = auth.user?.role === 'hotelier';
+    const appUrl = useAppUrl();
 
     return (
         <>
@@ -32,31 +34,31 @@ export default function Home({
                 <meta property="og:title" content="Sunbed Ranker - Find the Best Hotel Pools & Sunbeds" />
                 <meta property="og:description" content="The leading independent travel guide for hotel pool and sunbed reviews. Compare hotels, read expert guides, and find your perfect poolside vacation." />
                 <meta property="og:type" content="website" />
-                <meta property="og:url" content={window.location.origin} />
-                <meta property="og:image" content={`${window.location.origin}/images/og-default.jpg`} />
+                <meta property="og:url" content={appUrl} />
+                <meta property="og:image" content={`${appUrl}/images/og-default.jpg`} />
                 <meta property="og:site_name" content="Sunbed Ranker" />
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content="Sunbed Ranker - Find the Best Hotel Pools & Sunbeds" />
                 <meta name="twitter:description" content="The leading independent travel guide for hotel pool and sunbed reviews. Compare hotels, read expert guides, and find your perfect poolside vacation." />
-                <meta name="twitter:image" content={`${window.location.origin}/images/og-default.jpg`} />
-                <link rel="canonical" href={window.location.origin} />
+                <meta name="twitter:image" content={`${appUrl}/images/og-default.jpg`} />
+                <link rel="canonical" href={appUrl} />
                 <script type="application/ld+json">{JSON.stringify({
                     "@context": "https://schema.org",
                     "@type": "WebSite",
                     "name": "Sunbed Ranker",
-                    "url": window.location.origin,
+                    "url": appUrl,
                     "description": "The leading independent travel guide for hotel pool and sunbed reviews.",
                     "publisher": {
                         "@type": "Organization",
                         "name": "Sunbed Ranker",
                         "logo": {
                             "@type": "ImageObject",
-                            "url": `${window.location.origin}/images/logo.png`
+                            "url": `${appUrl}/images/logo.png`
                         }
                     },
                     "potentialAction": {
                         "@type": "SearchAction",
-                        "target": `${window.location.origin}/search?q={search_term_string}`,
+                        "target": `${appUrl}/search?q={search_term_string}`,
                         "query-input": "required name=search_term_string"
                     }
                 })}</script>

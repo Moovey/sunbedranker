@@ -1,0 +1,27 @@
+import { jsx } from "react/jsx-runtime";
+import { createInertiaApp } from "@inertiajs/react";
+import createServer from "@inertiajs/react/server";
+import ReactDOMServer from "react-dom/server";
+async function resolvePageComponent(path, pages) {
+  for (const p of Array.isArray(path) ? path : [path]) {
+    const page = pages[p];
+    if (typeof page === "undefined") {
+      continue;
+    }
+    return typeof page === "function" ? page() : page;
+  }
+  throw new Error(`Page not found: ${path}`);
+}
+const appName = "Laravel";
+createServer(
+  (page) => createInertiaApp({
+    page,
+    render: ReactDOMServer.renderToString,
+    title: (title) => `${title} - ${appName}`,
+    resolve: (name) => resolvePageComponent(
+      `./Pages/${name}.jsx`,
+      /* @__PURE__ */ Object.assign({ "./Pages/Admin/Claims/HotelierPerformance.jsx": () => import("./assets/HotelierPerformance-D-gksjZQ.js"), "./Pages/Admin/Claims/Index.jsx": () => import("./assets/Index-CNff9P6G.js"), "./Pages/Admin/Claims/Show.jsx": () => import("./assets/Show-_wBv2t7S.js"), "./Pages/Admin/Content/CreatePost.jsx": () => import("./assets/CreatePost-D4FZIuY0.js"), "./Pages/Admin/Content/EditPost.jsx": () => import("./assets/EditPost-DwJ8Nmdg.js"), "./Pages/Admin/Content/Index.jsx": () => import("./assets/Index-CKWm8wX0.js"), "./Pages/Admin/Dashboard.jsx": () => import("./assets/Dashboard-B3GWcyhh.js"), "./Pages/Admin/Destinations/Edit.jsx": () => import("./assets/Edit-DUSMja_D.js"), "./Pages/Admin/Destinations/Index.jsx": () => import("./assets/Index-DG3SUE02.js"), "./Pages/Admin/Hotels/Create.jsx": () => import("./assets/Create-DYfiLAXn.js"), "./Pages/Admin/Hotels/Edit.jsx": () => import("./assets/Edit-Chknqa3O.js"), "./Pages/Admin/Hotels/Index.jsx": () => import("./assets/Index-d0_sSJM3.js"), "./Pages/Admin/Profile.jsx": () => import("./assets/Profile-BSO76hdJ.js"), "./Pages/Admin/Scoring/Index.jsx": () => import("./assets/Index-YGIjHVt7.js"), "./Pages/Admin/Users/Edit.jsx": () => import("./assets/Edit-DfpfsYni.js"), "./Pages/Admin/Users/Index.jsx": () => import("./assets/Index-CkBdyJoE.js"), "./Pages/Auth/ConfirmPassword.jsx": () => import("./assets/ConfirmPassword-CQPv96Wx.js"), "./Pages/Auth/ForgotPassword.jsx": () => import("./assets/ForgotPassword-YkD54Hv9.js"), "./Pages/Auth/Login.jsx": () => import("./assets/Login-CE--EQBJ.js"), "./Pages/Auth/Register.jsx": () => import("./assets/Register-DA6erzWo.js"), "./Pages/Auth/ResetPassword.jsx": () => import("./assets/ResetPassword-DRSW8jQ3.js"), "./Pages/Auth/VerifyEmail.jsx": () => import("./assets/VerifyEmail-3DaxC1ow.js"), "./Pages/Blog/Index.jsx": () => import("./assets/Index-DkzuSCnr.js"), "./Pages/Blog/Show.jsx": () => import("./assets/Show-Dfop7Uz-.js"), "./Pages/Dashboard.jsx": () => import("./assets/Dashboard-BTra3IDG.js"), "./Pages/Destinations/Index.jsx": () => import("./assets/Index-Cl3ZlFWL.js"), "./Pages/Destinations/Show.jsx": () => import("./assets/Show-DwRoait5.js"), "./Pages/Home.jsx": () => import("./assets/Home-C22mepGR.js"), "./Pages/Hotelier/Analytics.jsx": () => import("./assets/Analytics-BGedZTmY.js"), "./Pages/Hotelier/BillingHistory.jsx": () => import("./assets/BillingHistory-DgOYD8D2.js"), "./Pages/Hotelier/ClaimHotel.jsx": () => import("./assets/ClaimHotel-D-YX1Ste.js"), "./Pages/Hotelier/Claims/Index.jsx": () => import("./assets/Index-rTR1xElM.js"), "./Pages/Hotelier/Claims/ManageHotel.jsx": () => import("./assets/ManageHotel-B8R15ddT.js"), "./Pages/Hotelier/Claims/Verify.jsx": () => import("./assets/Verify-xadJfxYa.js"), "./Pages/Hotelier/Dashboard.jsx": () => import("./assets/Dashboard-Csxi3MBG.js"), "./Pages/Hotelier/Profile.jsx": () => import("./assets/Profile-B5_ywnWF.js"), "./Pages/Hotelier/Subscription.jsx": () => import("./assets/Subscription-CNyORf2l.js"), "./Pages/Hotelier/SubscriptionCheckout.jsx": () => import("./assets/SubscriptionCheckout-DL5p3KqV.js"), "./Pages/Hotelier/SubscriptionPayment.jsx": () => import("./assets/SubscriptionPayment-Ca2IKKh_.js"), "./Pages/Hotels/Compare.jsx": () => import("./assets/Compare-CMPvik4S.js"), "./Pages/Hotels/Show.jsx": () => import("./assets/Show-ChhJd_Sw.js"), "./Pages/Profile/Edit.jsx": () => import("./assets/Edit-_ezHv5db.js"), "./Pages/Profile/Partials/DeleteUserForm.jsx": () => import("./assets/DeleteUserForm-BJf3_d3K.js"), "./Pages/Profile/Partials/UpdatePasswordForm.jsx": () => import("./assets/UpdatePasswordForm-DYAhYpPm.js"), "./Pages/Profile/Partials/UpdateProfileInformationForm.jsx": () => import("./assets/UpdateProfileInformationForm-tm6O3633.js"), "./Pages/Search/Results.jsx": () => import("./assets/Results-Ctoq4fi-.js"), "./Pages/Static/About.jsx": () => import("./assets/About-BEs5eGwo.js"), "./Pages/Static/AffiliateDisclosure.jsx": () => import("./assets/AffiliateDisclosure-Sb4nDEpv.js"), "./Pages/Static/Contact.jsx": () => import("./assets/Contact-JZeBHRrN.js"), "./Pages/Static/CookiePolicy.jsx": () => import("./assets/CookiePolicy-jCBpEy2M.js"), "./Pages/Static/EditorialPolicy.jsx": () => import("./assets/EditorialPolicy-C08yAQAl.js"), "./Pages/Static/HowWeRate.jsx": () => import("./assets/HowWeRate-DPYr9cro.js"), "./Pages/Static/PrivacyPolicy.jsx": () => import("./assets/PrivacyPolicy-BphmOQy4.js"), "./Pages/Static/TermsOfService.jsx": () => import("./assets/TermsOfService-Isd-icHS.js"), "./Pages/User/Profile.jsx": () => import("./assets/Profile-B71A9sPD.js"), "./Pages/Welcome.jsx": () => import("./assets/Welcome-ByNhCfvu.js") })
+    ),
+    setup: ({ App, props }) => /* @__PURE__ */ jsx(App, { ...props })
+  })
+);

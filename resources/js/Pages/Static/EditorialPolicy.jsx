@@ -1,18 +1,15 @@
-import { Head } from '@inertiajs/react';
+import SeoHead from '@/Components/SeoHead';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
 export default function EditorialPolicy() {
     return (
         <>
-            <Head title="Editorial Policy - Sunbed Ranker">
-                <meta name="description" content="Sunbed Ranker's editorial policy outlines our commitment to honest, independent travel content. Learn about our review standards, content guidelines, and editorial independence." />
-                <meta property="og:title" content="Editorial Policy - Sunbed Ranker" />
-                <meta property="og:type" content="website" />
-                <meta property="og:url" content={`${window.location.origin}/editorial-policy`} />
-                <meta property="og:site_name" content="Sunbed Ranker" />
-                <link rel="canonical" href={`${window.location.origin}/editorial-policy`} />
-            </Head>
+            <SeoHead
+                title="Editorial Policy"
+                description="Sunbed Ranker's editorial policy outlines our commitment to honest, independent travel content. Learn about our review standards, content guidelines, and editorial independence."
+                path="/editorial-policy"
+            />
 
             <div className="min-h-screen bg-white font-sans">
                 <Header />

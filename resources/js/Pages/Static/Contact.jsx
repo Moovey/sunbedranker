@@ -1,18 +1,15 @@
-import { Head } from '@inertiajs/react';
+import SeoHead from '@/Components/SeoHead';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
 export default function Contact() {
     return (
         <>
-            <Head title="Contact Us - Sunbed Ranker">
-                <meta name="description" content="Get in touch with the Sunbed Ranker team. Contact us for editorial inquiries, partnership opportunities, hotel listings, or general questions." />
-                <meta property="og:title" content="Contact Us - Sunbed Ranker" />
-                <meta property="og:type" content="website" />
-                <meta property="og:url" content={`${window.location.origin}/contact`} />
-                <meta property="og:site_name" content="Sunbed Ranker" />
-                <link rel="canonical" href={`${window.location.origin}/contact`} />
-            </Head>
+            <SeoHead
+                title="Contact Us"
+                description="Get in touch with the Sunbed Ranker team. Contact us for editorial inquiries, partnership opportunities, hotel listings, or general questions."
+                path="/contact"
+            />
 
             <div className="min-h-screen bg-white font-sans">
                 <Header />

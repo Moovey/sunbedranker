@@ -1,18 +1,15 @@
-import { Head } from '@inertiajs/react';
+import SeoHead from '@/Components/SeoHead';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
 export default function TermsOfService() {
     return (
         <>
-            <Head title="Terms of Service - Sunbed Ranker">
-                <meta name="description" content="Sunbed Ranker's terms of service. Review the terms and conditions governing your use of our website and services." />
-                <meta property="og:title" content="Terms of Service - Sunbed Ranker" />
-                <meta property="og:type" content="website" />
-                <meta property="og:url" content={`${window.location.origin}/terms-of-service`} />
-                <meta property="og:site_name" content="Sunbed Ranker" />
-                <link rel="canonical" href={`${window.location.origin}/terms-of-service`} />
-            </Head>
+            <SeoHead
+                title="Terms of Service"
+                description="Sunbed Ranker's terms of service. Review the terms and conditions governing your use of our website and services."
+                path="/terms-of-service"
+            />
 
             <div className="min-h-screen bg-white font-sans">
                 <Header />

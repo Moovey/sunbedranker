@@ -1,10 +1,12 @@
 import { useState, useMemo } from 'react';
 import { Link, Head, usePage } from '@inertiajs/react';
+import { useAppUrl } from '@/hooks/useAppUrl';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
 export default function DestinationShow({ destination, hotels }) {
     const { auth } = usePage().props;
+    const appUrl = useAppUrl();
     const [compareList, setCompareList] = useState([]);
     const [filters, setFilters] = useState({
         poolVibe: '',
@@ -138,17 +140,17 @@ export default function DestinationShow({ destination, hotels }) {
                 <meta property="og:title" content={`${destination.name} - Best Hotel Pools & Sunbeds | Sunbed Ranker`} />
                 <meta property="og:description" content={`Discover ${hotels.total} hotels in ${destination.name} ranked by pool quality, sunbed ratio, and atmosphere.`} />
                 <meta property="og:type" content="website" />
-                <meta property="og:url" content={`${window.location.origin}/destinations/${destination.slug}`} />
-                {destination.image && <meta property="og:image" content={destination.image.startsWith('http') ? destination.image : `${window.location.origin}/storage/${destination.image}`} />}
+                <meta property="og:url" content={`${appUrl}/destinations/${destination.slug}`} />
+                {destination.image && <meta property="og:image" content={destination.image.startsWith('http') ? destination.image : `${appUrl}/storage/${destination.image}`} />}
                 <meta property="og:site_name" content="Sunbed Ranker" />
                 <meta name="twitter:card" content="summary_large_image" />
-                <link rel="canonical" href={`${window.location.origin}/destinations/${destination.slug}`} />
+                <link rel="canonical" href={`${appUrl}/destinations/${destination.slug}`} />
                 <script type="application/ld+json">{JSON.stringify({
                     "@context": "https://schema.org",
                     "@type": "TouristDestination",
                     "name": destination.name,
                     "description": destination.description || `Hotels with great pools in ${destination.name}`,
-                    "url": `${window.location.origin}/destinations/${destination.slug}`
+                    "url": `${appUrl}/destinations/${destination.slug}`
                 })}</script>
             </Head>
             

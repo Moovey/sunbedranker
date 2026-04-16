@@ -1,10 +1,13 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
+import { useAppUrl } from '@/hooks/useAppUrl';
+import SeoHead from '@/Components/SeoHead';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
 export default function BlogIndex({ posts, categories, tags, featuredPosts, filters }) {
     const [search, setSearch] = useState(filters.search || '');
+    const appUrl = useAppUrl();
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -28,31 +31,26 @@ export default function BlogIndex({ posts, categories, tags, featuredPosts, filt
 
     return (
         <>
-            <Head title="Travel Guides, Pool Tips & Hotel Reviews | Sunbed Ranker Blog">
-                <meta name="description" content="Expert travel guides, destination tips, pool reviews, and insider knowledge about hotel pools, sunbeds, and the best places to relax in the sun. Updated regularly with fresh travel content." />
-                <meta property="og:title" content="Travel Guides & Hotel Pool Reviews - Sunbed Ranker Blog" />
-                <meta property="og:description" content="Expert travel guides, destination tips, and honest hotel pool reviews. Find your perfect poolside vacation." />
-                <meta property="og:type" content="blog" />
-                <meta property="og:url" content={`${window.location.origin}/guides`} />
-                <meta property="og:image" content={`${window.location.origin}/images/og-default.jpg`} />
-                <meta property="og:site_name" content="Sunbed Ranker" />
-                <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Travel Guides & Hotel Pool Reviews - Sunbed Ranker Blog" />
-                <meta name="twitter:description" content="Expert travel guides, destination tips, and honest hotel pool reviews." />
-                <link rel="canonical" href={`${window.location.origin}/guides`} />
-                <script type="application/ld+json">{JSON.stringify({
+            <SeoHead
+                title="Travel Guides, Pool Tips & Hotel Reviews | Sunbed Ranker Blog"
+                description="Expert travel guides, destination tips, pool reviews, and insider knowledge about hotel pools, sunbeds, and the best places to relax in the sun. Updated regularly with fresh travel content."
+                path="/guides"
+                type="blog"
+                prev={posts?.prev_page_url}
+                next={posts?.next_page_url}
+                schema={{
                     "@context": "https://schema.org",
                     "@type": "Blog",
                     "name": "Sunbed Ranker Travel Blog",
                     "description": "Expert travel guides, destination tips, and hotel pool reviews.",
-                    "url": `${window.location.origin}/guides`,
+                    "url": `${appUrl}/guides`,
                     "publisher": {
                         "@type": "Organization",
                         "name": "Sunbed Ranker",
-                        "logo": { "@type": "ImageObject", "url": `${window.location.origin}/images/logo.png` }
+                        "logo": { "@type": "ImageObject", "url": `${appUrl}/images/logo.png` }
                     }
-                })}</script>
-            </Head>
+                }}
+            />
 
             <div className="min-h-screen bg-gray-50 font-sans">
                 <Header />

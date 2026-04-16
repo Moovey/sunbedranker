@@ -1,5 +1,6 @@
 import { Head, router } from '@inertiajs/react';
 import { useState, useCallback, useMemo } from 'react';
+import { useAppUrl } from '@/hooks/useAppUrl';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
@@ -63,6 +64,7 @@ import {
 export default function HotelShow({ hotel, similarHotels }) {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
     const [openFaqIndex, setOpenFaqIndex] = useState(null);
+    const appUrl = useAppUrl();
 
     // Memoized values
     const allImages = useMemo(() => [
@@ -96,20 +98,20 @@ export default function HotelShow({ hotel, similarHotels }) {
                 <meta property="og:title" content={`${hotel.name} - Pool & Sunbed Review | Sunbed Ranker`} />
                 <meta property="og:description" content={`Detailed pool and sunbed review of ${hotel.name}. See sunbed ratios, sun exposure, atmosphere ratings, and more.`} />
                 <meta property="og:type" content="article" />
-                <meta property="og:url" content={`${window.location.origin}/hotels/${hotel.slug}`} />
+                <meta property="og:url" content={`${appUrl}/hotels/${hotel.slug}`} />
                 {hotel.main_image_url && <meta property="og:image" content={hotel.main_image_url} />}
                 <meta property="og:site_name" content="Sunbed Ranker" />
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={`${hotel.name} - Pool & Sunbed Review`} />
                 <meta name="twitter:description" content={`Detailed pool review of ${hotel.name}. Sunbed ratios, facilities, and honest reviews.`} />
                 {hotel.main_image_url && <meta name="twitter:image" content={hotel.main_image_url} />}
-                <link rel="canonical" href={`${window.location.origin}/hotels/${hotel.slug}`} />
+                <link rel="canonical" href={`${appUrl}/hotels/${hotel.slug}`} />
                 <script type="application/ld+json">{JSON.stringify({
                     "@context": "https://schema.org",
                     "@type": "Hotel",
                     "name": hotel.name,
                     "description": `Pool and sunbed review of ${hotel.name}`,
-                    "url": `${window.location.origin}/hotels/${hotel.slug}`,
+                    "url": `${appUrl}/hotels/${hotel.slug}`,
                     "image": hotel.main_image_url || '',
                     "address": {
                         "@type": "PostalAddress",

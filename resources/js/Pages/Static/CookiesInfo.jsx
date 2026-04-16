@@ -1,18 +1,15 @@
-import { Head } from '@inertiajs/react';
+import SeoHead from '@/Components/SeoHead';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
 export default function CookiePolicy() {
     return (
         <>
-            <Head title="Cookie Policy - Sunbed Ranker">
-                <meta name="description" content="Sunbed Ranker's cookie policy. Learn about the cookies we use, why we use them, and how to manage your cookie preferences." />
-                <meta property="og:title" content="Cookie Policy - Sunbed Ranker" />
-                <meta property="og:type" content="website" />
-                <meta property="og:url" content={`${window.location.origin}/cookie-policy`} />
-                <meta property="og:site_name" content="Sunbed Ranker" />
-                <link rel="canonical" href={`${window.location.origin}/cookie-policy`} />
-            </Head>
+            <SeoHead
+                title="Cookie Policy"
+                description="Sunbed Ranker's cookie policy. Learn about the cookies we use, why we use them, and how to manage your cookie preferences."
+                path="/cookie-policy"
+            />
 
             <div className="min-h-screen bg-white font-sans">
                 <Header />

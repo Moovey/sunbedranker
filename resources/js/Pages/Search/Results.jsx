@@ -1,10 +1,12 @@
 import { Link, Head, usePage } from '@inertiajs/react';
 import { useState, useMemo } from 'react';
+import { useAppUrl } from '@/hooks/useAppUrl';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
 export default function SearchResults({ searchParams, localHotels, agodaHotels, hasResults }) {
     const { auth } = usePage().props;
+    const appUrl = useAppUrl();
     const [compareList, setCompareList] = useState([]);
     const [filters, setFilters] = useState({
         poolVibe: searchParams.poolVibe || '',
@@ -147,7 +149,10 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
 
     return (
         <>
-            <Head title={`Hotels in ${searchParams.destination || 'Search Results'}`} />
+            <Head title={`Hotels in ${searchParams.destination || 'Search Results'}`}>
+                <meta name="description" content={`Find the best hotel pools and sunbeds in ${searchParams.destination || 'your destination'}. Compare hotels by pool quality, sunbed ratio, and atmosphere ratings.`} />
+                <meta name="robots" content="noindex, follow" />
+            </Head>
             
             <div className="min-h-screen bg-white font-sans">
                 <Header />
