@@ -7,6 +7,7 @@
         <meta name="agd-partner-manual-verification" />
         <meta name="description" content="Find the best hotel pools and sunbeds. Compare hotels by pool quality, sunbed availability, sun exposure, and atmosphere ratings." />
         <meta name="robots" content="index, follow" />
+        <meta name="google-site-verification" content="1BFi1lziWSsKbvL-aJbAt5VeLsOo8Fg67dzHYRGvzm8" />
 
         <!-- Favicon -->
         <link rel="icon" type="image/png" href="/images/logo.png">
