@@ -6,6 +6,7 @@ use App\Models\HotelClaim;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
+use Tighten\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -36,6 +37,10 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'appUrl' => config('app.url'),
+            'ziggy' => fn () => [
+                ...(new Ziggy)->toArray(),
+                'location' => $request->url(),
+            ],
             'auth' => [
                 'user' => $user ? [
                     'id' => $user->id,

@@ -1,7 +1,9 @@
 import { jsxs, Fragment, jsx } from "react/jsx-runtime";
-import "@inertiajs/react";
+import { S as SeoHead } from "./SeoHead-BbXGBbkp.js";
 import { H as Header } from "./Header-IxKzTBec.js";
 import { F as Footer } from "./Footer-xQLxAHWv.js";
+import "@inertiajs/react";
+import "./useAppUrl-B4l_DIW7.js";
 import "react";
 function AffiliateDisclosure() {
   return /* @__PURE__ */ jsxs(Fragment, { children: [

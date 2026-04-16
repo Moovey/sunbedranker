@@ -405,25 +405,25 @@
     "/build/assets/About-BEs5eGwo.js"
   ],
   "resources/js/Pages/Static/AffiliateDisclosure.jsx": [
-    "/build/assets/AffiliateDisclosure-Sb4nDEpv.js"
+    "/build/assets/AffiliateDisclosure-Czmzf9zO.js"
   ],
   "resources/js/Pages/Static/Contact.jsx": [
-    "/build/assets/Contact-JZeBHRrN.js"
+    "/build/assets/Contact-BvZ7NBh2.js"
   ],
-  "resources/js/Pages/Static/CookiePolicy.jsx": [
-    "/build/assets/CookiePolicy-jCBpEy2M.js"
+  "resources/js/Pages/Static/CookiesInfo.jsx": [
+    "/build/assets/CookiesInfo-jCBpEy2M.js"
   ],
   "resources/js/Pages/Static/EditorialPolicy.jsx": [
-    "/build/assets/EditorialPolicy-C08yAQAl.js"
+    "/build/assets/EditorialPolicy-BhPyjMaj.js"
   ],
   "resources/js/Pages/Static/HowWeRate.jsx": [
-    "/build/assets/HowWeRate-DPYr9cro.js"
+    "/build/assets/HowWeRate-D1O9GA2J.js"
   ],
-  "resources/js/Pages/Static/PrivacyPolicy.jsx": [
-    "/build/assets/PrivacyPolicy-BphmOQy4.js"
+  "resources/js/Pages/Static/PrivacyInfo.jsx": [
+    "/build/assets/PrivacyInfo-DznVcQlD.js"
   ],
   "resources/js/Pages/Static/TermsOfService.jsx": [
-    "/build/assets/TermsOfService-Isd-icHS.js"
+    "/build/assets/TermsOfService-DXf64ryR.js"
   ],
   "resources/js/Pages/User/Profile.jsx": [
     "/build/assets/Profile-B71A9sPD.js"
@@ -434,5 +434,6 @@
   "resources/js/hooks/useAppUrl.js": [
     "/build/assets/useAppUrl-B4l_DIW7.js"
   ],
-  "resources/js/ssr.jsx": []
+  "resources/js/ssr.jsx": [],
+  "vendor/tightenco/ziggy/dist/index.esm.js": []
 }
