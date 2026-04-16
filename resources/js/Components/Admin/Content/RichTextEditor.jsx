@@ -496,6 +496,7 @@ const EditorToolbar = ({ editor }) => {
 // ─── Main Editor Component ───────────────────────────────────────────────────
 export default function RichTextEditor({ content, onChange, placeholder, error }) {
     const editor = useEditor({
+        immediatelyRender: false,
         extensions: [
             StarterKit.configure({
                 heading: { levels: [1, 2, 3, 4] },
