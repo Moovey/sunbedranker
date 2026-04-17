@@ -6,17 +6,23 @@ use App\Jobs\ImportAgodaDirectory;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class ImportAgodaCommand extends Command
 {
-    protected $signature = 'agoda:import {path : Absolute path or URL to the Agoda CSV file} {--sync : Run synchronously instead of queuing} {--url : Download from URL first}';
+    protected $signature = 'agoda:import {path : Path to CSV (absolute, URL, or R2 key)} {--sync : Run synchronously instead of queuing} {--url : Download from URL first} {--r2 : Read from R2/S3 storage}';
     protected $description = 'Import hotels from an Agoda CSV file into the directory';
 
     public function handle(): int
     {
         $path = $this->argument('path');
 
-        if ($this->option('url')) {
+        if ($this->option('r2')) {
+            $path = $this->downloadFromR2($path);
+            if (!$path) {
+                return 1;
+            }
+        } elseif ($this->option('url')) {
             $path = $this->downloadFromUrl($path);
             if (!$path) {
                 return 1;
@@ -50,6 +56,37 @@ class ImportAgodaCommand extends Command
         }
 
         return 0;
+    }
+
+    private function downloadFromR2(string $key): ?string
+    {
+        $this->info("Reading from R2 storage: {$key}");
+
+        if (!Storage::disk('s3')->exists($key)) {
+            $this->error("File not found in R2: {$key}");
+            return null;
+        }
+
+        $sizeMB = round(Storage::disk('s3')->size($key) / 1024 / 1024, 1);
+        $this->info("Found file in R2 ({$sizeMB} MB), streaming to local temp file...");
+
+        $dest = storage_path('app/agoda-import.csv');
+        $stream = Storage::disk('s3')->readStream($key);
+
+        if (!$stream) {
+            $this->error("Failed to open R2 stream for: {$key}");
+            return null;
+        }
+
+        $fp = fopen($dest, 'w');
+        stream_copy_to_stream($stream, $fp);
+        fclose($fp);
+        fclose($stream);
+
+        $localSize = round(filesize($dest) / 1024 / 1024, 1);
+        $this->info("Downloaded {$localSize} MB to {$dest}");
+
+        return $dest;
     }
 
     private function downloadFromUrl(string $url): ?string
