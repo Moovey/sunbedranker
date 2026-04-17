@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\DownloadAgodaFromR2;
+use App\Jobs\ImportAgodaChunk;
 use App\Jobs\ImportAgodaDirectory;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
@@ -18,26 +20,31 @@ class ImportAgodaCommand extends Command
         $path = $this->argument('path');
         $disk = 'raw';
 
-        // For R2: let the job handle the download + import (works with queue workers)
+        // For R2: dispatch download job → which auto-dispatches chunk import jobs
         if ($this->option('r2')) {
-            $disk = 's3';
-
             Cache::put('agoda_directory_import', [
                 'status' => 'queued',
                 'processed' => 0,
                 'total' => 0,
-                'message' => 'Queued — will download from R2 and import...',
+                'message' => 'Queued — will download from R2 and import in chunks...',
                 'updated_at' => now()->toIso8601String(),
             ], now()->addHours(4));
 
             if ($this->option('sync')) {
-                $this->info('Running R2 import synchronously...');
-                $job = new ImportAgodaDirectory($path, 's3');
+                $this->info('Running R2 download + import synchronously...');
+                $job = new DownloadAgodaFromR2($path);
                 $job->handle();
+                // After download, run chunks synchronously
+                $csvPath = storage_path('app/agoda-import.csv');
+                if (file_exists($csvPath)) {
+                    $job = new ImportAgodaDirectory($csvPath, 'raw');
+                    $job->handle();
+                }
                 $this->info('Import finished!');
             } else {
-                ImportAgodaDirectory::dispatch($path, 's3');
-                $this->info('Job dispatched to queue! The worker will download from R2 and import.');
+                DownloadAgodaFromR2::dispatch($path);
+                $this->info('Download job dispatched! It will auto-chain import chunk jobs.');
+                $this->info('Each chunk processes 10,000 rows — no timeout issues.');
             }
 
             return 0;
