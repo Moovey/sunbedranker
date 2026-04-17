@@ -16,13 +16,34 @@ class ImportAgodaCommand extends Command
     public function handle(): int
     {
         $path = $this->argument('path');
+        $disk = 'raw';
 
+        // For R2: let the job handle the download + import (works with queue workers)
         if ($this->option('r2')) {
-            $path = $this->downloadFromR2($path);
-            if (!$path) {
-                return 1;
+            $disk = 's3';
+
+            Cache::put('agoda_directory_import', [
+                'status' => 'queued',
+                'processed' => 0,
+                'total' => 0,
+                'message' => 'Queued — will download from R2 and import...',
+                'updated_at' => now()->toIso8601String(),
+            ], now()->addHours(4));
+
+            if ($this->option('sync')) {
+                $this->info('Running R2 import synchronously...');
+                $job = new ImportAgodaDirectory($path, 's3');
+                $job->handle();
+                $this->info('Import finished!');
+            } else {
+                ImportAgodaDirectory::dispatch($path, 's3');
+                $this->info('Job dispatched to queue! The worker will download from R2 and import.');
             }
-        } elseif ($this->option('url')) {
+
+            return 0;
+        }
+
+        if ($this->option('url')) {
             $path = $this->downloadFromUrl($path);
             if (!$path) {
                 return 1;

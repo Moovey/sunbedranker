@@ -33,9 +33,31 @@ class ImportAgodaDirectory implements ShouldQueue
     {
         $this->updateProgress('running', 0, 0, 'Starting import...');
 
-        $fullPath = $this->disk === 'raw'
-            ? $this->filePath
-            : Storage::disk($this->disk)->path($this->filePath);
+        // For S3/R2: stream to temp file first, then process
+        if ($this->disk === 's3') {
+            $this->updateProgress('running', 0, 0, 'Downloading from R2 storage...');
+            Log::info('AgodaDirectory: streaming from R2', ['path' => $this->filePath]);
+
+            $stream = Storage::disk('s3')->readStream($this->filePath);
+            if (!$stream) {
+                $this->updateProgress('failed', 0, 0, 'Failed to open R2 stream: ' . $this->filePath);
+                return;
+            }
+
+            $fullPath = storage_path('app/agoda-import.csv');
+            $fp = fopen($fullPath, 'w');
+            stream_copy_to_stream($stream, $fp);
+            fclose($fp);
+            fclose($stream);
+
+            $sizeMB = round(filesize($fullPath) / 1024 / 1024, 1);
+            Log::info("AgodaDirectory: downloaded {$sizeMB} MB from R2");
+            $this->updateProgress('running', 0, 0, "Downloaded {$sizeMB} MB, starting import...");
+        } else {
+            $fullPath = $this->disk === 'raw'
+                ? $this->filePath
+                : Storage::disk($this->disk)->path($this->filePath);
+        }
 
         if (!file_exists($fullPath)) {
             $this->updateProgress('failed', 0, 0, 'File not found: ' . $this->filePath);
