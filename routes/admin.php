@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminProfileController;
+use App\Http\Controllers\Admin\AgodaDirectoryController;
 use App\Http\Controllers\Admin\DestinationApiController;
 use App\Http\Controllers\Admin\DestinationManagementController;
 use App\Http\Controllers\Admin\HotelManagementController;
@@ -136,6 +137,15 @@ Route::middleware(['auth', 'admin', 'throttle:admin'])->prefix('admin')->name('a
     // Destination Lookup API (AJAX endpoints for lazy city seeding)
     Route::get('/api/destinations/countries', [DestinationApiController::class, 'countries'])->name('api.destinations.countries');
     Route::get('/api/destinations/cities', [DestinationApiController::class, 'searchCities'])->name('api.destinations.cities');
+
+    // Agoda Hotel Directory (1.5M bulk import)
+    Route::get('/directory', [AgodaDirectoryController::class, 'index'])->name('directory.index');
+    Route::post('/directory/upload', [AgodaDirectoryController::class, 'upload'])->name('directory.upload');
+    Route::post('/directory/upload-path', [AgodaDirectoryController::class, 'uploadFromPath'])->name('directory.upload-path');
+    Route::get('/directory/import-progress', [AgodaDirectoryController::class, 'importProgress'])->name('directory.import-progress');
+    Route::delete('/directory/import-progress', [AgodaDirectoryController::class, 'dismissImportProgress'])->name('directory.dismiss-progress');
+    Route::get('/directory/{agodaHotel}', [AgodaDirectoryController::class, 'show'])->name('directory.show');
+    Route::post('/directory/{agodaHotel}/promote', [AgodaDirectoryController::class, 'promote'])->name('directory.promote');
 
     // Live stats polling endpoint (lightweight JSON)
     Route::get('/api/stats/pending-claims', function () {

@@ -147,6 +147,16 @@ export default function AdminNav({ stats }) {
                             >
                                 Content
                             </Link>
+                            <Link
+                                href="/admin/directory"
+                                className={`px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
+                                    route().current('admin.directory.*')
+                                        ? 'bg-neutral-100 text-neutral-900'
+                                        : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
+                                }`}
+                            >
+                                Directory
+                            </Link>
                         </div>
                     </div>
 
@@ -307,6 +317,17 @@ export default function AdminNav({ stats }) {
                             onClick={() => setShowMobileMenu(false)}
                         >
                             Content
+                        </Link>
+                        <Link
+                            href="/admin/directory"
+                            className={`block px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
+                                route().current('admin.directory.*')
+                                    ? 'bg-neutral-100 text-neutral-900'
+                                    : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
+                            }`}
+                            onClick={() => setShowMobileMenu(false)}
+                        >
+                            Directory
                         </Link>
                         <Link
                             href="/"
