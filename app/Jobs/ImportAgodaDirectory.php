@@ -149,6 +149,12 @@ class ImportAgodaDirectory implements ShouldQueue
             $this->updateProgress('completed', $processed, $totalRecords, "Import complete. {$processed} hotels processed.");
             Log::info('AgodaDirectory import complete', ['total' => $processed]);
 
+            // Clean up temp CSV to reclaim storage
+            if ($this->disk === 's3' && file_exists($fullPath)) {
+                unlink($fullPath);
+                Log::info('AgodaDirectory: cleaned up temp file', ['path' => $fullPath]);
+            }
+
         } catch (\Throwable $e) {
             $this->updateProgress('failed', 0, 0, 'Import failed: ' . $e->getMessage());
             Log::error('AgodaDirectory import failed', [
