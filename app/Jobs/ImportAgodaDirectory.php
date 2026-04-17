@@ -17,8 +17,9 @@ class ImportAgodaDirectory implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $timeout = 3600;
-    public int $tries = 1;
+    public int $timeout = 7200; // 2 hours
+    public int $tries = 3;
+    public int $maxExceptions = 2;
 
     protected string $filePath;
     protected string $disk;
@@ -46,7 +47,23 @@ class ImportAgodaDirectory implements ShouldQueue
 
             $fullPath = storage_path('app/agoda-import.csv');
             $fp = fopen($fullPath, 'w');
-            stream_copy_to_stream($stream, $fp);
+
+            // Chunked download to avoid memory issues
+            $downloadedBytes = 0;
+            $chunkSize = 8 * 1024 * 1024; // 8MB chunks
+            $lastUpdate = time();
+            while (!feof($stream)) {
+                $chunk = fread($stream, $chunkSize);
+                if ($chunk === false) break;
+                fwrite($fp, $chunk);
+                $downloadedBytes += strlen($chunk);
+                // Update progress every 5 seconds
+                if (time() - $lastUpdate >= 5) {
+                    $dlMB = round($downloadedBytes / 1024 / 1024);
+                    $this->updateProgress('running', 0, 0, "Downloading from R2... {$dlMB} MB");
+                    $lastUpdate = time();
+                }
+            }
             fclose($fp);
             fclose($stream);
 
