@@ -267,8 +267,11 @@ class AgodaDirectoryController extends Controller
             'address' => implode(', ', array_filter([$agodaHotel->addressline1, $agodaHotel->city, $agodaHotel->country])),
             'latitude' => $agodaHotel->latitude,
             'longitude' => $agodaHotel->longitude,
-            'main_image' => $agodaHotel->photo1,
-            'images' => array_values(array_filter([$agodaHotel->photo2, $agodaHotel->photo3, $agodaHotel->photo4, $agodaHotel->photo5])),
+            'main_image' => $this->upgradeAgodaImageUrl($agodaHotel->photo1),
+            'images' => array_values(array_filter(array_map(
+                fn ($url) => $this->upgradeAgodaImageUrl($url),
+                [$agodaHotel->photo2, $agodaHotel->photo3, $agodaHotel->photo4, $agodaHotel->photo5]
+            ))),
             'description' => $agodaHotel->overview,
             'agoda_hotel_id' => $agodaHotel->agoda_hotel_id,
             'booking_affiliate_url' => $agodaHotel->affiliate_url,
@@ -370,5 +373,19 @@ class AgodaDirectoryController extends Controller
             'total_hotels' => Cache::remember('admin.stats.total_hotels', 300, fn () => Hotel::count()),
             'pending_claims' => Cache::remember('admin.nav.pending_claims', 120, fn () => \App\Models\HotelClaim::where('status', 'pending')->count()),
         ];
+    }
+
+    protected function upgradeAgodaImageUrl(?string $url): ?string
+    {
+        if (!$url) {
+            return null;
+        }
+
+        // Replace small thumbnail parameter (s=312x) with high-res (s=1024x)
+        // Also upgrade from http to https
+        $url = preg_replace('/\bs=\d+x\b/', 's=1024x', $url);
+        $url = str_replace('http://', 'https://', $url);
+
+        return $url;
     }
 }
