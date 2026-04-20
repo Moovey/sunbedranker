@@ -16,7 +16,7 @@ import { useAppUrl } from '@/hooks/useAppUrl';
 export default function SeoHead({ title, description, path, image, type = 'website', schema, noindex = false, prev, next, children }) {
     const appUrl = useAppUrl();
     const fullUrl = `${appUrl}${path}`;
-    const ogImage = image || `${appUrl}/images/og-default.jpg`;
+    const ogImage = image || `${appUrl}/images/logo.png`;
 
     return (
         <Head title={title}>

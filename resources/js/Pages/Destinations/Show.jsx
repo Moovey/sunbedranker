@@ -7,6 +7,7 @@ import Footer from '@/Components/Footer';
 export default function DestinationShow({ destination, hotels }) {
     const { auth } = usePage().props;
     const appUrl = useAppUrl();
+    const hasHotels = (hotels?.data?.length || 0) > 0;
     const [compareList, setCompareList] = useState([]);
     const [filters, setFilters] = useState({
         poolVibe: '',
@@ -136,6 +137,7 @@ export default function DestinationShow({ destination, hotels }) {
     return (
         <>
             <Head title={`${destination.name} - Hotels with Great Pools`}>
+                {!hasHotels && <meta name="robots" content="noindex, follow" />}
                 <meta name="description" content={`Find the best hotel pools and sunbeds in ${destination.name}. ${hotels.total} hotels ranked by pool quality, sunbed availability, and atmosphere. Expert reviews and ratings.`} />
                 <meta property="og:title" content={`${destination.name} - Best Hotel Pools & Sunbeds | Sunbed Ranker`} />
                 <meta property="og:description" content={`Discover ${hotels.total} hotels in ${destination.name} ranked by pool quality, sunbed ratio, and atmosphere.`} />

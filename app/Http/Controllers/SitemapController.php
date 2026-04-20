@@ -34,8 +34,10 @@ class SitemapController extends Controller
             ];
             $urls = $urls->merge($staticPages);
 
-            // Destinations
-            $destinations = Destination::where('is_active', true)->get(['slug', 'updated_at']);
+            // Destinations (only those with active hotels)
+            $destinations = Destination::where('is_active', true)
+                ->whereHas('hotels', fn ($q) => $q->where('is_active', true))
+                ->get(['slug', 'updated_at']);
             foreach ($destinations as $destination) {
                 $urls->push([
                     'loc' => url("/destinations/{$destination->slug}"),
