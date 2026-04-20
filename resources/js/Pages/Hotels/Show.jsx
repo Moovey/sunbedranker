@@ -149,6 +149,47 @@ export default function HotelShow({ hotel, similarHotels }) {
                         {/* Main Content Column */}
                         <div className="lg:col-span-2 space-y-5 sm:space-y-6 lg:space-y-7 xl:space-y-8">
                             
+                            {/* Hotel Overview / About */}
+                            {hotel.description && (() => {
+                                // Split the Agoda overview into readable paragraphs
+                                // The text often has no line breaks - split on topic-shifting sentence patterns
+                                const formatDescription = (text) => {
+                                    // First fix missing spaces after periods (e.g. "available.The" → "available. The")
+                                    let cleaned = text.replace(/\.([A-Z])/g, '. $1');
+                                    
+                                    // Split into sentences
+                                    const sentences = cleaned.match(/[^.!?]+[.!?]+/g) || [cleaned];
+                                    
+                                    // Group sentences into paragraphs (~2-3 sentences each)
+                                    const paragraphs = [];
+                                    for (let i = 0; i < sentences.length; i += 3) {
+                                        paragraphs.push(sentences.slice(i, i + 3).join('').trim());
+                                    }
+                                    
+                                    return paragraphs;
+                                };
+
+                                const paragraphs = formatDescription(hotel.description);
+
+                                return (
+                                    <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-orange-200 hover:shadow-xl transition-all duration-300">
+                                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-bold text-gray-900 mb-4 sm:mb-5 flex items-center gap-2 lg:gap-3">
+                                            <svg className="w-6 h-6 sm:w-7 sm:h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                            </svg>
+                                            About {hotel.name}
+                                        </h2>
+                                        <div className="space-y-4">
+                                            {paragraphs.map((paragraph, index) => (
+                                                <p key={index} className="text-gray-700 font-sans text-sm sm:text-base leading-relaxed">
+                                                    {paragraph}
+                                                </p>
+                                            ))}
+                                        </div>
+                                    </div>
+                                );
+                            })()}
+
                             {/* ============================================ */}
                             {/* POOL CRITERIA SECTIONS - Following Admin Tab Order */}
                             {/* ============================================ */}
