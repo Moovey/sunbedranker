@@ -147,6 +147,10 @@ export function PhotoGallerySection({ allImages, activeImageIndex, setActiveImag
                             src={image}
                             alt={`${hotelName} - ${index + 1}`}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            loading="lazy"
+                            width={300}
+                            height={200}
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                         />
                         {index === activeImageIndex && (
                             <div className="absolute inset-0 border-4 border-gray-900 rounded-lg"></div>

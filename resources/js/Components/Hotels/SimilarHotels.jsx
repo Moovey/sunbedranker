@@ -23,6 +23,10 @@ export function SimilarHotelCard({ hotel }) {
                     src={hotel.main_image_url || '/images/default-hotel.jpg'}
                     alt={hotel.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                    width={400}
+                    height={isPremium ? 256 : 192}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 />
                 
                 {/* Premium Badge */}

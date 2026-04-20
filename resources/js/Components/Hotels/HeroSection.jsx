@@ -73,6 +73,10 @@ export function ImageGallery({ allImages, activeImageIndex, hotelName, onPrevIma
                     src={allImages[activeImageIndex] || '/images/default-hotel.jpg'}
                     alt={hotelName}
                     className="w-full h-full object-cover"
+                    fetchpriority="high"
+                    width={800}
+                    height={isPremium ? 600 : 448}
+                    sizes="(max-width: 1024px) 100vw, 66vw"
                 />
                 
                 {/* Premium Badge Overlay */}

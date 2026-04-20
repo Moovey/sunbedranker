@@ -1,61 +1,39 @@
 import { Head, router } from '@inertiajs/react';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, lazy, Suspense } from 'react';
 import { useAppUrl } from '@/hooks/useAppUrl';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
-// Import all components from the organized structure
+// Import above-fold components eagerly
 import {
     // Hero Section
     Breadcrumb,
     HeroSection,
     
-    // Pool Details Section (Following Pool Criteria Tab Order)
-    // 1. Sunbed-to-Guest Ratio
+    // First 3 Pool Details (visible above fold)
     SunbedAvailabilitySection,
-    
-    // 2. Sun Exposure & Orientation
     SunExposureSection,
-    
-    // 3. Pool Area Size & Variety
     PoolSizeSection,
     
-    // 4. Towel & Reservation Policy
-    TowelReservationSection,
-    
-    // 5. Pool Facilities & Comfort
-    FacilitiesSection,
-    
-    // 6. Noise & Atmosphere
-    AtmosphereSection,
-    
-    // 7. Cleanliness & Maintenance
-    CleanlinessSection,
-    
-    // 8. Accessibility Features
-    AccessibilitySection,
-    
-    // 9. Kids & Family Facilities
-    KidsFeaturesSection,
-    
-    // 10. Extras & Luxury Touches
-    LuxuryFeaturesSection,
-    
-    // Hotelier Content Section
-    PoolDescriptionSection,
-    AmenitiesDescriptionSection,
-    HouseRulesSection,
-    TowelPolicySection,
-    FaqsSection,
-    PhotoGallerySection,
-    ReviewsSection,
-    
-    // Sidebar Components
+    // Sidebar (visible above fold)
     Sidebar,
-    
-    // Similar Hotels
-    SimilarHotelsSection,
 } from '@/Components/Hotels';
+
+// Lazy load below-fold sections to reduce initial JS
+const TowelReservationSection = lazy(() => import('@/Components/Hotels/PoolDetailsSection').then(m => ({ default: m.TowelReservationSection })));
+const FacilitiesSection = lazy(() => import('@/Components/Hotels/PoolDetailsSection').then(m => ({ default: m.FacilitiesSection })));
+const AtmosphereSection = lazy(() => import('@/Components/Hotels/PoolDetailsSection').then(m => ({ default: m.AtmosphereSection })));
+const CleanlinessSection = lazy(() => import('@/Components/Hotels/PoolDetailsSection').then(m => ({ default: m.CleanlinessSection })));
+const AccessibilitySection = lazy(() => import('@/Components/Hotels/PoolDetailsSection').then(m => ({ default: m.AccessibilitySection })));
+const KidsFeaturesSection = lazy(() => import('@/Components/Hotels/PoolDetailsSection').then(m => ({ default: m.KidsFeaturesSection })));
+const LuxuryFeaturesSection = lazy(() => import('@/Components/Hotels/PoolDetailsSection').then(m => ({ default: m.LuxuryFeaturesSection })));
+const PoolDescriptionSection = lazy(() => import('@/Components/Hotels/HotelierContentSection').then(m => ({ default: m.PoolDescriptionSection })));
+const AmenitiesDescriptionSection = lazy(() => import('@/Components/Hotels/HotelierContentSection').then(m => ({ default: m.AmenitiesDescriptionSection })));
+const HouseRulesSection = lazy(() => import('@/Components/Hotels/HotelierContentSection').then(m => ({ default: m.HouseRulesSection })));
+const FaqsSection = lazy(() => import('@/Components/Hotels/HotelierContentSection').then(m => ({ default: m.FaqsSection })));
+const PhotoGallerySection = lazy(() => import('@/Components/Hotels/HotelierContentSection').then(m => ({ default: m.PhotoGallerySection })));
+const ReviewsSection = lazy(() => import('@/Components/Hotels/HotelierContentSection').then(m => ({ default: m.ReviewsSection })));
+const SimilarHotelsSection = lazy(() => import('@/Components/Hotels/SimilarHotels').then(m => ({ default: m.default })));
 
 // ============================================
 // MAIN COMPONENT
@@ -219,26 +197,29 @@ export default function HotelShow({ hotel, similarHotels }) {
                                     {/* 3. Pool Area Size & Variety */}
                                     <PoolSizeSection poolCriteria={poolCriteria} />
                                     
-                                    {/* 4. Towel & Reservation Policy */}
-                                    <TowelReservationSection poolCriteria={poolCriteria} />
-                                    
-                                    {/* 5. Pool Facilities & Comfort */}
-                                    <FacilitiesSection poolCriteria={poolCriteria} />
-                                    
-                                    {/* 6. Noise & Atmosphere */}
-                                    <AtmosphereSection poolCriteria={poolCriteria} />
-                                    
-                                    {/* 7. Cleanliness & Maintenance */}
-                                    <CleanlinessSection poolCriteria={poolCriteria} />
-                                    
-                                    {/* 8. Accessibility Features */}
-                                    <AccessibilitySection poolCriteria={poolCriteria} />
-                                    
-                                    {/* 9. Kids & Family Facilities */}
-                                    <KidsFeaturesSection poolCriteria={poolCriteria} />
-                                    
-                                    {/* 10. Extras & Luxury Touches */}
-                                    <LuxuryFeaturesSection poolCriteria={poolCriteria} />
+                                    {/* Lazy-loaded below-fold pool sections */}
+                                    <Suspense fallback={null}>
+                                        {/* 4. Towel & Reservation Policy */}
+                                        <TowelReservationSection poolCriteria={poolCriteria} />
+                                        
+                                        {/* 5. Pool Facilities & Comfort */}
+                                        <FacilitiesSection poolCriteria={poolCriteria} />
+                                        
+                                        {/* 6. Noise & Atmosphere */}
+                                        <AtmosphereSection poolCriteria={poolCriteria} />
+                                        
+                                        {/* 7. Cleanliness & Maintenance */}
+                                        <CleanlinessSection poolCriteria={poolCriteria} />
+                                        
+                                        {/* 8. Accessibility Features */}
+                                        <AccessibilitySection poolCriteria={poolCriteria} />
+                                        
+                                        {/* 9. Kids & Family Facilities */}
+                                        <KidsFeaturesSection poolCriteria={poolCriteria} />
+                                        
+                                        {/* 10. Extras & Luxury Touches */}
+                                        <LuxuryFeaturesSection poolCriteria={poolCriteria} />
+                                    </Suspense>
                                 </>
                             )}
 
@@ -246,32 +227,34 @@ export default function HotelShow({ hotel, similarHotels }) {
                             {/* HOTELIER-PROVIDED CONTENT SECTIONS */}
                             {/* ============================================ */}
                             
-                            {/* Pool Description */}
-                            <PoolDescriptionSection hotel={hotel} />
-                            
-                            {/* Amenities Description */}
-                            <AmenitiesDescriptionSection hotel={hotel} />
-                            
-                            {/* House Rules */}
-                            <HouseRulesSection hotel={hotel} />
-                            
-                            {/* FAQs */}
-                            <FaqsSection 
-                                hotel={hotel} 
-                                openFaqIndex={openFaqIndex} 
-                                toggleFaq={toggleFaq} 
-                            />
+                            <Suspense fallback={null}>
+                                {/* Pool Description */}
+                                <PoolDescriptionSection hotel={hotel} />
+                                
+                                {/* Amenities Description */}
+                                <AmenitiesDescriptionSection hotel={hotel} />
+                                
+                                {/* House Rules */}
+                                <HouseRulesSection hotel={hotel} />
+                                
+                                {/* FAQs */}
+                                <FaqsSection 
+                                    hotel={hotel} 
+                                    openFaqIndex={openFaqIndex} 
+                                    toggleFaq={toggleFaq} 
+                                />
 
-                            {/* Photo Gallery */}
-                            <PhotoGallerySection 
-                                allImages={allImages}
-                                activeImageIndex={activeImageIndex}
-                                setActiveImageIndex={setActiveImageIndex}
-                                hotelName={hotel.name}
-                            />
+                                {/* Photo Gallery */}
+                                <PhotoGallerySection 
+                                    allImages={allImages}
+                                    activeImageIndex={activeImageIndex}
+                                    setActiveImageIndex={setActiveImageIndex}
+                                    hotelName={hotel.name}
+                                />
 
-                            {/* Reviews Section */}
-                            <ReviewsSection hotel={hotel} />
+                                {/* Reviews Section */}
+                                <ReviewsSection hotel={hotel} />
+                            </Suspense>
                         </div>
 
                         {/* Sidebar */}
@@ -279,10 +262,12 @@ export default function HotelShow({ hotel, similarHotels }) {
                     </div>
 
                     {/* Similar Hotels */}
-                    <SimilarHotelsSection 
-                        similarHotels={similarHotels} 
-                        destinationName={hotel.destination.name} 
-                    />
+                    <Suspense fallback={null}>
+                        <SimilarHotelsSection 
+                            similarHotels={similarHotels} 
+                            destinationName={hotel.destination.name} 
+                        />
+                    </Suspense>
                 </div>
 
                 <Footer />

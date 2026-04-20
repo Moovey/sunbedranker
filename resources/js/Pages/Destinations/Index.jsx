@@ -89,6 +89,10 @@ export default function DestinationsIndex({ destinations }) {
                                                             src={destination.image ? (destination.image.startsWith('http') ? destination.image : `/storage/${destination.image}`) : '/images/default-destination.svg'}
                                                             alt={destination.name}
                                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                            loading="lazy"
+                                                            width={400}
+                                                            height={300}
+                                                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                                                         />
                                                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                                                         

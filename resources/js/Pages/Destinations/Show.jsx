@@ -414,7 +414,7 @@ export default function DestinationShow({ destination, hotels }) {
                                 {/* Hotel Results */}
                                 {filteredAndSortedHotels.length > 0 ? (
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-                                        {filteredAndSortedHotels.map((hotel) => (
+                                        {filteredAndSortedHotels.map((hotel, index) => (
                                             <HotelCard 
                                                 key={hotel.id} 
                                                 hotel={hotel}
@@ -422,6 +422,7 @@ export default function DestinationShow({ destination, hotels }) {
                                                 isInCompare={compareList.includes(hotel.id)}
                                                 onToggleCompare={(e) => toggleCompare(hotel.id, e)}
                                                 isHotelier={auth?.user?.role === 'hotelier'}
+                                                priority={index === 0}
                                             />
                                         ))}
                                     </div>
@@ -510,7 +511,7 @@ export default function DestinationShow({ destination, hotels }) {
     );
 }
 
-function HotelCard({ hotel, destination, isInCompare, onToggleCompare, isHotelier }) {
+function HotelCard({ hotel, destination, isInCompare, onToggleCompare, isHotelier, priority = false }) {
     const canClaim = isHotelier && !hotel.owned_by && !hotel.has_pending_claim;
     const isPremium = hotel.is_premium;
 
@@ -528,6 +529,11 @@ function HotelCard({ hotel, destination, isInCompare, onToggleCompare, isHotelie
                         src={hotel.main_image_url || hotel.main_image || '/images/default-hotel.jpg'}
                         alt={hotel.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                        loading={priority ? "eager" : "lazy"}
+                        fetchpriority={priority ? "high" : undefined}
+                        width={400}
+                        height={isPremium ? 250 : 300}
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     
