@@ -80,6 +80,23 @@ class HomeController extends Controller
         // Fetch Agoda hotels for featured destinations
         $agodaHotels = $this->fetchAgodaHotels($featuredDestinations);
 
+        // Determine LCP image for preloading (first featured destination or first top-rated hotel)
+        $lcpImageUrl = null;
+        if ($featuredDestinations->isNotEmpty()) {
+            $first = $featuredDestinations->first();
+            if ($first->image) {
+                $lcpImageUrl = str_starts_with($first->image, 'http')
+                    ? preg_replace('/^http:/', 'https:', $first->image)
+                    : '/storage/' . $first->image;
+            }
+        }
+        if (!$lcpImageUrl && $topRatedHotels->isNotEmpty()) {
+            $lcpImageUrl = $topRatedHotels->first()->main_image_url;
+        }
+
+        // Share LCP image URL for preloading in blade template
+        Inertia::share('lcpImageUrl', $lcpImageUrl);
+
         return Inertia::render('Home', [
             'featuredDestinations' => $featuredDestinations,
             'topRatedHotels' => $topRatedHotels,

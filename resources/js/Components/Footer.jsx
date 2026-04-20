@@ -14,6 +14,8 @@ export default function Footer() {
                             <img 
                                 src="/images/logo.png" 
                                 alt="Sunbed Ranker" 
+                                width={120}
+                                height={48}
                                 className="h-12 w-auto brightness-0 invert opacity-90"
                             />
                         </Link>

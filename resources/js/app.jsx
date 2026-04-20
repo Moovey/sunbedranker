@@ -4,8 +4,11 @@ import './bootstrap';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { lazy, Suspense } from 'react';
+const LazyToastContainer = lazy(() => import('react-toastify').then(mod => {
+    import('react-toastify/dist/ReactToastify.css');
+    return { default: mod.ToastContainer };
+}));
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -22,18 +25,20 @@ createInertiaApp({
         root.render(
             <>
                 <App {...props} />
-                <ToastContainer
-                    position="top-right"
-                    autoClose={3000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="light"
-                />
+                <Suspense fallback={null}>
+                    <LazyToastContainer
+                        position="top-right"
+                        autoClose={3000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="light"
+                    />
+                </Suspense>
             </>
         );
     },

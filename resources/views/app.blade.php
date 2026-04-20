@@ -19,6 +19,15 @@
         <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <!-- Preconnect to image CDNs for faster LCP -->
+        <link rel="preconnect" href="https://q-xx.bstatic.com">
+        <link rel="preconnect" href="https://pix8.agoda.net">
+
+        <!-- Preload LCP image if available -->
+        @if(!empty($page['props']['lcpImageUrl']))
+        <link rel="preload" as="image" href="{{ $page['props']['lcpImageUrl'] }}" fetchpriority="high">
+        @endif
+
         <!-- Scripts -->
         @routes
         @viteReactRefresh
