@@ -121,7 +121,8 @@ export default function HotelShow({ hotel, similarHotels }) {
                         "@type": "AggregateRating",
                         "ratingValue": hotel.overall_score,
                         "bestRating": 10,
-                        "worstRating": 0
+                        "worstRating": 0,
+                        "ratingCount": hotel.review_count || 1
                     }} : {})
                 })}</script>
             </Head>
