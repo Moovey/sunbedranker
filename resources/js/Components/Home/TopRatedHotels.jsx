@@ -29,7 +29,7 @@ export default function TopRatedHotels({ hotels, isHotelier = false }) {
                             key={hotel.id} 
                             hotel={hotel}
                             isHotelier={isHotelier}
-                            priority={index < 2}
+                            priority={index === 0}
                         />
                     ))}
                 </div>

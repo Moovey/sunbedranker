@@ -1,5 +1,6 @@
 import { Head, usePage } from '@inertiajs/react';
 import { useAppUrl } from '@/hooks/useAppUrl';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 import {
@@ -7,11 +8,13 @@ import {
     HeroSection,
     FeaturedDestinations,
     TopRatedHotels,
-    HotelCarouselSection,
-    WhyChooseUs,
-    LatestPosts,
-    AgodaHotelsSection,
 } from '@/Components/Home';
+
+// Lazy load below-fold sections to reduce initial JS and image loading
+const HotelCarouselSection = lazy(() => import('@/Components/Home/HotelCarouselSection'));
+const AgodaHotelsSection = lazy(() => import('@/Components/Home/AgodaHotelsSection'));
+const LatestPosts = lazy(() => import('@/Components/Home/LatestPosts'));
+const WhyChooseUs = lazy(() => import('@/Components/Home/WhyChooseUs'));
 
 export default function Home({ 
     featuredDestinations, 
@@ -79,29 +82,31 @@ export default function Home({
                         isHotelier={isHotelier} 
                     />
                     
-                    <HotelCarouselSection 
-                        hotels={familyFriendlyHotels} 
-                        type="family" 
-                        isHotelier={isHotelier} 
-                    />
-                    
-                    <HotelCarouselSection 
-                        hotels={quietSunHotels} 
-                        type="quiet" 
-                        isHotelier={isHotelier} 
-                    />
-                    
-                    <HotelCarouselSection 
-                        hotels={partyHotels} 
-                        type="party" 
-                        isHotelier={isHotelier} 
-                    />
+                    <Suspense fallback={null}>
+                        <HotelCarouselSection 
+                            hotels={familyFriendlyHotels} 
+                            type="family" 
+                            isHotelier={isHotelier} 
+                        />
+                        
+                        <HotelCarouselSection 
+                            hotels={quietSunHotels} 
+                            type="quiet" 
+                            isHotelier={isHotelier} 
+                        />
+                        
+                        <HotelCarouselSection 
+                            hotels={partyHotels} 
+                            type="party" 
+                            isHotelier={isHotelier} 
+                        />
 
-                    <AgodaHotelsSection hotels={agodaHotels} />
-                    
-                    <LatestPosts posts={latestPosts} />
-                    
-                    <WhyChooseUs />
+                        <AgodaHotelsSection hotels={agodaHotels} />
+                        
+                        <LatestPosts posts={latestPosts} />
+                        
+                        <WhyChooseUs />
+                    </Suspense>
                 </main>
 
                 <Footer />

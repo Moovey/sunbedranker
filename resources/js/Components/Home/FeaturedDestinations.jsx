@@ -101,10 +101,11 @@ function DestinationCard({ destination, index }) {
         >
             <div className="relative overflow-hidden aspect-[4/5]">
                 <img
-                    src={destination.image ? (destination.image.startsWith('http') ? destination.image : `/storage/${destination.image}`) : '/images/default-destination.svg'}
+                    src={(destination.image ? (destination.image.startsWith('http') ? destination.image : `/storage/${destination.image}`) : '/images/default-destination.svg').replace(/^http:/, 'https:')}
                     alt={destination.name}
-                    width={400}
-                    height={500}
+                    width={320}
+                    height={400}
+                    sizes="(max-width: 640px) 280px, 320px"
                     loading={index < 2 ? "eager" : "lazy"}
                     decoding="async"
                     fetchpriority={index === 0 ? "high" : "auto"}

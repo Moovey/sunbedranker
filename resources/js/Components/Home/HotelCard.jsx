@@ -51,6 +51,7 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
                         alt={hotel.name}
                         width={400}
                         height={isPremium ? 250 : 300}
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         loading={priority ? "eager" : "lazy"}
                         decoding={priority ? "sync" : "async"}
                         fetchpriority={priority ? "high" : "auto"}

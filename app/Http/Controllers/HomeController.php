@@ -39,7 +39,7 @@ class HomeController extends Controller
             return Hotel::active()
                 ->topRated()
                 ->with(['destination', 'poolCriteria', 'owner', 'badges' => fn($q) => $q->where('is_active', true)->orderBy('priority', 'desc')])
-                ->limit(8)
+                ->limit(6)
                 ->get();
         });
         $topRatedHotels = $addPremiumFlag($topRatedHotels);
@@ -49,7 +49,7 @@ class HomeController extends Controller
             return Hotel::active()
                 ->forFamilies()
                 ->with(['destination', 'poolCriteria', 'owner', 'badges' => fn($q) => $q->where('is_active', true)->orderBy('priority', 'desc')])
-                ->limit(6)
+                ->limit(4)
                 ->get();
         });
         $familyFriendlyHotels = $addPremiumFlag($familyFriendlyHotels);
@@ -59,7 +59,7 @@ class HomeController extends Controller
             return Hotel::active()
                 ->quietSun()
                 ->with(['destination', 'poolCriteria', 'owner', 'badges' => fn($q) => $q->where('is_active', true)->orderBy('priority', 'desc')])
-                ->limit(6)
+                ->limit(4)
                 ->get();
         });
         $quietSunHotels = $addPremiumFlag($quietSunHotels);
@@ -69,7 +69,7 @@ class HomeController extends Controller
             return Hotel::active()
                 ->partyPools()
                 ->with(['destination', 'poolCriteria', 'owner', 'badges' => fn($q) => $q->where('is_active', true)->orderBy('priority', 'desc')])
-                ->limit(6)
+                ->limit(4)
                 ->get();
         });
         $partyHotels = $addPremiumFlag($partyHotels);
@@ -167,7 +167,7 @@ class HomeController extends Controller
             }
         }
 
-        return array_slice($allVirtualHotels, 0, 8);
+        return array_slice($allVirtualHotels, 0, 4);
     }
 
     /**
