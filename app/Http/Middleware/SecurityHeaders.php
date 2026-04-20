@@ -23,13 +23,13 @@ class SecurityHeaders
         // Cross-Origin Opener Policy - isolate browsing context
         $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin');
 
-        // Content Security Policy - Report-Only mode first to catch issues without breaking anything
-        // Change to 'Content-Security-Policy' once confirmed working
-        $response->headers->set('Content-Security-Policy-Report-Only',
+        // Content Security Policy - enforced
+        $response->headers->set('Content-Security-Policy',
+            "upgrade-insecure-requests; " .
             "default-src 'self'; " .
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://*.cloudflareinsights.com https://challenges.cloudflare.com; " .
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.bunny.net https://unpkg.com; " .
-            "img-src 'self' data: blob: https: http:; " .
+            "img-src 'self' data: blob: https:; " .
             "font-src 'self' https://fonts.gstatic.com https://fonts.bunny.net; " .
             "connect-src 'self' https://api.stripe.com https://*.cloudflareinsights.com https://*.tile.openstreetmap.org; " .
             "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://www.youtube.com https://www.youtube-nocookie.com; " .

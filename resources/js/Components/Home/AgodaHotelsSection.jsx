@@ -36,7 +36,7 @@ function AgodaHotelCard({ hotel }) {
         >
             <div className="relative aspect-[4/3] overflow-hidden">
                 <img
-                    src={hotel.main_image_url || '/images/default-hotel.jpg'}
+                    src={(hotel.main_image_url || '/images/default-hotel.jpg').replace(/^http:/, 'https:')}
                     alt={hotel.name}
                     width={400}
                     height={300}

@@ -47,7 +47,7 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
             <Link href={`/hotels/${hotel.slug}`} className="block">
                 <div className={`relative overflow-hidden ${imageAspect}`}>
                     <img
-                        src={hotel.main_image || '/images/default-hotel.jpg'}
+                        src={(hotel.main_image_url || hotel.main_image || '/images/default-hotel.jpg').replace(/^http:/, 'https:')}
                         alt={hotel.name}
                         width={400}
                         height={isPremium ? 250 : 300}

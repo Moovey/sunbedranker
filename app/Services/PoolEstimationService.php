@@ -53,7 +53,7 @@ class PoolEstimationService
             'family_score' => $scores['family_friendly'],
             'quiet_score' => $scores['peace_quiet'],
             'party_score' => $scores['party_vibe'],
-            'main_image_url' => $agodaHotel['imageURL'] ?? $agodaHotel['imageUrl'] ?? $agodaHotel['image'] ?? null,
+            'main_image_url' => preg_replace('/^http:/', 'https:', $agodaHotel['imageURL'] ?? $agodaHotel['imageUrl'] ?? $agodaHotel['image'] ?? ''),
             'destination' => ['name' => $destinationName],
             'pool_criteria' => $this->criteriaToArray($criteria),
             'landing_url' => $agodaHotel['landingURL'] ?? $agodaHotel['landingUrl'] ?? null,
