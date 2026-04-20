@@ -32,7 +32,7 @@ class SecurityHeaders
             "img-src 'self' data: blob: https:; " .
             "font-src 'self' https://fonts.gstatic.com https://fonts.bunny.net; " .
             "connect-src 'self' https://api.stripe.com https://*.cloudflareinsights.com https://*.tile.openstreetmap.org; " .
-            "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://www.youtube.com https://www.youtube-nocookie.com; " .
+            "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://www.youtube.com https://www.youtube-nocookie.com https://maps.google.com https://www.google.com; " .
             "worker-src 'self' blob:; " .
             "object-src 'none'; " .
             "base-uri 'self';"
