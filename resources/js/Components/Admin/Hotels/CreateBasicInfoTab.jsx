@@ -283,6 +283,20 @@ export default function CreateBasicInfoTab({ data, setData, errors, destinations
                 {errors.description && <p className="mt-1 text-sm text-red-600 font-light">{errors.description}</p>}
             </div>
 
+            <div>
+                <label className="block text-sm font-light text-neutral-700 mb-2 tracking-wide">
+                    🏆 Sunbedranker's Top Tip
+                </label>
+                <textarea
+                    value={data.top_tip}
+                    onChange={e => setData('top_tip', e.target.value)}
+                    rows={4}
+                    className="w-full px-4 py-2 border border-orange-300 rounded-lg focus:ring-2 focus:ring-orange-500 font-light bg-orange-50"
+                    placeholder="Add an insider tip for guests about this hotel's pool area, best sunbed spots, or hidden gems..."
+                />
+                {errors.top_tip && <p className="mt-1 text-sm text-red-600 font-light">{errors.top_tip}</p>}
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label className="block text-sm font-light text-neutral-700 mb-2 tracking-wide">

@@ -11,7 +11,7 @@ import CreateImagesTab from '@/Components/Admin/Hotels/CreateImagesTab';
 
 // Form field groupings for tab switching on validation errors
 const TAB_FIELDS = {
-    basic: ['name', 'destination_id', 'city_name', 'country_code', 'description', 'star_rating', 'total_rooms'],
+    basic: ['name', 'destination_id', 'city_name', 'country_code', 'description', 'top_tip', 'star_rating', 'total_rooms'],
     contact: ['address', 'latitude', 'longitude', 'phone', 'email', 'website'],
     images: ['main_image', 'gallery_images'],
     pool: ['sunbed_count', 'sun_exposure', 'pool_size_category', 'pool_size_sqm', 'number_of_pools'],
@@ -26,6 +26,7 @@ const INITIAL_FORM_DATA = {
     city_name: '',
     country_code: '',
     description: '',
+    top_tip: '',
     star_rating: '',
     total_rooms: '',
     

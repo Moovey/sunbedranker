@@ -20,6 +20,7 @@ class Hotel extends Model
         'name',
         'slug',
         'description',
+        'top_tip',
         'pool_description',
         'amenities_description',
         'house_rules',

@@ -190,6 +190,19 @@ export default function HotelShow({ hotel, similarHotels }) {
                                 );
                             })()}
 
+                            {/* Sunbedranker's Top Tip */}
+                            {hotel.top_tip && (
+                                <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-yellow-300 hover:shadow-xl transition-all duration-300">
+                                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-bold text-gray-900 mb-4 sm:mb-5 flex items-center gap-2 lg:gap-3">
+                                        <span className="text-2xl sm:text-3xl">🏆</span>
+                                        Sunbedranker's Top Tip
+                                    </h2>
+                                    <div className="prose prose-lg max-w-none text-gray-700 font-sans leading-relaxed whitespace-pre-line">
+                                        {hotel.top_tip}
+                                    </div>
+                                </div>
+                            )}
+
                             {/* ============================================ */}
                             {/* POOL CRITERIA SECTIONS - Following Admin Tab Order */}
                             {/* ============================================ */}
