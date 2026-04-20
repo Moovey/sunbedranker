@@ -258,7 +258,8 @@ class Hotel extends Model
 
         // If it's already a full URL (Unsplash, etc.), return as is
         if (filter_var($this->main_image, FILTER_VALIDATE_URL)) {
-            return $this->main_image;
+            // Ensure HTTPS to avoid mixed content warnings
+            return preg_replace('/^http:/', 'https:', $this->main_image);
         }
 
         // Otherwise, convert storage path to URL using configured disk
@@ -284,7 +285,8 @@ class Hotel extends Model
         return array_map(function ($image) use ($storage) {
             // If it's already a full URL, return as is
             if (filter_var($image, FILTER_VALIDATE_URL)) {
-                return $image;
+                // Ensure HTTPS to avoid mixed content warnings
+                return preg_replace('/^http:/', 'https:', $image);
             }
             // Otherwise, convert storage path to URL using configured disk
             return $storage->url($image);
