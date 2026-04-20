@@ -38,8 +38,11 @@ function AgodaHotelCard({ hotel }) {
                 <img
                     src={hotel.main_image_url || '/images/default-hotel.jpg'}
                     alt={hotel.name}
+                    width={400}
+                    height={300}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
+                    decoding="async"
                 />
                 {/* Estimated badge */}
                 <div className="absolute top-2 left-2 bg-blue-500/90 text-white px-2 py-0.5 rounded-full text-[10px] font-semibold">

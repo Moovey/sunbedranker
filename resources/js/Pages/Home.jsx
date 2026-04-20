@@ -35,12 +35,12 @@ export default function Home({
                 <meta property="og:description" content="The leading independent travel guide for hotel pool and sunbed reviews. Compare hotels, read expert guides, and find your perfect poolside vacation." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={appUrl} />
-                <meta property="og:image" content={`${appUrl}/images/og-default.jpg`} />
+                <meta property="og:image" content={`${appUrl}/images/logo.png`} />
                 <meta property="og:site_name" content="Sunbed Ranker" />
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content="Sunbed Ranker - Find the Best Hotel Pools & Sunbeds" />
                 <meta name="twitter:description" content="The leading independent travel guide for hotel pool and sunbed reviews. Compare hotels, read expert guides, and find your perfect poolside vacation." />
-                <meta name="twitter:image" content={`${appUrl}/images/og-default.jpg`} />
+                <meta name="twitter:image" content={`${appUrl}/images/logo.png`} />
                 <link rel="canonical" href={appUrl} />
                 <script type="application/ld+json">{JSON.stringify({
                     "@context": "https://schema.org",

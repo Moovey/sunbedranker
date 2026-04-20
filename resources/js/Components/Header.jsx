@@ -32,12 +32,14 @@ export default function Header() {
                         <img 
                             src="/images/logo.png" 
                             alt="Sunbed Ranker" 
+                            width={160}
+                            height={80}
                             className="h-10 sm:h-12 md:h-16 lg:h-20 xl:h-24 w-auto object-contain"
                         />
                     </Link>
                     
                     {/* Desktop Navigation - Hidden on mobile */}
-                    <div className="hidden md:flex items-center gap-2 lg:gap-3">
+                    <nav className="hidden md:flex items-center gap-2 lg:gap-3" aria-label="Main navigation">
                         {/* Destinations Link */}
                         <Link 
                             href={route('destinations.index')} 
@@ -167,7 +169,7 @@ export default function Header() {
                                 <span className="text-xs lg:text-sm font-medium text-neutral-700">Sign in</span>
                             </Link>
                         )}
-                    </div>
+                    </nav>
 
                     {/* Mobile Menu Button - Visible on mobile/tablet */}
                     <div className="flex md:hidden items-center gap-2" ref={mobileMenuRef}>
