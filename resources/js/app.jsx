@@ -5,6 +5,7 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { lazy, Suspense } from 'react';
+import { route } from '../../vendor/tightenco/ziggy/dist/index.esm.js';
 const LazyToastContainer = lazy(() => import('react-toastify').then(mod => {
     import('react-toastify/dist/ReactToastify.css');
     return { default: mod.ToastContainer };
@@ -20,6 +21,11 @@ createInertiaApp({
             import.meta.glob('./Pages/**/*.jsx'),
         ),
     setup({ el, App, props }) {
+        // Set up Ziggy route() from Inertia shared props (removes need for @routes blade directive)
+        const ziggy = props.initialPage.props.ziggy;
+        window.Ziggy = ziggy;
+        window.route = route;
+
         const root = createRoot(el);
 
         root.render(

@@ -24,8 +24,16 @@
         <link rel="preconnect" href="https://q-xx.bstatic.com">
         <link rel="preconnect" href="https://pix8.agoda.net">
 
+        <!-- Preload LCP image for hotel/destination pages -->
+        @if(isset($page['component']))
+            @if($page['component'] === 'Hotels/Show' && !empty($page['props']['hotel']['main_image_url']))
+                <link rel="preload" as="image" href="{{ $page['props']['hotel']['main_image_url'] }}">
+            @elseif($page['component'] === 'Destinations/Show' && !empty($page['props']['hotels']['data'][0]['main_image_url']))
+                <link rel="preload" as="image" href="{{ $page['props']['hotels']['data'][0]['main_image_url'] }}">
+            @endif
+        @endif
+
         <!-- Scripts -->
-        @routes
         @viteReactRefresh
         @vite(['resources/js/app.jsx'])
         @inertiaHead
