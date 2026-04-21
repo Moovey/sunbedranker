@@ -29,7 +29,7 @@ export default function Login({ status, canResetPassword }) {
         <>
             <Head title="Log in" />
             
-            <div className="min-h-screen bg-white font-sans flex flex-col">
+            <div className="min-h-screen bg-slate-50/60 font-sans flex flex-col">
                 <Header />
 
                 {/* Main Content */}
@@ -45,20 +45,20 @@ export default function Login({ status, canResetPassword }) {
                         </div>
 
                         {/* Login Card */}
-                        <div className="bg-white rounded-2xl shadow-2xl border-2 border-gray-100 p-8 sm:p-10">
-                            <h1 className="font-sans text-3xl sm:text-4xl font-black text-gray-900 text-center mb-8">
+                        <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03),0_24px_48px_-24px_rgba(15,23,42,0.18)] p-8 sm:p-10">
+                            <h1 className="font-sans text-2xl sm:text-3xl font-bold tracking-tight leading-[1.1] text-slate-900 text-center mb-8">
                                 Log in
                             </h1>
 
                             {status && (
-                                <div className="mb-6 px-4 py-3 bg-gradient-to-r from-green-50 to-green-100 border-2 border-green-300 rounded-lg text-sm font-bold text-green-700">
+                                <div className="mb-6 px-4 py-3 bg-emerald-50/60 ring-1 ring-inset ring-emerald-200 rounded-lg text-sm font-semibold text-emerald-700">
                                     {status}
                                 </div>
                             )}
 
                             <form onSubmit={submit} className="space-y-6">
                                 <div>
-                                    <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2">
+                                    <label htmlFor="email" className="block text-[11px] uppercase tracking-[0.14em] font-semibold text-slate-500 mb-2">
                                         Email
                                     </label>
 
@@ -67,7 +67,7 @@ export default function Login({ status, canResetPassword }) {
                                         type="email"
                                         name="email"
                                         value={data.email}
-                                        className="w-full px-4 py-3 border-2 border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-gray-900 placeholder-gray-400 transition-all duration-300 rounded-lg font-medium"
+                                        className="w-full px-3.5 py-2.5 bg-white ring-1 ring-inset ring-slate-200 hover:ring-slate-300 focus:ring-2 focus:ring-orange-500 outline-none text-slate-900 placeholder-slate-400 transition-shadow duration-150 rounded-lg text-sm"
                                         autoComplete="username"
                                         autoFocus
                                         placeholder="you@example.com"
@@ -75,12 +75,12 @@ export default function Login({ status, canResetPassword }) {
                                     />
 
                                     {errors.email && (
-                                        <p className="mt-2 text-sm text-red-600 font-semibold">{errors.email}</p>
+                                        <p className="mt-2 text-xs text-rose-600 font-medium">{errors.email}</p>
                                     )}
                                 </div>
 
                                 <div>
-                                    <label htmlFor="password" className="block text-sm font-bold text-gray-700 mb-2">
+                                    <label htmlFor="password" className="block text-[11px] uppercase tracking-[0.14em] font-semibold text-slate-500 mb-2">
                                         Password
                                     </label>
 
@@ -90,7 +90,7 @@ export default function Login({ status, canResetPassword }) {
                                             type={showPassword ? "text" : "password"}
                                             name="password"
                                             value={data.password}
-                                            className="w-full px-4 py-3 pr-12 border-2 border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-gray-900 placeholder-gray-400 transition-all duration-300 rounded-lg font-medium"
+                                            className="w-full px-3.5 py-2.5 pr-11 bg-white ring-1 ring-inset ring-slate-200 hover:ring-slate-300 focus:ring-2 focus:ring-orange-500 outline-none text-slate-900 placeholder-slate-400 transition-shadow duration-150 rounded-lg text-sm"
                                             autoComplete="current-password"
                                             placeholder="••••••••"
                                             onChange={(e) => setData('password', e.target.value)}
@@ -98,7 +98,7 @@ export default function Login({ status, canResetPassword }) {
                                         <button
                                             type="button"
                                             onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors duration-200"
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors duration-150"
                                         >
                                             {showPassword ? (
                                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,7 +114,7 @@ export default function Login({ status, canResetPassword }) {
                                     </div>
 
                                     {errors.password && (
-                                        <p className="mt-2 text-sm text-red-600 font-semibold">{errors.password}</p>
+                                        <p className="mt-2 text-xs text-rose-600 font-medium">{errors.password}</p>
                                     )}
                                 </div>
 
@@ -125,9 +125,9 @@ export default function Login({ status, canResetPassword }) {
                                         name="remember"
                                         checked={data.remember}
                                         onChange={(e) => setData('remember', e.target.checked)}
-                                        className="w-4 h-4 text-orange-500 bg-white border-2 border-orange-300 rounded focus:ring-orange-500 focus:ring-2"
+                                        className="w-4 h-4 text-orange-500 bg-white border border-slate-300 rounded focus:ring-orange-500 focus:ring-2"
                                     />
-                                    <label htmlFor="remember" className="ml-2 text-sm text-gray-700 font-semibold">
+                                    <label htmlFor="remember" className="ml-2 text-sm text-slate-700">
                                         Remember me
                                     </label>
                                 </div>
@@ -136,7 +136,7 @@ export default function Login({ status, canResetPassword }) {
                                     {canResetPassword && (
                                         <Link
                                             href={route('password.request')}
-                                            className="text-blue-600 hover:text-blue-700 font-bold text-sm transition-all duration-300 transform hover:scale-105"
+                                            className="text-slate-600 hover:text-slate-900 font-semibold text-sm transition-colors duration-150"
                                         >
                                             Forgot your password?
                                         </Link>
@@ -145,7 +145,7 @@ export default function Login({ status, canResetPassword }) {
                                     <button
                                         type="submit"
                                         disabled={processing}
-                                        className="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 hover:shadow-xl transform hover:scale-105 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
+                                        className="w-full sm:w-auto px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold tracking-tight rounded-lg shadow-sm hover:shadow-md ring-1 ring-inset ring-black/[0.04] transition-all duration-200 disabled:bg-slate-300 disabled:cursor-not-allowed disabled:hover:shadow-sm"
                                     >
                                         {processing ? 'Logging in...' : 'Log in'}
                                     </button>
@@ -153,12 +153,12 @@ export default function Login({ status, canResetPassword }) {
                             </form>
 
                             {/* Register Link */}
-                            <div className="mt-8 pt-6 border-t-2 border-gray-200 text-center">
-                                <p className="text-sm text-gray-700 font-semibold">
+                            <div className="mt-8 pt-6 border-t border-slate-200/70 text-center">
+                                <p className="text-sm text-slate-600">
                                     Don't have an account?{' '}
                                     <Link
                                         href={route('register')}
-                                        className="text-orange-600 hover:text-orange-700 font-bold transition-all duration-300 transform hover:scale-105 inline-block"
+                                        className="text-orange-600 hover:text-orange-700 font-semibold transition-colors duration-150 inline-block"
                                     >
                                         Sign up
                                     </Link>
@@ -167,16 +167,16 @@ export default function Login({ status, canResetPassword }) {
 
                             {/* Social Login Divider */}
                             <div className="mt-6 flex items-center">
-                                <div className="flex-1 border-t border-gray-300"></div>
-                                <span className="px-4 text-sm text-gray-500 font-medium">or continue with</span>
-                                <div className="flex-1 border-t border-gray-300"></div>
+                                <div className="flex-1 border-t border-slate-200"></div>
+                                <span className="px-4 text-[11px] uppercase tracking-[0.14em] font-semibold text-slate-400">or continue with</span>
+                                <div className="flex-1 border-t border-slate-200"></div>
                             </div>
 
                             {/* Google Login Button */}
                             <div className="mt-6 space-y-4">
                                 {/* Role Selection for New Users */}
                                 <div className="flex items-center justify-center gap-4">
-                                    <span className="text-sm text-gray-600 font-medium">I am a:</span>
+                                    <span className="text-sm text-slate-500">I am a:</span>
                                     <label className="flex items-center cursor-pointer">
                                         <input
                                             type="radio"
@@ -184,9 +184,9 @@ export default function Login({ status, canResetPassword }) {
                                             value="user"
                                             checked={googleRole === 'user'}
                                             onChange={(e) => setGoogleRole(e.target.value)}
-                                            className="w-4 h-4 text-orange-500 border-gray-300 focus:ring-orange-500"
+                                            className="w-4 h-4 text-orange-500 border-slate-300 focus:ring-orange-500"
                                         />
-                                        <span className="ml-2 text-sm font-semibold text-gray-700">Traveler</span>
+                                        <span className="ml-2 text-sm text-slate-600">Traveler</span>
                                     </label>
                                     <label className="flex items-center cursor-pointer">
                                         <input
@@ -195,15 +195,15 @@ export default function Login({ status, canResetPassword }) {
                                             value="hotelier"
                                             checked={googleRole === 'hotelier'}
                                             onChange={(e) => setGoogleRole(e.target.value)}
-                                            className="w-4 h-4 text-orange-500 border-gray-300 focus:ring-orange-500"
+                                            className="w-4 h-4 text-orange-500 border-slate-300 focus:ring-orange-500"
                                         />
-                                        <span className="ml-2 text-sm font-semibold text-gray-700">Hotelier</span>
+                                        <span className="ml-2 text-sm text-slate-600">Hotelier</span>
                                     </label>
                                 </div>
 
                                 <a
                                     href={route('auth.google', { role: googleRole })}
-                                    className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-300 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-all duration-300 group"
+                                    className="w-full flex items-center justify-center gap-3 px-4 py-2.5 bg-white ring-1 ring-slate-200 hover:ring-slate-300 hover:bg-slate-50 rounded-lg transition-all duration-200 shadow-sm group"
                                 >
                                     <svg className="w-5 h-5" viewBox="0 0 24 24">
                                         <path
@@ -223,7 +223,7 @@ export default function Login({ status, canResetPassword }) {
                                             d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                                         />
                                     </svg>
-                                    <span className="text-gray-700 font-semibold group-hover:text-gray-900">
+                                    <span className="text-slate-700 font-semibold group-hover:text-slate-900">
                                         Continue with Google
                                     </span>
                                 </a>
@@ -231,13 +231,13 @@ export default function Login({ status, canResetPassword }) {
                         </div>
 
                         {/* Footer Note */}
-                        <p className="mt-8 text-center text-xs text-gray-600 font-medium">
+                        <p className="mt-8 text-center text-xs text-slate-500">
                             By logging in, you agree to our{' '}
-                            <Link href="#" className="text-blue-600 hover:text-blue-700 font-bold transition-colors duration-300">
+                            <Link href="#" className="text-slate-600 hover:text-slate-900 font-semibold transition-colors duration-150">
                                 Terms of Service
                             </Link>
                             {' '}and{' '}
-                            <Link href="#" className="text-blue-600 hover:text-blue-700 font-bold transition-colors duration-300">
+                            <Link href="#" className="text-slate-600 hover:text-slate-900 font-semibold transition-colors duration-150">
                                 Privacy Policy
                             </Link>
                         </p>

@@ -34,7 +34,7 @@ export default function ForgotPassword({ status }) {
         <>
             <Head title="Forgot Password" />
             
-            <div className="min-h-screen bg-white font-sans flex flex-col">
+            <div className="min-h-screen bg-slate-50/60 font-sans flex flex-col">
                 <Header />
 
                 {/* Main Content */}
@@ -50,24 +50,24 @@ export default function ForgotPassword({ status }) {
                         </div>
 
                         {/* Forgot Password Card */}
-                        <div className="bg-white rounded-2xl shadow-2xl border-2 border-gray-100 p-8 sm:p-10">
-                            <h1 className="font-sans text-3xl sm:text-4xl font-black text-gray-900 text-center mb-4">
+                        <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03),0_24px_48px_-24px_rgba(15,23,42,0.18)] p-8 sm:p-10">
+                            <h1 className="font-sans text-2xl sm:text-3xl font-bold tracking-tight leading-[1.1] text-slate-900 text-center mb-3">
                                 Forgot Password
                             </h1>
 
-                            <p className="text-gray-600 text-sm text-center mb-8">
+                            <p className="text-slate-600 text-sm text-center mb-8">
                                 No problem! Just enter your email address and we'll send you a password reset link.
                             </p>
 
                             {status && (
-                                <div className="mb-6 px-4 py-3 bg-gradient-to-r from-green-50 to-green-100 border-2 border-green-300 rounded-lg text-sm font-bold text-green-700">
+                                <div className="mb-6 px-4 py-3 bg-emerald-50/60 ring-1 ring-inset ring-emerald-200 rounded-lg text-sm font-semibold text-emerald-700">
                                     {status}
                                 </div>
                             )}
 
                             <form onSubmit={submit} className="space-y-6">
                                 <div>
-                                    <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2">
+                                    <label htmlFor="email" className="block text-[11px] uppercase tracking-[0.14em] font-semibold text-slate-500 mb-2">
                                         Email
                                     </label>
 
@@ -76,7 +76,7 @@ export default function ForgotPassword({ status }) {
                                         type="email"
                                         name="email"
                                         value={data.email}
-                                        className="w-full px-4 py-3 border-2 border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-gray-900 placeholder-gray-400 transition-all duration-300 rounded-lg font-medium"
+                                        className="w-full px-3.5 py-2.5 bg-white ring-1 ring-inset ring-slate-200 hover:ring-slate-300 focus:ring-2 focus:ring-orange-500 outline-none text-slate-900 placeholder-slate-400 transition-shadow duration-150 rounded-lg text-sm"
                                         autoComplete="username"
                                         autoFocus
                                         placeholder="you@example.com"
@@ -84,14 +84,14 @@ export default function ForgotPassword({ status }) {
                                     />
 
                                     {errors.email && (
-                                        <p className="mt-2 text-sm text-red-600 font-semibold">{errors.email}</p>
+                                        <p className="mt-2 text-xs text-rose-600 font-medium">{errors.email}</p>
                                     )}
                                 </div>
 
                                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
                                     <Link
                                         href={route('login')}
-                                        className="text-blue-600 hover:text-blue-700 font-bold text-sm transition-all duration-300 transform hover:scale-105"
+                                        className="text-slate-600 hover:text-slate-900 font-semibold text-sm transition-colors duration-150"
                                     >
                                         Back to Login
                                     </Link>
@@ -99,7 +99,7 @@ export default function ForgotPassword({ status }) {
                                     <button
                                         type="submit"
                                         disabled={processing || cooldown > 0}
-                                        className="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 hover:shadow-xl transform hover:scale-105 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
+                                        className="w-full sm:w-auto px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold tracking-tight rounded-lg shadow-sm hover:shadow-md ring-1 ring-inset ring-black/[0.04] transition-all duration-200 disabled:bg-slate-300 disabled:cursor-not-allowed disabled:hover:shadow-sm"
                                     >
                                         {processing ? 'Sending...' : cooldown > 0 ? `Wait ${cooldown}s` : 'Send Reset Link'}
                                     </button>
@@ -107,12 +107,12 @@ export default function ForgotPassword({ status }) {
                             </form>
 
                             {/* Register Link */}
-                            <div className="mt-8 pt-6 border-t-2 border-gray-200 text-center">
-                                <p className="text-sm text-gray-700 font-semibold">
+                            <div className="mt-8 pt-6 border-t border-slate-200/70 text-center">
+                                <p className="text-sm text-slate-600">
                                     Don't have an account?{' '}
                                     <Link
                                         href={route('register')}
-                                        className="text-orange-600 hover:text-orange-700 font-bold transition-all duration-300 transform hover:scale-105 inline-block"
+                                        className="text-orange-600 hover:text-orange-700 font-semibold transition-colors duration-150 inline-block"
                                     >
                                         Sign up
                                     </Link>
@@ -121,9 +121,9 @@ export default function ForgotPassword({ status }) {
                         </div>
 
                         {/* Footer Note */}
-                        <p className="mt-8 text-center text-xs text-gray-600 font-medium">
+                        <p className="mt-8 text-center text-xs text-slate-500">
                             Remember your password?{' '}
-                            <Link href={route('login')} className="text-blue-600 hover:text-blue-700 font-bold transition-colors duration-300">
+                            <Link href={route('login')} className="text-slate-600 hover:text-slate-900 font-semibold transition-colors duration-150">
                                 Log in here
                             </Link>
                         </p>

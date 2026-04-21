@@ -9,19 +9,19 @@ import { Icons } from '../Icons';
 // FAQ ITEM COMPONENT
 // ============================================
 export const FaqItem = ({ question, answer, isOpen, onClick }) => (
-    <div className="border-b border-orange-100 last:border-b-0">
+    <div className="border-b border-slate-100 last:border-b-0">
         <button
             onClick={onClick}
-            className="w-full px-4 py-4 flex items-center justify-between bg-white hover:bg-orange-50 transition-colors"
+            className="w-full px-4 py-4 flex items-center justify-between bg-white hover:bg-slate-50 transition-colors"
         >
-            <span className="font-semibold text-gray-900 text-left">{question}</span>
+            <span className="font-semibold text-slate-900 text-left tracking-tight">{question}</span>
             <Icons.ChevronDown 
-                className={`w-5 h-5 text-orange-500 transform transition-transform ${isOpen ? 'rotate-180' : ''}`} 
+                className={`w-5 h-5 text-slate-400 transform transition-transform ${isOpen ? 'rotate-180 text-orange-500' : ''}`} 
             />
         </button>
         {isOpen && (
-            <div className="px-4 py-4 bg-orange-50/50">
-                <p className="text-gray-700">{answer}</p>
+            <div className="px-4 py-4 bg-slate-50/60">
+                <p className="text-slate-700 leading-relaxed">{answer}</p>
             </div>
         )}
     </div>
@@ -48,14 +48,14 @@ export const MetricCard = ({ icon, label, value, subValue, description, highligh
     };
 
     return (
-        <div className={`bg-white rounded-xl p-4 border-2 ${highlight ? 'border-orange-300 bg-orange-50' : 'border-gray-100'} shadow-sm hover:shadow-lg transition-all duration-300`}>
-            <div className={`w-10 h-10 rounded-lg ${colorClasses[color]} flex items-center justify-center mb-3`}>
+        <div className={`group bg-white rounded-xl p-4 ring-1 transition-all duration-200 ${highlight ? 'ring-orange-300/80 bg-gradient-to-br from-orange-50/80 to-white shadow-[0_1px_2px_rgba(234,88,12,0.06),0_8px_20px_-12px_rgba(234,88,12,0.2)]' : 'ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.04),0_12px_24px_-16px_rgba(15,23,42,0.12)]'}`}>
+            <div className={`w-10 h-10 rounded-lg ${colorClasses[color]} flex items-center justify-center mb-3 ring-1 ring-inset ring-black/[0.03]`}>
                 {renderIcon()}
             </div>
-            <p className="text-sm text-gray-500 mb-1">{label}</p>
-            <p className="text-lg font-semibold text-gray-900">{value}</p>
-            {description && <p className="text-xs text-gray-500 mt-1">{description}</p>}
-            {subValue && <p className="text-xs text-gray-400 mt-1">{subValue}</p>}
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 mb-1">{label}</p>
+            <p className="text-lg font-semibold text-slate-900 tracking-tight leading-snug">{value}</p>
+            {description && <p className="text-xs text-slate-500 mt-1 leading-relaxed">{description}</p>}
+            {subValue && <p className="text-xs text-slate-400 mt-1">{subValue}</p>}
         </div>
     );
 };
@@ -86,7 +86,7 @@ export const FeatureBadge = ({ icon, label, text, variant = 'default', color }) 
     const badgeClass = color || variants[variant];
 
     return (
-        <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium ${badgeClass}`}>
+        <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium shadow-sm ring-1 ring-inset ring-black/[0.04] ${badgeClass}`}>
             {renderIcon()}
             {label || text}
         </span>

@@ -20,16 +20,16 @@ export default function LatestPosts({ posts }) {
                 {/* Section Header */}
                 <div className="flex items-center justify-between mb-10">
                     <div>
-                        <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-slate-900">
                             Pool & Sunbed Guides
                         </h2>
-                        <p className="mt-2 text-gray-600">
+                        <p className="mt-2 text-slate-500 text-base">
                             Expert tips and insights for the perfect pool experience
                         </p>
                     </div>
                     <Link
                         href={route('blog.index')}
-                        className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all font-medium text-sm"
+                        className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-white ring-1 ring-slate-200 rounded-lg text-slate-700 hover:bg-slate-50 hover:ring-slate-300 transition-all font-medium text-sm shadow-sm"
                     >
                         View all guides
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -43,7 +43,7 @@ export default function LatestPosts({ posts }) {
                     {posts.map((post) => (
                         <article
                             key={post.id}
-                            className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200"
+                            className="group bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] overflow-hidden hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.04),0_16px_32px_-16px_rgba(15,23,42,0.16)] transition-all duration-300"
                         >
                             <Link href={route('blog.show', post.slug)}>
                                 <div className="aspect-[16/10] overflow-hidden bg-gray-100">

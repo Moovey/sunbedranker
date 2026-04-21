@@ -23,25 +23,25 @@ const features = [
 
 export default function WhyChooseUs() {
     return (
-        <section className="bg-gradient-to-b from-orange-50 to-white py-12 sm:py-16">
+        <section className="bg-gradient-to-b from-orange-50/60 to-white py-12 sm:py-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 text-center">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-3 text-center">
                     Get all this included...
                 </h2>
-                <p className="text-center text-gray-600 text-base mb-8 sm:mb-10 font-medium">
+                <p className="text-center text-slate-500 text-base mb-8 sm:mb-10">
                     We answer the questions that really matter
                 </p>
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                     {features.map((item, index) => (
                         <div 
                             key={index} 
-                            className="bg-white rounded-xl p-4 sm:p-5 shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-100"
+                            className="bg-white rounded-2xl p-5 sm:p-6 ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.04),0_12px_24px_-16px_rgba(15,23,42,0.12)] transition-all duration-200"
                         >
                             <div className="mb-3">{item.icon}</div>
-                            <h3 className="text-sm sm:text-base font-bold mb-2 text-gray-900 text-center">
+                            <h3 className="text-sm sm:text-base font-semibold tracking-tight mb-1.5 text-slate-900 text-center">
                                 {item.question}
                             </h3>
-                            <p className="text-gray-600 text-xs sm:text-sm text-center font-medium">
+                            <p className="text-slate-500 text-xs sm:text-sm text-center leading-relaxed">
                                 {item.answer}
                             </p>
                         </div>

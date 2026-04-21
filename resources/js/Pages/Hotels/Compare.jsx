@@ -8,22 +8,24 @@ function HotelCompare({ hotels, auth }) {
         return (
             <>
                 <Head title="Compare Hotels" />
-                <div className="min-h-screen bg-white">
+                <div className="min-h-screen bg-slate-50/60">
                     <Header />
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20 lg:py-24">
-                        <div className="text-center max-w-2xl mx-auto">
+                        <div className="text-center max-w-2xl mx-auto bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] py-12 sm:py-16 px-6">
                             <div className="mb-6 sm:mb-8">
-                                <svg className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 mx-auto text-orange-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                                </svg>
+                                <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto bg-orange-50 ring-1 ring-inset ring-orange-100 rounded-full flex items-center justify-center">
+                                    <svg className="w-10 h-10 sm:w-12 sm:h-12 text-orange-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                    </svg>
+                                </div>
                             </div>
-                            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-sans font-bold text-gray-900 mb-3 sm:mb-4 px-4">No Hotels Selected</h2>
-                            <p className="text-sm sm:text-base md:text-lg text-gray-700 mb-8 sm:mb-10 md:mb-12 font-sans font-bold px-4">
+                            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-sans font-bold tracking-tight text-slate-900 mb-3 sm:mb-4 px-4">No Hotels Selected</h2>
+                            <p className="text-sm sm:text-base md:text-lg text-slate-500 mb-8 sm:mb-10 md:mb-12 font-sans px-4">
                                 Select 2-4 hotels to compare their pool and sunbed features
                             </p>
                             <Link
                                 href="/"
-                                className="inline-block px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-3.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-2xl hover:from-orange-600 hover:to-orange-700 transition-colors duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base"
+                                className="inline-block px-6 sm:px-8 py-2.5 sm:py-3 bg-orange-500 hover:bg-orange-600 text-white font-sans font-semibold tracking-tight rounded-lg transition-all duration-200 shadow-sm hover:shadow-md ring-1 ring-inset ring-black/[0.04] text-sm sm:text-base"
                             >
                                 Start Searching
                             </Link>
@@ -38,20 +40,20 @@ function HotelCompare({ hotels, auth }) {
         <>
             <Head title="Compare Hotels - Pool & Sunbed Features" />
             
-            <div className="min-h-screen bg-white">
+            <div className="min-h-screen bg-slate-50/60">
                 <Header />
                 
                 {/* Header */}
-                <header className="bg-white border-b-2 border-gray-200 shadow-lg">
+                <header className="bg-gradient-to-b from-white via-white to-slate-50/60 border-b border-slate-200/80">
                     <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 lg:py-10 xl:py-12">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                             <div className="w-full sm:w-auto">
-                                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-sans font-black text-gray-900">Compare Hotels</h1>
-                                <p className="text-xs sm:text-sm md:text-base text-gray-700 mt-1 sm:mt-2 font-sans font-bold">Side-by-side comparison of pool & sunbed features</p>
+                                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-sans font-bold tracking-tight text-slate-900 leading-[1.05]">Compare Hotels</h1>
+                                <p className="text-xs sm:text-sm md:text-base text-slate-500 mt-1 sm:mt-2 font-sans">Side-by-side comparison of pool & sunbed features</p>
                             </div>
                             <Link
                                 href="/"
-                                className="w-full sm:w-auto text-center px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 border-2 border-orange-500 bg-white rounded-2xl hover:bg-orange-50 transition-colors duration-200 font-sans text-xs sm:text-sm font-bold text-orange-600 whitespace-nowrap shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                                className="w-full sm:w-auto text-center px-4 sm:px-5 py-2 sm:py-2.5 bg-white ring-1 ring-slate-200 text-slate-700 hover:text-slate-900 rounded-lg hover:ring-slate-300 hover:bg-slate-50 transition-all duration-200 font-sans text-xs sm:text-sm font-semibold whitespace-nowrap shadow-sm flex items-center justify-center gap-2"
                             >
                                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
@@ -65,24 +67,24 @@ function HotelCompare({ hotels, auth }) {
                 <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-12 xl:py-16">
                     {/* Mobile Scroll Hint */}
                     <div className="lg:hidden mb-4 text-center">
-                        <p className="text-xs text-gray-700 font-sans font-bold flex items-center justify-center gap-2 bg-gray-50 p-3 rounded-2xl border-2 border-gray-200">
-                            <svg className="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <p className="text-xs text-slate-600 font-sans font-medium flex items-center justify-center gap-2 bg-white p-3 rounded-xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)]">
+                            <svg className="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M6.49 20.13l1.77-1.77 9.9 9.9-1.77 1.77-9.9-9.9zm10.02-10.02l1.77-1.77 9.9 9.9-1.77 1.77-9.9-9.9zM4 12l1.41 1.41L12 6.83l6.59 6.58L20 12l-8-8-8 8z"/>
                             </svg>
                             <span>Swipe left/right to compare all hotels</span>
-                            <svg className="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <svg className="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
                             </svg>
                         </p>
                     </div>
                     
                     {/* Comparison Table */}
-                    <div className="bg-white rounded-2xl shadow-xl sm:shadow-2xl overflow-hidden border-2 border-gray-100">
-                        <div className="overflow-x-auto overflow-y-visible scrollbar-thin scrollbar-thumb-orange-300 scrollbar-track-orange-100 -webkit-overflow-scrolling-touch">
+                    <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] overflow-hidden">
+                        <div className="overflow-x-auto overflow-y-visible scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 -webkit-overflow-scrolling-touch">
                             <table className="w-full min-w-[640px] md:min-w-[800px]">
                             <thead>
-                                <tr className="border-b-2 border-orange-200 bg-white">
-                                    <th className="p-2 sm:p-3 md:p-4 lg:p-5 xl:p-6 text-left font-sans font-bold text-gray-900 bg-orange-50 sticky left-0 z-10 text-xs sm:text-sm md:text-base shadow-lg min-w-[100px] sm:min-w-[120px] md:min-w-[140px]">
+                                <tr className="border-b border-slate-200 bg-white">
+                                    <th className="p-2 sm:p-3 md:p-4 lg:p-5 xl:p-6 text-left font-sans font-semibold tracking-tight text-slate-900 bg-slate-50 sticky left-0 z-10 text-xs sm:text-sm md:text-base shadow-[2px_0_4px_-2px_rgba(15,23,42,0.08)] min-w-[100px] sm:min-w-[120px] md:min-w-[140px]">
                                         Feature
                                     </th>
                                     {hotels.map((hotel) => (
@@ -319,8 +321,8 @@ function HotelCompare({ hotels, auth }) {
                     <div className="mt-8 sm:mt-10 md:mt-12 lg:mt-16">
                         {/* Section Title */}
                         <div className="text-center mb-6 sm:mb-8">
-                            <h2 className="text-lg sm:text-xl md:text-2xl font-sans font-black text-gray-900 mb-2">Ready to Book?</h2>
-                            <p className="text-xs sm:text-sm text-gray-600 font-sans">Choose your preferred hotel and start your vacation</p>
+                            <h2 className="text-lg sm:text-xl md:text-2xl font-sans font-bold tracking-tight text-slate-900 mb-2">Ready to Book?</h2>
+                            <p className="text-xs sm:text-sm text-slate-500 font-sans">Choose your preferred hotel and start your vacation</p>
                         </div>
                         
                         <div className="flex flex-wrap justify-center gap-4 sm:gap-5 md:gap-6">
@@ -340,10 +342,10 @@ function HotelCompare({ hotels, auth }) {
                             return (
                                 <div 
                                     key={hotel.id} 
-                                    className={`relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-200 w-full sm:w-[calc(50%-10px)] lg:w-[280px] xl:w-[300px] ${
+                                    className={`relative rounded-2xl overflow-hidden transition-all duration-300 w-full sm:w-[calc(50%-10px)] lg:w-[280px] xl:w-[300px] ${
                                         isPremium 
-                                            ? 'bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-400' 
-                                            : 'bg-white border border-gray-200'
+                                            ? 'bg-gradient-to-br from-orange-50 to-orange-100/70 ring-1 ring-orange-300 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_28px_-14px_rgba(234,88,12,0.35)] hover:shadow-[0_2px_4px_rgba(15,23,42,0.06),0_18px_36px_-16px_rgba(234,88,12,0.45)]' 
+                                            : 'bg-white ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.04),0_18px_36px_-18px_rgba(15,23,42,0.22)]'
                                     }`}
                                 >
                                     {/* Hotel Image */}
@@ -362,7 +364,7 @@ function HotelCompare({ hotels, auth }) {
                                         {/* Premium Badge Overlay */}
                                         {isPremium && (
                                             <div className="absolute top-2 right-2">
-                                                <span className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold flex items-center gap-1 shadow-lg">
+                                                <span className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-2 py-1 rounded-lg text-[10px] sm:text-xs font-semibold flex items-center gap-1 shadow-sm ring-1 ring-inset ring-black/[0.06]">
                                                     <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                                         <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                                                     </svg>
@@ -374,7 +376,7 @@ function HotelCompare({ hotels, auth }) {
                                         {/* Estimated Badge for Agoda */}
                                         {isAgoda && (
                                             <div className="absolute top-2 right-2">
-                                                <span className="bg-blue-600 text-white px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold shadow-lg">
+                                                <span className="bg-blue-600 text-white px-2 py-1 rounded-lg text-[10px] sm:text-xs font-semibold shadow-sm ring-1 ring-inset ring-black/[0.06]">
                                                     Estimated
                                                 </span>
                                             </div>
@@ -382,7 +384,7 @@ function HotelCompare({ hotels, auth }) {
                                         
                                         {/* Hotel Name Overlay */}
                                         <div className="absolute bottom-0 left-0 right-0 p-3">
-                                            <h3 className="font-sans font-bold text-white text-sm sm:text-base line-clamp-1 drop-shadow-lg">
+                                            <h3 className="font-sans font-semibold tracking-tight text-white text-sm sm:text-base line-clamp-1 drop-shadow-lg">
                                                 {hotel.name}
                                             </h3>
                                             {hotel.star_rating && (
@@ -401,7 +403,7 @@ function HotelCompare({ hotels, auth }) {
                                     <div className="p-3 sm:p-4">
                                         {/* Active Promotion Banner for Premium */}
                                         {isPremium && activePromo && (
-                                            <div className="mb-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-2 py-1.5 rounded-lg text-[9px] sm:text-[10px] font-bold text-center">
+                                            <div className="mb-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-2 py-1.5 rounded-lg text-[9px] sm:text-[10px] font-semibold text-center shadow-sm ring-1 ring-inset ring-black/[0.06]">
                                                 ⭐ {activePromo.promotional_banner || 'Special Offer Available'}
                                             </div>
                                         )}
@@ -409,8 +411,8 @@ function HotelCompare({ hotels, auth }) {
                                         {/* Agoda Price Display */}
                                         {isAgoda && hotel.price && (
                                             <div className="mb-3 text-center">
-                                                <span className="text-lg font-black text-gray-900">{hotel.currency} {Number(hotel.price).toFixed(0)}</span>
-                                                <span className="text-[10px] text-gray-500 ml-1">/night</span>
+                                                <span className="text-lg font-bold tracking-tight text-slate-900 tabular-nums">{hotel.currency} {Number(hotel.price).toFixed(0)}</span>
+                                                <span className="text-[10px] text-slate-500 ml-1">/night</span>
                                             </div>
                                         )}
                                         
@@ -422,7 +424,7 @@ function HotelCompare({ hotels, auth }) {
                                                         href={hotel.landing_url}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-colors duration-200 text-[10px] sm:text-xs gap-1"
+                                                        className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-sans font-semibold tracking-tight rounded-lg transition-all duration-200 text-[10px] sm:text-xs gap-1 shadow-sm hover:shadow-md ring-1 ring-inset ring-black/[0.04]"
                                                     >
                                                         Book on Agoda
                                                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
@@ -436,7 +438,7 @@ function HotelCompare({ hotels, auth }) {
                                                 <div className="grid grid-cols-2 gap-2">
                                                     <Link
                                                         href={`/hotels/${hotel.slug}`}
-                                                        className="flex items-center justify-center px-2 py-2 sm:py-2.5 font-sans font-bold rounded-lg text-center transition-colors duration-200 text-[10px] sm:text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
+                                                        className="flex items-center justify-center px-2 py-2 sm:py-2.5 font-sans font-semibold tracking-tight rounded-lg text-center transition-all duration-200 text-[10px] sm:text-xs bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 ring-1 ring-slate-200 hover:ring-slate-300 shadow-sm"
                                                     >
                                                         <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
                                                             <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
@@ -449,7 +451,7 @@ function HotelCompare({ hotels, auth }) {
                                                             href={route('hotels.click', { hotel: hotel.slug, type: 'direct' })}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-colors duration-200 text-[10px] sm:text-xs"
+                                                            className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-sans font-semibold tracking-tight rounded-lg transition-all duration-200 text-[10px] sm:text-xs shadow-sm hover:shadow-md ring-1 ring-inset ring-black/[0.04]"
                                                         >
                                                             💰 Direct
                                                         </a>
@@ -458,12 +460,12 @@ function HotelCompare({ hotels, auth }) {
                                                             href={route('hotels.click', { hotel: hotel.slug, type: 'booking' })}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-colors duration-200 text-[10px] sm:text-xs"
+                                                            className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-sans font-semibold tracking-tight rounded-lg transition-all duration-200 text-[10px] sm:text-xs shadow-sm hover:shadow-md ring-1 ring-inset ring-black/[0.04]"
                                                         >
                                                             Book Now
                                                         </a>
                                                     ) : (
-                                                        <span className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-gray-50 text-gray-400 font-sans font-bold rounded-lg text-[10px] sm:text-xs border border-gray-100">
+                                                        <span className="flex items-center justify-center px-2 py-2 sm:py-2.5 bg-slate-50 text-slate-400 font-sans font-semibold rounded-lg text-[10px] sm:text-xs ring-1 ring-slate-200/60">
                                                             No Link
                                                         </span>
                                                     )}
@@ -474,7 +476,7 @@ function HotelCompare({ hotels, auth }) {
                                                         href={hotel.booking_affiliate_url}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="block mt-2 text-center text-[9px] sm:text-[10px] text-gray-500 hover:text-orange-600 font-semibold transition-colors"
+                                                        className="block mt-2 text-center text-[9px] sm:text-[10px] text-slate-500 hover:text-orange-600 font-semibold transition-colors"
                                                     >
                                                         Compare on Booking.com →
                                                     </a>
@@ -510,11 +512,11 @@ function SpecialOffersRow({ hotels }) {
     if (!hasAnyPromotions) return null;
 
     return (
-        <tr className="border-b-2 border-orange-200 bg-orange-50">
-            <td className="p-3 sm:p-4 md:p-5 lg:p-6 xl:p-7 font-sans font-bold text-gray-700 bg-orange-100 sticky left-0 z-10 shadow-md">
+        <tr className="border-b border-orange-200/60 bg-orange-50/50">
+            <td className="p-3 sm:p-4 md:p-5 lg:p-6 xl:p-7 font-sans font-semibold text-slate-700 bg-orange-50 sticky left-0 z-10 shadow-[2px_0_4px_-2px_rgba(15,23,42,0.08)]">
                 <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3">
                     <span className="text-xl">⭐</span>
-                    <span className="text-[10px] sm:text-xs md:text-sm lg:text-base text-orange-800 font-black">Special Offers</span>
+                    <span className="text-[10px] sm:text-xs md:text-sm lg:text-base text-orange-800 font-bold tracking-tight">Special Offers</span>
                 </div>
             </td>
             {hotels.map((hotel) => {
@@ -535,7 +537,7 @@ function SpecialOffersRow({ hotels }) {
                 if (activePromotions.length === 0) {
                     return (
                         <td key={hotel.id} className="p-3 sm:p-4 md:p-5 lg:p-6 text-center">
-                            <span className="text-gray-400 font-sans font-bold text-xs sm:text-sm">—</span>
+                            <span className="text-slate-300 font-sans font-semibold text-xs sm:text-sm">—</span>
                         </td>
                     );
                 }
@@ -545,7 +547,7 @@ function SpecialOffersRow({ hotels }) {
                         key={hotel.id} 
                         className={`p-3 sm:p-4 md:p-5 lg:p-6 text-center ${
                             isPremium 
-                                ? 'bg-orange-50' 
+                                ? 'bg-orange-50/50' 
                                 : ''
                         }`}
                     >
@@ -553,10 +555,10 @@ function SpecialOffersRow({ hotels }) {
                             {activePromotions.slice(0, 3).map((promo, idx) => (
                                 <div 
                                     key={idx}
-                                    className={`rounded-lg px-2 py-1.5 text-xs font-bold ${
+                                    className={`rounded-lg px-2 py-1.5 text-xs font-semibold ${
                                         isPremium 
-                                            ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md' 
-                                            : 'bg-orange-100 text-orange-800 border border-orange-200'
+                                            ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-sm ring-1 ring-inset ring-black/[0.06]' 
+                                            : 'bg-orange-50 text-orange-800 ring-1 ring-inset ring-orange-200'
                                     }`}
                                 >
                                     {isPremium && <span className="mr-1">⭐</span>}
@@ -564,7 +566,7 @@ function SpecialOffersRow({ hotels }) {
                                 </div>
                             ))}
                             {activePromotions.length > 3 && (
-                                <div className="text-[10px] text-gray-500 font-semibold">
+                                <div className="text-[10px] text-slate-500 font-semibold">
                                     +{activePromotions.length - 3} more offers
                                 </div>
                             )}
@@ -584,8 +586,8 @@ function ComparisonRow({ label, icon, hotels, getValue, formatValue, highlightBe
         : null;
 
     return (
-        <tr className="border-b border-gray-100 hover:bg-orange-50 transition-colors duration-200">
-            <td className="p-3 sm:p-4 md:p-5 lg:p-6 xl:p-7 font-sans font-bold text-gray-700 bg-gradient-to-r from-gray-50 to-white sticky left-0 z-10 shadow-md">
+        <tr className="border-b border-slate-100 hover:bg-slate-50/60 transition-colors duration-200">
+            <td className="p-3 sm:p-4 md:p-5 lg:p-6 xl:p-7 font-sans font-semibold text-slate-700 bg-slate-50 sticky left-0 z-10 shadow-[2px_0_4px_-2px_rgba(15,23,42,0.08)]">
                 <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3">
                     <span className="flex-shrink-0">{icon}</span>
                     <span className="text-[10px] sm:text-xs md:text-sm lg:text-base">{label}</span>
@@ -598,14 +600,14 @@ function ComparisonRow({ label, icon, hotels, getValue, formatValue, highlightBe
                 return (
                     <td 
                         key={hotel.id} 
-                        className={`p-3 sm:p-4 md:p-5 lg:p-6 text-center font-sans text-xs sm:text-sm md:text-base ${
-                            isBest ? 'bg-orange-50 font-black text-orange-900 border-2 border-orange-300' : 'text-gray-700 font-bold'
+                        className={`p-3 sm:p-4 md:p-5 lg:p-6 text-center font-sans text-xs sm:text-sm md:text-base tabular-nums ${
+                            isBest ? 'bg-orange-50/70 font-bold text-orange-900 ring-1 ring-inset ring-orange-200' : 'text-slate-700 font-semibold'
                         }`}
                     >
                         <div className="flex items-center justify-center gap-1 sm:gap-2">
                             {typeof formatValue === 'function' ? formatValue(value) : value || '-'}
                             {isBest && (
-                                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 flex-shrink-0 text-yellow-500 fill-current" viewBox="0 0 24 24">
+                                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 flex-shrink-0 text-amber-500 fill-current" viewBox="0 0 24 24">
                                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                                 </svg>
                             )}
@@ -621,7 +623,7 @@ function ComparisonRow({ label, icon, hotels, getValue, formatValue, highlightBe
 function BooleanBadge({ value }) {
     if (value === true) {
         return (
-            <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 md:px-4 py-1 sm:py-1.5 bg-orange-100 text-orange-800 rounded-full text-[10px] sm:text-xs md:text-sm font-sans font-bold border-2 border-orange-300">
+            <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-[10px] sm:text-xs md:text-sm font-sans font-semibold ring-1 ring-inset ring-emerald-200">
                 <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                 </svg>
@@ -631,7 +633,7 @@ function BooleanBadge({ value }) {
     }
     if (value === false) {
         return (
-            <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 md:px-4 py-1 sm:py-1.5 bg-gray-100 text-gray-700 rounded-full text-[10px] sm:text-xs md:text-sm font-sans font-bold border-2 border-gray-200">
+            <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-slate-50 text-slate-500 rounded-full text-[10px] sm:text-xs md:text-sm font-sans font-semibold ring-1 ring-inset ring-slate-200">
                 <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                 </svg>
@@ -639,7 +641,7 @@ function BooleanBadge({ value }) {
             </span>
         );
     }
-    return <span className="text-gray-400 font-sans font-bold text-xs sm:text-sm">-</span>;
+    return <span className="text-slate-300 font-sans font-semibold text-xs sm:text-sm">-</span>;
 }
 
 // Helper Functions
@@ -660,9 +662,9 @@ const HotelHeaderCell = memo(function HotelHeaderCell({ hotel }) {
     const isAgoda = hotel.is_agoda === true;
     
     return (
-        <th className={`p-2 sm:p-3 md:p-4 lg:p-5 text-center ${isPremium ? 'min-w-[150px] sm:min-w-[175px] md:min-w-[220px] lg:min-w-[260px] bg-orange-50' : 'min-w-[140px] sm:min-w-[160px] md:min-w-[200px] lg:min-w-[240px]'}`}>
+        <th className={`p-2 sm:p-3 md:p-4 lg:p-5 text-center ${isPremium ? 'min-w-[150px] sm:min-w-[175px] md:min-w-[220px] lg:min-w-[260px] bg-orange-50/50' : 'min-w-[140px] sm:min-w-[160px] md:min-w-[200px] lg:min-w-[240px]'}`}>
             <div className="space-y-1.5 sm:space-y-2 md:space-y-3">
-                <div className={`overflow-hidden rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg w-full aspect-[4/3] ${isPremium ? 'border-2 border-orange-400 ring-2 ring-orange-200' : 'border-2 border-gray-100'}`}>
+                <div className={`overflow-hidden rounded-xl sm:rounded-2xl w-full aspect-[4/3] ${isPremium ? 'ring-1 ring-orange-300 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(234,88,12,0.3)]' : 'ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_6px_16px_-10px_rgba(15,23,42,0.2)]'}`}>
                     <img
                         src={hotel.main_image_url || '/images/default-hotel.jpg'}
                         alt={hotel.name}
@@ -674,13 +676,13 @@ const HotelHeaderCell = memo(function HotelHeaderCell({ hotel }) {
                     />
                 </div>
                 {isAgoda ? (
-                    <span className="font-sans font-bold text-xs sm:text-sm md:text-base text-gray-900 block px-1 sm:px-2 line-clamp-2">
+                    <span className="font-sans font-semibold tracking-tight text-xs sm:text-sm md:text-base text-slate-900 block px-1 sm:px-2 line-clamp-2">
                         {hotel.name}
                     </span>
                 ) : (
                     <Link
                         href={`/hotels/${hotel.slug}`}
-                        className={`font-sans font-bold text-xs sm:text-sm md:text-base hover:text-orange-600 block transition-colors duration-200 px-1 sm:px-2 line-clamp-2 ${isPremium ? 'text-orange-700' : 'text-gray-900'}`}
+                        className={`font-sans font-semibold tracking-tight text-xs sm:text-sm md:text-base hover:text-orange-600 block transition-colors duration-200 px-1 sm:px-2 line-clamp-2 ${isPremium ? 'text-orange-700' : 'text-slate-900'}`}
                     >
                         {hotel.name}
                     </Link>
@@ -688,13 +690,13 @@ const HotelHeaderCell = memo(function HotelHeaderCell({ hotel }) {
                 {hotel.star_rating && (
                     <div className="flex justify-center gap-0.5">
                         {[...Array(typeof hotel.star_rating === 'number' ? Math.round(hotel.star_rating) : hotel.star_rating)].map((_, i) => (
-                            <svg key={i} className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 text-yellow-400 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                            <svg key={i} className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 text-amber-400 fill-current" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                             </svg>
                         ))}
                     </div>
                 )}
-                <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-700 font-sans font-bold px-1 sm:px-2 flex items-center justify-center gap-1">
+                <div className="text-[9px] sm:text-[10px] md:text-xs text-slate-500 font-sans font-medium px-1 sm:px-2 flex items-center justify-center gap-1">
                     <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-orange-500 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                     </svg>
@@ -703,7 +705,7 @@ const HotelHeaderCell = memo(function HotelHeaderCell({ hotel }) {
                 {/* Estimated Badge for Agoda */}
                 {isAgoda && (
                     <div className="flex justify-center">
-                        <span className="inline-flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[8px] sm:text-[10px] font-bold border border-blue-200">
+                        <span className="inline-flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full text-[8px] sm:text-[10px] font-semibold ring-1 ring-inset ring-blue-200">
                             <svg className="w-2 h-2 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
                             </svg>
@@ -714,7 +716,7 @@ const HotelHeaderCell = memo(function HotelHeaderCell({ hotel }) {
                 {/* Verified Badge for Premium */}
                 {isPremium && hotel.show_verified_badge && (
                     <div className="flex justify-center">
-                        <span className="inline-flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 bg-orange-100 text-orange-700 rounded-full text-[8px] sm:text-[10px] font-bold border border-orange-200">
+                        <span className="inline-flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 bg-orange-50 text-orange-700 rounded-full text-[8px] sm:text-[10px] font-semibold ring-1 ring-inset ring-orange-200">
                             <svg className="w-2 h-2 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
                             </svg>
@@ -730,17 +732,17 @@ const HotelHeaderCell = memo(function HotelHeaderCell({ hotel }) {
 
 // Section Header Component - Memoized
 const SectionHeader = memo(function SectionHeader({ title, color }) {
-    const bgColor = color === 'blue' ? 'bg-blue-50 border-blue-200' : 'bg-orange-50 border-orange-200';
+    const bgColor = color === 'blue' ? 'bg-blue-50/60' : 'bg-orange-50/60';
     const iconColor = color === 'blue' ? 'text-blue-600' : 'text-orange-600';
     
     return (
-        <tr className={`${bgColor} border-t-2`}>
-            <td colSpan={100} className="p-2 sm:p-3 md:p-4 font-sans font-black text-gray-900">
+        <tr className={`${bgColor} border-t border-slate-200`}>
+            <td colSpan={100} className="p-2 sm:p-3 md:p-4 font-sans font-bold tracking-tight text-slate-900">
                 <div className="flex items-center gap-2">
                     <svg className={`w-4 h-4 sm:w-5 sm:h-5 ${iconColor}`} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                     </svg>
-                    <span className="text-xs sm:text-sm md:text-base">{title}</span>
+                    <span className="text-[11px] sm:text-xs md:text-sm uppercase tracking-[0.12em]">{title}</span>
                 </div>
             </td>
         </tr>

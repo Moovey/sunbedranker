@@ -105,7 +105,7 @@ export default function HotelShow({ hotel, similarHotels }) {
                 })}</script>
             </Head>
             
-            <div className="min-h-screen bg-white">
+            <div className="min-h-screen bg-slate-50/60">
                 <Header />
                 
                 {/* Breadcrumb Navigation */}
@@ -152,35 +152,51 @@ export default function HotelShow({ hotel, similarHotels }) {
                                 const paragraphs = formatDescription(hotel.description);
 
                                 return (
-                                    <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-orange-200 hover:shadow-xl transition-all duration-300">
-                                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-bold text-gray-900 mb-4 sm:mb-5 flex items-center gap-2 lg:gap-3">
-                                            <svg className="w-6 h-6 sm:w-7 sm:h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                            </svg>
-                                            About {hotel.name}
-                                        </h2>
-                                        <div className="space-y-4">
-                                            {paragraphs.map((paragraph, index) => (
-                                                <p key={index} className="text-gray-700 font-sans text-sm sm:text-base leading-relaxed">
-                                                    {paragraph}
-                                                </p>
-                                            ))}
+                                    <section className="relative bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(15,23,42,0.12)] transition-shadow duration-300 overflow-hidden">
+                                        <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-orange-400 to-amber-400" />
+                                        <div className="p-6 sm:p-7 lg:p-8 xl:p-9">
+                                            <div className="flex items-center gap-2 mb-3">
+                                                <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-orange-600">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                                                    Overview
+                                                </span>
+                                            </div>
+                                            <h2 className="text-2xl sm:text-3xl font-sans font-semibold text-slate-900 tracking-tight mb-5">
+                                                About {hotel.name}
+                                            </h2>
+                                            <div className="space-y-4">
+                                                {paragraphs.map((paragraph, index) => (
+                                                    <p key={index} className="text-slate-600 font-sans text-[15px] sm:text-base leading-[1.75]">
+                                                        {paragraph}
+                                                    </p>
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
+                                    </section>
                                 );
                             })()}
 
                             {/* Sunbedranker's Top Tip */}
                             {hotel.top_tip && (
-                                <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-yellow-300 hover:shadow-xl transition-all duration-300">
-                                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-bold text-gray-900 mb-4 sm:mb-5 flex items-center gap-2 lg:gap-3">
-                                        <span className="text-2xl sm:text-3xl">🏆</span>
-                                        Sunbedranker's Top Tip
-                                    </h2>
-                                    <div className="prose prose-lg max-w-none text-gray-700 font-sans leading-relaxed whitespace-pre-line">
-                                        {hotel.top_tip}
+                                <section className="relative bg-white rounded-2xl ring-1 ring-amber-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(217,119,6,0.18)] hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(217,119,6,0.25)] transition-shadow duration-300 overflow-hidden">
+                                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-400" />
+                                    <div className="p-6 sm:p-7 lg:p-8 xl:p-9">
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 ring-1 ring-amber-200/80 text-xl shadow-sm">
+                                                🏆
+                                            </span>
+                                            <div>
+                                                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-700">Editor's Pick</p>
+                                                <h2 className="text-xl sm:text-2xl font-sans font-semibold text-slate-900 tracking-tight">
+                                                    Sunbedranker's Top Tip
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <div className="prose prose-slate max-w-none text-slate-700 font-sans text-[15px] sm:text-base leading-[1.75] whitespace-pre-line">
+                                            {hotel.top_tip}
+                                        </div>
                                     </div>
-                                </div>
+                                </section>
                             )}
 
                             {/* ============================================ */}

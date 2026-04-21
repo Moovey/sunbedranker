@@ -24,13 +24,13 @@ export default function HowWeRate() {
                 path="/how-we-rate"
             />
 
-            <div className="min-h-screen bg-white font-sans">
+            <div className="min-h-screen bg-slate-50/60 font-sans">
                 <Header />
 
                 <div className="bg-gradient-to-br from-orange-500 to-orange-600 py-16 sm:py-20">
                     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                        <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">How We Rate Hotels</h1>
-                        <p className="text-xl text-white/90 max-w-2xl mx-auto">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-[1.1] text-white mb-3 sm:mb-4">How We Rate Hotels</h1>
+                        <p className="text-base sm:text-lg text-orange-100/90 max-w-2xl mx-auto">
                             Our transparent scoring methodology ensures fair, consistent, and helpful hotel pool reviews
                         </p>
                     </div>
@@ -38,26 +38,26 @@ export default function HowWeRate() {
 
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
                     <section className="mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Scoring System</h2>
-                        <p className="text-gray-700 text-lg leading-relaxed mb-4">
+                        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mb-6">Our Scoring System</h2>
+                        <p className="text-slate-700 text-base sm:text-lg leading-relaxed mb-4">
                             Every hotel on Sunbed Ranker is evaluated using our proprietary 10-point scoring system. Each criterion is assessed independently and weighted based on its impact on the overall pool experience. The final score is a weighted average that gives travelers a clear, at-a-glance understanding of what to expect.
                         </p>
-                        <p className="text-gray-700 text-lg leading-relaxed mb-4">
+                        <p className="text-slate-700 text-base sm:text-lg leading-relaxed mb-4">
                             Our scores range from 0 to 10, where 10 represents an exceptional pool experience. We update scores regularly as hotels make improvements or when new information becomes available.
                         </p>
                     </section>
 
                     <section className="mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-6">The 10 Rating Criteria</h2>
+                        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mb-6">The 10 Rating Criteria</h2>
                         <div className="space-y-6">
                             {criteria.map((item, index) => (
-                                <div key={index} className="bg-gray-50 rounded-xl p-6 border border-gray-100">
+                                <div key={index} className="bg-slate-50/60 rounded-xl ring-1 ring-inset ring-slate-200/70 p-6">
                                     <div className="flex items-start justify-between mb-3">
                                         <div className="flex items-center gap-3">
                                             <span className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
                                                 {index + 1}
                                             </span>
-                                            <h3 className="text-xl font-bold text-gray-900">{item.name}</h3>
+                                            <h3 className="text-lg font-semibold tracking-tight text-slate-900">{item.name}</h3>
                                         </div>
                                         <span className={`px-3 py-1 rounded-full text-xs font-bold ${
                                             item.weight === 'High' ? 'bg-red-100 text-red-700' :
@@ -67,15 +67,15 @@ export default function HowWeRate() {
                                             {item.weight} Weight
                                         </span>
                                     </div>
-                                    <p className="text-gray-700 leading-relaxed">{item.description}</p>
+                                    <p className="text-slate-700 leading-relaxed">{item.description}</p>
                                 </div>
                             ))}
                         </div>
                     </section>
 
                     <section className="mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-6">Data Sources</h2>
-                        <p className="text-gray-700 text-lg leading-relaxed mb-4">
+                        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mb-6">Data Sources</h2>
+                        <p className="text-slate-700 text-base sm:text-lg leading-relaxed mb-4">
                             Our reviews combine multiple data sources to ensure accuracy:
                         </p>
                         <ul className="space-y-3">
@@ -90,15 +90,15 @@ export default function HowWeRate() {
                                     <svg className="w-5 h-5 text-orange-500 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                     </svg>
-                                    <span className="text-gray-700 text-lg">{item}</span>
+                                    <span className="text-slate-700 text-base sm:text-lg">{item}</span>
                                 </li>
                             ))}
                         </ul>
                     </section>
 
-                    <section className="bg-orange-50 rounded-2xl p-8">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-4">Independence Guarantee</h2>
-                        <p className="text-gray-700 text-lg leading-relaxed">
+                    <section className="bg-orange-50/60 rounded-2xl ring-1 ring-inset ring-orange-100 p-8">
+                        <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 mb-4">Independence Guarantee</h2>
+                        <p className="text-slate-700 text-base sm:text-lg leading-relaxed">
                             Hotels cannot pay for higher ratings on Sunbed Ranker. While hotels may claim their listing and provide additional information, our scoring is entirely based on objective criteria. This independence is central to our value as a trusted travel resource.
                         </p>
                     </section>

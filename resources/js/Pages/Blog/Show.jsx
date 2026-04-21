@@ -40,21 +40,21 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
         return paragraphs.map((paragraph, index) => {
             if (paragraph.startsWith('### ')) {
                 return (
-                    <h3 key={index} className="text-xl sm:text-2xl font-bold text-gray-900 mt-10 mb-4">
+                    <h3 key={index} className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 mt-10 mb-4">
                         {paragraph.replace('### ', '')}
                     </h3>
                 );
             }
             if (paragraph.startsWith('## ')) {
                 return (
-                    <h2 key={index} className="text-2xl sm:text-3xl font-bold text-gray-900 mt-12 mb-5">
+                    <h2 key={index} className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mt-12 mb-5">
                         {paragraph.replace('## ', '')}
                     </h2>
                 );
             }
             if (paragraph.startsWith('# ')) {
                 return (
-                    <h1 key={index} className="text-3xl sm:text-4xl font-bold text-gray-900 mt-12 mb-5">
+                    <h1 key={index} className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 mt-12 mb-5">
                         {paragraph.replace('# ', '')}
                     </h1>
                 );
@@ -66,12 +66,12 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                     <ul key={index} className="list-none space-y-3 my-6">
                         {items.map((item, i) => (
                             <li key={i} className="flex items-start gap-3">
-                                <span className="flex-shrink-0 w-6 h-6 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mt-0.5">
+                                <span className="flex-shrink-0 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center mt-0.5 shadow-sm ring-1 ring-inset ring-black/[0.06]">
                                     <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                     </svg>
                                 </span>
-                                <span className="text-gray-700 leading-relaxed">{item.replace(/^- /, '')}</span>
+                                <span className="text-slate-700 leading-relaxed">{item.replace(/^- /, '')}</span>
                             </li>
                         ))}
                     </ul>
@@ -79,7 +79,7 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
             }
             
             return (
-                <p key={index} className="text-gray-700 leading-relaxed text-lg mb-6">
+                <p key={index} className="text-slate-700 leading-relaxed text-lg mb-6">
                     {paragraph}
                 </p>
             );
@@ -129,7 +129,7 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                 })}</script>
             </Head>
 
-            <div className="min-h-screen bg-white font-sans">
+            <div className="min-h-screen bg-slate-50/60 font-sans">
                 <Header />
 
                 {/* Hero Section with Featured Image */}
@@ -141,22 +141,22 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                 alt={post.title}
                                 className="w-full h-full object-cover"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/40 to-transparent" />
                             
                             {/* Hero Content Overlay */}
                             <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 lg:p-16">
                                 <div className="max-w-4xl mx-auto">
                                     {/* Breadcrumb */}
                                     <nav className="flex items-center gap-2 text-sm text-white/80 mb-4">
-                                        <Link href={route('blog.index')} className="hover:text-white transition-colors">
+                                        <Link href={route('blog.index')} className="hover:text-white transition-colors font-medium">
                                             Guides
                                         </Link>
-                                        <span>→</span>
+                                        <span className="text-white/50">→</span>
                                         {post.category && (
                                             <>
                                                 <Link
                                                     href={route('blog.index', { category: post.category.slug })}
-                                                    className="hover:text-white transition-colors"
+                                                    className="hover:text-white transition-colors font-medium"
                                                 >
                                                     {post.category.name}
                                                 </Link>
@@ -168,14 +168,14 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                     {post.category && (
                                         <Link
                                             href={route('blog.index', { category: post.category.slug })}
-                                            className="inline-block px-4 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold text-white mb-4 hover:bg-white/30 transition-colors"
+                                            className="inline-block px-3 py-1 bg-white/15 backdrop-blur-sm rounded-full text-xs font-semibold tracking-tight text-white mb-4 hover:bg-white/25 transition-colors ring-1 ring-inset ring-white/20"
                                         >
                                             {post.category.name}
                                         </Link>
                                     )}
 
                                     {/* Title */}
-                                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
+                                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white mb-4 leading-[1.1]">
                                         {post.title}
                                     </h1>
 
@@ -187,10 +187,10 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                                     <img
                                                         src={`/storage/${post.author.profile_picture}`}
                                                         alt={post.author.name}
-                                                        className="w-10 h-10 rounded-full object-cover border-2 border-white/30"
+                                                        className="w-10 h-10 rounded-full object-cover ring-2 ring-white/30"
                                                     />
                                                 ) : (
-                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold border-2 border-white/30">
+                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-semibold ring-2 ring-white/30">
                                                         {post.author.name.charAt(0).toUpperCase()}
                                                     </div>
                                                 )}
@@ -198,11 +198,11 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                             </div>
                                         )}
                                         <span className="w-1 h-1 bg-white/50 rounded-full" />
-                                        <time dateTime={post.published_at}>{formatDate(post.published_at)}</time>
+                                        <time dateTime={post.published_at} className="tabular-nums">{formatDate(post.published_at)}</time>
                                         {post.views_count > 0 && (
                                             <>
                                                 <span className="w-1 h-1 bg-white/50 rounded-full" />
-                                                <span className="flex items-center gap-1.5">
+                                                <span className="flex items-center gap-1.5 tabular-nums">
                                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -220,14 +220,14 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                         <div className="bg-gradient-to-br from-orange-500 to-orange-600 py-16 sm:py-20 lg:py-24">
                             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                                 <nav className="flex items-center gap-2 text-sm text-white/80 mb-4">
-                                    <Link href={route('blog.index')} className="hover:text-white transition-colors">
+                                    <Link href={route('blog.index')} className="hover:text-white transition-colors font-medium">
                                         Guides
                                     </Link>
-                                    <span>→</span>
+                                    <span className="text-white/50">→</span>
                                     {post.category && (
                                         <Link
                                             href={route('blog.index', { category: post.category.slug })}
-                                            className="hover:text-white transition-colors"
+                                            className="hover:text-white transition-colors font-medium"
                                         >
                                             {post.category.name}
                                         </Link>
@@ -235,26 +235,26 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                 </nav>
 
                                 {post.category && (
-                                    <span className="inline-block px-4 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold text-white mb-4">
+                                    <span className="inline-block px-3 py-1 bg-white/15 backdrop-blur-sm rounded-full text-xs font-semibold tracking-tight text-white mb-4 ring-1 ring-inset ring-white/20">
                                         {post.category.name}
                                     </span>
                                 )}
 
-                                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
+                                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white mb-4 leading-[1.1]">
                                     {post.title}
                                 </h1>
 
                                 <div className="flex flex-wrap items-center gap-4 text-white/90 text-sm">
                                     {post.author && (
                                         <div className="flex items-center gap-2">
-                                            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold">
+                                            <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center text-white font-semibold ring-1 ring-inset ring-white/20">
                                                 {post.author.name.charAt(0).toUpperCase()}
                                             </div>
                                             <span className="font-medium">{post.author.name}</span>
                                         </div>
                                     )}
                                     <span className="w-1 h-1 bg-white/50 rounded-full" />
-                                    <time dateTime={post.published_at}>{formatDate(post.published_at)}</time>
+                                    <time dateTime={post.published_at} className="tabular-nums">{formatDate(post.published_at)}</time>
                                 </div>
                             </div>
                         </div>
@@ -266,8 +266,8 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                         {/* Excerpt Card */}
                         {post.excerpt && (
-                            <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-2xl p-6 sm:p-8 mb-10 border-l-4 border-orange-500">
-                                <p className="text-xl sm:text-2xl text-gray-800 font-medium leading-relaxed italic">
+                            <div className="bg-orange-50/60 rounded-2xl p-6 sm:p-8 mb-10 ring-1 ring-inset ring-orange-100 border-l-2 border-orange-500">
+                                <p className="text-lg sm:text-xl text-slate-800 font-medium leading-relaxed">
                                     {post.excerpt}
                                 </p>
                             </div>
@@ -280,14 +280,14 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
 
                         {/* Tags Section */}
                         {post.tags && post.tags.length > 0 && (
-                            <div className="mt-8 sm:mt-10 md:mt-12 pt-6 sm:pt-8 border-t-2 border-gray-100">
+                            <div className="mt-8 sm:mt-10 md:mt-12 pt-6 sm:pt-8 border-t border-slate-200">
                                 <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                                    <span className="text-gray-500 font-medium text-sm sm:text-base">Tags:</span>
+                                    <span className="text-[11px] uppercase tracking-[0.14em] font-semibold text-slate-500">Tags</span>
                                     {post.tags.map((tag) => (
                                         <Link
                                             key={tag.id}
                                             href={route('blog.index', { tag: tag.slug })}
-                                            className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 text-gray-700 rounded-full text-xs sm:text-sm font-medium hover:bg-orange-100 hover:text-orange-700 transition-all duration-300 transform hover:scale-105"
+                                            className="px-3 py-1.5 bg-slate-50 text-slate-700 rounded-full text-xs sm:text-sm font-semibold tracking-tight hover:bg-orange-50 hover:text-orange-700 transition-colors duration-200 ring-1 ring-inset ring-slate-200 hover:ring-orange-200"
                                         >
                                             #{tag.name}
                                         </Link>
@@ -297,17 +297,17 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                         )}
 
                         {/* Share Section */}
-                        <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t-2 border-gray-100">
+                        <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-slate-200">
                             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                                <span className="text-gray-500 font-medium text-sm sm:text-base">Share this guide:</span>
-                                <div className="flex gap-2 sm:gap-3">
+                                <span className="text-[11px] uppercase tracking-[0.14em] font-semibold text-slate-500">Share this guide</span>
+                                <div className="flex gap-2">
                                     <a
                                         href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&text=${encodeURIComponent(post.title)}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-100 rounded-lg sm:rounded-xl hover:bg-black hover:text-white transition-all duration-300 transform hover:scale-110"
+                                        className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center bg-white text-slate-600 rounded-lg ring-1 ring-slate-200 hover:bg-slate-900 hover:text-white hover:ring-slate-900 transition-all duration-200 shadow-sm"
                                     >
-                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                                         </svg>
                                     </a>
@@ -315,9 +315,9 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                         href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-100 rounded-lg sm:rounded-xl hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:scale-110"
+                                        className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center bg-white text-slate-600 rounded-lg ring-1 ring-slate-200 hover:bg-blue-600 hover:text-white hover:ring-blue-600 transition-all duration-200 shadow-sm"
                                     >
-                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                                         </svg>
                                     </a>
@@ -325,9 +325,9 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                         href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&title=${encodeURIComponent(post.title)}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-100 rounded-lg sm:rounded-xl hover:bg-blue-700 hover:text-white transition-all duration-300 transform hover:scale-110"
+                                        className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center bg-white text-slate-600 rounded-lg ring-1 ring-slate-200 hover:bg-blue-700 hover:text-white hover:ring-blue-700 transition-all duration-200 shadow-sm"
                                     >
-                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                                         </svg>
                                     </a>
@@ -336,9 +336,9 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                             navigator.clipboard.writeText(window.location.href);
                                             alert('Link copied to clipboard!');
                                         }}
-                                        className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-100 rounded-lg sm:rounded-xl hover:bg-orange-500 hover:text-white transition-all duration-300 transform hover:scale-110"
+                                        className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center bg-white text-slate-600 rounded-lg ring-1 ring-slate-200 hover:bg-orange-500 hover:text-white hover:ring-orange-500 transition-all duration-200 shadow-sm"
                                     >
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                         </svg>
                                     </button>
@@ -350,21 +350,21 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
 
                 {/* Post Navigation */}
                 {(previousPost || nextPost) && (
-                    <section className="bg-gradient-to-b from-white to-orange-50 py-10 sm:py-12 md:py-16">
+                    <section className="bg-slate-50/60 py-10 sm:py-12 md:py-16 border-t border-slate-200/70">
                         <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                 {previousPost ? (
                                     <Link
                                         href={route('blog.show', previousPost.slug)}
-                                        className="group bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-gray-100"
+                                        className="group bg-white rounded-2xl p-5 sm:p-6 ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.04),0_18px_36px_-18px_rgba(15,23,42,0.22)] transition-all duration-200"
                                     >
-                                        <div className="flex items-center gap-2 text-orange-500 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
-                                            <svg className="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] font-semibold text-orange-600 mb-2 sm:mb-3">
+                                            <svg className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                                             </svg>
                                             Previous Guide
                                         </div>
-                                        <h4 className="font-bold text-gray-900 line-clamp-2 group-hover:text-orange-600 transition-colors text-base sm:text-lg">
+                                        <h4 className="font-semibold tracking-tight text-slate-900 line-clamp-2 group-hover:text-orange-600 transition-colors text-base sm:text-lg">
                                             {previousPost.title}
                                         </h4>
                                     </Link>
@@ -374,15 +374,15 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                 {nextPost && (
                                     <Link
                                         href={route('blog.show', nextPost.slug)}
-                                        className="group bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-gray-100 text-right"
+                                        className="group bg-white rounded-2xl p-5 sm:p-6 ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.04),0_18px_36px_-18px_rgba(15,23,42,0.22)] transition-all duration-200 text-right"
                                     >
-                                        <div className="flex items-center justify-end gap-2 text-orange-500 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
+                                        <div className="flex items-center justify-end gap-2 text-[11px] uppercase tracking-[0.14em] font-semibold text-orange-600 mb-2 sm:mb-3">
                                             Next Guide
-                                            <svg className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                             </svg>
                                         </div>
-                                        <h4 className="font-bold text-gray-900 line-clamp-2 group-hover:text-orange-600 transition-colors text-base sm:text-lg">
+                                        <h4 className="font-semibold tracking-tight text-slate-900 line-clamp-2 group-hover:text-orange-600 transition-colors text-base sm:text-lg">
                                             {nextPost.title}
                                         </h4>
                                     </Link>
@@ -394,30 +394,31 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
 
                 {/* Related Posts Section */}
                 {relatedPosts.length > 0 && (
-                    <section className="bg-white py-10 sm:py-12 md:py-16 lg:py-20">
+                    <section className="bg-white py-10 sm:py-12 md:py-16 lg:py-20 border-t border-slate-200/70">
                         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 sm:mb-8 md:mb-10 lg:mb-12 gap-3 sm:gap-4">
                                 <div>
-                                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-1 sm:mb-2">
+                                    <p className="text-[11px] uppercase tracking-[0.14em] font-semibold text-slate-500 mb-2">Keep Reading</p>
+                                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 mb-1 sm:mb-2 leading-[1.1]">
                                         Related Guides
                                     </h2>
-                                    <p className="text-gray-600 text-sm sm:text-base md:text-lg font-medium">
+                                    <p className="text-slate-500 text-sm sm:text-base md:text-lg">
                                         More tips for your pool experience
                                     </p>
                                 </div>
                                 <Link 
                                     href={route('blog.index')}
-                                    className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
+                                    className="bg-orange-500 hover:bg-orange-600 text-white font-semibold tracking-tight text-sm sm:text-base px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md ring-1 ring-inset ring-black/[0.04]"
                                 >
                                     View all →
                                 </Link>
                             </div>
                             
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
                                 {relatedPosts.map((relatedPost) => (
                                     <article
                                         key={relatedPost.id}
-                                        className="group bg-white overflow-hidden transition-all duration-300 hover:shadow-2xl rounded-2xl shadow-lg border-2 border-gray-100 transform hover:scale-105"
+                                        className="group bg-white overflow-hidden transition-all duration-200 rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.04),0_18px_36px_-18px_rgba(15,23,42,0.22)]"
                                     >
                                         <Link href={route('blog.show', relatedPost.slug)} className="block">
                                             <div className="relative overflow-hidden aspect-[16/10]">
@@ -425,20 +426,20 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                                     <img
                                                         src={relatedPost.featured_image_url}
                                                         alt={relatedPost.title}
-                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                                                     />
                                                 ) : (
-                                                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-orange-200">
+                                                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100">
                                                         <svg className="w-16 h-16 text-orange-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                                         </svg>
                                                     </div>
                                                 )}
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent" />
                                                 
                                                 {relatedPost.category && (
                                                     <div 
-                                                        className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg"
+                                                        className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-semibold tracking-tight shadow-sm ring-1 ring-inset ring-black/[0.06]"
                                                         style={{
                                                             backgroundColor: relatedPost.category.color,
                                                             color: 'white',
@@ -450,22 +451,22 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                                             </div>
                                         </Link>
                                         
-                                        <div className="p-4 sm:p-5 md:p-6">
+                                        <div className="p-4 sm:p-5">
                                             <Link href={route('blog.show', relatedPost.slug)}>
-                                                <h3 className="font-bold text-gray-900 line-clamp-2 group-hover:text-orange-600 transition-colors text-base sm:text-lg mb-1 sm:mb-2">
+                                                <h3 className="font-semibold tracking-tight text-slate-900 line-clamp-2 group-hover:text-orange-600 transition-colors text-base sm:text-lg mb-1.5 sm:mb-2">
                                                     {relatedPost.title}
                                                 </h3>
                                             </Link>
                                             {relatedPost.excerpt && (
-                                                <p className="text-gray-600 text-xs sm:text-sm line-clamp-2 mb-3 sm:mb-4">
+                                                <p className="text-slate-500 text-xs sm:text-sm line-clamp-2 mb-3 sm:mb-4 leading-relaxed">
                                                     {relatedPost.excerpt}
                                                 </p>
                                             )}
-                                            <div className="flex items-center justify-between text-xs sm:text-sm text-gray-500">
-                                                <span>{formatDate(relatedPost.published_at)}</span>
+                                            <div className="flex items-center justify-between text-xs sm:text-sm text-slate-500 pt-3 border-t border-slate-100">
+                                                <span className="tabular-nums">{formatDate(relatedPost.published_at)}</span>
                                                 <Link 
                                                     href={route('blog.show', relatedPost.slug)}
-                                                    className="text-orange-500 font-semibold hover:text-orange-600 transition-colors"
+                                                    className="text-orange-600 font-semibold hover:text-orange-700 transition-colors"
                                                 >
                                                     Read more →
                                                 </Link>
@@ -479,24 +480,25 @@ export default function BlogShow({ post, relatedPosts, nextPost, previousPost })
                 )}
 
                 {/* CTA Section */}
-                <section className="bg-gradient-to-b from-orange-50 to-white py-10 sm:py-12 md:py-16 lg:py-20">
+                <section className="bg-slate-50/60 py-10 sm:py-12 md:py-16 lg:py-20 border-t border-slate-200/70">
                     <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 text-center">
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
+                        <p className="text-[11px] uppercase tracking-[0.14em] font-semibold text-slate-500 mb-3">Start Your Search</p>
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-3 sm:mb-4 leading-[1.1]">
                             Ready to find your perfect pool?
                         </h2>
-                        <p className="text-gray-600 text-sm sm:text-base md:text-lg mb-6 sm:mb-8 font-medium">
+                        <p className="text-slate-500 text-sm sm:text-base md:text-lg mb-6 sm:mb-8">
                             Discover top-rated hotels with the best sunbed experiences
                         </p>
                         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                             <Link
                                 href="/destinations"
-                                className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4 rounded-lg sm:rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold tracking-tight text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-3.5 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md ring-1 ring-inset ring-black/[0.04]"
                             >
                                 Explore Destinations
                             </Link>
                             <Link
                                 href={route('blog.index')}
-                                className="bg-white hover:bg-gray-50 text-gray-900 font-bold text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4 rounded-lg sm:rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border-2 border-gray-200"
+                                className="bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 font-semibold tracking-tight text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-3.5 rounded-lg transition-all duration-200 shadow-sm ring-1 ring-slate-200 hover:ring-slate-300"
                             >
                                 More Guides
                             </Link>

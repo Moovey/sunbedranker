@@ -154,19 +154,19 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
                 <meta name="robots" content="noindex, follow" />
             </Head>
             
-            <div className="min-h-screen bg-white font-sans">
+            <div className="min-h-screen bg-slate-50/60 font-sans">
                 <Header />
 
                 {/* Search Summary - Jet2 Style */}
-                <div className="bg-gradient-to-r from-blue-50 to-white border-b-4 border-orange-400">
+                <div className="bg-gradient-to-b from-white via-white to-slate-50/60 border-b border-slate-200/80">
                     <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-12">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
                             <div className="w-full sm:w-auto">
-                                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 leading-[1.05]">
                                     {searchParams.destination ? `Hotels in ${searchParams.destination}` : 'Search Results'}
                                 </h1>
                                 {searchParams.checkIn && searchParams.checkOut && (
-                                    <p className="text-gray-600 mt-2 sm:mt-3 font-medium text-sm sm:text-base flex items-center gap-2">
+                                    <p className="text-slate-500 mt-2 sm:mt-3 font-medium text-sm sm:text-base flex items-center gap-2">
                                         <svg className="w-4 h-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM7 11h5v5H7z"/>
                                         </svg>
@@ -175,14 +175,14 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
                                     </p>
                                 )}
                                 {searchParams.poolVibe && (
-                                    <span className="inline-flex items-center gap-1.5 sm:gap-2 mt-2 sm:mt-3 px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full text-xs sm:text-sm font-bold shadow-md">
+                                    <span className="inline-flex items-center gap-1.5 sm:gap-2 mt-2 sm:mt-3 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-200 rounded-full text-xs sm:text-sm font-semibold shadow-sm">
                                         {getVibeLabel(searchParams.poolVibe)}
                                     </span>
                                 )}
                             </div>
                             <Link
                                 href="/"
-                                className="w-full sm:w-auto px-4 sm:px-5 md:px-6 py-2.5 sm:py-3 md:py-3.5 bg-white border-2 border-orange-500 text-orange-600 rounded-lg hover:bg-orange-50 transition-all duration-300 text-xs sm:text-sm font-bold text-center whitespace-nowrap flex items-center justify-center gap-1.5 sm:gap-2 shadow-md hover:shadow-lg transform hover:scale-105"
+                                className="w-full sm:w-auto px-4 sm:px-5 py-2.5 sm:py-3 bg-white ring-1 ring-slate-200 text-slate-700 hover:text-slate-900 rounded-lg hover:ring-slate-300 hover:bg-slate-50 transition-all duration-200 text-xs sm:text-sm font-semibold text-center whitespace-nowrap flex items-center justify-center gap-2 shadow-sm"
                             >
                                 <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -195,17 +195,17 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
 
                 <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-8 sm:py-10 md:py-12 lg:py-16">
                     {!hasResults && (
-                        <div className="text-center py-8 sm:py-12 md:py-16 lg:py-20 bg-gradient-to-b from-orange-50 to-white rounded-xl sm:rounded-2xl border-2 border-gray-100">
+                        <div className="text-center py-8 sm:py-12 md:py-16 lg:py-20 bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)]">
                             <svg className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto mb-3 sm:mb-4 md:mb-6 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-6.18C11.6 5.84 10.3 5 8.86 5 6.75 5 5.06 6.69 5.06 8.8c0 1.66 1.13 3.1 2.68 3.52L3.94 18H2v3h7v-2.78c0-.38.2-.72.52-.88.79-.4 2.39-1.34 3.48-1.34 1.09 0 2.69.94 3.48 1.34.32.16.52.5.52.88V21h7v-3h-1.94l-3.8-5.68C19.87 11.9 21 10.46 21 8.8 21 6.69 19.31 5 17.2 5c-1.44 0-2.74.84-3.96 2.02L13 7.8V7z"/>
                             </svg>
-                            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3 md:mb-4 px-3 sm:px-4">No hotels found</h2>
-                            <p className="text-gray-600 mb-4 sm:mb-6 md:mb-8 font-medium leading-relaxed max-w-xs sm:max-w-sm md:max-w-md mx-auto px-3 sm:px-4 text-xs sm:text-sm md:text-base">
+                            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 mb-2 sm:mb-3 md:mb-4 px-3 sm:px-4">No hotels found</h2>
+                            <p className="text-slate-500 mb-4 sm:mb-6 md:mb-8 leading-relaxed max-w-xs sm:max-w-sm md:max-w-md mx-auto px-3 sm:px-4 text-xs sm:text-sm md:text-base">
                                 Try searching for a different destination or adjust your filters
                             </p>
                             <Link
                                 href="/"
-                                className="inline-flex items-center gap-1.5 sm:gap-2 px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 text-sm sm:text-base hover:shadow-xl transform hover:scale-105 active:scale-95"
+                                className="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold tracking-tight rounded-lg transition-all duration-200 text-sm sm:text-base shadow-sm hover:shadow-md ring-1 ring-inset ring-black/[0.04]"
                             >
                                 <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                     <circle cx="11" cy="11" r="8"/>
@@ -221,9 +221,9 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
                         <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 lg:gap-10">
                             {/* Sidebar - Filters */}
                             <aside className="w-full lg:w-64 xl:w-72 2xl:w-80 flex-shrink-0">
-                                <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border-2 border-gray-100 p-3 sm:p-4 md:p-5 lg:p-6 lg:sticky lg:top-24">
-                                    <div className="flex items-center justify-between mb-4 sm:mb-5 md:mb-6">
-                                        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-1.5 sm:gap-2">
+                                <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] p-4 sm:p-5 md:p-6 lg:sticky lg:top-24">
+                                    <div className="flex items-center justify-between mb-5 sm:mb-6">
+                                        <h3 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
                                             <svg className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
                                                 <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>
                                             </svg>
@@ -232,7 +232,7 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
                                         {activeFilterCount > 0 && (
                                             <button
                                                 onClick={clearFilters}
-                                                className="px-2 sm:px-3 py-1 sm:py-1.5 bg-red-100 text-red-700 hover:bg-red-200 font-semibold rounded-full text-[10px] sm:text-xs transition-all duration-300 transform hover:scale-105"
+                                                className="px-2.5 py-1 bg-rose-50 text-rose-700 hover:bg-rose-100 ring-1 ring-inset ring-rose-200 font-semibold rounded-full text-[11px] transition-colors duration-200"
                                             >
                                                 Clear ({activeFilterCount})
                                             </button>
@@ -378,20 +378,20 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
                             {/* Main Content - Results */}
                             <div className="flex-1 min-w-0">
                                 {/* Sorting Bar */}
-                                <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border-2 border-orange-200 p-3 sm:p-4 md:p-5 mb-4 sm:mb-6 relative z-10">
+                                <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] p-3 sm:p-4 md:p-5 mb-5 sm:mb-6 relative z-10">
                                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                                         <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
-                                            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                                            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
                                                 <path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/>
                                             </svg>
-                                            <label htmlFor="sortBy" className="text-xs sm:text-sm font-bold text-gray-900 whitespace-nowrap">
+                                            <label htmlFor="sortBy" className="text-xs sm:text-sm font-semibold text-slate-600 whitespace-nowrap">
                                                 Sort by:
                                             </label>
                                             <select
                                                 id="sortBy"
                                                 value={sortBy}
                                                 onChange={(e) => setSortBy(e.target.value)}
-                                                className="flex-1 sm:flex-none px-2.5 sm:px-3 md:px-4 py-2 sm:py-2.5 border-2 border-gray-300 rounded-lg text-xs sm:text-sm font-semibold text-gray-900 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 cursor-pointer bg-white transition-all duration-300 hover:border-gray-400"
+                                                className="flex-1 sm:flex-none px-3 py-2 sm:py-2.5 ring-1 ring-slate-200 rounded-lg text-xs sm:text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-400 cursor-pointer bg-white hover:ring-slate-300 transition-all duration-200"
                                             >
                                                 <option value="score">Pool & Sun Score (Highest)</option>
                                                 <option value="sunbed">Sunbed Ratio (Best)</option>
@@ -400,7 +400,7 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
                                             </select>
                                         </div>
                                         <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
-                                            <span className="text-xs sm:text-sm font-bold text-gray-900 bg-orange-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all duration-300">
+                                            <span className="text-xs sm:text-sm font-semibold text-slate-700 bg-slate-100 ring-1 ring-inset ring-slate-200/60 px-3 py-1 rounded-full">
                                                 {activeFilterCount > 0 
                                                     ? `${filteredAndSortedHotels.length} of ${localHotels?.total || 0}`
                                                     : `${localHotels?.total || filteredAndSortedHotels.length}`
@@ -409,7 +409,7 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
                                             {compareList.length > 0 && (
                                                 <Link
                                                     href={`/compare?hotels=${compareList.join(',')}`}
-                                                    className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-full hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 whitespace-nowrap text-xs sm:text-sm"
+                                                    className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold tracking-tight rounded-full transition-all duration-200 shadow-sm hover:shadow-md ring-1 ring-inset ring-black/[0.04] whitespace-nowrap text-xs sm:text-sm"
                                                 >
                                                     <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor">
                                                         <path d="M9.01 14H2v2h7.01v3L13 15l-3.99-4v3zM14.99 13v-3H22V8h-7.01V5L11 9l3.99 4z"/>
@@ -435,7 +435,7 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
                                         ))}
                                     </div>
                                 ) : activeFilterCount > 0 ? (
-                                    <div className="text-center py-12 sm:py-16 md:py-20 bg-gradient-to-b from-gray-50 to-white rounded-xl sm:rounded-2xl border-2 border-gray-100 transition-all duration-500 animate-fadeIn">
+                                    <div className="text-center py-12 sm:py-16 md:py-20 bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] transition-all duration-300 animate-fadeIn">
                                         <div className="relative inline-block mb-4 sm:mb-6">
                                             <svg className="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-gray-300" viewBox="0 0 24 24" fill="currentColor">
                                                 <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
@@ -446,16 +446,16 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
                                                 </svg>
                                             </div>
                                         </div>
-                                        <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">
+                                        <h3 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-slate-900 mb-2 sm:mb-3">
                                             No matches for these filters
                                         </h3>
-                                        <p className="text-sm sm:text-base text-gray-500 mb-6 sm:mb-8 max-w-sm mx-auto px-4 leading-relaxed">
+                                        <p className="text-sm sm:text-base text-slate-500 mb-6 sm:mb-8 max-w-sm mx-auto px-4 leading-relaxed">
                                             None of the {localHotels?.total || 0} hotels in this area match your current filter combination. Try adjusting or clearing your filters.
                                         </p>
                                         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                                             <button
                                                 onClick={clearFilters}
-                                                className="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 text-sm sm:text-base shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
+                                                className="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold tracking-tight rounded-lg transition-all duration-200 text-sm sm:text-base shadow-sm hover:shadow-md ring-1 ring-inset ring-black/[0.04]"
                                             >
                                                 <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
@@ -464,7 +464,7 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
                                             </button>
                                             <Link
                                                 href="/"
-                                                className="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-white border-2 border-gray-300 text-gray-700 font-bold rounded-lg hover:border-orange-400 hover:text-orange-600 transition-all duration-300 text-sm sm:text-base"
+                                                className="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-white ring-1 ring-slate-200 text-slate-700 font-semibold tracking-tight rounded-lg hover:ring-slate-300 hover:bg-slate-50 hover:text-slate-900 transition-all duration-200 text-sm sm:text-base shadow-sm"
                                             >
                                                 <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -478,10 +478,10 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
                                 {/* Pagination */}
                                 {localHotels?.links?.length > 3 && (
                                     <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-                                        <p className="text-sm text-gray-600">
-                                            Showing <span className="font-semibold text-gray-900">{localHotels.from}</span> to{' '}
-                                            <span className="font-semibold text-gray-900">{localHotels.to}</span> of{' '}
-                                            <span className="font-semibold text-gray-900">{localHotels.total}</span> results
+                                        <p className="text-sm text-slate-500">
+                                            Showing <span className="font-semibold text-slate-900">{localHotels.from}</span> to{' '}
+                                            <span className="font-semibold text-slate-900">{localHotels.to}</span> of{' '}
+                                            <span className="font-semibold text-slate-900">{localHotels.total}</span> results
                                         </p>
                                         <div className="flex gap-1 flex-wrap justify-center">
                                             {localHotels.links.map((link, index) => (
@@ -492,15 +492,15 @@ export default function SearchResults({ searchParams, localHotels, agodaHotels, 
                                                         preserveScroll
                                                         className={`px-3 py-2 text-sm rounded-lg font-medium transition-colors ${
                                                             link.active
-                                                                ? 'bg-orange-500 text-white shadow-md'
-                                                                : 'text-gray-700 hover:bg-orange-50 border border-gray-200'
+                                                                ? 'bg-orange-500 text-white shadow-sm ring-1 ring-inset ring-black/[0.04]'
+                                                                : 'text-slate-700 hover:bg-slate-50 ring-1 ring-slate-200 hover:ring-slate-300'
                                                         }`}
                                                         dangerouslySetInnerHTML={{ __html: link.label }}
                                                     />
                                                 ) : (
                                                     <span
                                                         key={index}
-                                                        className="px-3 py-2 text-sm text-gray-400"
+                                                        className="px-3 py-2 text-sm text-slate-300"
                                                         dangerouslySetInnerHTML={{ __html: link.label }}
                                                     />
                                                 )
@@ -536,7 +536,7 @@ function HotelCard({ hotel, isInCompare, onToggleCompare, isHotelier }) {
     // Premium hotels get larger, more prominent cards
     const cardClasses = isPremium 
         ? "bg-white overflow-hidden transition-all duration-500 hover:shadow-2xl rounded-lg relative group border-4 border-gradient-to-r from-yellow-400 to-orange-500 shadow-xl ring-2 ring-yellow-300"
-        : "bg-white overflow-hidden transition-all duration-500 hover:shadow-2xl rounded-lg relative group";
+        : "bg-white overflow-hidden rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.04),0_18px_36px_-18px_rgba(15,23,42,0.22)] transition-all duration-300 relative group";
     
     const imageAspect = isPremium ? "aspect-[16/10]" : "aspect-[4/3]";
 

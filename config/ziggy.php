@@ -23,6 +23,7 @@ return [
         'destinations.index',
         'compare.index',
         'blog.index',
+        'blog.show',
 
         // Auth
         'auth.google',

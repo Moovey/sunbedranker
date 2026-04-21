@@ -163,34 +163,10 @@ const EditorToolbar = ({ editor }) => {
     const [showLinkModal, setShowLinkModal] = React.useState(false);
     const fileInputRef = useRef(null);
 
-    if (!editor) return null;
-
-    const handleHeadingChange = (e) => {
-        const value = e.target.value;
-        if (value === 'paragraph') {
-            editor.chain().focus().setParagraph().run();
-        } else {
-            editor.chain().focus().toggleHeading({ level: parseInt(value) }).run();
-        }
-    };
-
-    const getCurrentHeading = () => {
-        for (let i = 1; i <= 4; i++) {
-            if (editor.isActive('heading', { level: i })) return i;
-        }
-        return 'paragraph';
-    };
-
-    const handleLinkSubmit = (url) => {
-        if (url) {
-            editor.chain().focus().extendMarkRange('link').setLink({ href: url, target: '_blank' }).run();
-        }
-        setShowLinkModal(false);
-    };
-
     const handleImageUpload = useCallback((e) => {
         const file = e.target.files?.[0];
         if (!file) return;
+        if (!editor) return;
 
         // Upload via fetch to the content image upload endpoint
         const formData = new FormData();
@@ -222,6 +198,31 @@ const EditorToolbar = ({ editor }) => {
         // Reset input so same file can be uploaded again
         e.target.value = '';
     }, [editor]);
+
+    if (!editor) return null;
+
+    const handleHeadingChange = (e) => {
+        const value = e.target.value;
+        if (value === 'paragraph') {
+            editor.chain().focus().setParagraph().run();
+        } else {
+            editor.chain().focus().toggleHeading({ level: parseInt(value) }).run();
+        }
+    };
+
+    const getCurrentHeading = () => {
+        for (let i = 1; i <= 4; i++) {
+            if (editor.isActive('heading', { level: i })) return i;
+        }
+        return 'paragraph';
+    };
+
+    const handleLinkSubmit = (url) => {
+        if (url) {
+            editor.chain().focus().extendMarkRange('link').setLink({ href: url, target: '_blank' }).run();
+        }
+        setShowLinkModal(false);
+    };
 
     const handleEmbed = () => {
         const url = prompt('Enter embed URL (YouTube, Vimeo, etc.):');

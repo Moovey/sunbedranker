@@ -6,16 +6,16 @@ import { Icons } from './Icons';
 // ============================================
 export function Breadcrumb({ hotel }) {
     return (
-        <div className="bg-white border-b-2 border-gray-100">
+        <div className="bg-gradient-to-b from-gray-50 to-white border-b border-gray-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
-                <nav className="text-xs sm:text-sm lg:text-base text-gray-600 font-sans flex items-center flex-wrap gap-2">
-                    <Link href="/" className="hover:text-orange-600 transition-colors duration-300 font-semibold">Home</Link>
+                <nav className="text-xs sm:text-sm lg:text-base text-gray-500 font-sans flex items-center flex-wrap gap-1.5 sm:gap-2 tracking-wide">
+                    <Link href="/" className="hover:text-orange-600 transition-colors duration-200 font-medium">Home</Link>
                     <Icons.ChevronRight />
-                    <Link href={`/destinations/${hotel.destination.slug}`} className="hover:text-orange-600 transition-colors duration-300 font-semibold">
+                    <Link href={`/destinations/${hotel.destination.slug}`} className="hover:text-orange-600 transition-colors duration-200 font-medium">
                         {hotel.destination.name}
                     </Link>
                     <Icons.ChevronRight />
-                    <span className="text-gray-900 font-bold">{hotel.name}</span>
+                    <span className="text-gray-900 font-semibold">{hotel.name}</span>
                 </nav>
             </div>
         </div>
@@ -34,26 +34,27 @@ export function HotelHeader({ hotel }) {
 
     return (
         <div className="mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-sans font-bold text-gray-900 mb-3 sm:mb-4">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-sans font-bold tracking-tight text-gray-900 mb-3 sm:mb-4 leading-[1.1]">
                 {hotel.name}
             </h1>
-            <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+            <div className="flex items-center gap-x-4 gap-y-2 flex-wrap">
                 {hotel.star_rating && (
                     <div className="flex items-center gap-2">
                         <div className="flex gap-0.5">
                             {[...Array(hotel.star_rating)].map((_, i) => (
-                                <Icons.Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 fill-current" />
+                                <Icons.Star key={i} className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-amber-400 fill-current drop-shadow-sm" />
                             ))}
                         </div>
-                        <span className="text-gray-700 font-sans font-bold text-sm sm:text-base">{hotel.star_rating} Star Hotel</span>
+                        <span className="text-gray-700 font-sans font-semibold text-sm sm:text-base">{hotel.star_rating} Star Hotel</span>
                     </div>
                 )}
-                <div className="flex items-center gap-2 text-gray-600 font-sans font-semibold text-sm sm:text-base">
+                <span className="hidden sm:inline-block w-px h-5 bg-gray-200" aria-hidden="true" />
+                <div className="flex items-center gap-2 text-gray-600 font-sans font-medium text-sm sm:text-base">
                     <Icons.Location className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
                     <span>{hotel.destination.name}</span>
                 </div>
                 {hotel.subscription_tier === 'premium' && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 text-orange-700 rounded-full text-xs sm:text-sm font-sans font-bold border border-orange-200">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-orange-50 text-orange-700 rounded-full text-xs sm:text-sm font-sans font-semibold border border-orange-200/80 shadow-sm">
                         <Icons.Verified />
                         Verified
                     </span>
@@ -61,10 +62,10 @@ export function HotelHeader({ hotel }) {
             </div>
 
             {(hotel.address || metaItems.length > 0) && (
-                <div className="mt-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                <div className="mt-5 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
                     <div className="max-w-3xl">
                         {hotel.address && (
-                            <p className="text-sm sm:text-base text-gray-600 font-sans leading-relaxed">
+                            <p className="text-sm sm:text-base text-gray-500 font-sans leading-relaxed">
                                 {hotel.address}
                             </p>
                         )}
@@ -75,7 +76,7 @@ export function HotelHeader({ hotel }) {
                             {metaItems.map((item) => (
                                 <span
                                     key={item}
-                                    className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs sm:text-sm font-semibold text-gray-700"
+                                    className="inline-flex items-center rounded-full border border-gray-200/80 bg-white px-3 py-1.5 text-xs sm:text-sm font-medium text-gray-700 shadow-sm"
                                 >
                                     {item}
                                 </span>
@@ -101,7 +102,7 @@ export function ImageGallery({ allImages, activeImageIndex, hotelName, onPrevIma
     
     return (
         <div className="lg:col-span-2">
-            <div className={`relative ${heightClass} rounded-2xl overflow-hidden shadow-2xl border-2 border-gray-100`}>
+            <div className={`relative ${heightClass} rounded-2xl overflow-hidden shadow-xl ring-1 ring-black/5 border border-gray-100`}>
                 <img
                     src={allImages[activeImageIndex] || '/images/default-hotel.jpg'}
                     alt={hotelName}
@@ -111,14 +112,14 @@ export function ImageGallery({ allImages, activeImageIndex, hotelName, onPrevIma
                     height={isPremium ? 600 : 448}
                     sizes="(max-width: 1024px) 100vw, 66vw"
                 />
-                <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/65 via-black/10 to-transparent pointer-events-none" />
+                <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
 
                 <div className="absolute left-4 bottom-4 sm:left-6 sm:bottom-6 z-10 max-w-[70%] text-white">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] backdrop-blur-sm">
-                        <Icons.Gallery className="w-4 h-4 text-white" />
+                    <div className="inline-flex items-center gap-2 rounded-full bg-white/10 ring-1 ring-white/20 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] backdrop-blur-md">
+                        <Icons.Gallery className="w-3.5 h-3.5 text-white" />
                         Pool Gallery
                     </div>
-                    <p className="mt-2 text-sm sm:text-base font-medium text-white/90">
+                    <p className="mt-2 text-sm sm:text-base font-medium text-white/90 leading-snug drop-shadow-sm">
                         Swipe through the key pool and sunbed views before you dive into the full review.
                     </p>
                 </div>
@@ -137,19 +138,19 @@ export function ImageGallery({ allImages, activeImageIndex, hotelName, onPrevIma
                     <>
                         <button
                             onClick={onPrevImage}
-                            className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 sm:p-3 rounded-full hover:bg-black/70 transition-all duration-300 backdrop-blur-sm"
+                            className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 bg-white/15 ring-1 ring-white/25 text-white p-2 sm:p-2.5 rounded-full hover:bg-white/25 transition-all duration-200 backdrop-blur-md shadow-lg"
                             aria-label="Previous image"
                         >
                             <Icons.ChevronLeft />
                         </button>
                         <button
                             onClick={onNextImage}
-                            className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 sm:p-3 rounded-full hover:bg-black/70 transition-all duration-300 backdrop-blur-sm"
+                            className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 bg-white/15 ring-1 ring-white/25 text-white p-2 sm:p-2.5 rounded-full hover:bg-white/25 transition-all duration-200 backdrop-blur-md shadow-lg"
                             aria-label="Next image"
                         >
                             <Icons.ChevronRightNav />
                         </button>
-                        <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 bg-black/60 text-white px-3 py-1.5 rounded-xl text-xs sm:text-sm font-sans backdrop-blur-sm">
+                        <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-black/55 ring-1 ring-white/10 text-white px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold tracking-wide backdrop-blur-md">
                             {activeImageIndex + 1} / {allImages.length}
                         </div>
                     </>
@@ -166,10 +167,10 @@ export function ImageGallery({ allImages, activeImageIndex, hotelName, onPrevIma
                                 key={`${image}-${index}`}
                                 type="button"
                                 onClick={() => setActiveImageIndex(index)}
-                                className={`relative overflow-hidden rounded-xl border transition-all duration-300 ${
+                                className={`relative overflow-hidden rounded-xl border transition-all duration-200 ${
                                     isActive
-                                        ? 'border-orange-500 ring-2 ring-orange-200'
-                                        : 'border-gray-200 hover:border-gray-300'
+                                        ? 'border-orange-500 ring-2 ring-orange-300/60 shadow-md'
+                                        : 'border-gray-200 hover:border-orange-200 hover:shadow-sm'
                                 }`}
                                 aria-label={`Show gallery image ${index + 1}`}
                             >
@@ -203,34 +204,37 @@ function QuickFacts({ hotel }) {
         {
             label: 'Sunbed ratio',
             value: poolCriteria.sunbed_to_guest_ratio ? `${poolCriteria.sunbed_to_guest_ratio}:1` : 'Not rated yet',
-            accent: 'from-amber-50 to-orange-50 border-amber-200',
+            dot: 'bg-amber-400',
         },
         {
             label: 'Atmosphere',
             value: poolCriteria.atmosphere ? poolCriteria.atmosphere.replace(/_/g, ' ') : 'Not set yet',
-            accent: 'from-rose-50 to-pink-50 border-rose-200',
+            dot: 'bg-rose-400',
         },
         {
             label: 'Pool style',
             value: poolCriteria.pool_size_category ? poolCriteria.pool_size_category.replace(/_/g, ' ') : 'Awaiting review',
-            accent: 'from-sky-50 to-cyan-50 border-sky-200',
+            dot: 'bg-sky-400',
         },
         {
             label: 'Guest reviews',
             value: hotel.review_count ? `${hotel.review_count} review${hotel.review_count === 1 ? '' : 's'}` : 'No reviews yet',
-            accent: 'from-emerald-50 to-teal-50 border-emerald-200',
+            dot: 'bg-emerald-400',
         },
     ];
 
     return (
-        <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
             {facts.map((fact) => (
                 <div
                     key={fact.label}
-                    className={`rounded-2xl border bg-gradient-to-br ${fact.accent} p-4 shadow-sm`}
+                    className="rounded-2xl border border-gray-200/80 bg-white p-4 shadow-sm hover:shadow-md hover:border-gray-300 transition-all duration-200"
                 >
-                    <div className="text-[11px] uppercase tracking-[0.18em] text-gray-500">{fact.label}</div>
-                    <div className="mt-2 text-sm sm:text-base font-bold text-gray-900 capitalize">{fact.value}</div>
+                    <div className="flex items-center gap-2">
+                        <span className={`h-1.5 w-1.5 rounded-full ${fact.dot}`} aria-hidden="true" />
+                        <div className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-gray-500 font-semibold">{fact.label}</div>
+                    </div>
+                    <div className="mt-2 text-sm sm:text-base font-semibold text-gray-900 capitalize leading-snug">{fact.value}</div>
                 </div>
             ))}
         </div>
@@ -272,33 +276,36 @@ export function MapAndScoreColumn({ hotel }) {
 // ============================================
 export function ScoreCard({ hotel }) {
     return (
-        <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 rounded-2xl shadow-2xl p-5 sm:p-6 lg:p-7 xl:p-8 text-white border-2 border-orange-400">
-            <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-sans font-bold mb-3 lg:mb-4 flex items-center gap-2">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+        <div className="relative overflow-hidden bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 rounded-2xl shadow-xl ring-1 ring-orange-400/30 p-5 sm:p-6 lg:p-7 xl:p-8 text-white">
+            <div className="pointer-events-none absolute -top-16 -right-16 h-44 w-44 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
+            <div className="pointer-events-none absolute -bottom-20 -left-12 h-40 w-40 rounded-full bg-orange-300/20 blur-2xl" aria-hidden="true" />
+            <h3 className="relative text-xs sm:text-sm font-sans font-semibold uppercase tracking-[0.2em] text-orange-100 mb-3 flex items-center gap-2">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                 </svg>
                 Pool & Sun Score
             </h3>
-            <div className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-sans font-black mb-4 lg:mb-5">
-                {hotel.overall_score}<span className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl text-orange-200">/10</span>
+            <div className="relative flex items-baseline gap-1 text-4xl sm:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-sans font-black tracking-tight mb-5 lg:mb-6 leading-none">
+                <span className="drop-shadow-sm">{hotel.overall_score}</span>
+                <span className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl text-orange-200 font-bold">/10</span>
             </div>
-            <div className="space-y-2 lg:space-y-3">
+            <div className="relative space-y-2.5 lg:space-y-3 border-t border-white/15 pt-4">
                 {hotel.family_score && (
-                    <div className="flex justify-between text-xs sm:text-sm lg:text-base xl:text-lg font-sans">
-                        <span className="text-orange-100 font-semibold">Family</span>
-                        <span className="font-black">{hotel.family_score}/10</span>
+                    <div className="flex justify-between items-center text-xs sm:text-sm lg:text-base font-sans">
+                        <span className="text-orange-100 font-medium">Family</span>
+                        <span className="font-bold tabular-nums">{hotel.family_score}<span className="text-orange-200/80 font-medium">/10</span></span>
                     </div>
                 )}
                 {hotel.quiet_score && (
-                    <div className="flex justify-between text-xs sm:text-sm font-sans">
-                        <span className="text-orange-100 font-semibold">Quiet Sun</span>
-                        <span className="font-black">{hotel.quiet_score}/10</span>
+                    <div className="flex justify-between items-center text-xs sm:text-sm font-sans">
+                        <span className="text-orange-100 font-medium">Quiet Sun</span>
+                        <span className="font-bold tabular-nums">{hotel.quiet_score}<span className="text-orange-200/80 font-medium">/10</span></span>
                     </div>
                 )}
                 {hotel.party_score && (
-                    <div className="flex justify-between text-xs sm:text-sm font-sans">
-                        <span className="text-orange-100 font-semibold">Party Vibe</span>
-                        <span className="font-black">{hotel.party_score}/10</span>
+                    <div className="flex justify-between items-center text-xs sm:text-sm font-sans">
+                        <span className="text-orange-100 font-medium">Party Vibe</span>
+                        <span className="font-bold tabular-nums">{hotel.party_score}<span className="text-orange-200/80 font-medium">/10</span></span>
                     </div>
                 )}
             </div>
@@ -544,7 +551,7 @@ export function HeroSection({ hotel, allImages, activeImageIndex, onPrevImage, o
     const isPremium = hotel.is_premium;
     
     return (
-        <div className="bg-white border-b border-gray-100">
+        <div className="bg-gradient-to-b from-white via-white to-gray-50/60 border-b border-gray-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
                 {/* Hotel Header */}
                 <HotelHeader hotel={hotel} />

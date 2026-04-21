@@ -38,7 +38,7 @@ export default function HotelCard({ hotel, scoreType = 'overall', isInCompare = 
 
     const cardClasses = isPremium 
         ? "group bg-white overflow-hidden transition-shadow duration-200 hover:shadow-2xl rounded-2xl shadow-xl border-4 border-gradient-to-r from-yellow-400 to-orange-500 relative ring-2 ring-yellow-300"
-        : "group bg-white overflow-hidden transition-shadow duration-200 hover:shadow-2xl rounded-2xl shadow-lg border-2 border-gray-100 relative";
+        : "group bg-white overflow-hidden rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.04),0_18px_36px_-18px_rgba(15,23,42,0.22)] transition-all duration-300 relative";
     
     const imageAspect = isPremium ? "aspect-[16/10]" : "aspect-[4/3]";
 

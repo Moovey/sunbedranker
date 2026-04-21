@@ -36,13 +36,13 @@ export default function HotelCarouselSection({ hotels, type, isHotelier = false 
     return (
         <section className={`${config.bgClass} py-12 sm:py-16 md:py-20`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-center flex items-center justify-center gap-3">
-                    <svg className={`w-10 h-10 sm:w-12 sm:h-12 ${config.iconColor}`} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-3 text-center flex items-center justify-center gap-3">
+                    <svg className={`w-9 h-9 sm:w-11 sm:h-11 ${config.iconColor}`} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         {config.icon}
                     </svg>
                     {config.title}
                 </h2>
-                <p className="text-center text-gray-600 text-lg mb-8 sm:mb-10 md:mb-12 font-medium">
+                <p className="text-center text-slate-500 text-base sm:text-lg mb-8 sm:mb-10 md:mb-12">
                     {config.subtitle}
                 </p>
                 <HotelCarousel 

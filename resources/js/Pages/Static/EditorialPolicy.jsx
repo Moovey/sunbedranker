@@ -11,13 +11,13 @@ export default function EditorialPolicy() {
                 path="/editorial-policy"
             />
 
-            <div className="min-h-screen bg-white font-sans">
+            <div className="min-h-screen bg-slate-50/60 font-sans">
                 <Header />
 
                 <div className="bg-gradient-to-br from-orange-500 to-orange-600 py-16 sm:py-20">
                     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                        <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">Editorial Policy</h1>
-                        <p className="text-xl text-white/90 max-w-2xl mx-auto">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-[1.1] text-white mb-3 sm:mb-4">Editorial Policy</h1>
+                        <p className="text-base sm:text-lg text-orange-100/90 max-w-2xl mx-auto">
                             Our commitment to honest, independent, and helpful travel content
                         </p>
                     </div>
@@ -26,18 +26,18 @@ export default function EditorialPolicy() {
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
                     <div className="prose prose-lg max-w-none space-y-10">
                         <section>
-                            <h2 className="text-3xl font-bold text-gray-900 mb-4">Editorial Independence</h2>
-                            <p className="text-gray-700 text-lg leading-relaxed mb-4">
+                            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mb-4">Editorial Independence</h2>
+                            <p className="text-slate-700 text-base sm:text-lg leading-relaxed mb-4">
                                 Sunbed Ranker maintains strict editorial independence. Our content team operates independently from our commercial partnerships. Hotel reviews, ratings, and editorial recommendations are never influenced by advertising relationships or affiliate partnerships.
                             </p>
-                            <p className="text-gray-700 text-lg leading-relaxed">
+                            <p className="text-slate-700 text-base sm:text-lg leading-relaxed">
                                 Hotels that have claimed their profiles may provide additional information and imagery, but they cannot influence their scores or editorial coverage. Our reviews reflect the genuine quality of each hotel's pool experience.
                             </p>
                         </section>
 
                         <section>
-                            <h2 className="text-3xl font-bold text-gray-900 mb-4">Content Standards</h2>
-                            <p className="text-gray-700 text-lg leading-relaxed mb-4">All content published on Sunbed Ranker must meet these standards:</p>
+                            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mb-4">Content Standards</h2>
+                            <p className="text-slate-700 text-base sm:text-lg leading-relaxed mb-4">All content published on Sunbed Ranker must meet these standards:</p>
                             <ul className="space-y-3">
                                 {[
                                     'Accuracy: All facts, figures, and claims must be verified before publication.',
@@ -51,15 +51,15 @@ export default function EditorialPolicy() {
                                         <svg className="w-5 h-5 text-orange-500 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                         </svg>
-                                        <span className="text-gray-700 text-lg"><strong>{item.split(':')[0]}:</strong>{item.split(':').slice(1).join(':')}</span>
+                                        <span className="text-slate-700 text-base sm:text-lg"><strong>{item.split(':')[0]}:</strong>{item.split(':').slice(1).join(':')}</span>
                                     </li>
                                 ))}
                             </ul>
                         </section>
 
                         <section>
-                            <h2 className="text-3xl font-bold text-gray-900 mb-4">Review Process</h2>
-                            <p className="text-gray-700 text-lg leading-relaxed mb-4">
+                            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mb-4">Review Process</h2>
+                            <p className="text-slate-700 text-base sm:text-lg leading-relaxed mb-4">
                                 Every hotel review on Sunbed Ranker follows a structured process:
                             </p>
                             <ol className="space-y-4">
@@ -75,8 +75,8 @@ export default function EditorialPolicy() {
                                             {i + 1}
                                         </span>
                                         <div>
-                                            <h3 className="font-bold text-gray-900">{item.step}</h3>
-                                            <p className="text-gray-700">{item.desc}</p>
+                                            <h3 className="font-semibold tracking-tight text-slate-900">{item.step}</h3>
+                                            <p className="text-slate-700">{item.desc}</p>
                                         </div>
                                     </li>
                                 ))}
@@ -84,18 +84,18 @@ export default function EditorialPolicy() {
                         </section>
 
                         <section>
-                            <h2 className="text-3xl font-bold text-gray-900 mb-4">Affiliate Links & Revenue</h2>
-                            <p className="text-gray-700 text-lg leading-relaxed mb-4">
+                            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mb-4">Affiliate Links & Revenue</h2>
+                            <p className="text-slate-700 text-base sm:text-lg leading-relaxed mb-4">
                                 Sunbed Ranker earns revenue through affiliate partnerships with hotel booking platforms. When you click on a booking link and make a reservation, we may earn a commission at no additional cost to you.
                             </p>
-                            <p className="text-gray-700 text-lg leading-relaxed">
+                            <p className="text-slate-700 text-base sm:text-lg leading-relaxed">
                                 These commercial relationships never influence our editorial content, ratings, or recommendations. A hotel's affiliate relationship has no bearing on its score or placement in our rankings.
                             </p>
                         </section>
 
-                        <section className="bg-gray-50 rounded-2xl p-8">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-4">Corrections & Updates</h2>
-                            <p className="text-gray-700 text-lg leading-relaxed">
+                        <section className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] p-8">
+                            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 mb-4">Corrections & Updates</h2>
+                            <p className="text-slate-700 text-base sm:text-lg leading-relaxed">
                                 If you notice inaccurate information on our site, please contact us at <a href="mailto:editorial@sunbedranker.com" className="text-orange-500 hover:text-orange-600">editorial@sunbedranker.com</a>. We take accuracy seriously and will promptly investigate and correct any errors.
                             </p>
                         </section>

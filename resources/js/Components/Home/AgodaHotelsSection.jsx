@@ -2,13 +2,13 @@ export default function AgodaHotelsSection({ hotels }) {
     if (!hotels || hotels.length === 0) return null;
 
     return (
-        <section className="py-12 sm:py-16 bg-gradient-to-b from-blue-50 to-white">
+        <section className="py-12 sm:py-16 bg-gradient-to-b from-blue-50/70 to-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-8 sm:mb-10">
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-2 sm:mb-3">
                         Explore More Hotels
                     </h2>
-                    <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
+                    <p className="text-sm sm:text-base text-slate-500 max-w-2xl mx-auto leading-relaxed">
                         Hotels from our partner Agoda with estimated pool scores based on star rating
                     </p>
                 </div>
@@ -32,7 +32,7 @@ function AgodaHotelCard({ hotel }) {
             href={hotel.landing_url || '#'}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group border border-gray-100 block"
+            className="group bg-white rounded-2xl overflow-hidden ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.04),0_16px_32px_-16px_rgba(15,23,42,0.18)] transition-all duration-300 block"
         >
             <div className="relative aspect-[4/3] overflow-hidden">
                 <img

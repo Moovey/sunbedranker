@@ -9,8 +9,8 @@ export function PoolDetailsMetrics({ poolCriteria }) {
     if (!poolCriteria) return null;
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
+        <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] p-5 sm:p-6 lg:p-7 xl:p-8">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-semibold tracking-tight text-slate-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
                 <Icons.Grid className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
                 Pool Details
             </h2>
@@ -148,8 +148,8 @@ export function SunbedAvailabilitySection({ poolCriteria }) {
     }
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+        <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(15,23,42,0.12)] p-5 sm:p-6 lg:p-7 xl:p-8 transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-semibold tracking-tight text-slate-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
                 <Icons.Sunbed className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
                 Sunbed Availability
             </h2>
@@ -197,8 +197,8 @@ export function SunExposureSection({ poolCriteria }) {
     };
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+        <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(15,23,42,0.12)] p-5 sm:p-6 lg:p-7 xl:p-8 transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-semibold tracking-tight text-slate-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
                 <Icons.Sun className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
                 Sun Exposure & Orientation
             </h2>
@@ -261,8 +261,8 @@ export function TowelReservationSection({ poolCriteria }) {
     const cost = costLabels[poolCriteria.towel_service_cost];
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+        <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(15,23,42,0.12)] p-5 sm:p-6 lg:p-7 xl:p-8 transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-semibold tracking-tight text-slate-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
                 <Icons.Towel className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />
                 Towel & Reservation Policy
             </h2>
@@ -309,8 +309,8 @@ export function PoolSizeSection({ poolCriteria }) {
     }
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+        <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(15,23,42,0.12)] p-5 sm:p-6 lg:p-7 xl:p-8 transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-semibold tracking-tight text-slate-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
                 <Icons.PoolSize className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
                 Pool Size & Variety
             </h2>
@@ -389,8 +389,8 @@ export function FacilitiesSection({ poolCriteria }) {
     };
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+        <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(15,23,42,0.12)] p-5 sm:p-6 lg:p-7 xl:p-8 transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-semibold tracking-tight text-slate-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
                 <Icons.Facilities className="w-5 h-5 sm:w-6 sm:h-6 text-green-500" />
                 Pool Facilities & Comfort
             </h2>
@@ -493,8 +493,8 @@ export function AtmosphereSection({ poolCriteria }) {
     };
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+        <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(15,23,42,0.12)] p-5 sm:p-6 lg:p-7 xl:p-8 transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-semibold tracking-tight text-slate-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
                 <Icons.Atmosphere className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
                 Noise & Atmosphere
             </h2>
@@ -572,8 +572,8 @@ export function CleanlinessSection({ poolCriteria }) {
     );
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+        <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(15,23,42,0.12)] p-5 sm:p-6 lg:p-7 xl:p-8 transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-semibold tracking-tight text-slate-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
                 <Icons.Cleanliness className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
                 Cleanliness & Maintenance
             </h2>
@@ -611,8 +611,8 @@ export function AccessibilitySection({ poolCriteria }) {
     }
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+        <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(15,23,42,0.12)] p-5 sm:p-6 lg:p-7 xl:p-8 transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-semibold tracking-tight text-slate-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
                 <Icons.Accessibility className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
                 Accessibility Features
             </h2>
@@ -656,8 +656,8 @@ export function KidsFeaturesSection({ poolCriteria }) {
     }
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+        <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(15,23,42,0.12)] p-5 sm:p-6 lg:p-7 xl:p-8 transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-semibold tracking-tight text-slate-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
                 <Icons.Kids className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
                 Kids & Family Features
             </h2>
@@ -701,8 +701,8 @@ export function LuxuryFeaturesSection({ poolCriteria }) {
     }
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
+        <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(15,23,42,0.12)] p-5 sm:p-6 lg:p-7 xl:p-8 transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-semibold tracking-tight text-slate-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
                 <Icons.Luxury className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
                 Luxury & Premium Features
             </h2>

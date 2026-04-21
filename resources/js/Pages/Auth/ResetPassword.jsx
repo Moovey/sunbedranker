@@ -25,7 +25,7 @@ export default function ResetPassword({ token, email }) {
         <>
             <Head title="Reset Password" />
             
-            <div className="min-h-screen bg-white font-sans flex flex-col">
+            <div className="min-h-screen bg-slate-50/60 font-sans flex flex-col">
                 <Header />
 
                 {/* Main Content */}
@@ -41,12 +41,12 @@ export default function ResetPassword({ token, email }) {
                         </div>
 
                         {/* Reset Password Card */}
-                        <div className="bg-white rounded-2xl shadow-2xl border-2 border-gray-100 p-8 sm:p-10">
-                            <h1 className="font-sans text-3xl sm:text-4xl font-black text-gray-900 text-center mb-4">
+                        <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03),0_24px_48px_-24px_rgba(15,23,42,0.18)] p-8 sm:p-10">
+                            <h1 className="font-sans text-2xl sm:text-3xl font-bold tracking-tight leading-[1.1] text-slate-900 text-center mb-3">
                                 Reset Password
                             </h1>
 
-                            <p className="text-gray-600 text-sm text-center mb-8">
+                            <p className="text-slate-600 text-sm text-center mb-8">
                                 Enter your new password below.
                             </p>
 
@@ -64,7 +64,7 @@ export default function ResetPassword({ token, email }) {
                                 />
 
                                 <div>
-                                    <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2">
+                                    <label htmlFor="email" className="block text-[11px] uppercase tracking-[0.14em] font-semibold text-slate-500 mb-2">
                                         Email
                                     </label>
 
@@ -73,18 +73,18 @@ export default function ResetPassword({ token, email }) {
                                         type="email"
                                         name="email_display"
                                         value={data.email}
-                                        className="w-full px-4 py-3 border-2 border-gray-300 bg-gray-50 text-gray-900 rounded-lg font-medium cursor-not-allowed"
+                                        className="w-full px-3.5 py-2.5 ring-1 ring-inset ring-slate-200 bg-slate-50 text-slate-600 rounded-lg text-sm cursor-not-allowed"
                                         autoComplete="username"
                                         readOnly
                                     />
 
                                     {errors.email && (
-                                        <p className="mt-2 text-sm text-red-600 font-semibold">{errors.email}</p>
+                                        <p className="mt-2 text-xs text-rose-600 font-medium">{errors.email}</p>
                                     )}
                                 </div>
 
                                 <div>
-                                    <label htmlFor="password" className="block text-sm font-bold text-gray-700 mb-2">
+                                    <label htmlFor="password" className="block text-[11px] uppercase tracking-[0.14em] font-semibold text-slate-500 mb-2">
                                         New Password
                                     </label>
 
@@ -94,7 +94,7 @@ export default function ResetPassword({ token, email }) {
                                             type={showPassword ? "text" : "password"}
                                             name="password"
                                             value={data.password}
-                                            className="w-full px-4 py-3 pr-12 border-2 border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-gray-900 placeholder-gray-400 transition-all duration-300 rounded-lg font-medium"
+                                            className="w-full px-3.5 py-2.5 pr-11 bg-white ring-1 ring-inset ring-slate-200 hover:ring-slate-300 focus:ring-2 focus:ring-orange-500 outline-none text-slate-900 placeholder-slate-400 transition-shadow duration-150 rounded-lg text-sm"
                                             autoComplete="new-password"
                                             autoFocus
                                             placeholder="••••••••"
@@ -103,7 +103,7 @@ export default function ResetPassword({ token, email }) {
                                         <button
                                             type="button"
                                             onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors duration-200"
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors duration-150"
                                         >
                                             {showPassword ? (
                                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,12 +119,12 @@ export default function ResetPassword({ token, email }) {
                                     </div>
 
                                     {errors.password && (
-                                        <p className="mt-2 text-sm text-red-600 font-semibold">{errors.password}</p>
+                                        <p className="mt-2 text-xs text-rose-600 font-medium">{errors.password}</p>
                                     )}
                                 </div>
 
                                 <div>
-                                    <label htmlFor="password_confirmation" className="block text-sm font-bold text-gray-700 mb-2">
+                                    <label htmlFor="password_confirmation" className="block text-[11px] uppercase tracking-[0.14em] font-semibold text-slate-500 mb-2">
                                         Confirm New Password
                                     </label>
 
@@ -134,7 +134,7 @@ export default function ResetPassword({ token, email }) {
                                             type={showPasswordConfirmation ? "text" : "password"}
                                             name="password_confirmation"
                                             value={data.password_confirmation}
-                                            className="w-full px-4 py-3 pr-12 border-2 border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-gray-900 placeholder-gray-400 transition-all duration-300 rounded-lg font-medium"
+                                            className="w-full px-3.5 py-2.5 pr-11 bg-white ring-1 ring-inset ring-slate-200 hover:ring-slate-300 focus:ring-2 focus:ring-orange-500 outline-none text-slate-900 placeholder-slate-400 transition-shadow duration-150 rounded-lg text-sm"
                                             autoComplete="new-password"
                                             placeholder="••••••••"
                                             onChange={(e) => setData('password_confirmation', e.target.value)}
@@ -142,7 +142,7 @@ export default function ResetPassword({ token, email }) {
                                         <button
                                             type="button"
                                             onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors duration-200"
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors duration-150"
                                         >
                                             {showPasswordConfirmation ? (
                                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,7 +158,7 @@ export default function ResetPassword({ token, email }) {
                                     </div>
 
                                     {errors.password_confirmation && (
-                                        <p className="mt-2 text-sm text-red-600 font-semibold">{errors.password_confirmation}</p>
+                                        <p className="mt-2 text-xs text-rose-600 font-medium">{errors.password_confirmation}</p>
                                     )}
                                 </div>
 
@@ -166,7 +166,7 @@ export default function ResetPassword({ token, email }) {
                                     <button
                                         type="submit"
                                         disabled={processing}
-                                        className="w-full px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 hover:shadow-xl transform hover:scale-105 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
+                                        className="w-full px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold tracking-tight rounded-lg shadow-sm hover:shadow-md ring-1 ring-inset ring-black/[0.04] transition-all duration-200 disabled:bg-slate-300 disabled:cursor-not-allowed disabled:hover:shadow-sm"
                                     >
                                         {processing ? 'Resetting...' : 'Reset Password'}
                                     </button>
@@ -174,12 +174,12 @@ export default function ResetPassword({ token, email }) {
                             </form>
 
                             {/* Login Link */}
-                            <div className="mt-8 pt-6 border-t-2 border-gray-200 text-center">
-                                <p className="text-sm text-gray-700 font-semibold">
+                            <div className="mt-8 pt-6 border-t border-slate-200/70 text-center">
+                                <p className="text-sm text-slate-600">
                                     Remember your password?{' '}
                                     <Link
                                         href={route('login')}
-                                        className="text-orange-600 hover:text-orange-700 font-bold transition-all duration-300 transform hover:scale-105 inline-block"
+                                        className="text-orange-600 hover:text-orange-700 font-semibold transition-colors duration-150 inline-block"
                                     >
                                         Log in
                                     </Link>
@@ -188,9 +188,9 @@ export default function ResetPassword({ token, email }) {
                         </div>
 
                         {/* Footer Note */}
-                        <p className="mt-8 text-center text-xs text-gray-600 font-medium">
+                        <p className="mt-8 text-center text-xs text-slate-500">
                             Need help?{' '}
-                            <Link href="/" className="text-blue-600 hover:text-blue-700 font-bold transition-colors duration-300">
+                            <Link href="/" className="text-slate-600 hover:text-slate-900 font-semibold transition-colors duration-150">
                                 Contact Support
                             </Link>
                         </p>

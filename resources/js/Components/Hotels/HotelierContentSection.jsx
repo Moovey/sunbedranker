@@ -93,7 +93,7 @@ export function FaqsSection({ hotel, openFaqIndex, toggleFaq }) {
     if (!hotel.faqs || hotel.faqs.length === 0) return null;
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100">
+        <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] p-5 sm:p-6 lg:p-7 xl:p-8">
             <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2 lg:gap-3">
                 <Icons.FAQ className="w-6 h-6 sm:w-7 sm:h-7 text-orange-500" />
                 Frequently Asked Questions
@@ -128,8 +128,8 @@ export function PhotoGallerySection({ allImages, activeImageIndex, setActiveImag
     if (allImages.length <= 1) return null;
 
     return (
-        <div className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 lg:p-7 xl:p-8 border-2 border-gray-100 hover:shadow-xl transition-all duration-300">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-sans font-bold text-gray-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
+        <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(15,23,42,0.12)] p-5 sm:p-6 lg:p-7 xl:p-8 transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-sans font-semibold tracking-tight text-slate-900 mb-5 sm:mb-6 lg:mb-7 xl:mb-8 flex items-center gap-2 lg:gap-3">
                 <Icons.Gallery className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
                 Photo Gallery
             </h2>

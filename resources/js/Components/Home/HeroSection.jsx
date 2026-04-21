@@ -13,12 +13,12 @@ const poolVibes = [
 ];
 
 const getVibeButtonClasses = (vibe, isActive) => {
-    const base = 'flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 border';
+    const base = 'flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ring-1 ring-inset';
     
     if (isActive) {
-        return `${base} bg-orange-500 text-white border-orange-500`;
+        return `${base} bg-orange-500 text-white ring-orange-500 shadow-sm`;
     }
-    return `${base} bg-white text-gray-700 hover:bg-gray-50 border-gray-300`;
+    return `${base} bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 ring-slate-200`;
 };
 
 export default function HeroSection() {
@@ -126,17 +126,17 @@ export default function HeroSection() {
             <div className="relative h-full flex items-center justify-center py-10 sm:py-14 md:py-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
                     <div className="text-center">
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-5 leading-tight text-gray-900">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 sm:mb-5 leading-[1.05] text-slate-900">
                             Will You Struggle to <br className="hidden sm:block" />Get a Sunbed?
                         </h1>
                         
-                        <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 text-gray-700 font-medium max-w-2xl mx-auto">
+                        <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 text-slate-600 font-medium max-w-2xl mx-auto leading-relaxed">
                             Compare hotels by pool quality, sunbed availability, and sun exposure.
                         </p>
                         
                         {/* Search Box */}
                         <div className="max-w-4xl mx-auto px-2">
-                            <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-6 lg:p-8 border-2 border-orange-300">
+                            <div className="bg-white/95 backdrop-blur-sm rounded-2xl ring-1 ring-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_20px_40px_-20px_rgba(15,23,42,0.18)] p-5 sm:p-6 lg:p-8">
                                 <form onSubmit={handleSearch}>
                                     <div className="flex flex-col sm:flex-row gap-3">
                                         <div className="flex-1 relative" ref={wrapperRef}>
@@ -154,7 +154,7 @@ export default function HeroSection() {
                                                 onKeyDown={handleKeyDown}
                                                 onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
                                                 placeholder="Where to? (e.g., Canary Islands, Tenerife)"
-                                                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none text-gray-900 placeholder-gray-400 transition-all duration-200 text-base font-medium"
+                                                className="w-full px-4 py-3 bg-white ring-1 ring-slate-200 rounded-lg focus:ring-2 focus:ring-orange-400 focus:shadow-[0_0_0_4px_rgba(249,115,22,0.08)] outline-none text-slate-900 placeholder-slate-400 transition-all duration-200 text-base font-medium"
                                                 autoComplete="off"
                                                 role="combobox"
                                                 aria-expanded={showSuggestions}
@@ -212,7 +212,7 @@ export default function HeroSection() {
                                             type="submit"
                                             disabled={isSearching}
                                             aria-label={isSearching ? 'Searching for hotels' : 'Search hotels'}
-                                            className="w-full sm:w-auto px-8 py-3 bg-orange-500 text-white font-bold text-base rounded-lg hover:bg-orange-600 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md flex items-center justify-center gap-2"
+                                            className="w-full sm:w-auto px-8 py-3 bg-orange-500 text-white font-semibold tracking-tight text-base rounded-lg hover:bg-orange-600 transition-all duration-200 disabled:bg-slate-300 disabled:cursor-not-allowed shadow-sm hover:shadow-md ring-1 ring-inset ring-black/[0.04] flex items-center justify-center gap-2"
                                         >
                                             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                                                 <circle cx="11" cy="11" r="8"/>
@@ -223,9 +223,9 @@ export default function HeroSection() {
                                     </div>
 
                                     {/* Pool Filters */}
-                                    <div className="mt-5 pt-5 border-t border-gray-200">
-                                        <p className="text-left text-sm font-semibold text-gray-700 mb-3">
-                                            Find your perfect stay:
+                                    <div className="mt-5 pt-5 border-t border-slate-100">
+                                        <p className="text-left text-[11px] uppercase tracking-[0.14em] font-semibold text-slate-500 mb-3">
+                                            Find your perfect stay
                                         </p>
                                         <div className="flex flex-wrap gap-2">
                                             {poolVibes.map((vibe) => (
