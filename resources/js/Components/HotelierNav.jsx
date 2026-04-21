@@ -7,6 +7,15 @@ export default function HotelierNav() {
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const dropdownRef = useRef(null);
 
+    const isActiveLink = (href, wildcard = null) => {
+        const pathname = window.location.pathname;
+        if (wildcard) {
+            const basePath = href.replace(/\/$/, '');
+            return pathname.startsWith(basePath);
+        }
+        return pathname === href;
+    };
+
     // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -38,7 +47,7 @@ export default function HotelierNav() {
                             <Link
                                 href={route('hotelier.dashboard')}
                                 className={`px-3 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${
-                                    route().current('hotelier.dashboard')
+                                    isActiveLink('/hotelier')
                                         ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
                                         : 'text-gray-700 hover:bg-orange-50'
                                 }`}
@@ -48,7 +57,7 @@ export default function HotelierNav() {
                             <Link
                                 href={route('hotelier.claims.index')}
                                 className={`px-3 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${
-                                    route().current('hotelier.claims.*')
+                                    isActiveLink('/hotelier/claims', true)
                                         ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
                                         : 'text-gray-700 hover:bg-orange-50'
                                 }`}
@@ -58,7 +67,7 @@ export default function HotelierNav() {
                             <Link
                                 href={route('hotelier.subscription')}
                                 className={`px-3 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${
-                                    route().current('hotelier.subscription')
+                                    isActiveLink('/hotelier/subscription')
                                         ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
                                         : 'text-gray-700 hover:bg-orange-50'
                                 }`}
@@ -147,7 +156,7 @@ export default function HotelierNav() {
                         <Link
                             href={route('hotelier.dashboard')}
                             className={`block px-3 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${
-                                route().current('hotelier.dashboard')
+                                isActiveLink('/hotelier')
                                     ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
                                     : 'text-gray-700 hover:bg-orange-50'
                             }`}
@@ -158,7 +167,7 @@ export default function HotelierNav() {
                         <Link
                             href={route('hotelier.claims.index')}
                             className={`block px-3 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${
-                                route().current('hotelier.claims.*')
+                                isActiveLink('/hotelier/claims', true)
                                     ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
                                     : 'text-gray-700 hover:bg-orange-50'
                             }`}
@@ -169,7 +178,7 @@ export default function HotelierNav() {
                         <Link
                             href={route('hotelier.subscription')}
                             className={`block px-3 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${
-                                route().current('hotelier.subscription')
+                                isActiveLink('/hotelier/subscription')
                                     ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
                                     : 'text-gray-700 hover:bg-orange-50'
                             }`}

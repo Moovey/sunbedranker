@@ -10,6 +10,20 @@ export default function AdminNav({ stats }) {
     );
     const dropdownRef = useRef(null);
 
+    // Helper to check if a path is currently active by comparing URL
+    const isActiveLink = (href, wildcard = null) => {
+        const pathname = window.location.pathname;
+        
+        if (wildcard) {
+            // For wildcard routes like /admin/hotels/* or /admin/scoring/*
+            const basePath = href.replace(/\/$/, ''); // Remove trailing slash
+            return pathname.startsWith(basePath);
+        }
+        
+        // Exact match for /admin
+        return pathname === href || (href === '/admin' && pathname === '/admin/');
+    };
+
     // Poll for live pending claims count every 30 seconds + on mount
     useEffect(() => {
         const poll = () => {
@@ -75,7 +89,7 @@ export default function AdminNav({ stats }) {
                             <Link
                                 href="/admin"
                                 className={`px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                    route().current('admin.dashboard')
+                                    isActiveLink('/admin')
                                         ? 'bg-neutral-100 text-neutral-900'
                                         : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                                 }`}
@@ -85,7 +99,7 @@ export default function AdminNav({ stats }) {
                             <Link
                                 href="/admin/hotels"
                                 className={`px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                    route().current('admin.hotels.*')
+                                    isActiveLink('/admin/hotels', true)
                                         ? 'bg-neutral-100 text-neutral-900'
                                         : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                                 }`}
@@ -95,7 +109,7 @@ export default function AdminNav({ stats }) {
                             <Link
                                 href="/admin/scoring"
                                 className={`px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                    route().current('admin.scoring.*')
+                                    isActiveLink('/admin/scoring', true)
                                         ? 'bg-neutral-100 text-neutral-900'
                                         : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                                 }`}
@@ -105,7 +119,7 @@ export default function AdminNav({ stats }) {
                             <Link
                                 href="/admin/claims"
                                 className={`px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                    route().current('admin.claims.*') || route().current('admin.hoteliers.*') || route().current('admin.subscriptions.*')
+                                    isActiveLink('/admin/claims', true) || isActiveLink('/admin/hoteliers', true) || isActiveLink('/admin/subscriptions', true)
                                         ? 'bg-neutral-100 text-neutral-900'
                                         : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                                 }`}
@@ -120,7 +134,7 @@ export default function AdminNav({ stats }) {
                             <Link
                                 href="/admin/users"
                                 className={`px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                    route().current('admin.users.*')
+                                    isActiveLink('/admin/users', true)
                                         ? 'bg-neutral-100 text-neutral-900'
                                         : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                                 }`}
@@ -130,7 +144,7 @@ export default function AdminNav({ stats }) {
                             <Link
                                 href="/admin/destinations"
                                 className={`px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                    route().current('admin.destinations.*')
+                                    isActiveLink('/admin/destinations', true)
                                         ? 'bg-neutral-100 text-neutral-900'
                                         : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                                 }`}
@@ -140,7 +154,7 @@ export default function AdminNav({ stats }) {
                             <Link
                                 href="/admin/content"
                                 className={`px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                    route().current('admin.content.*')
+                                    isActiveLink('/admin/content', true)
                                         ? 'bg-neutral-100 text-neutral-900'
                                         : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                                 }`}
@@ -150,7 +164,7 @@ export default function AdminNav({ stats }) {
                             <Link
                                 href="/admin/directory"
                                 className={`px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                    route().current('admin.directory.*')
+                                    isActiveLink('/admin/directory', true)
                                         ? 'bg-neutral-100 text-neutral-900'
                                         : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                                 }`}
@@ -239,7 +253,7 @@ export default function AdminNav({ stats }) {
                         <Link
                             href="/admin"
                             className={`block px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                route().current('admin.dashboard')
+                                isActiveLink('/admin')
                                     ? 'bg-neutral-100 text-neutral-900'
                                     : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                             }`}
@@ -250,7 +264,7 @@ export default function AdminNav({ stats }) {
                         <Link
                             href="/admin/hotels"
                             className={`block px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                route().current('admin.hotels.*')
+                                isActiveLink('/admin/hotels', true)
                                     ? 'bg-neutral-100 text-neutral-900'
                                     : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                             }`}
@@ -261,7 +275,7 @@ export default function AdminNav({ stats }) {
                         <Link
                             href="/admin/scoring"
                             className={`block px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                route().current('admin.scoring.*')
+                                isActiveLink('/admin/scoring', true)
                                     ? 'bg-neutral-100 text-neutral-900'
                                     : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                             }`}
@@ -272,7 +286,7 @@ export default function AdminNav({ stats }) {
                         <Link
                             href="/admin/claims"
                             className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                route().current('admin.claims.*') || route().current('admin.hoteliers.*') || route().current('admin.subscriptions.*')
+                                isActiveLink('/admin/claims', true) || isActiveLink('/admin/hoteliers', true) || isActiveLink('/admin/subscriptions', true)
                                     ? 'bg-neutral-100 text-neutral-900'
                                     : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                             }`}
@@ -288,7 +302,7 @@ export default function AdminNav({ stats }) {
                         <Link
                             href="/admin/users"
                             className={`block px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                route().current('admin.users.*')
+                                isActiveLink('/admin/users', true)
                                     ? 'bg-neutral-100 text-neutral-900'
                                     : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                             }`}
@@ -299,7 +313,7 @@ export default function AdminNav({ stats }) {
                         <Link
                             href="/admin/destinations"
                             className={`block px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                route().current('admin.destinations.*')
+                                isActiveLink('/admin/destinations', true)
                                     ? 'bg-neutral-100 text-neutral-900'
                                     : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                             }`}
@@ -310,7 +324,7 @@ export default function AdminNav({ stats }) {
                         <Link
                             href="/admin/content"
                             className={`block px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                route().current('admin.content.*')
+                                isActiveLink('/admin/content', true)
                                     ? 'bg-neutral-100 text-neutral-900'
                                     : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                             }`}
@@ -321,7 +335,7 @@ export default function AdminNav({ stats }) {
                         <Link
                             href="/admin/directory"
                             className={`block px-3 py-2 rounded-lg text-sm font-light transition-all duration-300 ${
-                                route().current('admin.directory.*')
+                                isActiveLink('/admin/directory', true)
                                     ? 'bg-neutral-100 text-neutral-900'
                                     : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
                             }`}

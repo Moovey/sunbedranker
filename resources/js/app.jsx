@@ -21,10 +21,23 @@ createInertiaApp({
             import.meta.glob('./Pages/**/*.jsx'),
         ),
     setup({ el, App, props }) {
-        // Set up Ziggy route() from Inertia shared props (removes need for @routes blade directive)
-        const ziggy = props.initialPage.props.ziggy;
-        window.Ziggy = ziggy;
+        // Keep Ziggy in sync with Inertia page changes so route().current() stays accurate.
+        const syncZiggy = (page) => {
+            if (page?.props?.ziggy) {
+                window.Ziggy = {
+                    ...page.props.ziggy,
+                    location: new URL(page.props.ziggy.location, window.location.origin),
+                };
+            }
+        };
+
+        syncZiggy(props.initialPage);
         window.route = route;
+
+        // Sync Ziggy on successful page navigation (after re-render)
+        document.addEventListener('inertia:success', (event) => {
+            syncZiggy(event.detail.page);
+        });
 
         const root = createRoot(el);
 
