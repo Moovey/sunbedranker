@@ -134,7 +134,7 @@ export default function PoolCriteriaTab({ data, setData, errors }) {
                             Which Areas are Sunny? (Select all that apply)
                         </label>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                            {['main_pool', 'kids_pool', 'quiet_area', 'rooftop', 'adult_pool', 'terrace'].map(area => (
+                            {['main_pool', 'kids_pool', 'quiet_area', 'rooftop', 'adult_pool', 'terrace', 'sun_terrace', 'garden', 'beach_deck'].map(area => (
                                 <label key={area} className="flex items-center space-x-2 cursor-pointer">
                                     <input
                                         type="checkbox"
@@ -208,6 +208,7 @@ export default function PoolCriteriaTab({ data, setData, errors }) {
                         </label>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             {[
+                                { value: 'main', label: 'Main Pool' },
                                 { value: 'infinity', label: 'Infinity Pool' },
                                 { value: 'kids', label: 'Kids Pool' },
                                 { value: 'adult_only', label: 'Adult-Only Pool' },
@@ -215,6 +216,7 @@ export default function PoolCriteriaTab({ data, setData, errors }) {
                                 { value: 'rooftop', label: 'Rooftop Pool' },
                                 { value: 'lagoon', label: 'Lagoon-Style' },
                                 { value: 'heated', label: 'Heated Pool' },
+                                { value: 'plunge', label: 'Plunge Pool' },
                                 { value: 'olympic', label: 'Olympic-Size' },
                             ].map(type => (
                                 <label key={type.value} className="flex items-center space-x-2 cursor-pointer">
@@ -300,9 +302,13 @@ export default function PoolCriteriaTab({ data, setData, errors }) {
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             {[
                                 { value: 'plastic', label: 'Plastic Loungers' },
+                                { value: 'plastic_with_cushion', label: 'Plastic + Cushion' },
                                 { value: 'cushioned', label: 'Cushioned Beds' },
                                 { value: 'cabanas', label: 'Cabanas' },
+                                { value: 'balinese_beds', label: 'Balinese Beds' },
                                 { value: 'bali_beds', label: 'Bali Beds' },
+                                { value: 'double_loungers', label: 'Double Loungers' },
+                                { value: 'wooden', label: 'Wooden Loungers' },
                             ].map(type => (
                                 <label key={type.value} className="flex items-center space-x-2 cursor-pointer">
                                     <input
@@ -326,6 +332,8 @@ export default function PoolCriteriaTab({ data, setData, errors }) {
                                 { value: 'umbrellas', label: 'Umbrellas ☂️' },
                                 { value: 'pergolas', label: 'Pergolas' },
                                 { value: 'cabanas', label: 'Cabanas' },
+                                { value: 'palm_trees', label: 'Palm Trees 🌴' },
+                                { value: 'trees', label: 'Trees 🌳' },
                                 { value: 'natural_trees', label: 'Natural Trees 🌳' },
                             ].map(option => (
                                 <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
@@ -461,9 +469,12 @@ export default function PoolCriteriaTab({ data, setData, errors }) {
                             <div className="ml-6 grid grid-cols-2 md:grid-cols-4 gap-3 p-4 bg-neutral-50 rounded-lg">
                                 {[
                                     { value: 'aqua_gym', label: 'Aqua Gym' },
+                                    { value: 'aqua_aerobics', label: 'Aqua Aerobics' },
                                     { value: 'games', label: 'Pool Games' },
+                                    { value: 'pool_games', label: 'Pool Games (Structured)' },
                                     { value: 'animation_team', label: 'Animation Team' },
                                     { value: 'live_music', label: 'Live Music' },
+                                    { value: 'dj', label: 'DJ Set' },
                                 ].map(type => (
                                     <label key={type.value} className="flex items-center space-x-2 cursor-pointer">
                                         <input

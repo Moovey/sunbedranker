@@ -193,7 +193,8 @@ class HotelManagementController extends Controller
         ];
 
         // Convert empty strings to null for nullable select fields (FormData sends '' for unset dropdowns)
-        $data = array_map(fn ($value) => $value === '' ? null : $value, $request->all());
+            $data = array_map(fn ($value) => $value === '' ? null : $value, $request->all());
+            $data = $this->normalizeLegacyPoolEnumValues($data);
 
         $validator = Validator::make($data, $rules);
 
@@ -376,6 +377,81 @@ class HotelManagementController extends Controller
         return $validated;
     }
 
+    /**
+     * Normalize legacy enum values so older/imported records can still be edited.
+     */
+    private function normalizeLegacyPoolEnumValues(array $data): array
+    {
+        $sunExposureMap = [
+            'mostly_sunny' => 'all_day',
+            'morning' => 'morning_only',
+            'afternoon' => 'afternoon_only',
+            'limited' => 'partial_shade',
+        ];
+
+        $poolSizeMap = [
+            'olympic' => 'very_large',
+        ];
+
+        $atmosphereMap = [
+            'mixed' => 'relaxed',
+        ];
+
+        $musicLevelMap = [
+            'soft' => 'low',
+        ];
+
+        if (isset($data['sun_exposure']) && isset($sunExposureMap[$data['sun_exposure']])) {
+            $data['sun_exposure'] = $sunExposureMap[$data['sun_exposure']];
+        }
+
+        if (isset($data['pool_size_category']) && isset($poolSizeMap[$data['pool_size_category']])) {
+            $data['pool_size_category'] = $poolSizeMap[$data['pool_size_category']];
+        }
+
+        if (isset($data['atmosphere']) && isset($atmosphereMap[$data['atmosphere']])) {
+            $data['atmosphere'] = $atmosphereMap[$data['atmosphere']];
+        }
+
+        if (isset($data['music_level']) && isset($musicLevelMap[$data['music_level']])) {
+            $data['music_level'] = $musicLevelMap[$data['music_level']];
+        }
+
+        if (isset($data['pool_types']) && is_array($data['pool_types'])) {
+            $data['pool_types'] = array_values(array_unique(array_map(
+                fn ($type) => $type === 'adults_only' ? 'adult_only' : $type,
+                $data['pool_types']
+            )));
+        }
+
+        $arrayFieldMaps = [
+            'sunny_areas' => [
+                'terrace' => 'sun_terrace',
+            ],
+            'sunbed_types' => [
+                'bali_beds' => 'balinese_beds',
+            ],
+            'shade_options' => [
+                'natural_trees' => 'trees',
+            ],
+            'entertainment_types' => [
+                'aqua_gym' => 'aqua_aerobics',
+                'games' => 'pool_games',
+            ],
+        ];
+
+        foreach ($arrayFieldMaps as $field => $map) {
+            if (isset($data[$field]) && is_array($data[$field])) {
+                $data[$field] = array_values(array_unique(array_map(
+                    fn ($value) => $map[$value] ?? $value,
+                    $data[$field]
+                )));
+            }
+        }
+
+        return $data;
+    }
+
     public function edit(Hotel $hotel): Response
     {
         $hotel->load(['destination', 'poolCriteria', 'badges']);
@@ -482,7 +558,8 @@ class HotelManagementController extends Controller
         ];
 
         // Convert empty strings to null for nullable select fields (FormData sends '' for unset dropdowns)
-        $data = array_map(fn ($value) => $value === '' ? null : $value, $request->all());
+            $data = array_map(fn ($value) => $value === '' ? null : $value, $request->all());
+            $data = $this->normalizeLegacyPoolEnumValues($data);
 
         $validator = Validator::make($data, $rules);
 

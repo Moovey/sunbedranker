@@ -95,9 +95,9 @@ class PoolEstimationService
         // 5-star resort: large pools, excellent facilities, high service
         $c->sunbed_count = rand(120, 200);
         $c->sunbed_to_guest_ratio = round(rand(75, 95) / 100, 2);
-        $c->sun_exposure = $this->pick(['all_day', 'all_day', 'mostly_sunny']);
+        $c->sun_exposure = $this->pick(['all_day', 'all_day', 'afternoon_only']);
         $c->sunny_areas = $this->pickMultiple(['main_pool', 'rooftop', 'sun_terrace', 'garden', 'beach_deck'], 3, 5);
-        $c->pool_size_category = $this->pick(['large', 'large', 'olympic']);
+        $c->pool_size_category = $this->pick(['large', 'large', 'very_large']);
         $c->pool_size_sqm = rand(250, 600);
         $c->number_of_pools = rand(2, 4);
         $c->pool_types = $this->buildPoolTypes($c->number_of_pools, true);
@@ -148,7 +148,7 @@ class PoolEstimationService
         // 4-star hotel: good pools, solid facilities
         $c->sunbed_count = rand(60, 120);
         $c->sunbed_to_guest_ratio = round(rand(50, 70) / 100, 2);
-        $c->sun_exposure = $this->pick(['all_day', 'mostly_sunny', 'all_day']);
+        $c->sun_exposure = $this->pick(['all_day', 'afternoon_only', 'all_day']);
         $c->sunny_areas = $this->pickMultiple(['main_pool', 'sun_terrace', 'garden'], 2, 3);
         $c->pool_size_category = $this->pick(['medium', 'large', 'medium']);
         $c->pool_size_sqm = rand(120, 300);
@@ -200,7 +200,7 @@ class PoolEstimationService
         // 3-star hotel: basic pool, limited extras
         $c->sunbed_count = rand(30, 60);
         $c->sunbed_to_guest_ratio = round(rand(30, 50) / 100, 2);
-        $c->sun_exposure = $this->pick(['mostly_sunny', 'afternoon_only', 'all_day']);
+        $c->sun_exposure = $this->pick(['partial_shade', 'afternoon_only', 'all_day']);
         $c->sunny_areas = $this->pickMultiple(['main_pool', 'garden'], 1, 2);
         $c->pool_size_category = $this->pick(['medium', 'small', 'medium']);
         $c->pool_size_sqm = rand(50, 150);
@@ -252,7 +252,7 @@ class PoolEstimationService
         // 1-2 star hotel: basic or small pool, minimal facilities
         $c->sunbed_count = rand(10, 30);
         $c->sunbed_to_guest_ratio = round(rand(15, 35) / 100, 2);
-        $c->sun_exposure = $this->pick(['partial_shade', 'afternoon_only', 'mostly_sunny']);
+        $c->sun_exposure = $this->pick(['partial_shade', 'afternoon_only', 'mostly_shaded']);
         $c->sunny_areas = ['main_pool'];
         $c->pool_size_category = $this->pick(['small', 'small', 'medium']);
         $c->pool_size_sqm = rand(20, 60);
@@ -325,7 +325,7 @@ class PoolEstimationService
     {
         $types = ['main'];
         $extras = $luxury
-            ? ['infinity', 'kids', 'rooftop', 'indoor', 'adults_only']
+            ? ['infinity', 'kids', 'rooftop', 'indoor', 'adult_only']
             : ['kids', 'indoor', 'plunge'];
 
         shuffle($extras);
