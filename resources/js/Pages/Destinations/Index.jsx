@@ -152,24 +152,6 @@ export default function DestinationsIndex({ destinations }) {
                     </div>
                 </section>
 
-                {/* CTA Section */}
-                <section className="bg-gradient-to-b from-orange-50 to-white py-12 sm:py-16">
-                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-                            Can't find your destination?
-                        </h2>
-                        <p className="text-gray-600 text-lg mb-8 font-medium">
-                            We're constantly adding new destinations. Let us know where you'd like to see next!
-                        </p>
-                        <Link
-                            href="/"
-                            className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 inline-block"
-                        >
-                            Back to Home
-                        </Link>
-                    </div>
-                </section>
-
                 {/* Pagination */}
                 {links && links.length > 3 && (
                     <div className="py-8">
@@ -194,6 +176,24 @@ export default function DestinationsIndex({ destinations }) {
                         </div>
                     </div>
                 )}
+
+                {/* CTA Section */}
+                <section className="bg-gradient-to-b from-orange-50 to-white py-12 sm:py-16">
+                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+                            Can't find your destination?
+                        </h2>
+                        <p className="text-gray-600 text-lg mb-8 font-medium">
+                            We're constantly adding new destinations. Let us know where you'd like to see next!
+                        </p>
+                        <Link
+                            href="/"
+                            className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 inline-block"
+                        >
+                            Back to Home
+                        </Link>
+                    </div>
+                </section>
 
                 <Footer />
             </div>
