@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\FilterHotelsRequest;
 use App\Http\Requests\Admin\StoreHotelRequest;
 use App\Http\Requests\Admin\UpdateHotelRequest;
+use App\Models\AgodaHotel;
 use App\Models\Hotel;
 use App\Models\Destination;
 use App\Models\PoolCriteria;
@@ -682,6 +683,9 @@ class HotelManagementController extends Controller
     public function destroy(Hotel $hotel): RedirectResponse
     {
         $hotel->delete();
+
+        AgodaHotel::where('promoted_hotel_id', $hotel->id)
+            ->update(['promoted_hotel_id' => null]);
 
         return redirect()->route('admin.hotels.index')
             ->with('success', 'Hotel deleted successfully.');

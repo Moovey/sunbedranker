@@ -18,11 +18,27 @@ const PROMOTED_OPTIONS = [
     { value: 'yes', label: 'Promoted' },
 ];
 
+const PROMOTE_MODE_BADGE = {
+    restored: {
+        label: 'Restored',
+        className: 'bg-emerald-100 text-emerald-800 border border-emerald-200',
+    },
+    relinked: {
+        label: 'Re-linked',
+        className: 'bg-blue-100 text-blue-800 border border-blue-200',
+    },
+    promoted: {
+        label: 'Promoted',
+        className: 'bg-indigo-100 text-indigo-800 border border-indigo-200',
+    },
+};
+
 export default function DirectoryIndex({
     hotels, countries, accommodationTypes, totalCount, promotedCount,
     importProgress, filters, stats,
 }) {
     const { flash } = usePage().props;
+    const promoteBadge = PROMOTE_MODE_BADGE[flash?.promote_mode] || null;
 
     useEffect(() => {
         if (flash?.success) toast.success(flash.success);
@@ -175,6 +191,11 @@ export default function DirectoryIndex({
                             <p className="text-gray-500 text-xs sm:text-sm mt-1">
                                 {totalCount.toLocaleString()} hotels in directory · {promotedCount.toLocaleString()} promoted to site
                             </p>
+                            {promoteBadge && (
+                                <span className={`inline-flex items-center px-2.5 py-1 mt-2 text-xs font-semibold rounded-full ${promoteBadge.className}`}>
+                                    Last action: {promoteBadge.label}
+                                </span>
+                            )}
                         </div>
                         <button
                             onClick={() => setShowUploadModal(true)}

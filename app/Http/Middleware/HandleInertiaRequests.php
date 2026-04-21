@@ -57,6 +57,7 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->get('error'),
                 'warning' => fn () => $request->session()->get('warning'),
                 'info' => fn () => $request->session()->get('info'),
+                'promote_mode' => fn () => $request->session()->get('promote_mode'),
             ],
             // Share pending claims count for admin nav badge (only for admin users)
             'adminStats' => fn () => $user && $user->role === 'admin' ? [

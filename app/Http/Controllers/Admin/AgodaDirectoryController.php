@@ -25,6 +25,8 @@ class AgodaDirectoryController extends Controller
 {
     public function index(Request $request): Response
     {
+        $this->clearStalePromotionLinks();
+
         $query = AgodaHotel::query();
 
         $hasSearch = false;
@@ -198,14 +200,29 @@ class AgodaDirectoryController extends Controller
     public function promote(Request $request, AgodaHotel $agodaHotel): RedirectResponse
     {
         if ($agodaHotel->isPromoted()) {
-            return back()->withErrors(['error' => 'This hotel has already been promoted.']);
+            $linkedHotel = Hotel::withTrashed()->find($agodaHotel->promoted_hotel_id);
+
+            if (!$linkedHotel || $linkedHotel->trashed()) {
+                $agodaHotel->update(['promoted_hotel_id' => null]);
+                $agodaHotel->refresh();
+            } else {
+                return back()->withErrors(['error' => 'This hotel has already been promoted.']);
+            }
         }
 
         // Check if agoda_hotel_id already exists as a curated hotel
-        $existing = Hotel::where('agoda_hotel_id', $agodaHotel->agoda_hotel_id)->first();
+        $existing = Hotel::withTrashed()->where('agoda_hotel_id', $agodaHotel->agoda_hotel_id)->first();
         if ($existing) {
+            $promoteMode = 'relinked';
+            if ($existing->trashed()) {
+                $existing->restore();
+                $promoteMode = 'restored';
+            }
+
             $agodaHotel->update(['promoted_hotel_id' => $existing->id]);
-            return back()->with('success', "Linked to existing curated hotel \"{$existing->name}\".");
+            return back()
+                ->with('success', "Linked to existing curated hotel \"{$existing->name}\".")
+                ->with('promote_mode', $promoteMode);
         }
 
         // Auto-match destination: by agoda_city_id, then by city name + country code
@@ -306,7 +323,15 @@ class AgodaDirectoryController extends Controller
         ]);
 
         return redirect()->route('admin.hotels.edit', $hotel->id)
-            ->with('success', "Hotel \"{$hotel->name}\" promoted to curated listing! Edit the details and refine pool criteria.");
+            ->with('success', "Hotel \"{$hotel->name}\" promoted to curated listing! Edit the details and refine pool criteria.")
+            ->with('promote_mode', 'promoted');
+    }
+
+    private function clearStalePromotionLinks(): void
+    {
+        AgodaHotel::whereNotNull('promoted_hotel_id')
+            ->whereDoesntHave('promotedHotel')
+            ->update(['promoted_hotel_id' => null]);
     }
 
     protected function estimateTotalRooms(int $starRating): int
