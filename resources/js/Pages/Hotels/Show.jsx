@@ -119,6 +119,7 @@ export default function HotelShow({ hotel, similarHotels }) {
                     onPrevImage={handlePrevImage}
                     onNextImage={handleNextImage}
                     onBookingClick={handleBookingClick}
+                    setActiveImageIndex={setActiveImageIndex}
                 />
 
                 {/* Main Content Area */}

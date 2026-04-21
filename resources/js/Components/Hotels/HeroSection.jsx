@@ -26,6 +26,12 @@ export function Breadcrumb({ hotel }) {
 // HOTEL HEADER COMPONENT
 // ============================================
 export function HotelHeader({ hotel }) {
+    const metaItems = [
+        hotel.average_rating ? `${hotel.average_rating}/5 guest rating` : null,
+        hotel.review_count ? `${hotel.review_count} review${hotel.review_count === 1 ? '' : 's'}` : null,
+        hotel.total_rooms ? `${hotel.total_rooms} rooms` : null,
+    ].filter(Boolean);
+
     return (
         <div className="mb-6 sm:mb-8">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-sans font-bold text-gray-900 mb-3 sm:mb-4">
@@ -53,6 +59,31 @@ export function HotelHeader({ hotel }) {
                     </span>
                 )}
             </div>
+
+            {(hotel.address || metaItems.length > 0) && (
+                <div className="mt-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                    <div className="max-w-3xl">
+                        {hotel.address && (
+                            <p className="text-sm sm:text-base text-gray-600 font-sans leading-relaxed">
+                                {hotel.address}
+                            </p>
+                        )}
+                    </div>
+
+                    {metaItems.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                            {metaItems.map((item) => (
+                                <span
+                                    key={item}
+                                    className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs sm:text-sm font-semibold text-gray-700"
+                                >
+                                    {item}
+                                </span>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }
@@ -60,11 +91,13 @@ export function HotelHeader({ hotel }) {
 // ============================================
 // IMAGE GALLERY COMPONENT
 // ============================================
-export function ImageGallery({ allImages, activeImageIndex, hotelName, onPrevImage, onNextImage, isPremium = false }) {
+export function ImageGallery({ allImages, activeImageIndex, hotelName, onPrevImage, onNextImage, setActiveImageIndex, isPremium = false }) {
     // Premium hotels get significantly larger hero images
     const heightClass = isPremium 
-        ? "h-80 sm:h-96 md:h-[32rem] lg:h-[40rem] xl:h-[48rem]" 
-        : "h-64 sm:h-80 md:h-96 lg:h-[28rem]";
+        ? "h-80 sm:h-96 md:h-[30rem] lg:h-[34rem] xl:h-[38rem]" 
+        : "h-64 sm:h-72 md:h-[21rem] lg:h-[24rem] xl:h-[26rem]";
+
+    const previewImages = allImages.slice(0, 4);
     
     return (
         <div className="lg:col-span-2">
@@ -78,6 +111,17 @@ export function ImageGallery({ allImages, activeImageIndex, hotelName, onPrevIma
                     height={isPremium ? 600 : 448}
                     sizes="(max-width: 1024px) 100vw, 66vw"
                 />
+                <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/65 via-black/10 to-transparent pointer-events-none" />
+
+                <div className="absolute left-4 bottom-4 sm:left-6 sm:bottom-6 z-10 max-w-[70%] text-white">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] backdrop-blur-sm">
+                        <Icons.Gallery className="w-4 h-4 text-white" />
+                        Pool Gallery
+                    </div>
+                    <p className="mt-2 text-sm sm:text-base font-medium text-white/90">
+                        Swipe through the key pool and sunbed views before you dive into the full review.
+                    </p>
+                </div>
                 
                 {/* Premium Badge Overlay */}
                 {isPremium && (
@@ -111,6 +155,84 @@ export function ImageGallery({ allImages, activeImageIndex, hotelName, onPrevIma
                     </>
                 )}
             </div>
+
+            {previewImages.length > 1 && (
+                <div className="mt-3 grid grid-cols-4 gap-2 sm:gap-3">
+                    {previewImages.map((image, index) => {
+                        const isActive = index === activeImageIndex;
+
+                        return (
+                            <button
+                                key={`${image}-${index}`}
+                                type="button"
+                                onClick={() => setActiveImageIndex(index)}
+                                className={`relative overflow-hidden rounded-xl border transition-all duration-300 ${
+                                    isActive
+                                        ? 'border-orange-500 ring-2 ring-orange-200'
+                                        : 'border-gray-200 hover:border-gray-300'
+                                }`}
+                                aria-label={`Show gallery image ${index + 1}`}
+                            >
+                                <img
+                                    src={image}
+                                    alt={`${hotelName} preview ${index + 1}`}
+                                    className="h-16 sm:h-20 w-full object-cover"
+                                    loading="lazy"
+                                    width={180}
+                                    height={96}
+                                />
+                                {isActive && <div className="absolute inset-0 bg-orange-500/10" />}
+                                {index === previewImages.length - 1 && allImages.length > previewImages.length && (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black/45 text-sm font-bold text-white">
+                                        +{allImages.length - previewImages.length}
+                                    </div>
+                                )}
+                            </button>
+                        );
+                    })}
+                </div>
+            )}
+        </div>
+    );
+}
+
+function QuickFacts({ hotel }) {
+    const poolCriteria = hotel.pool_criteria || {};
+
+    const facts = [
+        {
+            label: 'Sunbed ratio',
+            value: poolCriteria.sunbed_to_guest_ratio ? `${poolCriteria.sunbed_to_guest_ratio}:1` : 'Not rated yet',
+            accent: 'from-amber-50 to-orange-50 border-amber-200',
+        },
+        {
+            label: 'Atmosphere',
+            value: poolCriteria.atmosphere ? poolCriteria.atmosphere.replace(/_/g, ' ') : 'Not set yet',
+            accent: 'from-rose-50 to-pink-50 border-rose-200',
+        },
+        {
+            label: 'Pool style',
+            value: poolCriteria.pool_size_category ? poolCriteria.pool_size_category.replace(/_/g, ' ') : 'Awaiting review',
+            accent: 'from-sky-50 to-cyan-50 border-sky-200',
+        },
+        {
+            label: 'Guest reviews',
+            value: hotel.review_count ? `${hotel.review_count} review${hotel.review_count === 1 ? '' : 's'}` : 'No reviews yet',
+            accent: 'from-emerald-50 to-teal-50 border-emerald-200',
+        },
+    ];
+
+    return (
+        <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {facts.map((fact) => (
+                <div
+                    key={fact.label}
+                    className={`rounded-2xl border bg-gradient-to-br ${fact.accent} p-4 shadow-sm`}
+                >
+                    <div className="text-[11px] uppercase tracking-[0.18em] text-gray-500">{fact.label}</div>
+                    <div className="mt-2 text-sm sm:text-base font-bold text-gray-900 capitalize">{fact.value}</div>
+                </div>
+            ))}
         </div>
     );
 }
@@ -418,7 +540,7 @@ function HeroEnhancedFeatures({ hotel, onBookingClick }) {
     );
 }
 
-export function HeroSection({ hotel, allImages, activeImageIndex, onPrevImage, onNextImage, onBookingClick }) {
+export function HeroSection({ hotel, allImages, activeImageIndex, onPrevImage, onNextImage, onBookingClick, setActiveImageIndex }) {
     const isPremium = hotel.is_premium;
     
     return (
@@ -439,12 +561,15 @@ export function HeroSection({ hotel, allImages, activeImageIndex, onPrevImage, o
                         hotelName={hotel.name}
                         onPrevImage={onPrevImage}
                         onNextImage={onNextImage}
+                        setActiveImageIndex={setActiveImageIndex}
                         isPremium={isPremium}
                     />
 
                     {/* Map & Score Column */}
                     <MapAndScoreColumn hotel={hotel} />
                 </div>
+
+                <QuickFacts hotel={hotel} />
 
                 {/* Enhanced Features from Hotelier */}
                 <HeroEnhancedFeatures hotel={hotel} onBookingClick={onBookingClick} />
