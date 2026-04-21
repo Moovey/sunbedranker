@@ -39,7 +39,7 @@ class HomeController extends Controller
             return Hotel::active()
                 ->topRated()
                 ->with(['destination', 'poolCriteria', 'owner', 'badges' => fn($q) => $q->where('is_active', true)->orderBy('priority', 'desc')])
-                ->limit(6)
+                ->limit(8)
                 ->get();
         });
         $topRatedHotels = $addPremiumFlag($topRatedHotels);

@@ -25,6 +25,7 @@ return [
         'blog.index',
 
         // Auth
+        'auth.google',
         'password.*',
         'verification.*',
         'profile.*',
