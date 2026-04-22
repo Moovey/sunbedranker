@@ -95,20 +95,20 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
         <>
             <Head title="Manage Hotels" />
             
-            <div className="min-h-screen bg-gray-50 font-sans">
+            <div className="min-h-screen bg-slate-50 font-sans">
                 <AdminNav stats={stats} />
 
                 <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
                     {/* Page Header */}
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
                         <div>
-                            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Hotel Management</h1>
-                            <p className="text-gray-500 text-xs sm:text-sm mt-1">Manage all hotels and their details</p>
+                            <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">Hotel Management</h1>
+                            <p className="text-slate-500 text-xs sm:text-sm mt-1.5 font-light">Manage all hotels and their details</p>
                         </div>
                         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
                             <button
                                 onClick={() => setShowImportModal(true)}
-                                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm text-sm sm:text-base"
+                                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 shadow-sm hover:shadow ring-1 ring-blue-700/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 transition-all text-sm sm:text-base"
                             >
                                 <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -117,7 +117,7 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
                             </button>
                             <Link
                                 href={route('admin.hotels.create')}
-                                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors shadow-sm text-sm sm:text-base"
+                                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 shadow-sm hover:shadow ring-1 ring-orange-600/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 transition-all text-sm sm:text-base"
                             >
                                 <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -148,10 +148,10 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
                     <div className="flex items-center justify-center min-h-screen px-4">
                         <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={() => { setShowImportModal(false); importForm.reset(); }} />
                         
-                        <div className="relative bg-white rounded-xl shadow-xl max-w-md w-full p-6 z-10">
+                        <div className="relative bg-white rounded-2xl shadow-xl ring-1 ring-slate-200 max-w-md w-full p-6 z-10">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-lg font-semibold text-gray-900">Import Hotel from Agoda</h3>
-                                <button onClick={() => { setShowImportModal(false); importForm.reset(); }} className="text-gray-400 hover:text-gray-600">
+                                <h3 className="text-lg font-semibold text-slate-900 tracking-tight">Import Hotel from Agoda</h3>
+                                <button onClick={() => { setShowImportModal(false); importForm.reset(); }} className="text-slate-400 hover:text-slate-600 transition-colors">
                                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
@@ -204,14 +204,14 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
                                     <button
                                         type="button"
                                         onClick={() => { setShowImportModal(false); importForm.reset(); }}
-                                        className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                                        className="flex-1 px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={importForm.processing}
-                                        className="flex-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="flex-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-sm ring-1 ring-blue-700/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                                     >
                                         {importForm.processing ? 'Importing...' : 'Import Hotel'}
                                     </button>
@@ -231,8 +231,8 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
 
 function FilterSection({ filterState, updateFilter, destinations, onSearch, onClear }) {
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 md:p-6 mb-4 sm:mb-6">
-            <h2 className="font-semibold text-gray-900 mb-3 sm:mb-4 text-sm sm:text-base">Filter Hotels</h2>
+        <div className="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-3 sm:p-4 md:p-6 mb-4 sm:mb-6">
+            <h2 className="font-semibold text-slate-900 mb-3 sm:mb-4 text-sm sm:text-base tracking-tight">Filter Hotels</h2>
             <form onSubmit={onSearch} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <FilterInput
                     label="Search"
@@ -262,14 +262,14 @@ function FilterSection({ filterState, updateFilter, destinations, onSearch, onCl
                 <div className="flex items-end gap-2 sm:col-span-2 lg:col-span-1">
                     <button
                         type="submit"
-                        className="flex-1 px-3 sm:px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 font-medium transition-colors text-sm sm:text-base"
+                        className="flex-1 px-3 sm:px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 font-medium shadow-sm hover:shadow ring-1 ring-orange-600/10 transition-all text-sm sm:text-base"
                     >
                         Search
                     </button>
                     <button
                         type="button"
                         onClick={onClear}
-                        className="px-3 sm:px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors text-sm sm:text-base"
+                        className="px-3 sm:px-4 py-2 border border-slate-200 bg-white text-slate-700 rounded-lg hover:bg-slate-100 hover:border-slate-300 font-medium shadow-sm transition-all text-sm sm:text-base"
                     >
                         Clear
                     </button>
@@ -282,12 +282,12 @@ function FilterSection({ filterState, updateFilter, destinations, onSearch, onCl
 function FilterInput({ label, ...props }) {
     return (
         <div>
-            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1 sm:mb-1.5">
                 {label}
             </label>
             <input
                 {...props}
-                className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-xs sm:text-sm"
+                className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 text-xs sm:text-sm transition-colors"
             />
         </div>
     );
@@ -296,12 +296,12 @@ function FilterInput({ label, ...props }) {
 function FilterSelect({ label, options, ...props }) {
     return (
         <div>
-            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-1.5">
+            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-1 sm:mb-1.5">
                 {label}
             </label>
             <select
                 {...props}
-                className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-xs sm:text-sm"
+                className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 text-xs sm:text-sm transition-colors"
             >
                 {options.map(opt => (
                     <option key={opt.value} value={opt.value}>
@@ -315,12 +315,12 @@ function FilterSelect({ label, options, ...props }) {
 
 function HotelTable({ hotels, onDelete }) {
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 overflow-hidden">
             {/* Desktop Table View */}
             <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full">
                     <TableHeader />
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-slate-100">
                         {hotels.data.length === 0 ? (
                             <EmptyRow />
                         ) : (
@@ -340,10 +340,10 @@ function HotelTable({ hotels, onDelete }) {
             <div className="md:hidden">
                 {hotels.data.length === 0 ? (
                     <div className="px-4 py-12 text-center">
-                        <p className="text-gray-500 text-sm">No hotels found</p>
+                        <p className="text-slate-500 text-sm">No hotels found</p>
                     </div>
                 ) : (
-                    <div className="divide-y divide-gray-100">
+                    <div className="divide-y divide-slate-100">
                         {hotels.data.map(hotel => (
                             <MobileHotelCard 
                                 key={hotel.id} 
@@ -379,7 +379,7 @@ function MobileHotelCard({ hotel, onDelete }) {
     const claimStyle = CLAIM_STYLES[claimInfo.status] || CLAIM_STYLES.unclaimed;
     
     return (
-        <div className="p-3 sm:p-4 hover:bg-gray-50 transition-colors">
+        <div className="p-3 sm:p-4 hover:bg-slate-50/70 transition-colors">
             {/* Top Row: Image + Hotel Info */}
             <div className="flex items-start gap-3 mb-3">
                 {hotel.main_image_url ? (
@@ -438,17 +438,17 @@ function MobileHotelCard({ hotel, onDelete }) {
             </div>
 
             {/* Bottom Row: Actions */}
-            <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
+            <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
                 <Link
                     href={route('admin.hotels.edit', hotel.id)}
-                    className="flex-1 px-3 py-1.5 text-center text-xs sm:text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors"
+                    className="flex-1 px-3 py-1.5 text-center text-xs sm:text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600 shadow-sm ring-1 ring-orange-600/10 transition-all"
                 >
                     Edit
                 </Link>
                 <Link
                     href={`/hotels/${hotel.slug}`}
                     target="_blank"
-                    className="flex-1 px-3 py-1.5 text-center text-xs sm:text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                    className="flex-1 px-3 py-1.5 text-center text-xs sm:text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors"
                 >
                     View
                 </Link>
@@ -465,12 +465,12 @@ function MobileHotelCard({ hotel, onDelete }) {
 
 function TableHeader() {
     return (
-        <thead className="bg-gray-50 border-b border-gray-100">
+        <thead className="bg-slate-50/80 border-b border-slate-200">
             <tr>
                 {TABLE_COLUMNS.map(col => (
                     <th 
                         key={col.key}
-                        className="px-3 md:px-4 lg:px-6 py-2.5 md:py-3 text-left text-[10px] md:text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        className="px-3 md:px-4 lg:px-6 py-2.5 md:py-3 text-left text-[10px] md:text-xs font-semibold text-slate-500 uppercase tracking-[0.08em]"
                     >
                         {col.label}
                     </th>
@@ -484,7 +484,7 @@ function EmptyRow() {
     return (
         <tr>
             <td colSpan={TABLE_COLUMNS.length} className="px-4 md:px-6 py-8 md:py-12 text-center">
-                <p className="text-gray-500 text-xs sm:text-sm">No hotels found</p>
+                <p className="text-slate-500 text-xs sm:text-sm">No hotels found</p>
             </td>
         </tr>
     );
@@ -492,7 +492,7 @@ function EmptyRow() {
 
 function HotelRow({ hotel, onDelete }) {
     return (
-        <tr className="hover:bg-gray-50 transition-colors">
+        <tr className="hover:bg-slate-50/70 transition-colors">
             <HotelInfoCell hotel={hotel} />
             <DestinationCell destination={hotel.destination?.name} />
             <ScoreCell score={hotel.overall_score} />
@@ -634,7 +634,7 @@ function ActionsCell({ hotel, onDelete }) {
                 <Link
                     href={`/hotels/${hotel.slug}`}
                     target="_blank"
-                    className="text-gray-600 hover:text-gray-700 font-medium transition-colors"
+                    className="text-slate-600 hover:text-slate-900 font-medium transition-colors"
                 >
                     View
                 </Link>
@@ -651,7 +651,7 @@ function ActionsCell({ hotel, onDelete }) {
 
 function Pagination({ hotels }) {
     return (
-        <div className="bg-white px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-t border-gray-100">
+        <div className="bg-white px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-t border-slate-200">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
                 <PaginationInfo 
                     from={hotels.from} 
@@ -666,10 +666,10 @@ function Pagination({ hotels }) {
 
 function PaginationInfo({ from, to, total }) {
     return (
-        <div className="text-xs sm:text-sm text-gray-500 text-center sm:text-left">
-            Showing <span className="font-medium text-gray-900">{from}</span> to{' '}
-            <span className="font-medium text-gray-900">{to}</span> of{' '}
-            <span className="font-medium text-gray-900">{total}</span> results
+        <div className="text-xs sm:text-sm text-slate-500 text-center sm:text-left font-light">
+            Showing <span className="font-semibold text-slate-900">{from}</span> to{' '}
+            <span className="font-semibold text-slate-900">{to}</span> of{' '}
+            <span className="font-semibold text-slate-900">{total}</span> results
         </div>
     );
 }
@@ -685,12 +685,12 @@ function PaginationLinks({ links }) {
 }
 
 function PaginationLink({ link }) {
-    const baseClasses = 'px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm rounded-lg font-medium transition-colors';
+    const baseClasses = 'px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm rounded-lg font-medium transition-all';
     
     if (!link.url) {
         return (
             <span
-                className={`${baseClasses} text-gray-400`}
+                className={`${baseClasses} text-slate-300`}
                 dangerouslySetInnerHTML={{ __html: link.label }}
             />
         );
@@ -701,8 +701,8 @@ function PaginationLink({ link }) {
             href={link.url}
             className={`${baseClasses} ${
                 link.active
-                    ? 'bg-orange-500 text-white'
-                    : 'text-gray-700 hover:bg-gray-100'
+                    ? 'bg-orange-500 text-white shadow-sm ring-1 ring-orange-600/10'
+                    : 'text-slate-700 hover:bg-slate-100'
             }`}
             dangerouslySetInnerHTML={{ __html: link.label }}
         />

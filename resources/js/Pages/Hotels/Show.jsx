@@ -199,6 +199,29 @@ export default function HotelShow({ hotel, similarHotels }) {
                                 </section>
                             )}
 
+                            {/* SunbedRanker Review Intelligence */}
+                            {hotel.review_intelligence && (
+                                <section className="relative bg-white rounded-2xl ring-1 ring-purple-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(147,51,234,0.18)] hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(147,51,234,0.25)] transition-shadow duration-300 overflow-hidden">
+                                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-purple-400 via-fuchsia-400 to-purple-400" />
+                                    <div className="p-6 sm:p-7 lg:p-8 xl:p-9">
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-purple-100 to-fuchsia-100 ring-1 ring-purple-200/80 text-xl shadow-sm">
+                                                🧠
+                                            </span>
+                                            <div>
+                                                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-purple-700">Review Intelligence</p>
+                                                <h2 className="text-xl sm:text-2xl font-sans font-semibold text-slate-900 tracking-tight">
+                                                    SunbedRanker Review Intelligence
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <div className="prose prose-slate max-w-none text-slate-700 font-sans text-[15px] sm:text-base leading-[1.75] whitespace-pre-line">
+                                            {hotel.review_intelligence}
+                                        </div>
+                                    </div>
+                                </section>
+                            )}
+
                             {/* ============================================ */}
                             {/* POOL CRITERIA SECTIONS - Following Admin Tab Order */}
                             {/* ============================================ */}

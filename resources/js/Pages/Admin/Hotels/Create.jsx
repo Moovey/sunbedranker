@@ -11,7 +11,7 @@ import CreateImagesTab from '@/Components/Admin/Hotels/CreateImagesTab';
 
 // Form field groupings for tab switching on validation errors
 const TAB_FIELDS = {
-    basic: ['name', 'destination_id', 'city_name', 'country_code', 'description', 'top_tip', 'star_rating', 'total_rooms'],
+    basic: ['name', 'destination_id', 'city_name', 'country_code', 'description', 'top_tip', 'review_intelligence', 'star_rating', 'total_rooms'],
     contact: ['address', 'latitude', 'longitude', 'phone', 'email', 'website'],
     images: ['main_image', 'gallery_images'],
     pool: ['sunbed_count', 'sun_exposure', 'pool_size_category', 'pool_size_sqm', 'number_of_pools'],
@@ -27,6 +27,7 @@ const INITIAL_FORM_DATA = {
     country_code: '',
     description: '',
     top_tip: '',
+    review_intelligence: '',
     star_rating: '',
     total_rooms: '',
     
@@ -182,19 +183,19 @@ export default function CreateHotel({ destinations, stats, errors: serverErrors 
         <>
             <Head title="Add New Hotel" />
             
-            <div className="min-h-screen bg-gray-50 font-sans">
+            <div className="min-h-screen bg-slate-50 font-sans">
                 <AdminNav stats={stats} />
 
                 <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
                     {/* Page Header */}
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
                         <div>
-                            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Add New Hotel</h1>
-                            <p className="text-gray-500 text-xs sm:text-sm mt-1">Create a new hotel listing</p>
+                            <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">Add New Hotel</h1>
+                            <p className="text-slate-500 text-xs sm:text-sm mt-1.5 font-light">Create a new hotel listing</p>
                         </div>
                         <Link
                             href={route('admin.hotels.index')}
-                            className="inline-flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto px-3 sm:px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors text-sm sm:text-base"
+                            className="inline-flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto px-3 sm:px-4 py-2 border border-slate-200 bg-white text-slate-700 font-medium rounded-lg hover:bg-slate-100 hover:border-slate-300 shadow-sm transition-all text-sm sm:text-base"
                         >
                             ← Back to Hotels
                         </Link>
@@ -207,7 +208,7 @@ export default function CreateHotel({ destinations, stats, errors: serverErrors 
                         <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
                         {/* Tab Content */}
-                        <div className="bg-white rounded-b-xl shadow-sm p-3 sm:p-4 md:p-6 border border-gray-100 border-t-0">
+                        <div className="bg-white rounded-b-2xl shadow-sm p-3 sm:p-4 md:p-6 border border-slate-200 border-t-0">
                             <TabContent 
                                 activeTab={activeTab}
                                 data={data}
@@ -252,7 +253,7 @@ function ValidationErrorsBox({ errors }) {
     if (errorCount === 0) return null;
     
     return (
-        <div className="mb-4 sm:mb-6 bg-red-50 border border-red-300 rounded-xl p-3 sm:p-4 md:p-5 shadow-sm">
+        <div className="mb-4 sm:mb-6 bg-red-50/70 border border-red-200 rounded-2xl p-3 sm:p-4 md:p-5 shadow-sm ring-1 ring-red-100">
             <div className="flex items-start">
                 <div className="flex-shrink-0">
                     <svg className="h-5 w-5 sm:h-6 sm:w-6 text-red-500" viewBox="0 0 24 24" fill="currentColor">
@@ -260,10 +261,10 @@ function ValidationErrorsBox({ errors }) {
                     </svg>
                 </div>
                 <div className="ml-3 sm:ml-4 flex-1">
-                    <h3 className="text-sm sm:text-base font-semibold text-red-800 mb-1.5 sm:mb-2">
-                        Validation Failed - {errorCount} error{errorCount > 1 ? 's' : ''} found
+                    <h3 className="text-sm sm:text-base font-semibold text-red-800 mb-1.5 sm:mb-2 tracking-tight">
+                        Validation Failed — {errorCount} error{errorCount > 1 ? 's' : ''} found
                     </h3>
-                    <div className="bg-white rounded-lg p-2.5 sm:p-3 md:p-4 border border-red-200">
+                    <div className="bg-white rounded-lg p-2.5 sm:p-3 md:p-4 border border-red-200/70">
                         <ul className="space-y-1.5 sm:space-y-2">
                             {Object.entries(normalizedErrors).map(([field, message]) => (
                                 <li key={field} className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-red-700">
@@ -292,8 +293,8 @@ function TabNavigation({ activeTab, setActiveTab }) {
     ];
 
     return (
-        <div className="bg-gray-50 rounded-t-xl border border-gray-100 border-b-0 shadow-sm">
-            <div className="flex gap-0.5 sm:gap-1 px-2 sm:px-3 md:px-4 pt-3 sm:pt-4 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+        <div className="bg-slate-50/80 backdrop-blur rounded-t-2xl border border-slate-200 border-b-0 shadow-sm">
+            <div className="flex gap-0.5 sm:gap-1 px-2 sm:px-3 md:px-4 pt-3 sm:pt-4 overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
                 {tabConfig.map(tab => (
                     <TabButton 
                         key={tab.id}
@@ -322,10 +323,10 @@ function TabContent({ activeTab, data, setData, errors, destinations }) {
 
 function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab }) {
     return (
-        <div className="mt-4 sm:mt-5 md:mt-6 pt-4 sm:pt-5 md:pt-6 border-t border-gray-200 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-between">
+        <div className="mt-4 sm:mt-5 md:mt-6 pt-4 sm:pt-5 md:pt-6 border-t border-slate-200 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-between">
             <Link
                 href={route('admin.hotels.index')}
-                className="px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors text-center text-xs sm:text-sm"
+                className="px-3 sm:px-4 py-2 sm:py-2.5 border border-slate-200 bg-white text-slate-700 rounded-lg hover:bg-slate-100 hover:border-slate-300 font-medium shadow-sm transition-all text-center text-xs sm:text-sm"
             >
                 Cancel
             </Link>
@@ -335,7 +336,7 @@ function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab
                     <button
                         type="button"
                         onClick={onPrevTab}
-                        className="px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors text-center text-xs sm:text-sm"
+                        className="px-3 sm:px-4 py-2 sm:py-2.5 border border-slate-200 bg-white text-slate-700 rounded-lg hover:bg-slate-100 hover:border-slate-300 font-medium shadow-sm transition-all text-center text-xs sm:text-sm"
                     >
                         Previous
                     </button>
@@ -345,7 +346,7 @@ function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab
                     <button
                         type="button"
                         onClick={onNextTab}
-                        className="px-3 sm:px-4 py-2 sm:py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors text-center text-xs sm:text-sm"
+                        className="px-4 sm:px-5 py-2 sm:py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 shadow-sm hover:shadow ring-1 ring-orange-600/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 transition-all text-center text-xs sm:text-sm"
                     >
                         Next
                     </button>
@@ -353,7 +354,7 @@ function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab
                     <button
                         type="submit"
                         disabled={processing}
-                        className="px-3 sm:px-4 py-2 sm:py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors text-center text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-4 sm:px-5 py-2 sm:py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 shadow-sm hover:shadow ring-1 ring-orange-600/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 transition-all text-center text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                     >
                         {processing ? 'Creating...' : 'Create Hotel'}
                     </button>

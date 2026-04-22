@@ -297,6 +297,21 @@ export default function CreateBasicInfoTab({ data, setData, errors, destinations
                 {errors.top_tip && <p className="mt-1 text-sm text-red-600 font-light">{errors.top_tip}</p>}
             </div>
 
+            <div>
+                <label className="block text-sm font-light text-neutral-700 mb-2 tracking-wide">
+                    🧠 SunbedRanker Review Intelligence
+                </label>
+                <textarea
+                    value={data.review_intelligence}
+                    onChange={e => setData('review_intelligence', e.target.value)}
+                    rows={12}
+                    className="w-full px-4 py-2 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 font-light bg-purple-50 font-mono text-sm"
+                    placeholder={`🧠 SunbedRanker Review Intelligence Score: 7.6 / 10\n📊 Category Breakdown\n📍 Location: 9.2 / 10\nPrime setting, walking distance to the beach...\n\n👨\u200d💼 Service & Staff: 8.8 / 10\nFriendly, attentive...`}
+                />
+                <p className="mt-1 text-xs text-neutral-500 font-light">Free-text editorial summary. Emojis and line breaks are preserved on the public page. Max 5000 characters.</p>
+                {errors.review_intelligence && <p className="mt-1 text-sm text-red-600 font-light">{errors.review_intelligence}</p>}
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label className="block text-sm font-light text-neutral-700 mb-2 tracking-wide">

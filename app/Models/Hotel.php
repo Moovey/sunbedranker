@@ -21,6 +21,7 @@ class Hotel extends Model
         'slug',
         'description',
         'top_tip',
+        'review_intelligence',
         'pool_description',
         'amenities_description',
         'house_rules',

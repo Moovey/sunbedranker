@@ -119,6 +119,7 @@ class HotelManagementController extends Controller
             'country_code' => 'nullable|string|size:2',
             'description' => 'nullable|string|max:5000',
             'top_tip' => 'nullable|string|max:2000',
+            'review_intelligence' => 'nullable|string|max:5000',
             'star_rating' => 'required|integer|min:1|max:5',
             'total_rooms' => 'required|integer|min:1',
             
@@ -480,6 +481,7 @@ class HotelManagementController extends Controller
             'country_code' => 'nullable|string|size:2',
             'description' => 'nullable|string|max:5000',
             'top_tip' => 'nullable|string|max:2000',
+            'review_intelligence' => 'nullable|string|max:5000',
             'star_rating' => 'required|integer|min:1|max:5',
             'total_rooms' => 'required|integer|min:1',
             
