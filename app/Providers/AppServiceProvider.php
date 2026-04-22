@@ -50,6 +50,11 @@ class AppServiceProvider extends ServiceProvider
     {
         Vite::prefetch(concurrency: 3);
 
+        // Force HTTPS in production so canonical URLs and assets never emit http://
+        if ($this->app->environment('production')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         // Register model observers for cache invalidation
         Badge::observe(BadgeObserver::class);
         Destination::observe(DestinationObserver::class);

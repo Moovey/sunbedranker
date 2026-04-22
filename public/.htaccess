@@ -23,3 +23,53 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# ============================================================
+# Compression (gzip + brotli when available)
+# Lighthouse: "Enable text compression"
+# ============================================================
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
+    AddOutputFilterByType DEFLATE application/javascript application/x-javascript application/json application/xml application/rss+xml
+    AddOutputFilterByType DEFLATE image/svg+xml font/woff font/woff2 application/font-woff application/font-woff2
+</IfModule>
+
+<IfModule mod_brotli.c>
+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript
+    AddOutputFilterByType BROTLI_COMPRESS application/javascript application/json application/xml image/svg+xml
+</IfModule>
+
+# ============================================================
+# Cache headers for static assets
+# Lighthouse: "Serve static assets with an efficient cache policy"
+# Vite emits hashed filenames in /build, so 1 year immutable is safe.
+# ============================================================
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    # Hashed Vite assets - cache forever
+    <FilesMatch "\.(?:js|mjs|css|woff|woff2|ttf|eot|otf)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+        ExpiresDefault "access plus 1 year"
+    </FilesMatch>
+
+    # Images - cache for 30 days
+    <FilesMatch "\.(?:jpg|jpeg|png|gif|webp|avif|svg|ico)$">
+        Header set Cache-Control "public, max-age=2592000"
+        ExpiresDefault "access plus 30 days"
+    </FilesMatch>
+
+    # HTML - revalidate every time
+    <FilesMatch "\.html$">
+        Header set Cache-Control "no-cache, must-revalidate"
+    </FilesMatch>
+</IfModule>
+
+# ============================================================
+# Strip server fingerprinting (Best Practices)
+# ============================================================
+<IfModule mod_headers.c>
+    Header always unset X-Powered-By
+    Header unset X-Powered-By
+</IfModule>
+

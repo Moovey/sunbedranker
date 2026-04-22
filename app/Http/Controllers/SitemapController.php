@@ -12,11 +12,29 @@ class SitemapController extends Controller
 {
     /**
      * Generate XML sitemap for search engines and affiliate program reviewers.
+     * Streamed via XMLWriter + chunkById to stay memory-safe at scale.
      */
     public function index(): Response
     {
         $sitemap = Cache::remember('sitemap:xml', 3600, function () {
-            $urls = collect();
+            $writer = new \XMLWriter();
+            $writer->openMemory();
+            $writer->setIndent(true);
+            $writer->setIndentString('  ');
+            $writer->startDocument('1.0', 'UTF-8');
+            $writer->startElement('urlset');
+            $writer->writeAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+
+            $emit = function (string $loc, ?string $lastmod, string $priority, string $freq) use ($writer) {
+                $writer->startElement('url');
+                $writer->writeElement('loc', $loc);
+                if ($lastmod) {
+                    $writer->writeElement('lastmod', $lastmod);
+                }
+                $writer->writeElement('changefreq', $freq);
+                $writer->writeElement('priority', $priority);
+                $writer->endElement();
+            };
 
             // Static pages
             $staticPages = [
@@ -32,74 +50,66 @@ class SitemapController extends Controller
                 ['loc' => url('/terms-of-service'), 'priority' => '0.3', 'changefreq' => 'yearly'],
                 ['loc' => url('/affiliate-disclosure'), 'priority' => '0.3', 'changefreq' => 'yearly'],
             ];
-            $urls = $urls->merge($staticPages);
+            foreach ($staticPages as $p) {
+                $emit($p['loc'], null, $p['priority'], $p['changefreq']);
+            }
 
-            // Destinations (only those with active hotels)
-            $destinations = Destination::where('is_active', true)
+            // Destinations (only those with active hotels) — chunked for memory safety
+            Destination::where('is_active', true)
                 ->whereHas('hotels', fn ($q) => $q->where('is_active', true))
-                ->get(['slug', 'updated_at']);
-            foreach ($destinations as $destination) {
-                $urls->push([
-                    'loc' => url("/destinations/{$destination->slug}"),
-                    'lastmod' => $destination->updated_at?->toW3cString(),
-                    'priority' => '0.8',
-                    'changefreq' => 'weekly',
-                ]);
-            }
+                ->select('id', 'slug', 'updated_at')
+                ->chunkById(500, function ($chunk) use ($emit) {
+                    foreach ($chunk as $d) {
+                        $emit(
+                            url("/destinations/{$d->slug}"),
+                            $d->updated_at?->toW3cString(),
+                            '0.8',
+                            'weekly'
+                        );
+                    }
+                });
 
-            // Hotels
-            $hotels = Hotel::active()->get(['slug', 'updated_at']);
-            foreach ($hotels as $hotel) {
-                $urls->push([
-                    'loc' => url("/hotels/{$hotel->slug}"),
-                    'lastmod' => $hotel->updated_at?->toW3cString(),
-                    'priority' => '0.8',
-                    'changefreq' => 'weekly',
-                ]);
-            }
+            // Hotels — chunked
+            Hotel::active()
+                ->select('id', 'slug', 'updated_at')
+                ->chunkById(1000, function ($chunk) use ($emit) {
+                    foreach ($chunk as $h) {
+                        $emit(
+                            url("/hotels/{$h->slug}"),
+                            $h->updated_at?->toW3cString(),
+                            '0.8',
+                            'weekly'
+                        );
+                    }
+                });
 
-            // Blog posts
-            $posts = Post::where('status', 'published')
+            // Blog posts — chunked
+            Post::where('status', 'published')
                 ->where(function ($q) {
                     $q->whereNull('published_at')
                       ->orWhere('published_at', '<=', now());
                 })
-                ->get(['slug', 'updated_at', 'published_at']);
-            foreach ($posts as $post) {
-                $urls->push([
-                    'loc' => url("/guides/{$post->slug}"),
-                    'lastmod' => ($post->updated_at ?? $post->published_at)?->toW3cString(),
-                    'priority' => '0.8',
-                    'changefreq' => 'weekly',
-                ]);
-            }
+                ->select('id', 'slug', 'updated_at', 'published_at')
+                ->chunkById(1000, function ($chunk) use ($emit) {
+                    foreach ($chunk as $p) {
+                        $emit(
+                            url("/guides/{$p->slug}"),
+                            ($p->updated_at ?? $p->published_at)?->toW3cString(),
+                            '0.8',
+                            'weekly'
+                        );
+                    }
+                });
 
-            // Build XML
-            $xml = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-            $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
+            $writer->endElement();
+            $writer->endDocument();
 
-            foreach ($urls as $url) {
-                $xml .= '  <url>' . PHP_EOL;
-                $xml .= '    <loc>' . htmlspecialchars($url['loc']) . '</loc>' . PHP_EOL;
-                if (!empty($url['lastmod'])) {
-                    $xml .= '    <lastmod>' . $url['lastmod'] . '</lastmod>' . PHP_EOL;
-                }
-                if (!empty($url['changefreq'])) {
-                    $xml .= '    <changefreq>' . $url['changefreq'] . '</changefreq>' . PHP_EOL;
-                }
-                if (!empty($url['priority'])) {
-                    $xml .= '    <priority>' . $url['priority'] . '</priority>' . PHP_EOL;
-                }
-                $xml .= '  </url>' . PHP_EOL;
-            }
-
-            $xml .= '</urlset>';
-
-            return $xml;
+            return $writer->outputMemory();
         });
 
         return response($sitemap, 200, [
-            'Content-Type' => 'application/xml',
+            'Content-Type' => 'application/xml; charset=UTF-8',
+            'Cache-Control' => 'public, max-age=3600',
         ]);
     }
 }

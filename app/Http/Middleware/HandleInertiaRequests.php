@@ -52,13 +52,14 @@ class HandleInertiaRequests extends Middleware
                     'email_verified_at' => $user->email_verified_at,
                 ] : null,
             ],
-            'flash' => [
-                'success' => fn () => $request->session()->get('success'),
-                'error' => fn () => $request->session()->get('error'),
-                'warning' => fn () => $request->session()->get('warning'),
-                'info' => fn () => $request->session()->get('info'),
-                'promote_mode' => fn () => $request->session()->get('promote_mode'),
-            ],
+            // Only emit flash keys that actually have a value (smaller JSON payload)
+            'flash' => fn () => array_filter([
+                'success' => $request->session()->get('success'),
+                'error'   => $request->session()->get('error'),
+                'warning' => $request->session()->get('warning'),
+                'info'    => $request->session()->get('info'),
+                'promote_mode' => $request->session()->get('promote_mode'),
+            ], fn ($v) => $v !== null),
             // Share pending claims count for admin nav badge (only for admin users)
             'adminStats' => fn () => $user && $user->role === 'admin' ? [
                 'pending_claims' => Cache::remember('admin.nav.pending_claims', now()->addMinutes(2), function () {

@@ -38,9 +38,10 @@ class DestinationController extends Controller
         // Use table prefix to avoid ambiguity after join with users table
         $query = Hotel::where('hotels.destination_id', $destination->id)
             ->where('hotels.is_active', true)
-            ->with(['poolCriteria', 'owner', 'badges' => function ($q) {
+            ->with(['poolCriteria', 'owner.activeSubscription', 'badges' => function ($q) {
                 $q->where('is_active', true)->orderBy('priority', 'desc');
-            }]);
+            }])
+            ->withExists(['claims as has_pending_claim' => fn($q) => $q->where('status', 'pending')]);
 
         // Apply filters
         if ($request->has('pool_type')) {

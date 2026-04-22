@@ -47,6 +47,15 @@ class SecurityHeaders
         // Permissions Policy
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self)');
 
+        // Additional best-practice headers (Lighthouse Best Practices audit)
+        $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
+        $response->headers->set('Cross-Origin-Resource-Policy', 'same-origin');
+        $response->headers->set('X-Permitted-Cross-Domain-Policies', 'none');
+
+        // Strip server fingerprinting headers (avoid info disclosure)
+        $response->headers->remove('X-Powered-By');
+        $response->headers->remove('Server');
+
         return $response;
     }
 }
