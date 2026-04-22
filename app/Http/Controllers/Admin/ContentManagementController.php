@@ -144,7 +144,8 @@ class ContentManagementController extends Controller
                 'title' => $validated['title'],
                 'slug' => $slug,
                 'excerpt' => $validated['excerpt'],
-                'content' => $validated['content'],
+                // Sanitize HTML to prevent stored XSS (admin-authored TipTap content)
+                'content' => clean($validated['content'], 'blog'),
                 'featured_image' => $imagePath,
                 'category_id' => $validated['category_id'],
                 'author_id' => Auth::id(),
@@ -243,7 +244,8 @@ class ContentManagementController extends Controller
                 'title' => $validated['title'],
                 'slug' => $slug,
                 'excerpt' => $validated['excerpt'],
-                'content' => $validated['content'],
+                // Sanitize HTML to prevent stored XSS (admin-authored TipTap content)
+                'content' => clean($validated['content'], 'blog'),
                 'featured_image' => $imagePath,
                 'category_id' => $validated['category_id'],
                 'status' => $validated['status'],

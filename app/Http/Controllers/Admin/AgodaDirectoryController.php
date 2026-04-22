@@ -37,7 +37,12 @@ class AgodaDirectoryController extends Controller
             if (is_numeric($escaped)) {
                 $query->where('agoda_hotel_id', $escaped);
             } else {
-                $query->whereRaw('MATCH(hotel_name, city, country) AGAINST(? IN BOOLEAN MODE)', [$escaped . '*']);
+                // Strip MySQL fulltext operators so user input can't break the BOOLEAN MODE
+                // syntax (or be used to probe for errors). Then append our own wildcard.
+                $cleaned = trim(preg_replace('/[+\-><\(\)~*"@]+/', ' ', $escaped));
+                if ($cleaned !== '') {
+                    $query->whereRaw('MATCH(hotel_name, city, country) AGAINST(? IN BOOLEAN MODE)', [$cleaned . '*']);
+                }
             }
         }
 
@@ -149,7 +154,18 @@ class AgodaDirectoryController extends Controller
             'server_path' => 'required|string|max:1000',
         ]);
 
-        $path = $request->input('server_path');
+        // Restrict imports to a known allow-listed directory to prevent path-traversal
+        // / arbitrary file reads (e.g. /etc/passwd) from a compromised admin account.
+        $allowedRoot = realpath(storage_path('app/agoda-imports'));
+        $requested = realpath($request->input('server_path'));
+
+        if (!$requested || !$allowedRoot || !str_starts_with($requested, $allowedRoot . DIRECTORY_SEPARATOR) && $requested !== $allowedRoot) {
+            return back()->withErrors([
+                'server_path' => 'File must be located inside storage/app/agoda-imports/.',
+            ]);
+        }
+
+        $path = $requested;
 
         if (!file_exists($path)) {
             return back()->withErrors(['server_path' => 'File not found on server: ' . $path]);

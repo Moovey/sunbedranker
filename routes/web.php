@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Health check endpoint for monitoring
+// Health check endpoint for monitoring (rate-limited so it can't be used to fingerprint infra)
 Route::get('/health', function () {
     try {
         $dbOk = DB::connection()->getPdo() !== null;
@@ -40,7 +40,7 @@ Route::get('/health', function () {
             'cache' => $cacheOk ? 'ok' : 'error',
         ],
     ], $healthy ? 200 : 503);
-})->name('health');
+})->middleware('throttle:30,1')->name('health');
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');

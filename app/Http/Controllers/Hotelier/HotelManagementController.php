@@ -95,7 +95,9 @@ class HotelManagementController extends Controller
         $this->checkSubscriptionTier();
 
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp',
+            // Cap at 5 MB and enforce real MIME type (not just extension) to prevent
+            // disguised executables / SVG XSS uploads.
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|mimetypes:image/jpeg,image/png,image/webp|max:5120',
             'type' => 'required|in:main,gallery',
         ]);
 

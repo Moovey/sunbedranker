@@ -24,10 +24,13 @@ class SecurityHeaders
         $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin');
 
         // Content Security Policy - enforced
+        // Note: 'unsafe-inline' for script-src is required by Inertia.js (data-page attribute is fine
+        // but some libs inline). 'unsafe-eval' was removed - if a 3rd-party lib breaks, prefer adding
+        // a hash/nonce instead of re-enabling eval.
         $response->headers->set('Content-Security-Policy',
             "upgrade-insecure-requests; " .
             "default-src 'self'; " .
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://*.cloudflareinsights.com https://challenges.cloudflare.com; " .
+            "script-src 'self' 'unsafe-inline' https://js.stripe.com https://*.cloudflareinsights.com https://challenges.cloudflare.com; " .
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.bunny.net https://unpkg.com; " .
             "img-src 'self' data: blob: https:; " .
             "font-src 'self' https://fonts.gstatic.com https://fonts.bunny.net; " .
@@ -35,6 +38,8 @@ class SecurityHeaders
             "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://www.youtube.com https://www.youtube-nocookie.com https://maps.google.com https://www.google.com; " .
             "worker-src 'self' blob:; " .
             "object-src 'none'; " .
+            "frame-ancestors 'self'; " .
+            "form-action 'self' https://hooks.stripe.com; " .
             "base-uri 'self';"
         );
 

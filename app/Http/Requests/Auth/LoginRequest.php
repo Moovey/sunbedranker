@@ -43,6 +43,8 @@ class LoginRequest extends FormRequest
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
+            // Also hit the IP-only limiter so an attacker rotating emails still gets blocked
+            RateLimiter::hit('login-ip:'.$this->ip(), 60);
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
@@ -50,29 +52,34 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+        RateLimiter::clear('login-ip:'.$this->ip());
     }
 
     /**
      * Ensure the login request is not rate limited.
      *
+     * Two limiters in parallel:
+     *  - per email+IP (5 attempts / minute) — blocks credential stuffing on a single account
+     *  - per IP only  (30 attempts / minute) — blocks attackers rotating emails to bypass the first limiter
+     *
      * @throws \Illuminate\Validation\ValidationException
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
-            return;
+        $ipKey = 'login-ip:'.$this->ip();
+
+        foreach ([[$this->throttleKey(), 5], [$ipKey, 30]] as [$key, $max]) {
+            if (RateLimiter::tooManyAttempts($key, $max)) {
+                event(new Lockout($this));
+                $seconds = RateLimiter::availableIn($key);
+                throw ValidationException::withMessages([
+                    'email' => trans('auth.throttle', [
+                        'seconds' => $seconds,
+                        'minutes' => ceil($seconds / 60),
+                    ]),
+                ]);
+            }
         }
-
-        event(new Lockout($this));
-
-        $seconds = RateLimiter::availableIn($this->throttleKey());
-
-        throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
-        ]);
     }
 
     /**

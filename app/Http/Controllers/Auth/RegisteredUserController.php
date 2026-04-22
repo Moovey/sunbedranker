@@ -41,7 +41,6 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->user_type,
         ];
 
         // If registering as hotelier, set default subscription tier to 'free'
@@ -49,7 +48,10 @@ class RegisteredUserController extends Controller
             $userData['subscription_tier'] = User::TIER_FREE;
         }
 
-        $user = User::create($userData);
+        $user = new User($userData);
+        // Role is set explicitly (NOT mass-assigned) to prevent privilege escalation
+        $user->role = $request->user_type;
+        $user->save();
 
         event(new Registered($user));
 

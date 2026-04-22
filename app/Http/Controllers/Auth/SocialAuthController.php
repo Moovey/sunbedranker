@@ -47,31 +47,30 @@ class SocialAuthController extends Controller
             $user = User::where('email', $googleUser->getEmail())->first();
 
             if ($user) {
-                // Link Google account to existing user
-                $user->update([
-                    'google_id' => $googleUser->getId(),
-                    'avatar' => $googleUser->getAvatar(),
-                ]);
+                // Link Google account to existing user (explicit assignment - google_id is not fillable)
+                $user->google_id = $googleUser->getId();
+                $user->avatar = $googleUser->getAvatar();
+                $user->save();
             } else {
                 // Get role from session (default to 'user')
                 $role = session('google_auth_role', 'user');
                 session()->forget('google_auth_role');
                 
-                // Create new user
-                $user = User::create([
+                // Create new user (role/google_id assigned explicitly - not mass-assignable)
+                $user = new User([
                     'name' => $googleUser->getName(),
                     'email' => $googleUser->getEmail(),
-                    'google_id' => $googleUser->getId(),
                     'avatar' => $googleUser->getAvatar(),
                     'email_verified_at' => now(),
-                    'role' => $role,
                 ]);
+                $user->google_id = $googleUser->getId();
+                $user->role = $role;
+                $user->save();
             }
         } else {
             // Update avatar if changed
-            $user->update([
-                'avatar' => $googleUser->getAvatar(),
-            ]);
+            $user->avatar = $googleUser->getAvatar();
+            $user->save();
         }
 
         // Update last login

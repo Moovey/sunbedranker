@@ -89,6 +89,18 @@ class HotelController extends Controller
             default => $hotel->booking_affiliate_url,
         };
 
-        return redirect()->away($url ?? $hotel->website ?? '/');
+        $url = $url ?: $hotel->website ?: null;
+
+        // Open-redirect protection: only allow http(s) outbound URLs with a real host.
+        // Prevents abusing /hotels/{slug}/click as a phishing redirector.
+        if ($url) {
+            $parsed = parse_url($url);
+            $scheme = strtolower($parsed['scheme'] ?? '');
+            if (!in_array($scheme, ['http', 'https'], true) || empty($parsed['host'])) {
+                $url = null;
+            }
+        }
+
+        return redirect()->away($url ?? route('hotels.show', $hotel));
     }
 }

@@ -40,16 +40,18 @@ class User extends Authenticatable
     /**
      * The attributes that are mass assignable.
      *
+     * SECURITY: 'role' and 'google_id' are intentionally excluded from $fillable
+     * to prevent privilege-escalation via mass assignment. They must be assigned
+     * explicitly (e.g. $user->role = 'admin') in controllers after authorization.
+     *
      * @var list<string>
      */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role',
         'last_login_at',
         'profile_picture',
-        'google_id',
         'avatar',
     ];
 
