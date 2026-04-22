@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\BulkPromoteAgodaHotels;
 use App\Jobs\ImportAgodaDirectory;
 use App\Models\AgodaHotel;
 use App\Models\Destination;
 use App\Models\Hotel;
 use App\Models\PoolCriteria;
+use App\Services\AgodaPromotionService;
 use App\Services\HotelScoringService;
 use App\Services\PoolEstimationService;
 use Illuminate\Http\JsonResponse;
@@ -107,6 +109,7 @@ class AgodaDirectoryController extends Controller
         });
 
         $importProgress = Cache::get('agoda_directory_import');
+        $bulkPromoteProgress = Cache::get(BulkPromoteAgodaHotels::PROGRESS_KEY);
 
         return Inertia::render('Admin/Directory/Index', [
             'hotels' => $hotels,
@@ -115,6 +118,7 @@ class AgodaDirectoryController extends Controller
             'totalCount' => $totalCount,
             'promotedCount' => $promotedCount,
             'importProgress' => $importProgress,
+            'bulkPromoteProgress' => $bulkPromoteProgress,
             'filters' => $request->only(['search', 'country', 'star_rating', 'accommodation_type', 'promoted']),
             'stats' => $this->getAdminStats(),
         ]);
@@ -213,134 +217,133 @@ class AgodaDirectoryController extends Controller
         return response()->json($agodaHotel);
     }
 
-    public function promote(Request $request, AgodaHotel $agodaHotel): RedirectResponse
+    public function promote(Request $request, AgodaHotel $agodaHotel, AgodaPromotionService $service): RedirectResponse
     {
-        if ($agodaHotel->isPromoted()) {
-            $linkedHotel = Hotel::withTrashed()->find($agodaHotel->promoted_hotel_id);
-
-            if (!$linkedHotel || $linkedHotel->trashed()) {
-                $agodaHotel->update(['promoted_hotel_id' => null]);
-                $agodaHotel->refresh();
-            } else {
-                return back()->withErrors(['error' => 'This hotel has already been promoted.']);
-            }
-        }
-
-        // Check if agoda_hotel_id already exists as a curated hotel
-        $existing = Hotel::withTrashed()->where('agoda_hotel_id', $agodaHotel->agoda_hotel_id)->first();
-        if ($existing) {
-            $promoteMode = 'relinked';
-            if ($existing->trashed()) {
-                $existing->restore();
-                $promoteMode = 'restored';
-            }
-
-            $agodaHotel->update(['promoted_hotel_id' => $existing->id]);
-            return back()
-                ->with('success', "Linked to existing curated hotel \"{$existing->name}\".")
-                ->with('promote_mode', $promoteMode);
-        }
-
-        // Auto-match destination: by agoda_city_id, then by city name + country code
-        $destination = null;
-
-        if ($agodaHotel->city_id) {
-            $destination = Destination::where('agoda_city_id', $agodaHotel->city_id)->first();
-        }
-
-        if (!$destination && $agodaHotel->city && $agodaHotel->countryisocode) {
-            $destination = Destination::where('country_code', $agodaHotel->countryisocode)
-                ->whereRaw('LOWER(name) = ?', [strtolower(trim($agodaHotel->city))])
-                ->first();
-        }
-
-        // Auto-create destination if none found
-        if (!$destination) {
-            $cityName = $agodaHotel->city ?: 'Unknown';
-            $countryName = $agodaHotel->country ?: 'Unknown';
-            $countryCode = $agodaHotel->countryisocode ?: 'XX';
-
-            $slug = Str::slug($cityName . ' ' . $countryCode);
-            $existingSlug = Destination::where('slug', $slug)->exists();
-            if ($existingSlug) {
-                $slug .= '-' . $agodaHotel->city_id;
-            }
-
-            $destination = Destination::create([
-                'name' => $cityName,
-                'slug' => $slug,
-                'country' => $countryName,
-                'country_code' => $countryCode,
-                'latitude' => $agodaHotel->latitude,
-                'longitude' => $agodaHotel->longitude,
-                'is_active' => true,
-                'is_auto_created' => true,
-                'agoda_city_id' => $agodaHotel->city_id,
+        try {
+            $result = $service->promote($agodaHotel);
+        } catch (\Throwable $e) {
+            Log::error('Agoda promote failed', [
+                'agoda_hotel_id' => $agodaHotel->agoda_hotel_id,
+                'error' => $e->getMessage(),
             ]);
+            return back()->withErrors(['error' => 'Promotion failed. ' . $e->getMessage()]);
         }
 
-        $starRating = (int) round($agodaHotel->star_rating ?? 3);
-        $starRating = max(1, min(5, $starRating));
-
-        $hotelName = $agodaHotel->hotel_name;
-        $slug = Str::slug($hotelName) . '-' . $agodaHotel->agoda_hotel_id;
-
-        // Ensure unique slug
-        $count = Hotel::where('slug', $slug)->count();
-        if ($count > 0) {
-            $slug .= '-' . ($count + 1);
+        if ($result['status'] === 'skipped') {
+            return back()->withErrors(['error' => $result['message']]);
         }
 
-        $hotel = Hotel::create([
-            'name' => $hotelName,
-            'slug' => $slug,
-            'destination_id' => $destination->id,
-            'star_rating' => $starRating,
-            'total_rooms' => $agodaHotel->numberrooms ?: $this->estimateTotalRooms($starRating),
-            'address' => implode(', ', array_filter([$agodaHotel->addressline1, $agodaHotel->city, $agodaHotel->country])),
-            'latitude' => $agodaHotel->latitude,
-            'longitude' => $agodaHotel->longitude,
-            'main_image' => $this->upgradeAgodaImageUrl($agodaHotel->photo1),
-            'images' => array_values(array_filter(array_map(
-                fn ($url) => $this->upgradeAgodaImageUrl($url),
-                [$agodaHotel->photo2, $agodaHotel->photo3, $agodaHotel->photo4, $agodaHotel->photo5]
-            ))),
-            'description' => $agodaHotel->overview,
-            'agoda_hotel_id' => $agodaHotel->agoda_hotel_id,
-            'booking_affiliate_url' => $agodaHotel->affiliate_url,
-            'is_active' => true,
-            'is_verified' => false,
-            'external_api_id' => (string) $agodaHotel->agoda_hotel_id,
-            'external_api_source' => 'agoda',
-        ]);
-
-        // Create estimated pool criteria
-        $estimationService = app(PoolEstimationService::class);
-        $estimated = $estimationService->estimate((float) $starRating);
-
-        PoolCriteria::create(array_merge(
-            ['hotel_id' => $hotel->id],
-            $this->buildPoolCriteriaFromEstimate($estimated)
-        ));
-
-        // Calculate scores
-        app(HotelScoringService::class)->calculateAndUpdateScores($hotel->fresh());
-
-        // Link directory entry to promoted hotel
-        $agodaHotel->update(['promoted_hotel_id' => $hotel->id]);
-
-        // Clear cache
-        Cache::forget('agoda_directory_promoted');
+        $hotel = $result['hotel'];
 
         Log::info('Agoda directory hotel promoted', [
             'agoda_hotel_id' => $agodaHotel->agoda_hotel_id,
-            'hotel_id' => $hotel->id,
+            'hotel_id' => $hotel?->id,
+            'status' => $result['status'],
             'user_id' => Auth::id(),
         ]);
 
-        return redirect()->route('admin.hotels.edit', $hotel->id)
-            ->with('success', "Hotel \"{$hotel->name}\" promoted to curated listing! Edit the details and refine pool criteria.")
-            ->with('promote_mode', 'promoted');
+        // For created hotels send admin to the edit screen so they can refine criteria.
+        if ($result['status'] === 'created' && $hotel) {
+            return redirect()->route('admin.hotels.edit', $hotel->id)
+                ->with('success', "Hotel \"{$hotel->name}\" promoted to curated listing! Edit the details and refine pool criteria.")
+                ->with('promote_mode', 'promoted');
+        }
+
+        return back()
+            ->with('success', $result['message'])
+            ->with('promote_mode', $result['status']);
+    }
+
+    /**
+     * Preview how many unpromoted hotels match a bulk-promote filter set.
+     * Used by the UI to show "This will promote N hotels" before confirming.
+     */
+    public function bulkPromotePreview(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'country' => 'required|string|size:2',
+            'star_rating' => 'nullable|integer|min:1|max:5',
+            'accommodation_type' => 'nullable|string|max:100',
+        ]);
+
+        $count = AgodaHotel::query()
+            ->whereNull('promoted_hotel_id')
+            ->where('countryisocode', strtoupper($validated['country']))
+            ->when(!empty($validated['star_rating']), fn ($q) => $q->where('star_rating', $validated['star_rating']))
+            ->when(!empty($validated['accommodation_type']), fn ($q) => $q->where('accommodation_type', $validated['accommodation_type']))
+            ->count();
+
+        return response()->json(['matching' => $count]);
+    }
+
+    /**
+     * Dispatch a background job to bulk-promote unpromoted hotels matching the filters.
+     */
+    public function bulkPromote(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'country' => 'required|string|size:2',
+            'star_rating' => 'nullable|integer|min:1|max:5',
+            'accommodation_type' => 'nullable|string|max:100',
+            'limit' => 'nullable|integer|min:1|max:5000',
+        ]);
+
+        // Refuse to start if another bulk job is already running.
+        $current = Cache::get(BulkPromoteAgodaHotels::PROGRESS_KEY);
+        if ($current && in_array($current['status'] ?? null, ['queued', 'running'], true)) {
+            return back()->withErrors([
+                'bulk' => 'A bulk promotion is already running. Please wait for it to finish.',
+            ]);
+        }
+
+        $filters = [
+            'country' => strtoupper($validated['country']),
+            'star_rating' => $validated['star_rating'] ?? null,
+            'accommodation_type' => $validated['accommodation_type'] ?? null,
+            'limit' => $validated['limit'] ?? 500,
+        ];
+
+        Cache::put(BulkPromoteAgodaHotels::PROGRESS_KEY, [
+            'status' => 'queued',
+            'processed' => 0,
+            'total' => 0,
+            'created' => 0,
+            'failed' => 0,
+            'message' => 'Bulk promotion queued. Processing will begin shortly...',
+            'updated_at' => now()->toIso8601String(),
+        ], now()->addHours(2));
+
+        BulkPromoteAgodaHotels::dispatch($filters);
+
+        Log::info('Agoda bulk promote dispatched', [
+            'filters' => $filters,
+            'user_id' => Auth::id(),
+        ]);
+
+        return back()->with('success', "Bulk promotion started for country {$filters['country']} (up to {$filters['limit']} hotels). Watch the progress banner above.");
+    }
+
+    /**
+     * Polling endpoint for bulk-promote progress.
+     */
+    public function bulkPromoteProgress(): JsonResponse
+    {
+        return response()->json(
+            Cache::get(BulkPromoteAgodaHotels::PROGRESS_KEY, [
+                'status' => 'idle',
+                'processed' => 0,
+                'total' => 0,
+                'created' => 0,
+                'failed' => 0,
+                'message' => 'No bulk promotion running.',
+            ])
+        );
+    }
+
+    public function dismissBulkPromoteProgress(): JsonResponse
+    {
+        Cache::forget(BulkPromoteAgodaHotels::PROGRESS_KEY);
+        return response()->json(['status' => 'idle']);
     }
 
     private function clearStalePromotionLinks(): void

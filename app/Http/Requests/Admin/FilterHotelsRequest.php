@@ -25,6 +25,7 @@ class FilterHotelsRequest extends FormRequest
         return [
             'search' => ['nullable', 'string', 'max:255'],
             'destination_id' => ['nullable', 'integer', 'exists:destinations,id'],
+            'country' => ['nullable', 'string', 'size:2'],
             'status' => ['nullable', 'string', 'in:active,inactive'],
             'per_page' => ['nullable', 'integer', 'min:5', 'max:100'],
         ];
@@ -46,7 +47,7 @@ class FilterHotelsRequest extends FormRequest
      */
     public function filters(): array
     {
-        return $this->only(['search', 'destination_id', 'status']);
+        return $this->only(['search', 'destination_id', 'country', 'status']);
     }
 
     /**
@@ -64,6 +65,15 @@ class FilterHotelsRequest extends FormRequest
     {
         $id = $this->validated('destination_id');
         return $id ? (int) $id : null;
+    }
+
+    /**
+     * Get country code filter (uppercased).
+     */
+    public function country(): ?string
+    {
+        $code = $this->validated('country');
+        return $code ? strtoupper($code) : null;
     }
 
     /**

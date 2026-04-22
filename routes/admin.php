@@ -147,6 +147,18 @@ Route::middleware(['auth', 'admin', 'throttle:admin'])->prefix('admin')->name('a
     Route::get('/directory/{agodaHotel}', [AgodaDirectoryController::class, 'show'])->name('directory.show');
     Route::post('/directory/{agodaHotel}/promote', [AgodaDirectoryController::class, 'promote'])->name('directory.promote');
 
+    // Bulk promotion (background job, e.g. promote ALL hotels in a country)
+    Route::post('/directory/bulk-promote/preview', [AgodaDirectoryController::class, 'bulkPromotePreview'])
+        ->middleware('throttle:30,1')
+        ->name('directory.bulk-promote.preview');
+    Route::post('/directory/bulk-promote', [AgodaDirectoryController::class, 'bulkPromote'])
+        ->middleware('throttle:admin-bulk')
+        ->name('directory.bulk-promote');
+    Route::get('/directory/bulk-promote/progress', [AgodaDirectoryController::class, 'bulkPromoteProgress'])
+        ->name('directory.bulk-promote.progress');
+    Route::delete('/directory/bulk-promote/progress', [AgodaDirectoryController::class, 'dismissBulkPromoteProgress'])
+        ->name('directory.bulk-promote.dismiss');
+
     // Live stats polling endpoint (lightweight JSON)
     Route::get('/api/stats/pending-claims', function () {
         return response()->json([

@@ -28,7 +28,7 @@ const TABLE_COLUMNS = [
     { key: 'actions', label: 'Actions' },
 ];
 
-export default function HotelsIndex({ hotels, destinations, filters, stats }) {
+export default function HotelsIndex({ hotels, destinations, countries = [], filters, stats }) {
     const { flash } = usePage().props;
 
     useEffect(() => {
@@ -39,6 +39,7 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
     const [filterState, setFilterState] = useState({
         search: filters.search || '',
         destination_id: filters.destination_id || '',
+        country: filters.country || '',
         status: filters.status || '',
     });
 
@@ -62,7 +63,7 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
     };
 
     const clearFilters = () => {
-        setFilterState({ search: '', destination_id: '', status: '' });
+        setFilterState({ search: '', destination_id: '', country: '', status: '' });
         router.get(route('admin.hotels.index'));
     };
 
@@ -131,6 +132,7 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
                         filterState={filterState}
                         updateFilter={updateFilter}
                         destinations={destinations}
+                        countries={countries}
                         onSearch={handleSearch}
                         onClear={clearFilters}
                     />
@@ -229,17 +231,27 @@ export default function HotelsIndex({ hotels, destinations, filters, stats }) {
 // Sub-components
 // ============================================================================
 
-function FilterSection({ filterState, updateFilter, destinations, onSearch, onClear }) {
+function FilterSection({ filterState, updateFilter, destinations, countries = [], onSearch, onClear }) {
     return (
         <div className="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-3 sm:p-4 md:p-6 mb-4 sm:mb-6">
             <h2 className="font-semibold text-slate-900 mb-3 sm:mb-4 text-sm sm:text-base tracking-tight">Filter Hotels</h2>
-            <form onSubmit={onSearch} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <form onSubmit={onSearch} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
                 <FilterInput
                     label="Search"
                     type="text"
                     value={filterState.search}
                     onChange={(e) => updateFilter('search', e.target.value)}
                     placeholder="Hotel name..."
+                />
+
+                <FilterSelect
+                    label="Country"
+                    value={filterState.country}
+                    onChange={(e) => updateFilter('country', e.target.value)}
+                    options={[
+                        { value: '', label: 'All Countries' },
+                        ...countries.map(c => ({ value: c.code, label: c.name || c.code })),
+                    ]}
                 />
 
                 <FilterSelect

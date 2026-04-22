@@ -55,6 +55,7 @@ class HotelManagementController extends Controller
         return Inertia::render('Admin/Hotels/Index', [
             'hotels' => $hotels,
             'destinations' => $this->getActiveDestinations(),
+            'countries' => $this->getActiveCountries(),
             'filters' => $request->filters(),
         ]);
     }
@@ -71,9 +72,30 @@ class HotelManagementController extends Controller
             ->when($request->destinationId(), fn (Builder $q, int $destinationId) => 
                 $q->where('destination_id', $destinationId)
             )
+            ->when($request->country(), fn (Builder $q, string $country) => 
+                $q->whereHas('destination', fn (Builder $d) => $d->where('country_code', $country))
+            )
             ->when($request->status(), fn (Builder $q, string $status) => 
                 $q->where('is_active', $status === 'active')
             );
+    }
+
+    /**
+     * Get distinct countries (from destinations) for filter dropdown (cached).
+     */
+    private function getActiveCountries()
+    {
+        return Cache::remember('admin.hotels.countries', now()->addMinutes(self::DESTINATIONS_TTL_MINUTES), function () {
+            return Destination::query()
+                ->select('country_code', 'country')
+                ->whereNotNull('country_code')
+                ->where('country_code', '!=', '')
+                ->groupBy('country_code', 'country')
+                ->orderBy('country')
+                ->get()
+                ->map(fn ($d) => ['code' => $d->country_code, 'name' => $d->country ?: $d->country_code])
+                ->values();
+        });
     }
 
     /**

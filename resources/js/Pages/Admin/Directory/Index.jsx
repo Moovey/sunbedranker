@@ -35,7 +35,7 @@ const PROMOTE_MODE_BADGE = {
 
 export default function DirectoryIndex({
     hotels, countries, accommodationTypes, totalCount, promotedCount,
-    importProgress, filters, stats,
+    bulkPromoteProgress, filters, stats,
 }) {
     const { flash } = usePage().props;
     const promoteBadge = PROMOTE_MODE_BADGE[flash?.promote_mode] || null;
@@ -53,46 +53,82 @@ export default function DirectoryIndex({
         promoted: filters.promoted || '',
     });
 
-    const [showUploadModal, setShowUploadModal] = useState(false);
     const [showPromoteModal, setShowPromoteModal] = useState(false);
+    const [showBulkPromoteModal, setShowBulkPromoteModal] = useState(false);
     const [selectedHotel, setSelectedHotel] = useState(null);
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [detailHotel, setDetailHotel] = useState(null);
-    const [liveProgress, setLiveProgress] = useState(importProgress);
-    const [uploadTab, setUploadTab] = useState('path'); // 'path' or 'file'
+    const [liveBulkProgress, setLiveBulkProgress] = useState(bulkPromoteProgress);
 
-    const uploadForm = useForm({ csv_file: null });
-    const pathForm = useForm({ server_path: '' });
     const promoteForm = useForm({});
+    const bulkForm = useForm({
+        country: filters.country || '',
+        star_rating: '',
+        accommodation_type: '',
+        limit: 500,
+    });
+    const [bulkMatching, setBulkMatching] = useState(null);
+    const [bulkPreviewLoading, setBulkPreviewLoading] = useState(false);
 
-    // Poll import progress — polls every 2s while active
+    // Poll bulk-promote progress
     useEffect(() => {
-        const isActive = liveProgress && !['idle', 'completed', 'failed'].includes(liveProgress.status);
+        const isActive = liveBulkProgress && !['idle', 'completed', 'failed'].includes(liveBulkProgress.status);
         if (!isActive) return;
 
         const poll = () => {
-            fetch(route('admin.directory.import-progress'), {
+            fetch(route('admin.directory.bulk-promote.progress'), {
                 headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
                 credentials: 'same-origin',
             })
                 .then(r => r.json())
                 .then(data => {
-                    setLiveProgress(data);
+                    setLiveBulkProgress(data);
                     if (data.status === 'completed') {
-                        toast.success(`Import completed! ${data.processed?.toLocaleString()} hotels imported.`);
+                        toast.success(`Bulk promote done. Created/linked: ${data.created}. Failed: ${data.failed}.`);
                         router.reload({ only: ['hotels', 'totalCount', 'promotedCount'] });
                     } else if (data.status === 'failed') {
-                        toast.error('Import failed: ' + (data.message || 'Unknown error'));
+                        toast.error('Bulk promote failed: ' + (data.message || 'Unknown error'));
                     }
                 })
                 .catch(() => {});
         };
 
-        // First poll immediately after upload
         poll();
-        const interval = setInterval(poll, 2000);
+        const interval = setInterval(poll, 2500);
         return () => clearInterval(interval);
-    }, [liveProgress?.status]);
+    }, [liveBulkProgress?.status]);
+
+    // Live preview of how many hotels match the bulk filters (debounced)
+    useEffect(() => {
+        if (!showBulkPromoteModal || !bulkForm.data.country) {
+            setBulkMatching(null);
+            return;
+        }
+        setBulkPreviewLoading(true);
+        const token = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+        const t = setTimeout(() => {
+            fetch(route('admin.directory.bulk-promote.preview'), {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-XSRF-TOKEN': token ? decodeURIComponent(token) : '',
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    country: bulkForm.data.country,
+                    star_rating: bulkForm.data.star_rating || null,
+                    accommodation_type: bulkForm.data.accommodation_type || null,
+                }),
+            })
+                .then(r => r.json())
+                .then(data => setBulkMatching(data.matching ?? 0))
+                .catch(() => setBulkMatching(null))
+                .finally(() => setBulkPreviewLoading(false));
+        }, 350);
+        return () => clearTimeout(t);
+    }, [showBulkPromoteModal, bulkForm.data.country, bulkForm.data.star_rating, bulkForm.data.accommodation_type]);
 
     const updateFilter = (key, value) => {
         setFilterState(prev => ({ ...prev, [key]: value }));
@@ -111,43 +147,6 @@ export default function DirectoryIndex({
         router.get(route('admin.directory.index'));
     };
 
-    const handleUpload = (e) => {
-        e.preventDefault();
-        uploadForm.post(route('admin.directory.upload'), {
-            forceFormData: true,
-            onSuccess: () => {
-                setShowUploadModal(false);
-                uploadForm.reset();
-                setLiveProgress({ status: 'queued', processed: 0, total: 0, message: 'Import queued...' });
-            },
-            onError: (errors) => {
-                if (errors.csv_file) {
-                    toast.error(errors.csv_file);
-                } else {
-                    toast.error('Upload failed. Please try again.');
-                }
-            },
-        });
-    };
-
-    const handlePathUpload = (e) => {
-        e.preventDefault();
-        pathForm.post(route('admin.directory.upload-path'), {
-            onSuccess: () => {
-                setShowUploadModal(false);
-                pathForm.reset();
-                setLiveProgress({ status: 'queued', processed: 0, total: 0, message: 'Import queued...' });
-            },
-            onError: (errors) => {
-                if (errors.server_path) {
-                    toast.error(errors.server_path);
-                } else {
-                    toast.error('Import failed. Please check the file path.');
-                }
-            },
-        });
-    };
-
     const openPromoteModal = (hotel) => {
         setSelectedHotel(hotel);
         setShowPromoteModal(true);
@@ -159,6 +158,22 @@ export default function DirectoryIndex({
             onSuccess: () => {
                 setShowPromoteModal(false);
                 setSelectedHotel(null);
+            },
+        });
+    };
+
+    const handleBulkPromote = (e) => {
+        e.preventDefault();
+        bulkForm.post(route('admin.directory.bulk-promote'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                setShowBulkPromoteModal(false);
+                setLiveBulkProgress({ status: 'queued', processed: 0, total: 0, created: 0, failed: 0, message: 'Bulk promotion queued...' });
+            },
+            onError: (errors) => {
+                if (errors.bulk) toast.error(errors.bulk);
+                else if (errors.country) toast.error(errors.country);
+                else toast.error('Failed to start bulk promotion.');
             },
         });
     };
@@ -197,23 +212,27 @@ export default function DirectoryIndex({
                                 </span>
                             )}
                         </div>
-                        <button
-                            onClick={() => setShowUploadModal(true)}
-                            className="inline-flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm text-sm sm:text-base"
-                        >
-                            <UploadIcon />
-                            Import CSV
-                        </button>
+                        <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-2 sm:gap-3">
+                            <button
+                                onClick={() => setShowBulkPromoteModal(true)}
+                                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors shadow-sm text-sm sm:text-base"
+                            >
+                                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                                Bulk Promote
+                            </button>
+                        </div>
                     </div>
 
-                    {/* Import Progress Banner */}
-                    <ImportProgressBanner progress={liveProgress} onDismiss={() => {
+                    {/* Bulk Promote Progress Banner */}
+                    <ImportProgressBanner progress={liveBulkProgress} onDismiss={() => {
                         const token = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
-                        fetch(route('admin.directory.dismiss-progress'), {
+                        fetch(route('admin.directory.bulk-promote.dismiss'), {
                             method: 'DELETE',
                             headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-XSRF-TOKEN': token ? decodeURIComponent(token) : '' },
                             credentials: 'same-origin',
-                        }).then(() => setLiveProgress(null));
+                        }).then(() => setLiveBulkProgress(null));
                     }} />
 
                     {/* Filters */}
@@ -234,129 +253,6 @@ export default function DirectoryIndex({
                     />
                 </div>
             </div>
-
-            {/* Upload Modal */}
-            {showUploadModal && (
-                <ModalOverlay onClose={() => { setShowUploadModal(false); uploadForm.reset(); pathForm.reset(); }}>
-                    <div className="relative bg-white rounded-xl shadow-xl max-w-md w-full p-6 z-10">
-                        <ModalHeader title="Import Agoda CSV" onClose={() => { setShowUploadModal(false); uploadForm.reset(); pathForm.reset(); }} />
-
-                        {/* Tabs */}
-                        <div className="flex border-b border-gray-200 mb-4">
-                            <button
-                                type="button"
-                                onClick={() => setUploadTab('path')}
-                                className={`flex-1 pb-2 text-sm font-medium border-b-2 transition-colors ${uploadTab === 'path' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
-                            >
-                                Server Path (recommended)
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setUploadTab('file')}
-                                className={`flex-1 pb-2 text-sm font-medium border-b-2 transition-colors ${uploadTab === 'file' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
-                            >
-                                File Upload
-                            </button>
-                        </div>
-
-                        {uploadTab === 'path' ? (
-                            <>
-                                <p className="text-sm text-gray-500 mb-4">
-                                    Enter the <strong>full path</strong> to the CSV file on the server. Best for large files (100MB+).
-                                </p>
-                                <form onSubmit={handlePathUpload} className="space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Server File Path *</label>
-                                        <input
-                                            type="text"
-                                            value={pathForm.data.server_path}
-                                            onChange={e => pathForm.setData('server_path', e.target.value)}
-                                            placeholder="C:\path\to\agoda_hotels.csv"
-                                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                        />
-                                        {pathForm.errors.server_path && (
-                                            <p className="mt-1 text-sm text-red-600">{pathForm.errors.server_path}</p>
-                                        )}
-                                    </div>
-                                    <div className="flex gap-3 pt-2">
-                                        <button
-                                            type="button"
-                                            onClick={() => { setShowUploadModal(false); pathForm.reset(); }}
-                                            className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            type="submit"
-                                            disabled={pathForm.processing || !pathForm.data.server_path}
-                                            className="flex-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-                                        >
-                                            {pathForm.processing ? (
-                                                <>
-                                                    <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                                                    </svg>
-                                                    Starting import...
-                                                </>
-                                            ) : 'Start Import'}
-                                        </button>
-                                    </div>
-                                </form>
-                            </>
-                        ) : (
-                            <>
-                                <p className="text-sm text-gray-500 mb-4">
-                                    Upload a CSV file (max 500MB). For larger files, use the <strong>Server Path</strong> tab instead.
-                                </p>
-                                <form onSubmit={handleUpload} className="space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">CSV File *</label>
-                                        <input
-                                            type="file"
-                                            accept=".csv,.txt,.tsv"
-                                            onChange={e => uploadForm.setData('csv_file', e.target.files[0])}
-                                            className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                        />
-                                        {uploadForm.data.csv_file && (
-                                            <p className="mt-1 text-xs text-gray-500">
-                                                Selected: {uploadForm.data.csv_file.name} ({(uploadForm.data.csv_file.size / 1024 / 1024).toFixed(1)} MB)
-                                            </p>
-                                        )}
-                                        {uploadForm.errors.csv_file && (
-                                            <p className="mt-1 text-sm text-red-600">{uploadForm.errors.csv_file}</p>
-                                        )}
-                                    </div>
-                                    <div className="flex gap-3 pt-2">
-                                        <button
-                                            type="button"
-                                            onClick={() => { setShowUploadModal(false); uploadForm.reset(); }}
-                                            className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            type="submit"
-                                            disabled={uploadForm.processing || !uploadForm.data.csv_file}
-                                            className="flex-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-                                        >
-                                            {uploadForm.processing ? (
-                                                <>
-                                                    <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                                                    </svg>
-                                                    Uploading file...
-                                                </>
-                                            ) : 'Upload & Import'}
-                                        </button>
-                                    </div>
-                                </form>
-                            </>
-                        )}
-                    </div>
-                </ModalOverlay>
-            )}
 
             {/* Promote Modal */}
             {showPromoteModal && selectedHotel && (
@@ -489,6 +385,129 @@ export default function DirectoryIndex({
                                 View on Agoda
                             </a>
                         </div>
+                    </div>
+                </ModalOverlay>
+            )}
+
+            {/* Bulk Promote Modal */}
+            {showBulkPromoteModal && (
+                <ModalOverlay onClose={() => setShowBulkPromoteModal(false)}>
+                    <div className="relative bg-white rounded-xl shadow-xl max-w-lg w-full p-6 z-10 max-h-[90vh] overflow-y-auto">
+                        <ModalHeader title="Bulk Promote by Country" onClose={() => setShowBulkPromoteModal(false)} />
+
+                        <p className="text-sm text-gray-600 mb-4">
+                            Promote all unpromoted hotels matching the filters below into curated listings.
+                            This runs in the background — you can leave the page.
+                        </p>
+
+                        <form onSubmit={handleBulkPromote} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Country *</label>
+                                <select
+                                    value={bulkForm.data.country}
+                                    onChange={e => bulkForm.setData('country', e.target.value)}
+                                    required
+                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                >
+                                    <option value="">Select a country...</option>
+                                    {countries.map(c => (
+                                        <option key={c.code} value={c.code}>{c.name || c.code}</option>
+                                    ))}
+                                </select>
+                                {bulkForm.errors.country && (
+                                    <p className="mt-1 text-sm text-red-600">{bulkForm.errors.country}</p>
+                                )}
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Min Stars (optional)</label>
+                                    <select
+                                        value={bulkForm.data.star_rating}
+                                        onChange={e => bulkForm.setData('star_rating', e.target.value)}
+                                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                    >
+                                        {STAR_OPTIONS.map(opt => (
+                                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Type (optional)</label>
+                                    <select
+                                        value={bulkForm.data.accommodation_type}
+                                        onChange={e => bulkForm.setData('accommodation_type', e.target.value)}
+                                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                    >
+                                        <option value="">All Types</option>
+                                        {accommodationTypes.map(t => (
+                                            <option key={t} value={t}>{t}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Maximum hotels to promote (1–5000)
+                                </label>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    max="5000"
+                                    value={bulkForm.data.limit}
+                                    onChange={e => bulkForm.setData('limit', parseInt(e.target.value) || 500)}
+                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                />
+                                <p className="mt-1 text-xs text-gray-500">
+                                    Hard cap: 5000 per job. Run again to continue if there are more.
+                                </p>
+                            </div>
+
+                            {/* Live preview of matching count */}
+                            {bulkForm.data.country && (
+                                <div className="rounded-lg bg-orange-50 border border-orange-200 p-3 text-sm">
+                                    {bulkPreviewLoading && (
+                                        <span className="text-orange-700">Counting matching hotels…</span>
+                                    )}
+                                    {!bulkPreviewLoading && bulkMatching !== null && (
+                                        <p className="text-orange-800">
+                                            <strong>{bulkMatching.toLocaleString()}</strong> unpromoted hotels match these filters.
+                                            {bulkMatching > 0 && (
+                                                <> Up to <strong>{Math.min(bulkMatching, bulkForm.data.limit).toLocaleString()}</strong> will be promoted.</>
+                                            )}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+
+                            <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800">
+                                ⚠ Each hotel runs through the same logic as a single promote: matching/creating
+                                its destination, generating estimated pool criteria, and calculating scores.
+                                Recommended to start with a small limit (e.g. 50) to verify the result.
+                            </div>
+
+                            {bulkForm.errors.bulk && (
+                                <p className="text-sm text-red-600 bg-red-50 p-2 rounded-lg">{bulkForm.errors.bulk}</p>
+                            )}
+
+                            <div className="flex gap-3 pt-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowBulkPromoteModal(false)}
+                                    className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={bulkForm.processing || !bulkForm.data.country || bulkMatching === 0}
+                                    className="flex-1 px-4 py-2 text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {bulkForm.processing ? 'Starting…' : 'Start Bulk Promote'}
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </ModalOverlay>
             )}
@@ -959,13 +978,5 @@ function ModalHeader({ title, onClose }) {
                 </svg>
             </button>
         </div>
-    );
-}
-
-function UploadIcon() {
-    return (
-        <svg className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-        </svg>
     );
 }
