@@ -10,8 +10,11 @@
         <meta name="google-site-verification" content="1BFi1lziWSsKbvL-aJbAt5VeLsOo8Fg67dzHYRGvzm8" />
 
         <!-- Favicon -->
-        <link rel="icon" type="image/png" href="/images/logo.png">
-        <link rel="apple-touch-icon" href="/images/logo.png">
+        <link rel="icon" href="/favicon.ico" sizes="any">
+        <link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192.png">
+        <link rel="apple-touch-icon" href="/images/favicon-192.png">
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
