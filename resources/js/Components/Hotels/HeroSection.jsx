@@ -328,6 +328,68 @@ const isYouTubeUrl = (url) => {
     return url && (url.includes('youtube.com') || url.includes('youtu.be'));
 };
 
+// Check if URL is a TikTok link
+const isTikTokUrl = (url) => {
+    return url && (url.includes('tiktok.com') || url.includes('vm.tiktok.com'));
+};
+
+// Extract TikTok video ID (numeric, e.g. /video/1234567890123456789)
+const getTikTokVideoId = (url) => {
+    if (!url) return null;
+    const m = url.match(/\/video\/(\d+)/);
+    return m ? m[1] : null;
+};
+
+// Check if URL points directly to a video file (R2/S3 upload or any direct .mp4/.webm/.mov)
+const isNativeVideoUrl = (url) => {
+    return url && /\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(url);
+};
+
+// Renders the appropriate player based on the video URL type.
+// Returns null if the URL is neither YouTube/TikTok nor a direct video file.
+const renderEmbeddedVideo = (url, title) => {
+    if (isYouTubeUrl(url)) {
+        const id = getYouTubeVideoId(url);
+        if (!id) return null;
+        return (
+            <iframe
+                src={`https://www.youtube.com/embed/${id}`}
+                title={title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+            />
+        );
+    }
+    if (isTikTokUrl(url)) {
+        const id = getTikTokVideoId(url);
+        if (!id) return null;
+        return (
+            <iframe
+                src={`https://www.tiktok.com/embed/v2/${id}`}
+                title={title}
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+            />
+        );
+    }
+    if (isNativeVideoUrl(url)) {
+        return (
+            <video
+                src={url}
+                controls
+                playsInline
+                preload="metadata"
+                className="w-full h-full bg-black object-contain"
+            >
+                Your browser does not support the video tag.
+            </video>
+        );
+    }
+    return null;
+};
+
 // Special Offer Banner Component - Displayed above image gallery
 // Supports multiple promotions for Premium hoteliers
 function SpecialOfferBanner({ hotel }) {
@@ -440,7 +502,10 @@ function SpecialOfferBanner({ hotel }) {
 
 // Enhanced Features Component for Hero Section
 function HeroEnhancedFeatures({ hotel, onBookingClick }) {
-    const hasVideoContent = hotel.video_url || hotel.video_360_url;
+    const videoList = Array.isArray(hotel.videos_resolved) && hotel.videos_resolved.length > 0
+        ? hotel.videos_resolved
+        : (hotel.video_url ? [{ url: hotel.video_url }] : []);
+    const hasVideoContent = videoList.length > 0 || hotel.video_360_url;
     const hasDirectBooking = hotel.direct_booking_url;
     
     if (!hasVideoContent && !hasDirectBooking) {
@@ -461,22 +526,16 @@ function HeroEnhancedFeatures({ hotel, onBookingClick }) {
         <div className="mt-6 sm:mt-8">
             {/* Main Enhanced Features Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Video Tour */}
-                {hotel.video_url && (
-                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl overflow-hidden shadow-lg">
-                        {isYouTubeUrl(hotel.video_url) && getYouTubeVideoId(hotel.video_url) ? (
+                {/* Video Tour(s) — one tile per video */}
+                {videoList.map((v, idx) => (
+                    <div key={`video-${idx}`} className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl overflow-hidden shadow-lg">
+                        {renderEmbeddedVideo(v.url, `Pool Video Tour ${videoList.length > 1 ? idx + 1 : ''}`.trim()) ? (
                             <div className="aspect-video">
-                                <iframe
-                                    src={`https://www.youtube.com/embed/${getYouTubeVideoId(hotel.video_url)}`}
-                                    title="Pool Video Tour"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                    className="w-full h-full"
-                                />
+                                {renderEmbeddedVideo(v.url, `Pool Video Tour ${videoList.length > 1 ? idx + 1 : ''}`.trim())}
                             </div>
                         ) : (
                             <a 
-                                href={hotel.video_url} 
+                                href={v.url} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 className="flex flex-col items-center justify-center p-6 text-white hover:bg-white/10 transition-colors h-full"
@@ -491,20 +550,14 @@ function HeroEnhancedFeatures({ hotel, onBookingClick }) {
                             </a>
                         )}
                     </div>
-                )}
+                ))}
 
                 {/* 360° Virtual Tour */}
                 {hotel.video_360_url && (
                     <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl overflow-hidden shadow-lg">
-                        {isYouTubeUrl(hotel.video_360_url) && getYouTubeVideoId(hotel.video_360_url) ? (
+                        {renderEmbeddedVideo(hotel.video_360_url, '360° Virtual Tour') ? (
                             <div className="aspect-video">
-                                <iframe
-                                    src={`https://www.youtube.com/embed/${getYouTubeVideoId(hotel.video_360_url)}`}
-                                    title="360° Virtual Tour"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; vr"
-                                    allowFullScreen
-                                    className="w-full h-full"
-                                />
+                                {renderEmbeddedVideo(hotel.video_360_url, '360° Virtual Tour')}
                             </div>
                         ) : (
                             <a 

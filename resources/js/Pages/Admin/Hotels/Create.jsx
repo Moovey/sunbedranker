@@ -42,7 +42,12 @@ const INITIAL_FORM_DATA = {
     // Images
     main_image: null,
     gallery_images: [],
-    
+
+    // Video (one or more)
+    videos: [],
+    video_files: [],
+    _video_url_draft: '',
+
     // Affiliate Links
     booking_affiliate_url: '',
     expedia_affiliate_url: '',

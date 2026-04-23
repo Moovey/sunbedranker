@@ -1,0 +1,44 @@
+import { jsx, jsxs } from "react/jsx-runtime";
+const features = [
+  {
+    icon: /* @__PURE__ */ jsx("svg", { className: "w-10 h-10 sm:w-12 sm:h-12 mx-auto text-orange-500", viewBox: "0 0 24 24", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsx("path", { d: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z" }) }),
+    question: "Will I struggle to get a sunbed?",
+    answer: "We show sunbed-to-guest ratios"
+  },
+  {
+    icon: /* @__PURE__ */ jsx("svg", { className: "w-10 h-10 sm:w-12 sm:h-12 mx-auto text-yellow-500", viewBox: "0 0 24 24", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsx("path", { d: "M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z" }) }),
+    question: "Is the pool sunny all day?",
+    answer: "Sun exposure times and coverage"
+  },
+  {
+    icon: /* @__PURE__ */ jsx("svg", { className: "w-10 h-10 sm:w-12 sm:h-12 mx-auto text-green-500", viewBox: "0 0 24 24", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsx("path", { d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9c.83 0 1.5-.67 1.5-1.5S7.83 8 7 8s-1.5.67-1.5 1.5S6.17 11 7 11zm10 0c.83 0 1.5-.67 1.5-1.5S17.83 8 17 8s-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm-5 5c2.33 0 4.32-1.45 5.12-3.5H6.88c.8 2.05 2.79 3.5 5.12 3.5z" }) }),
+    question: "Is it quiet or noisy?",
+    answer: "Atmosphere ratings and music levels"
+  },
+  {
+    icon: /* @__PURE__ */ jsx("svg", { className: "w-10 h-10 sm:w-12 sm:h-12 mx-auto text-blue-500", viewBox: "0 0 24 24", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsx("path", { d: "M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" }) }),
+    question: "Is it good for families?",
+    answer: "Kids pools, activities, and safety"
+  }
+];
+function WhyChooseUs() {
+  return /* @__PURE__ */ jsx("section", { className: "bg-gradient-to-b from-orange-50/60 to-white py-12 sm:py-16", children: /* @__PURE__ */ jsxs("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: [
+    /* @__PURE__ */ jsx("h2", { className: "text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-3 text-center", children: "Get all this included..." }),
+    /* @__PURE__ */ jsx("p", { className: "text-center text-slate-500 text-base mb-8 sm:mb-10", children: "We answer the questions that really matter" }),
+    /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6", children: features.map((item, index) => /* @__PURE__ */ jsxs(
+      "div",
+      {
+        className: "bg-white rounded-2xl p-5 sm:p-6 ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.04),0_12px_24px_-16px_rgba(15,23,42,0.12)] transition-all duration-200",
+        children: [
+          /* @__PURE__ */ jsx("div", { className: "mb-3", children: item.icon }),
+          /* @__PURE__ */ jsx("h3", { className: "text-sm sm:text-base font-semibold tracking-tight mb-1.5 text-slate-900 text-center", children: item.question }),
+          /* @__PURE__ */ jsx("p", { className: "text-slate-500 text-xs sm:text-sm text-center leading-relaxed", children: item.answer })
+        ]
+      },
+      index
+    )) })
+  ] }) });
+}
+export {
+  WhyChooseUs as default
+};

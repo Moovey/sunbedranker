@@ -42,7 +42,17 @@ const buildFormData = (hotel) => ({
     // Images
     main_image: null,
     gallery_images: [],
-    
+
+    // Videos (one or more). Pre-populated from hotel.videos_resolved which
+    // merges the legacy hotel.video_url with the hotel.videos JSON array.
+    // We keep the RAW values (paths or URLs as stored) — these get sent back
+    // when saving, so removed entries can be deleted from R2 storage.
+    videos: Array.isArray(hotel.videos_resolved)
+        ? hotel.videos_resolved.map((v) => v.raw)
+        : (Array.isArray(hotel.videos) ? [...hotel.videos] : []),
+    video_files: [],
+    _video_url_draft: '',
+
     // Affiliate Links
     booking_affiliate_url: hotel.booking_affiliate_url || '',
     expedia_affiliate_url: hotel.expedia_affiliate_url || '',
@@ -245,6 +255,7 @@ export default function EditHotel({ hotel, destinations, badges, stats, errors: 
                                     const currentIndex = tabs.indexOf(activeTab);
                                     if (currentIndex < tabs.length - 1) setActiveTab(tabs[currentIndex + 1]);
                                 }}
+                                alwaysShowSave
                             />
                         </div>
                     </form>
@@ -394,7 +405,7 @@ function TabContent({ activeTab, data, setData, errors, destinations, hotel }) {
     const tabComponents = {
         basic: <CreateBasicInfoTab data={data} setData={setData} errors={errors} destinations={destinations} />,
         contact: <ContactLocationTab data={data} setData={setData} errors={errors} />,
-        images: <CreateImagesTab data={data} setData={setData} errors={errors} hotel={hotel} onDeleteImage={handleDeleteImage} />,
+        images: <CreateImagesTab data={data} setData={setData} errors={errors} hotel={hotel} onDeleteImage={handleDeleteImage} hotelId={hotel.id} />,
         pool: <PoolCriteriaTab data={data} setData={setData} errors={errors} />,
         affiliate: <CreateAffiliateTab data={data} setData={setData} errors={errors} />,
     };
@@ -402,7 +413,7 @@ function TabContent({ activeTab, data, setData, errors, destinations, hotel }) {
     return tabComponents[activeTab] || null;
 }
 
-function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab }) {
+function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab, alwaysShowSave = false }) {
     return (
         <div className="mt-4 sm:mt-5 md:mt-6 pt-4 sm:pt-5 md:pt-6 border-t border-slate-200 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-between">
             <Link
@@ -411,7 +422,7 @@ function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab
             >
                 Cancel
             </Link>
-            
+
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                 {!isFirstTab && (
                     <button
@@ -422,16 +433,20 @@ function ActionButtons({ isFirstTab, isLastTab, processing, onPrevTab, onNextTab
                         Previous
                     </button>
                 )}
-                
-                {!isLastTab ? (
+
+                {/* Next button is shown on every tab except the last */}
+                {!isLastTab && (
                     <button
                         type="button"
                         onClick={onNextTab}
-                        className="px-4 sm:px-5 py-2 sm:py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 shadow-sm hover:shadow ring-1 ring-orange-600/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 transition-all text-center text-xs sm:text-sm"
+                        className="px-4 sm:px-5 py-2 sm:py-2.5 bg-white border border-orange-300 text-orange-600 font-medium rounded-lg hover:bg-orange-50 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 transition-all text-center text-xs sm:text-sm"
                     >
-                        Next
+                        Next →
                     </button>
-                ) : (
+                )}
+
+                {/* Save is the primary action and is always available in Edit mode */}
+                {(alwaysShowSave || isLastTab) && (
                     <button
                         type="submit"
                         disabled={processing}

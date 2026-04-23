@@ -50,6 +50,9 @@ Route::middleware(['auth', 'admin', 'throttle:admin'])->prefix('admin')->name('a
     Route::post('/hotels/{hotel:id}/upload-main-image', [HotelManagementController::class, 'uploadMainImage'])->name('hotels.upload-main-image');
     Route::post('/hotels/{hotel:id}/upload-gallery-images', [HotelManagementController::class, 'uploadGalleryImages'])->name('hotels.upload-gallery-images');
     Route::delete('/hotels/{hotel:id}/delete-gallery-image', [HotelManagementController::class, 'deleteGalleryImage'])->name('hotels.delete-gallery-image');
+
+    // Hotel Videos (manage videos array independently of full hotel update)
+    Route::post('/hotels/{hotel:id}/videos', [HotelManagementController::class, 'updateVideos'])->name('hotels.update-videos');
     
     // Hotel Badges
     Route::post('/hotels/{hotel:id}/update-badges', [HotelManagementController::class, 'updateBadges'])->name('hotels.update-badges');

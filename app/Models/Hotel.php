@@ -73,6 +73,7 @@ class Hotel extends Model
         'special_offer_expires_at',
         'video_url',
         'video_360_url',
+        'videos',
         'show_verified_badge',
         'promotions', // JSON array for multiple promotions (Premium feature)
     ];
@@ -99,9 +100,10 @@ class Hotel extends Model
         'special_offer_expires_at' => 'date',
         'show_verified_badge' => 'boolean',
         'promotions' => 'array',
+        'videos' => 'array',
     ];
 
-    protected $appends = ['main_image_url', 'gallery_images_urls', 'has_pending_claim', 'is_premium', 'active_promotions'];
+    protected $appends = ['main_image_url', 'gallery_images_urls', 'has_pending_claim', 'is_premium', 'active_promotions', 'videos_resolved'];
 
     public function destination(): BelongsTo
     {
@@ -268,6 +270,79 @@ class Hotel extends Model
         /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
         $storage = \Illuminate\Support\Facades\Storage::disk($disk);
         return $storage->url($this->main_image);
+    }
+
+    /**
+     * Resolve video_url to a fully-qualified URL.
+     * - External URLs (YouTube, Vimeo, TikTok, etc.) are returned as-is.
+     * - Storage paths (e.g. "hotels/videos/abc.mp4") are resolved via the configured disk.
+     */
+    public function getVideoUrlAttribute($value): ?string
+    {
+        if (!$value) {
+            return null;
+        }
+
+        if (filter_var($value, FILTER_VALIDATE_URL)) {
+            return preg_replace('/^http:/', 'https:', $value);
+        }
+
+        $disk = config('filesystems.public_uploads', 'public');
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
+        $storage = \Illuminate\Support\Facades\Storage::disk($disk);
+        return $storage->url($value);
+    }
+
+    /**
+     * Resolve all videos to fully-qualified URLs.
+     * Merges the legacy single `video_url` (if set and not duplicated) with the
+     * `videos` JSON array, and converts storage paths to public URLs.
+     *
+     * Each item is returned as ['url' => '<resolved>', 'raw' => '<as stored>'].
+     * The frontend uses `url` for playback/links and `raw` as the form value
+     * to keep when saving.
+     */
+    public function getVideosResolvedAttribute(): array
+    {
+        $disk = config('filesystems.public_uploads', 'public');
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
+        $storage = \Illuminate\Support\Facades\Storage::disk($disk);
+
+        $resolve = function ($value) use ($storage) {
+            if (!$value) {
+                return null;
+            }
+            if (filter_var($value, FILTER_VALIDATE_URL)) {
+                return preg_replace('/^http:/', 'https:', $value);
+            }
+            return $storage->url($value);
+        };
+
+        $items = [];
+        $seen = [];
+
+        // Back-compat: include the legacy single video first.
+        $legacyRaw = $this->getRawOriginal('video_url');
+        if ($legacyRaw) {
+            $url = $resolve($legacyRaw);
+            if ($url && !isset($seen[$legacyRaw])) {
+                $items[] = ['url' => $url, 'raw' => $legacyRaw];
+                $seen[$legacyRaw] = true;
+            }
+        }
+
+        foreach ((array) $this->videos as $entry) {
+            if (!is_string($entry) || $entry === '' || isset($seen[$entry])) {
+                continue;
+            }
+            $url = $resolve($entry);
+            if ($url) {
+                $items[] = ['url' => $url, 'raw' => $entry];
+                $seen[$entry] = true;
+            }
+        }
+
+        return $items;
     }
 
     /**
