@@ -105,7 +105,7 @@ export function ImageGallery({ mediaItems, activeImageIndex, hotelName, onPrevIm
     const isActiveVideo = active?.type === 'video';
 
     return (
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 flex flex-col">
             <div className={`relative ${heightClass} rounded-2xl overflow-hidden shadow-xl ring-1 ring-black/5 border border-gray-100 bg-black`}>
                 {isActiveVideo ? (
                     renderEmbeddedVideo(active.url, `${hotelName} pool video`) || (
@@ -282,10 +282,10 @@ function QuickFacts({ hotel }) {
 // ============================================
 export function MapAndScoreColumn({ hotel }) {
     return (
-        <div className="space-y-4">
-            {/* Google Maps (Free embed, no API key required) */}
+        <div className="flex flex-col gap-4 h-full">
+            {/* Google Maps — grows to fill available height so column matches gallery */}
             {hotel.latitude && hotel.longitude && (
-                <div className="h-40 sm:h-48 lg:h-52 xl:h-56 2xl:h-64 rounded-xl overflow-hidden shadow-lg">
+                <div className="flex-1 min-h-40 rounded-xl overflow-hidden shadow-lg">
                     <iframe
                         width="100%"
                         height="100%"
@@ -627,7 +627,7 @@ export function HeroSection({ hotel, allImages, mediaItems, activeImageIndex, on
                 <SpecialOfferBanner hotel={hotel} />
 
                 {/* Hero Grid: Image + Map + Score */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:items-stretch">
                     {/* Main Pool Image / Video */}
                     <ImageGallery 
                         mediaItems={items}

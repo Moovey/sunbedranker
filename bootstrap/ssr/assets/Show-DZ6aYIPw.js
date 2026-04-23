@@ -96,7 +96,7 @@ function ImageGallery({ mediaItems, activeImageIndex, hotelName, onPrevImage, on
   const active = items[safeIndex];
   const previewItems = items.slice(0, 4);
   const isActiveVideo = (active == null ? void 0 : active.type) === "video";
-  return /* @__PURE__ */ jsxs("div", { className: "lg:col-span-2", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "lg:col-span-2 flex flex-col", children: [
     /* @__PURE__ */ jsxs("div", { className: `relative ${heightClass} rounded-2xl overflow-hidden shadow-xl ring-1 ring-black/5 border border-gray-100 bg-black`, children: [
       isActiveVideo ? renderEmbeddedVideo(active.url, `${hotelName} pool video`) || /* @__PURE__ */ jsxs(
         "a",
@@ -237,8 +237,8 @@ function QuickFacts({ hotel }) {
   )) });
 }
 function MapAndScoreColumn({ hotel }) {
-  return /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
-    hotel.latitude && hotel.longitude && /* @__PURE__ */ jsx("div", { className: "h-40 sm:h-48 lg:h-52 xl:h-56 2xl:h-64 rounded-xl overflow-hidden shadow-lg", children: /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-4 h-full", children: [
+    hotel.latitude && hotel.longitude && /* @__PURE__ */ jsx("div", { className: "flex-1 min-h-40 rounded-xl overflow-hidden shadow-lg", children: /* @__PURE__ */ jsx(
       "iframe",
       {
         width: "100%",
@@ -466,7 +466,7 @@ function HeroSection({ hotel, allImages, mediaItems, activeImageIndex, onPrevIma
   return /* @__PURE__ */ jsx("div", { className: "bg-gradient-to-b from-white via-white to-gray-50/60 border-b border-gray-100", children: /* @__PURE__ */ jsxs("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10", children: [
     /* @__PURE__ */ jsx(HotelHeader, { hotel }),
     /* @__PURE__ */ jsx(SpecialOfferBanner, { hotel }),
-    /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6", children: [
+    /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:items-stretch", children: [
       /* @__PURE__ */ jsx(
         ImageGallery,
         {
@@ -1079,12 +1079,12 @@ const CleanlinessSection = lazy(() => Promise.resolve().then(() => PoolDetailsSe
 const AccessibilitySection = lazy(() => Promise.resolve().then(() => PoolDetailsSection).then((m) => ({ default: m.AccessibilitySection })));
 const KidsFeaturesSection = lazy(() => Promise.resolve().then(() => PoolDetailsSection).then((m) => ({ default: m.KidsFeaturesSection })));
 const LuxuryFeaturesSection = lazy(() => Promise.resolve().then(() => PoolDetailsSection).then((m) => ({ default: m.LuxuryFeaturesSection })));
-const PoolDescriptionSection = lazy(() => import("./HotelierContentSection-CdqeVgrx.js").then((m) => ({ default: m.PoolDescriptionSection })));
-const AmenitiesDescriptionSection = lazy(() => import("./HotelierContentSection-CdqeVgrx.js").then((m) => ({ default: m.AmenitiesDescriptionSection })));
-const HouseRulesSection = lazy(() => import("./HotelierContentSection-CdqeVgrx.js").then((m) => ({ default: m.HouseRulesSection })));
-const FaqsSection = lazy(() => import("./HotelierContentSection-CdqeVgrx.js").then((m) => ({ default: m.FaqsSection })));
-const PhotoGallerySection = lazy(() => import("./HotelierContentSection-CdqeVgrx.js").then((m) => ({ default: m.PhotoGallerySection })));
-const ReviewsSection = lazy(() => import("./HotelierContentSection-CdqeVgrx.js").then((m) => ({ default: m.ReviewsSection })));
+const PoolDescriptionSection = lazy(() => import("./HotelierContentSection-N5ZzVOmf.js").then((m) => ({ default: m.PoolDescriptionSection })));
+const AmenitiesDescriptionSection = lazy(() => import("./HotelierContentSection-N5ZzVOmf.js").then((m) => ({ default: m.AmenitiesDescriptionSection })));
+const HouseRulesSection = lazy(() => import("./HotelierContentSection-N5ZzVOmf.js").then((m) => ({ default: m.HouseRulesSection })));
+const FaqsSection = lazy(() => import("./HotelierContentSection-N5ZzVOmf.js").then((m) => ({ default: m.FaqsSection })));
+const PhotoGallerySection = lazy(() => import("./HotelierContentSection-N5ZzVOmf.js").then((m) => ({ default: m.PhotoGallerySection })));
+const ReviewsSection = lazy(() => import("./HotelierContentSection-N5ZzVOmf.js").then((m) => ({ default: m.ReviewsSection })));
 const SimilarHotelsSection = lazy(() => import("./SimilarHotels-Dd3nRs0p.js").then((m) => ({ default: m.default })));
 function HotelShow({ hotel, similarHotels }) {
   var _a, _b;
