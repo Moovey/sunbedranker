@@ -89,15 +89,31 @@ function HotelHeader({ hotel }) {
     ] })
   ] });
 }
-function ImageGallery({ allImages, activeImageIndex, hotelName, onPrevImage, onNextImage, setActiveImageIndex, isPremium = false }) {
+function ImageGallery({ mediaItems, activeImageIndex, hotelName, onPrevImage, onNextImage, setActiveImageIndex, isPremium = false }) {
   const heightClass = isPremium ? "h-80 sm:h-96 md:h-[30rem] lg:h-[34rem] xl:h-[38rem]" : "h-64 sm:h-72 md:h-[21rem] lg:h-[24rem] xl:h-[26rem]";
-  const previewImages = allImages.slice(0, 4);
+  const items = mediaItems || [];
+  const safeIndex = Math.min(Math.max(activeImageIndex, 0), Math.max(items.length - 1, 0));
+  const active = items[safeIndex];
+  const previewItems = items.slice(0, 4);
+  const isActiveVideo = (active == null ? void 0 : active.type) === "video";
   return /* @__PURE__ */ jsxs("div", { className: "lg:col-span-2", children: [
-    /* @__PURE__ */ jsxs("div", { className: `relative ${heightClass} rounded-2xl overflow-hidden shadow-xl ring-1 ring-black/5 border border-gray-100`, children: [
-      /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxs("div", { className: `relative ${heightClass} rounded-2xl overflow-hidden shadow-xl ring-1 ring-black/5 border border-gray-100 bg-black`, children: [
+      isActiveVideo ? renderEmbeddedVideo(active.url, `${hotelName} pool video`) || /* @__PURE__ */ jsxs(
+        "a",
+        {
+          href: active.url,
+          target: "_blank",
+          rel: "noopener noreferrer",
+          className: "flex flex-col items-center justify-center w-full h-full text-white bg-black hover:bg-black/80 transition-colors",
+          children: [
+            /* @__PURE__ */ jsx("div", { className: "w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-3", children: /* @__PURE__ */ jsx("svg", { className: "w-9 h-9", fill: "currentColor", viewBox: "0 0 24 24", children: /* @__PURE__ */ jsx("path", { d: "M8 5v14l11-7z" }) }) }),
+            /* @__PURE__ */ jsx("span", { className: "font-semibold", children: "Watch video" })
+          ]
+        }
+      ) : /* @__PURE__ */ jsx(
         "img",
         {
-          src: allImages[activeImageIndex] || "/images/default-hotel.jpg",
+          src: (active == null ? void 0 : active.url) || "/images/default-hotel.jpg",
           alt: hotelName,
           className: "w-full h-full object-cover",
           fetchpriority: "high",
@@ -106,25 +122,27 @@ function ImageGallery({ allImages, activeImageIndex, hotelName, onPrevImage, onN
           sizes: "(max-width: 1024px) 100vw, 66vw"
         }
       ),
-      /* @__PURE__ */ jsx("div", { className: "absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" }),
-      /* @__PURE__ */ jsxs("div", { className: "absolute left-4 bottom-4 sm:left-6 sm:bottom-6 z-10 max-w-[70%] text-white", children: [
-        /* @__PURE__ */ jsxs("div", { className: "inline-flex items-center gap-2 rounded-full bg-white/10 ring-1 ring-white/20 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] backdrop-blur-md", children: [
-          /* @__PURE__ */ jsx(Icons.Gallery, { className: "w-3.5 h-3.5 text-white" }),
-          "Pool Gallery"
-        ] }),
-        /* @__PURE__ */ jsx("p", { className: "mt-2 text-sm sm:text-base font-medium text-white/90 leading-snug drop-shadow-sm", children: "Swipe through the key pool and sunbed views before you dive into the full review." })
+      !isActiveVideo && /* @__PURE__ */ jsxs(Fragment, { children: [
+        /* @__PURE__ */ jsx("div", { className: "absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" }),
+        /* @__PURE__ */ jsxs("div", { className: "absolute left-4 bottom-4 sm:left-6 sm:bottom-6 z-10 max-w-[70%] text-white", children: [
+          /* @__PURE__ */ jsxs("div", { className: "inline-flex items-center gap-2 rounded-full bg-white/10 ring-1 ring-white/20 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] backdrop-blur-md", children: [
+            /* @__PURE__ */ jsx(Icons.Gallery, { className: "w-3.5 h-3.5 text-white" }),
+            "Pool Gallery"
+          ] }),
+          /* @__PURE__ */ jsx("p", { className: "mt-2 text-sm sm:text-base font-medium text-white/90 leading-snug drop-shadow-sm", children: "Swipe through the key pool and sunbed views before you dive into the full review." })
+        ] })
       ] }),
       isPremium && /* @__PURE__ */ jsxs("div", { className: "absolute top-4 left-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-2 animate-pulse z-10", children: [
         /* @__PURE__ */ jsx("svg", { className: "w-5 h-5", fill: "currentColor", viewBox: "0 0 24 24", children: /* @__PURE__ */ jsx("path", { d: "M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" }) }),
         "PREMIUM"
       ] }),
-      allImages.length > 1 && /* @__PURE__ */ jsxs(Fragment, { children: [
+      items.length > 1 && /* @__PURE__ */ jsxs(Fragment, { children: [
         /* @__PURE__ */ jsx(
           "button",
           {
             onClick: onPrevImage,
-            className: "absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 bg-white/15 ring-1 ring-white/25 text-white p-2 sm:p-2.5 rounded-full hover:bg-white/25 transition-all duration-200 backdrop-blur-md shadow-lg",
-            "aria-label": "Previous image",
+            className: "absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 bg-white/15 ring-1 ring-white/25 text-white p-2 sm:p-2.5 rounded-full hover:bg-white/25 transition-all duration-200 backdrop-blur-md shadow-lg z-20",
+            "aria-label": "Previous",
             children: /* @__PURE__ */ jsx(Icons.ChevronLeft, {})
           }
         ),
@@ -132,47 +150,49 @@ function ImageGallery({ allImages, activeImageIndex, hotelName, onPrevImage, onN
           "button",
           {
             onClick: onNextImage,
-            className: "absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 bg-white/15 ring-1 ring-white/25 text-white p-2 sm:p-2.5 rounded-full hover:bg-white/25 transition-all duration-200 backdrop-blur-md shadow-lg",
-            "aria-label": "Next image",
+            className: "absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 bg-white/15 ring-1 ring-white/25 text-white p-2 sm:p-2.5 rounded-full hover:bg-white/25 transition-all duration-200 backdrop-blur-md shadow-lg z-20",
+            "aria-label": "Next",
             children: /* @__PURE__ */ jsx(Icons.ChevronRightNav, {})
           }
         ),
-        /* @__PURE__ */ jsxs("div", { className: "absolute top-3 sm:top-4 right-3 sm:right-4 bg-black/55 ring-1 ring-white/10 text-white px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold tracking-wide backdrop-blur-md", children: [
-          activeImageIndex + 1,
+        /* @__PURE__ */ jsxs("div", { className: "absolute top-3 sm:top-4 right-3 sm:right-4 bg-black/55 ring-1 ring-white/10 text-white px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold tracking-wide backdrop-blur-md z-20", children: [
+          safeIndex + 1,
           " / ",
-          allImages.length
+          items.length
         ] })
       ] })
     ] }),
-    previewImages.length > 1 && /* @__PURE__ */ jsx("div", { className: "mt-3 grid grid-cols-4 gap-2 sm:gap-3", children: previewImages.map((image, index) => {
-      const isActive = index === activeImageIndex;
+    previewItems.length > 1 && /* @__PURE__ */ jsx("div", { className: "mt-3 grid grid-cols-4 gap-2 sm:gap-3", children: previewItems.map((item, index) => {
+      const isActive = index === safeIndex;
+      const isVideoThumb = item.type === "video";
       return /* @__PURE__ */ jsxs(
         "button",
         {
           type: "button",
           onClick: () => setActiveImageIndex(index),
           className: `relative overflow-hidden rounded-xl border transition-all duration-200 ${isActive ? "border-orange-500 ring-2 ring-orange-300/60 shadow-md" : "border-gray-200 hover:border-orange-200 hover:shadow-sm"}`,
-          "aria-label": `Show gallery image ${index + 1}`,
+          "aria-label": isVideoThumb ? `Play video ${index + 1}` : `Show gallery image ${index + 1}`,
           children: [
             /* @__PURE__ */ jsx(
               "img",
               {
-                src: image,
+                src: item.thumbnail || item.url,
                 alt: `${hotelName} preview ${index + 1}`,
-                className: "h-16 sm:h-20 w-full object-cover",
+                className: "h-16 sm:h-20 w-full object-cover bg-black",
                 loading: "lazy",
                 width: 180,
                 height: 96
               }
             ),
+            isVideoThumb && /* @__PURE__ */ jsx("div", { className: "absolute inset-0 flex items-center justify-center bg-black/30", children: /* @__PURE__ */ jsx("div", { className: "w-8 h-8 sm:w-9 sm:h-9 bg-white/90 rounded-full flex items-center justify-center shadow", children: /* @__PURE__ */ jsx("svg", { className: "w-4 h-4 sm:w-5 sm:h-5 text-gray-900 ml-0.5", fill: "currentColor", viewBox: "0 0 24 24", children: /* @__PURE__ */ jsx("path", { d: "M8 5v14l11-7z" }) }) }) }),
             isActive && /* @__PURE__ */ jsx("div", { className: "absolute inset-0 bg-orange-500/10" }),
-            index === previewImages.length - 1 && allImages.length > previewImages.length && /* @__PURE__ */ jsxs("div", { className: "absolute inset-0 flex items-center justify-center bg-black/45 text-sm font-bold text-white", children: [
+            index === previewItems.length - 1 && items.length > previewItems.length && /* @__PURE__ */ jsxs("div", { className: "absolute inset-0 flex items-center justify-center bg-black/45 text-sm font-bold text-white", children: [
               "+",
-              allImages.length - previewImages.length
+              items.length - previewItems.length
             ] })
           ]
         },
-        `${image}-${index}`
+        `${item.url}-${index}`
       );
     }) })
   ] });
@@ -397,8 +417,7 @@ function SpecialOfferBanner({ hotel }) {
   ] });
 }
 function HeroEnhancedFeatures({ hotel, onBookingClick }) {
-  const videoList = Array.isArray(hotel.videos_resolved) && hotel.videos_resolved.length > 0 ? hotel.videos_resolved : hotel.video_url ? [{ url: hotel.video_url }] : [];
-  const hasVideoContent = videoList.length > 0 || hotel.video_360_url;
+  const hasVideoContent = !!hotel.video_360_url;
   const hasDirectBooking = hotel.direct_booking_url;
   if (!hasVideoContent && !hasDirectBooking) {
     return null;
@@ -411,20 +430,6 @@ function HeroEnhancedFeatures({ hotel, onBookingClick }) {
     window.open(hotel.direct_booking_url, "_blank", "noopener,noreferrer");
   };
   return /* @__PURE__ */ jsx("div", { className: "mt-6 sm:mt-8", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4", children: [
-    videoList.map((v, idx) => /* @__PURE__ */ jsx("div", { className: "bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl overflow-hidden shadow-lg", children: renderEmbeddedVideo(v.url, `Pool Video Tour ${videoList.length > 1 ? idx + 1 : ""}`.trim()) ? /* @__PURE__ */ jsx("div", { className: "aspect-video", children: renderEmbeddedVideo(v.url, `Pool Video Tour ${videoList.length > 1 ? idx + 1 : ""}`.trim()) }) : /* @__PURE__ */ jsxs(
-      "a",
-      {
-        href: v.url,
-        target: "_blank",
-        rel: "noopener noreferrer",
-        className: "flex flex-col items-center justify-center p-6 text-white hover:bg-white/10 transition-colors h-full",
-        children: [
-          /* @__PURE__ */ jsx("div", { className: "w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mb-2", children: /* @__PURE__ */ jsx("svg", { className: "w-8 h-8", fill: "currentColor", viewBox: "0 0 24 24", children: /* @__PURE__ */ jsx("path", { d: "M8 5v14l11-7z" }) }) }),
-          /* @__PURE__ */ jsx("span", { className: "font-bold", children: "Watch Video Tour" }),
-          /* @__PURE__ */ jsx("span", { className: "text-xs text-white/80", children: "See our pool area" })
-        ]
-      }
-    ) }, `video-${idx}`)),
     hotel.video_360_url && /* @__PURE__ */ jsx("div", { className: "bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl overflow-hidden shadow-lg", children: renderEmbeddedVideo(hotel.video_360_url, "360° Virtual Tour") ? /* @__PURE__ */ jsx("div", { className: "aspect-video", children: renderEmbeddedVideo(hotel.video_360_url, "360° Virtual Tour") }) : /* @__PURE__ */ jsxs(
       "a",
       {
@@ -455,8 +460,9 @@ function HeroEnhancedFeatures({ hotel, onBookingClick }) {
     )
   ] }) });
 }
-function HeroSection({ hotel, allImages, activeImageIndex, onPrevImage, onNextImage, onBookingClick, setActiveImageIndex }) {
+function HeroSection({ hotel, allImages, mediaItems, activeImageIndex, onPrevImage, onNextImage, onBookingClick, setActiveImageIndex }) {
   const isPremium = hotel.is_premium;
+  const items = mediaItems && mediaItems.length > 0 ? mediaItems : (allImages || []).map((url) => ({ type: "image", url, thumbnail: url }));
   return /* @__PURE__ */ jsx("div", { className: "bg-gradient-to-b from-white via-white to-gray-50/60 border-b border-gray-100", children: /* @__PURE__ */ jsxs("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10", children: [
     /* @__PURE__ */ jsx(HotelHeader, { hotel }),
     /* @__PURE__ */ jsx(SpecialOfferBanner, { hotel }),
@@ -464,7 +470,7 @@ function HeroSection({ hotel, allImages, activeImageIndex, onPrevImage, onNextIm
       /* @__PURE__ */ jsx(
         ImageGallery,
         {
-          allImages,
+          mediaItems: items,
           activeImageIndex,
           hotelName: hotel.name,
           onPrevImage,
@@ -1073,12 +1079,12 @@ const CleanlinessSection = lazy(() => Promise.resolve().then(() => PoolDetailsSe
 const AccessibilitySection = lazy(() => Promise.resolve().then(() => PoolDetailsSection).then((m) => ({ default: m.AccessibilitySection })));
 const KidsFeaturesSection = lazy(() => Promise.resolve().then(() => PoolDetailsSection).then((m) => ({ default: m.KidsFeaturesSection })));
 const LuxuryFeaturesSection = lazy(() => Promise.resolve().then(() => PoolDetailsSection).then((m) => ({ default: m.LuxuryFeaturesSection })));
-const PoolDescriptionSection = lazy(() => import("./HotelierContentSection-BUYqTf-3.js").then((m) => ({ default: m.PoolDescriptionSection })));
-const AmenitiesDescriptionSection = lazy(() => import("./HotelierContentSection-BUYqTf-3.js").then((m) => ({ default: m.AmenitiesDescriptionSection })));
-const HouseRulesSection = lazy(() => import("./HotelierContentSection-BUYqTf-3.js").then((m) => ({ default: m.HouseRulesSection })));
-const FaqsSection = lazy(() => import("./HotelierContentSection-BUYqTf-3.js").then((m) => ({ default: m.FaqsSection })));
-const PhotoGallerySection = lazy(() => import("./HotelierContentSection-BUYqTf-3.js").then((m) => ({ default: m.PhotoGallerySection })));
-const ReviewsSection = lazy(() => import("./HotelierContentSection-BUYqTf-3.js").then((m) => ({ default: m.ReviewsSection })));
+const PoolDescriptionSection = lazy(() => import("./HotelierContentSection-CdqeVgrx.js").then((m) => ({ default: m.PoolDescriptionSection })));
+const AmenitiesDescriptionSection = lazy(() => import("./HotelierContentSection-CdqeVgrx.js").then((m) => ({ default: m.AmenitiesDescriptionSection })));
+const HouseRulesSection = lazy(() => import("./HotelierContentSection-CdqeVgrx.js").then((m) => ({ default: m.HouseRulesSection })));
+const FaqsSection = lazy(() => import("./HotelierContentSection-CdqeVgrx.js").then((m) => ({ default: m.FaqsSection })));
+const PhotoGallerySection = lazy(() => import("./HotelierContentSection-CdqeVgrx.js").then((m) => ({ default: m.PhotoGallerySection })));
+const ReviewsSection = lazy(() => import("./HotelierContentSection-CdqeVgrx.js").then((m) => ({ default: m.ReviewsSection })));
 const SimilarHotelsSection = lazy(() => import("./SimilarHotels-Dd3nRs0p.js").then((m) => ({ default: m.default })));
 function HotelShow({ hotel, similarHotels }) {
   var _a, _b;
@@ -1089,6 +1095,38 @@ function HotelShow({ hotel, similarHotels }) {
     hotel.main_image_url,
     ...hotel.gallery_images_urls || []
   ].filter(Boolean), [hotel.main_image_url, hotel.gallery_images_urls]);
+  const mediaItems = useMemo(() => {
+    const ytId = (url) => {
+      const m = (url || "").match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+      return m ? m[1] : null;
+    };
+    const tikTokId = (url) => {
+      const m = (url || "").match(/\/video\/(\d+)/);
+      return m ? m[1] : null;
+    };
+    const fallbackThumb = hotel.main_image_url || "/images/default-hotel.jpg";
+    const videoEntries = Array.isArray(hotel.videos_resolved) && hotel.videos_resolved.length > 0 ? hotel.videos_resolved : hotel.video_url ? [{ url: hotel.video_url, raw: hotel.video_url }] : [];
+    const videoItems = videoEntries.map((v) => {
+      const url = v.url || v.raw;
+      const isYouTube = /youtube\.com|youtu\.be/.test(url || "");
+      const isTikTok = /tiktok\.com/.test(url || "");
+      const isNative = /\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(url || "");
+      const yt = isYouTube ? ytId(url) : null;
+      return {
+        type: "video",
+        url,
+        raw: v.raw || url,
+        isYouTube,
+        isTikTok,
+        isNative,
+        ytId: yt,
+        tikTokId: isTikTok ? tikTokId(url) : null,
+        thumbnail: yt ? `https://img.youtube.com/vi/${yt}/mqdefault.jpg` : fallbackThumb
+      };
+    });
+    const imageItems = allImages.map((url) => ({ type: "image", url, thumbnail: url }));
+    return [...videoItems, ...imageItems];
+  }, [hotel.videos_resolved, hotel.video_url, hotel.main_image_url, allImages]);
   const poolCriteria = hotel.pool_criteria;
   const handleBookingClick = useCallback((type) => {
     window.location.href = `/hotels/${hotel.slug}/click?type=${type}`;
@@ -1097,11 +1135,11 @@ function HotelShow({ hotel, similarHotels }) {
     setOpenFaqIndex((prev) => prev === index ? null : index);
   }, []);
   const handlePrevImage = useCallback(() => {
-    setActiveImageIndex((prev) => prev === 0 ? allImages.length - 1 : prev - 1);
-  }, [allImages.length]);
+    setActiveImageIndex((prev) => prev === 0 ? mediaItems.length - 1 : prev - 1);
+  }, [mediaItems.length]);
   const handleNextImage = useCallback(() => {
-    setActiveImageIndex((prev) => (prev + 1) % allImages.length);
-  }, [allImages.length]);
+    setActiveImageIndex((prev) => (prev + 1) % mediaItems.length);
+  }, [mediaItems.length]);
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsxs(Head, { title: `${hotel.name} - Pool & Sunbed Review`, children: [
       /* @__PURE__ */ jsx("meta", { name: "description", content: `Detailed pool and sunbed review of ${hotel.name} in ${((_a = hotel.destination) == null ? void 0 : _a.name) || ""}. See sunbed-to-guest ratio, sun exposure, atmosphere ratings, pool facilities, and honest traveler reviews.` }),
@@ -1144,6 +1182,7 @@ function HotelShow({ hotel, similarHotels }) {
         {
           hotel,
           allImages,
+          mediaItems,
           activeImageIndex,
           onPrevImage: handlePrevImage,
           onNextImage: handleNextImage,

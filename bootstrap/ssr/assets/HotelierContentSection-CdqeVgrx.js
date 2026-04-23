@@ -1,6 +1,6 @@
 import { jsxs, jsx } from "react/jsx-runtime";
 import "react";
-import { I as Icons } from "./Show-hGG7nqVv.js";
+import { I as Icons } from "./Show-n7nwMoU_.js";
 import "@inertiajs/react";
 import "./useAppUrl-B4l_DIW7.js";
 import "./Header-nFqKg1Hd.js";

@@ -50,6 +50,46 @@ export default function HotelShow({ hotel, similarHotels }) {
         ...(hotel.gallery_images_urls || [])
     ].filter(Boolean), [hotel.main_image_url, hotel.gallery_images_urls]);
 
+    // Combined media items (videos first, then images) for the hero gallery so
+    // a hotel's video tour appears as the "main image" when present.
+    const mediaItems = useMemo(() => {
+        const ytId = (url) => {
+            const m = (url || '').match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+            return m ? m[1] : null;
+        };
+        const tikTokId = (url) => {
+            const m = (url || '').match(/\/video\/(\d+)/);
+            return m ? m[1] : null;
+        };
+        const fallbackThumb = hotel.main_image_url || '/images/default-hotel.jpg';
+
+        const videoEntries = Array.isArray(hotel.videos_resolved) && hotel.videos_resolved.length > 0
+            ? hotel.videos_resolved
+            : (hotel.video_url ? [{ url: hotel.video_url, raw: hotel.video_url }] : []);
+
+        const videoItems = videoEntries.map((v) => {
+            const url = v.url || v.raw;
+            const isYouTube = /youtube\.com|youtu\.be/.test(url || '');
+            const isTikTok = /tiktok\.com/.test(url || '');
+            const isNative = /\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(url || '');
+            const yt = isYouTube ? ytId(url) : null;
+            return {
+                type: 'video',
+                url,
+                raw: v.raw || url,
+                isYouTube,
+                isTikTok,
+                isNative,
+                ytId: yt,
+                tikTokId: isTikTok ? tikTokId(url) : null,
+                thumbnail: yt ? `https://img.youtube.com/vi/${yt}/mqdefault.jpg` : fallbackThumb,
+            };
+        });
+
+        const imageItems = allImages.map((url) => ({ type: 'image', url, thumbnail: url }));
+        return [...videoItems, ...imageItems];
+    }, [hotel.videos_resolved, hotel.video_url, hotel.main_image_url, allImages]);
+
     const poolCriteria = hotel.pool_criteria;
 
     // Memoized handlers
@@ -62,12 +102,12 @@ export default function HotelShow({ hotel, similarHotels }) {
     }, []);
 
     const handlePrevImage = useCallback(() => {
-        setActiveImageIndex(prev => prev === 0 ? allImages.length - 1 : prev - 1);
-    }, [allImages.length]);
+        setActiveImageIndex(prev => prev === 0 ? mediaItems.length - 1 : prev - 1);
+    }, [mediaItems.length]);
 
     const handleNextImage = useCallback(() => {
-        setActiveImageIndex(prev => (prev + 1) % allImages.length);
-    }, [allImages.length]);
+        setActiveImageIndex(prev => (prev + 1) % mediaItems.length);
+    }, [mediaItems.length]);
 
     return (
         <>
@@ -115,6 +155,7 @@ export default function HotelShow({ hotel, similarHotels }) {
                 <HeroSection 
                     hotel={hotel}
                     allImages={allImages}
+                    mediaItems={mediaItems}
                     activeImageIndex={activeImageIndex}
                     onPrevImage={handlePrevImage}
                     onNextImage={handleNextImage}
