@@ -38,42 +38,17 @@ class SubscriptionUpdatedNotification extends Notification implements ShouldQueu
     public function toMail(object $notifiable): MailMessage
     {
         $tierLabel = ucfirst($this->tier);
-        
-        $mail = (new MailMessage)
+
+        return (new MailMessage)
             ->subject('Subscription Updated - ' . $tierLabel . ' Plan')
-            ->greeting('Hello, ' . $notifiable->name . '!');
-
-        if ($this->tier === 'free') {
-            $mail->line('Your subscription has been updated to the **Free** tier.');
-        } else {
-            $mail->line('Great news! Your subscription has been upgraded to the **' . $tierLabel . '** plan.')
-                 ->line('Duration: **' . $this->periodMonths . ' month(s)**');
-            
-            if ($this->subscription) {
-                $mail->line('Valid until: **' . $this->subscription->ends_at->format('F j, Y') . '**');
-            }
-
-            if ($this->tier === 'enhanced') {
-                $mail->line('With Enhanced, you can now:')
-                     ->line('• Add promotional banners')
-                     ->line('• Feature special offers')
-                     ->line('• Priority listing in search results');
-            } elseif ($this->tier === 'premium') {
-                $mail->line('With Premium, you get everything in Enhanced plus:')
-                     ->line('• 360° video tours')
-                     ->line('• Multiple promotions')
-                     ->line('• Verified badge display')
-                     ->line('• Top placement in listings');
-            }
-        }
-
-        if ($this->reason) {
-            $mail->line('**Note:** ' . $this->reason);
-        }
-
-        return $mail
-            ->action('View Your Dashboard', url('/hotelier/dashboard'))
-            ->line('Thank you for being part of SunbedRanker!');
+            ->view('emails.subscription-updated', [
+                'userName' => $notifiable->name,
+                'tier' => $this->tier,
+                'periodMonths' => $this->periodMonths,
+                'endsAt' => $this->subscription?->ends_at?->format('F j, Y'),
+                'reason' => $this->reason,
+                'dashboardUrl' => url('/hotelier/dashboard'),
+            ]);
     }
 
     /**

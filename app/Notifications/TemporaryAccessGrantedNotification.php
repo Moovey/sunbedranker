@@ -38,34 +38,17 @@ class TemporaryAccessGrantedNotification extends Notification implements ShouldQ
     public function toMail(object $notifiable): MailMessage
     {
         $tierLabel = ucfirst($this->tier);
-        
-        $mail = (new MailMessage)
+
+        return (new MailMessage)
             ->subject('Temporary ' . $tierLabel . ' Access Granted!')
-            ->greeting('Hello, ' . $notifiable->name . '!')
-            ->line('You have been granted temporary access to our **' . $tierLabel . '** features.')
-            ->line('**Duration:** ' . $this->days . ' days')
-            ->line('**Expires:** ' . $this->subscription->ends_at->format('F j, Y'));
-
-        if ($this->tier === 'enhanced') {
-            $mail->line('During this period, you can:')
-                 ->line('• Add promotional banners')
-                 ->line('• Feature special offers')
-                 ->line('• Get priority listing in search results');
-        } elseif ($this->tier === 'premium') {
-            $mail->line('During this period, you get full Premium access:')
-                 ->line('• 360° video tours')
-                 ->line('• Multiple promotions')
-                 ->line('• Verified badge display')
-                 ->line('• Top placement in listings');
-        }
-
-        if ($this->reason) {
-            $mail->line('**Reason:** ' . $this->reason);
-        }
-
-        return $mail
-            ->action('Start Using Your Features', url('/hotelier/dashboard'))
-            ->line('Make the most of your temporary access!');
+            ->view('emails.temporary-access-granted', [
+                'userName' => $notifiable->name,
+                'tier' => $this->tier,
+                'days' => $this->days,
+                'endsAt' => $this->subscription->ends_at->format('F j, Y'),
+                'reason' => $this->reason,
+                'dashboardUrl' => url('/hotelier/dashboard'),
+            ]);
     }
 
     /**

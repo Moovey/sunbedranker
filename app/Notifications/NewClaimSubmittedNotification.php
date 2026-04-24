@@ -40,15 +40,15 @@ class NewClaimSubmittedNotification extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('New Hotel Claim Submitted - ' . $hotelName)
-            ->greeting('Hello Admin!')
-            ->line('A new hotel claim has been submitted and requires your review.')
-            ->line('**Hotel:** ' . $hotelName)
-            ->line('**Claimed By:** ' . $hotelierName . ' (' . $hotelierEmail . ')')
-            ->line('**Official Email:** ' . $this->claim->official_email)
-            ->line('**Phone:** ' . $this->claim->phone)
-            ->line('**Submitted:** ' . $this->claim->created_at->format('M d, Y H:i'))
-            ->action('Review Claim', url('/admin/claims'))
-            ->line('Please review this claim within 24-48 hours.');
+            ->view('emails.new-claim-submitted', [
+                'hotelName' => $hotelName,
+                'hotelierName' => $hotelierName,
+                'hotelierEmail' => $hotelierEmail,
+                'officialEmail' => $this->claim->official_email,
+                'phone' => $this->claim->phone,
+                'submittedAt' => $this->claim->created_at->format('M d, Y H:i'),
+                'reviewUrl' => url('/admin/claims'),
+            ]);
     }
 
     /**

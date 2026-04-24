@@ -39,13 +39,12 @@ class ClaimRejectedNotification extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Hotel Claim Update - ' . $hotelName)
-            ->greeting('Hello, ' . $notifiable->name)
-            ->line('We have reviewed your claim for **' . $hotelName . '**.')
-            ->line('Unfortunately, we were unable to approve your claim at this time.')
-            ->line('**Reason:** ' . $this->reason)
-            ->line('If you believe this was a mistake or have additional documentation to support your claim, please contact our support team.')
-            ->action('Contact Support', url('/contact'))
-            ->line('Thank you for your understanding.');
+            ->view('emails.claim-rejected', [
+                'userName' => $notifiable->name,
+                'hotelName' => $hotelName,
+                'reason' => $this->reason,
+                'contactUrl' => url('/contact'),
+            ]);
     }
 
     /**

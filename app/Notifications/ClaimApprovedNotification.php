@@ -38,16 +38,11 @@ class ClaimApprovedNotification extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Hotel Claim Approved - ' . $hotelName)
-            ->greeting('Congratulations, ' . $notifiable->name . '!')
-            ->line('Your claim for **' . $hotelName . '** has been approved.')
-            ->line('You are now the verified owner of this property on SunbedRanker.')
-            ->line('You can now:')
-            ->line('• Update your hotel profile and photos')
-            ->line('• Respond to reviews')
-            ->line('• View analytics and performance data')
-            ->line('• Upgrade your subscription for enhanced features')
-            ->action('Manage Your Hotel', url('/hotelier/hotels'))
-            ->line('Thank you for being part of SunbedRanker!');
+            ->view('emails.claim-approved', [
+                'userName' => $notifiable->name,
+                'hotelName' => $hotelName,
+                'manageUrl' => url('/hotelier/hotels'),
+            ]);
     }
 
     /**

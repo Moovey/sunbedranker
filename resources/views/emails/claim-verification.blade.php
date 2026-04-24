@@ -1,22 +1,31 @@
 @extends('emails.base')
 
 @section('title', 'Verify Your Hotel Claim')
+@section('preheader', 'Your verification code for ' . $hotelName . ' is ' . $code . ' (expires in 30 minutes).')
 
 @section('content')
-    <h1 class="greeting">Verify Your Email</h1>
-    
-    <div class="content">
-        <p>Hello!</p>
-        <p>You have submitted a claim for ownership of:</p>
-    </div>
-
-    <div class="highlight-box" style="text-align: left; padding: 20px;">
-        <span class="hotel-badge">🏨 Hotel Claim</span>
-        <h3 style="font-size: 20px; font-weight: 700; color: #1f2937; margin-top: 12px;">{{ $hotelName }}</h3>
-    </div>
+    <span class="eyebrow">Hotel Claim · Verification</span>
+    <h1 class="greeting">Verify your email</h1>
+    <p class="subgreeting">Confirm ownership to continue your claim.</p>
 
     <div class="content">
-        <p>Please use the following verification code to complete your claim:</p>
+        <p>Hello,</p>
+        <p>You have submitted a claim of ownership for the following hotel:</p>
+    </div>
+
+    <div class="detail-card">
+        <div class="detail-row">
+            <span class="detail-label">Hotel</span>
+            <span class="detail-value">{{ $hotelName }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Status</span>
+            <span class="detail-value"><span class="hotel-badge">Pending Verification</span></span>
+        </div>
+    </div>
+
+    <div class="content">
+        <p>Enter the verification code below in the SunbedRanker claim form to complete your submission:</p>
     </div>
 
     <div class="highlight-box">
@@ -24,13 +33,14 @@
         <p class="verification-code">{{ $code }}</p>
     </div>
 
-    <div class="info-box">
-        <p>⏱️ This code will expire in <strong>30 minutes</strong>.</p>
+    <div class="banner banner-warning">
+        <strong>Time Sensitive</strong>
+        This code expires in 30 minutes. Request a new code if it has expired.
     </div>
 
-    <div class="divider"></div>
+    <hr class="divider">
 
     <p class="warning-text">
-        If you did not request this verification, please ignore this email. Your account will remain secure.
+        If you did not request this verification, you can safely ignore this email — no changes will be made to your account.
     </p>
 @endsection
