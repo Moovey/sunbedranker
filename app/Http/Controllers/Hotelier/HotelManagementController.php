@@ -7,6 +7,7 @@ use App\Jobs\ProcessHotelImages;
 use App\Jobs\RecalculateHotelScores;
 use App\Models\Hotel;
 use App\Services\HotelScoringService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -84,6 +85,97 @@ class HotelManagementController extends Controller
         $this->recalculateScores($hotel);
 
         return redirect()->back()->with('success', 'Hotel updated successfully!');
+    }
+
+    /**
+     * Dedicated endpoint for the Images & Video tab autosave on the hotelier
+     * side. Mirrors Admin\HotelManagementController::updateVideos so the
+     * shared CreateImagesTab component can per-file upload with progress.
+     *
+     * Accepts:
+     * - videos[]:        full canonical list of kept entries (URLs / R2 paths).
+     * - video_files[]:   optional new file uploads to append.
+     */
+    public function updateVideos(Request $request, Hotel $hotel): JsonResponse
+    {
+        $this->authorizeOwnership($hotel);
+
+        $validator = Validator::make($request->all(), [
+            'videos'        => 'nullable|array|max:10',
+            'videos.*'      => 'nullable|string|max:500',
+            'video_files'   => 'nullable|array|max:10',
+            'video_files.*' => 'file|mimetypes:video/mp4,video/quicktime,video/webm|max:102400',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed.',
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        $disk = config('filesystems.public_uploads', 'public');
+
+        try {
+            $kept = array_values(array_filter(
+                (array) $request->input('videos', []),
+                fn ($v) => is_string($v) && trim($v) !== ''
+            ));
+
+            // Delete uploaded files that were removed from the videos JSON column
+            $previous = (array) ($hotel->getRawOriginal('videos')
+                ? json_decode($hotel->getRawOriginal('videos'), true)
+                : []);
+            foreach ($previous as $oldEntry) {
+                if (!is_string($oldEntry) || $oldEntry === '') {
+                    continue;
+                }
+                if (filter_var($oldEntry, FILTER_VALIDATE_URL)) {
+                    continue;
+                }
+                if (!in_array($oldEntry, $kept, true)) {
+                    Storage::disk($disk)->delete($oldEntry);
+                }
+            }
+
+            // Handle the legacy single video_url column the same way
+            $legacy = $hotel->getRawOriginal('video_url');
+            $clearLegacy = false;
+            if ($legacy) {
+                if (!in_array($legacy, $kept, true) && !filter_var($legacy, FILTER_VALIDATE_URL)) {
+                    Storage::disk($disk)->delete($legacy);
+                }
+                $clearLegacy = true;
+            }
+
+            // Append new uploads
+            if ($request->hasFile('video_files')) {
+                foreach ($request->file('video_files') as $vf) {
+                    $kept[] = $vf->store('hotels/videos', $disk);
+                }
+            }
+
+            $update = ['videos' => $kept];
+            if ($clearLegacy) {
+                $update['video_url'] = null;
+            }
+            $hotel->update($update);
+
+            $hotel->refresh();
+
+            return response()->json([
+                'success'         => true,
+                'message'         => 'Videos updated.',
+                'videos'          => $kept,
+                'videos_resolved' => $hotel->videos_resolved,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update videos.',
+            ], 500);
+        }
     }
 
     /**
@@ -279,6 +371,11 @@ class HotelManagementController extends Controller
             
             'video_url' => 'nullable|url|max:500',
             'video_360_url' => 'nullable|url|max:500',
+            // Multi-video support: kept entries (URLs / previously-stored paths) and new uploads.
+            'videos' => 'nullable|array|max:10',
+            'videos.*' => 'nullable|string|max:500',
+            'video_files' => 'nullable|array|max:10',
+            'video_files.*' => 'file|mimetypes:video/mp4,video/quicktime,video/webm|max:102400', // 100 MB each
             'direct_booking_url' => 'nullable|url|max:500',
             'show_verified_badge' => 'boolean',
         ];
@@ -314,6 +411,41 @@ class HotelManagementController extends Controller
         // Dispatch image optimization job if images were uploaded
         if (!empty($uploadedPaths)) {
             ProcessHotelImages::dispatch($hotel, $uploadedPaths);
+        }
+
+        // ---- Multi-video handling (mirrors admin) ----
+        // - $request->input('videos') is the list of kept entries (existing URLs/paths
+        //   the hotelier did NOT remove).
+        // - $request->file('video_files') are brand-new uploads to append.
+        // - The hidden `_sync_videos` marker is sent on every form submit so we
+        //   reconcile even when the user removed every video (empty array).
+        if ($request->has('videos') || $request->hasFile('video_files') || $request->boolean('_sync_videos')) {
+            $previous = is_array($hotel->videos) ? $hotel->videos : [];
+            $kept = array_values(array_filter(
+                (array) $request->input('videos', []),
+                fn ($v) => is_string($v) && $v !== ''
+            ));
+
+            // Delete files that were removed (in previous, not in kept, and not external URLs)
+            foreach ($previous as $oldPath) {
+                if (!is_string($oldPath)) continue;
+                if (str_starts_with($oldPath, 'http://') || str_starts_with($oldPath, 'https://')) continue;
+                if (!in_array($oldPath, $kept, true)) {
+                    Storage::disk($disk)->delete($oldPath);
+                }
+            }
+
+            // Append new uploads
+            if ($request->hasFile('video_files')) {
+                foreach ($request->file('video_files') as $vf) {
+                    $kept[] = $vf->store('hotels/videos', $disk);
+                }
+            }
+
+            // Cap at 10
+            $kept = array_slice($kept, 0, 10);
+
+            $hotel->update(['videos' => $kept]);
         }
     }
 

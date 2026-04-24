@@ -818,7 +818,7 @@ const compressionOptions = {
   maxWidthOrHeight: 1920,
   useWebWorker: true
 };
-function CreateImagesTab({ data, setData, errors, hotel, onDeleteImage, hotelId }) {
+function CreateImagesTab({ data, setData, errors, hotel, onDeleteImage, hotelId, videosRouteName = "admin.hotels.update-videos", videosRouteParam = null }) {
   const [savingVideos, setSavingVideos] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(null);
   const postVideoUpdate = (videosList, file = null, onProgress = null) => {
@@ -828,7 +828,7 @@ function CreateImagesTab({ data, setData, errors, hotel, onDeleteImage, hotelId 
       (videosList || []).forEach((v) => fd.append("videos[]", v));
       if (file) fd.append("video_files[]", file);
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", route("admin.hotels.update-videos", { hotel: hotelId }));
+      xhr.open("POST", route(videosRouteName, { hotel: videosRouteParam ?? hotelId }));
       xhr.setRequestHeader("X-CSRF-TOKEN", ((_a = document.querySelector('meta[name="csrf-token"]')) == null ? void 0 : _a.content) || "");
       xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
       xhr.setRequestHeader("Accept", "application/json");

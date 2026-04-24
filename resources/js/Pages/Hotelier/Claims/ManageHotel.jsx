@@ -20,7 +20,7 @@ const TABS = {
 
 const TAB_CONFIG = [
     { key: TABS.POOL, label: 'Pool Scoring', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> },
-    { key: TABS.IMAGES, label: 'Images', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" /></svg> },
+    { key: TABS.IMAGES, label: 'Images & Video', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" /></svg> },
     { key: TABS.DESCRIPTIONS, label: 'Descriptions', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg> },
     { key: TABS.FAQS, label: 'FAQs & Rules', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg> },
     { key: TABS.ENHANCED, label: 'Enhanced Features', icon: <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>, requiresEnhanced: true },
@@ -49,6 +49,13 @@ const getInitialFormData = (hotel) => ({
     }] : []),
     video_url: hotel.video_url || '',
     video_360_url: hotel.video_360_url || '',
+    // Multi-video support (matches admin Edit page). The list of kept videos
+    // (URLs + previously-uploaded paths) is editable in the Images & Video tab.
+    videos: Array.isArray(hotel.videos_resolved)
+        ? hotel.videos_resolved.map((v) => v.raw)
+        : (Array.isArray(hotel.videos) ? hotel.videos : []),
+    video_files: [],
+    _video_url_draft: '',
     direct_booking_url: hotel.direct_booking_url || '',
     show_verified_badge: hotel.show_verified_badge || false,
     ...getPoolCriteriaData(hotel.pool_criteria),
@@ -485,43 +492,6 @@ const EnhancedFeaturesTab = ({ data, setData, errors, hasEnhanced, hasPremium, p
                 )}
             </div>
 
-            {/* Videos and 360° Content */}
-            <div className="bg-blue-50 rounded-xl p-3 sm:p-4 md:p-5 border border-blue-100">
-                <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2">
-                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M18 3.99H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-12c0-1.1-.9-2-2-2zm0 14.01H6V5.99h12v12.01zM9.5 13l2.5 3.01L14.5 13l3.5 4.51H6z"/>
-                    </svg>
-                    Videos & 360° Content
-                </h3>
-                <p className="text-xs text-gray-500 mb-3 sm:mb-4">
-                    Add video tours and 360° content to give guests an immersive preview.
-                </p>
-                <div className="space-y-3 sm:space-y-4">
-                    <div>
-                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Video URL</label>
-                        <input
-                            type="url"
-                            value={data.video_url}
-                            onChange={(e) => setData('video_url', e.target.value)}
-                            className="w-full px-2 sm:px-3 py-2 border border-gray-200 rounded-lg text-xs sm:text-sm focus:ring-orange-500 focus:border-orange-500"
-                            placeholder="https://www.youtube.com/watch?v=..."
-                        />
-                        {errors.video_url && <p className="mt-1 text-red-600 text-xs">{errors.video_url}</p>}
-                    </div>
-                    <div>
-                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">360° Virtual Tour URL</label>
-                        <input
-                            type="url"
-                            value={data.video_360_url}
-                            onChange={(e) => setData('video_360_url', e.target.value)}
-                            className="w-full px-2 sm:px-3 py-2 border border-gray-200 rounded-lg text-xs sm:text-sm focus:ring-orange-500 focus:border-orange-500"
-                            placeholder="https://my360tour.com/hotel-pool-tour"
-                        />
-                        {errors.video_360_url && <p className="mt-1 text-red-600 text-xs">{errors.video_360_url}</p>}
-                    </div>
-                </div>
-            </div>
-
             {/* Direct Booking Link */}
             <div className="bg-gray-50 rounded-xl p-3 sm:p-4 md:p-5 border border-gray-100">
                 <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2">
@@ -704,7 +674,12 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
         setValidationErrors({}); // Clear previous errors
         setProcessing(true);
         
-        router.post(route('hotelier.hotels.update', hotel.slug), data, {
+        router.post(route('hotelier.hotels.update', hotel.slug), {
+            ...data,
+            // Marker so the backend always reconciles the videos array, even when it's
+            // been emptied by the user (Inertia's FormData omits empty arrays).
+            _sync_videos: '1',
+        }, {
             forceFormData: true,
             preserveScroll: true,
             onSuccess: (page) => {
@@ -719,7 +694,7 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
                     return;
                 }
                 // Reset image fields so they don't show as duplicates of now-saved images
-                setData(prev => ({ ...prev, main_image: null, gallery_images: [] }));
+                setData(prev => ({ ...prev, main_image: null, gallery_images: [], video_files: [] }));
                 // Show success toast - use flash if available, otherwise show default
                 toast.success(page?.props?.flash?.success || 'Hotel updated successfully!');
             },
@@ -752,7 +727,16 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
             case TABS.POOL:
                 return <PoolCriteriaTab data={data} setData={setData} errors={allErrors} />;
             case TABS.IMAGES:
-                return <CreateImagesTab data={data} setData={setData} errors={allErrors} hotel={hotel} onDeleteImage={handleDeleteImage} />;
+                return                                 <CreateImagesTab
+                                    data={data}
+                                    setData={setData}
+                                    errors={allErrors}
+                                    hotel={hotel}
+                                    onDeleteImage={handleDeleteImage}
+                                    hotelId={hotel.slug}
+                                    videosRouteName="hotelier.hotels.update-videos"
+                                    videosRouteParam={hotel.slug}
+                                />;
             case TABS.DESCRIPTIONS:
                 return <DescriptionsTab data={data} setData={setData} errors={allErrors} />;
             case TABS.FAQS:

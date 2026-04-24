@@ -537,78 +537,8 @@ function SpecialOfferBanner({ hotel }) {
 }
 
 // Enhanced Features Component for Hero Section
-function HeroEnhancedFeatures({ hotel, onBookingClick }) {
-    // NOTE: Pool video tours are now displayed inside the main hero ImageGallery
-    // (as the first item, alongside images). This section only handles the
-    // 360° tour and the "Visit Hotel Website" CTA so the layout stays tidy.
-    const hasVideoContent = !!hotel.video_360_url;
-    const hasDirectBooking = hotel.direct_booking_url;
-
-    if (!hasVideoContent && !hasDirectBooking) {
-        return null;
-    }
-
-    // Handle direct booking click with tracking
-    const handleDirectClick = (e) => {
-        e.preventDefault();
-        if (onBookingClick) {
-            onBookingClick('direct');
-        }
-        // Open in new tab after tracking
-        window.open(hotel.direct_booking_url, '_blank', 'noopener,noreferrer');
-    };
-
-    return (
-        <div className="mt-6 sm:mt-8">
-            {/* Main Enhanced Features Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* 360° Virtual Tour */}
-                {hotel.video_360_url && (
-                    <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl overflow-hidden shadow-lg">
-                        {renderEmbeddedVideo(hotel.video_360_url, '360° Virtual Tour') ? (
-                            <div className="aspect-video">
-                                {renderEmbeddedVideo(hotel.video_360_url, '360° Virtual Tour')}
-                            </div>
-                        ) : (
-                            <a 
-                                href={hotel.video_360_url} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="flex flex-col items-center justify-center p-6 text-white hover:bg-white/10 transition-colors h-full"
-                            >
-                                <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mb-2">
-                                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                                    </svg>
-                                </div>
-                                <span className="font-bold">360° Virtual Tour</span>
-                                <span className="text-xs text-white/80">Explore in immersive 360°</span>
-                            </a>
-                        )}
-                    </div>
-                )}
-
-                {/* Visit Hotel Website */}
-                {hasDirectBooking && (
-                    <button 
-                        onClick={handleDirectClick}
-                        className="bg-white border-2 border-orange-300 rounded-2xl p-5 shadow-lg flex items-center gap-4 hover:bg-orange-50 transition-all group hover:shadow-xl text-left"
-                    >
-                        <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                            <svg className="w-7 h-7 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                        </div>
-                        <div>
-                            <span className="font-bold block text-orange-600">Visit Hotel Website</span>
-                            <span className="text-xs text-gray-500">Book direct for best rates</span>
-                        </div>
-                    </button>
-                )}
-            </div>
-        </div>
-    );
-}
+// (Removed: the "Visit Hotel Website" CTA now lives in the sidebar BookingCard
+// for claimed hotels, so the hero stays focused on imagery + score.)
 
 export function HeroSection({ hotel, allImages, mediaItems, activeImageIndex, onPrevImage, onNextImage, onBookingClick, setActiveImageIndex }) {
     const isPremium = hotel.is_premium;
@@ -644,9 +574,6 @@ export function HeroSection({ hotel, allImages, mediaItems, activeImageIndex, on
                 </div>
 
                 <QuickFacts hotel={hotel} />
-
-                {/* Enhanced Features from Hotelier */}
-                <HeroEnhancedFeatures hotel={hotel} onBookingClick={onBookingClick} />
             </div>
         </div>
     );

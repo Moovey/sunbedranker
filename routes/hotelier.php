@@ -37,6 +37,7 @@ Route::middleware(['auth', 'hotelier'])->prefix('hotelier')->name('hotelier.')->
     // Hotel Management (for approved claims)
     Route::get('/hotels/{hotel:slug}/manage', [HotelManagementController::class, 'edit'])->name('hotels.manage');
     Route::post('/hotels/{hotel:slug}/manage', [HotelManagementController::class, 'update'])->name('hotels.update');
+    Route::post('/hotels/{hotel:slug}/videos', [HotelManagementController::class, 'updateVideos'])->name('hotels.update-videos');
     Route::post('/hotels/{hotel:slug}/images', [HotelManagementController::class, 'uploadImage'])->name('hotels.uploadImage');
     Route::delete('/hotels/{hotel:slug}/images', [HotelManagementController::class, 'deleteImage'])->name('hotels.deleteImage');
     

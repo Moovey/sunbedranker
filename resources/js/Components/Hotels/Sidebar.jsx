@@ -4,48 +4,76 @@ import { Icons } from './Icons';
 // BOOKING CARD COMPONENT
 // ============================================
 export function BookingCard({ hotel, onBookingClick }) {
+    // Booking display strategy:
+    // - Claimed hotel WITH direct_booking_url   -> show only "Book Direct with Hotel".
+    // - Claimed hotel WITHOUT direct_booking_url -> fall back to affiliate links
+    //   so the page never shows an empty booking section.
+    // - Unclaimed hotel                          -> show all affiliate links.
+    const isClaimed = !!hotel.owned_by;
+    const hasDirect = !!hotel.direct_booking_url;
+    const showDirectOnly = isClaimed && hasDirect;
+    const showAffiliates = !showDirectOnly; // i.e. unclaimed, or claimed-without-direct
+
     return (
         <div className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(15,23,42,0.12)] p-5 sm:p-6 lg:p-7 xl:p-8 transition-all duration-300">
             <h3 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-sans font-bold text-gray-900 mb-4 lg:mb-5 xl:mb-6 flex items-center gap-2">
                 <Icons.Money className="w-5 h-5 text-orange-500" />
                 Check Prices & Book
             </h3>
-            
+
             <div className="space-y-2 sm:space-y-3">
-                {hotel.booking_affiliate_url && (
+                {showDirectOnly && (
                     <button
-                        onClick={() => onBookingClick('booking')}
+                        onClick={() => onBookingClick('direct')}
                         className="w-full px-4 py-2.5 sm:py-3 lg:py-3.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base"
                     >
-                        <Icons.Booking />
-                        Check Booking.com
-                    </button>
-                )}
-                {hotel.expedia_affiliate_url && (
-                    <button
-                        onClick={() => onBookingClick('expedia')}
-                        className="w-full px-4 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-sans font-bold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base"
-                    >
-                        <Icons.Plane />
-                        Check Expedia
-                    </button>
-                )}
-                {hotel.agoda_hotel_id && (
-                    <button
-                        onClick={() => onBookingClick('agoda')}
-                        className="w-full px-4 py-2.5 sm:py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-sans font-bold rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base"
-                    >
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
-                        Check Agoda
+                        Book Direct with Hotel
                     </button>
+                )}
+
+                {showAffiliates && (
+                    <>
+                        {hotel.booking_affiliate_url && (
+                            <button
+                                onClick={() => onBookingClick('booking')}
+                                className="w-full px-4 py-2.5 sm:py-3 lg:py-3.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base"
+                            >
+                                <Icons.Booking />
+                                Check Booking.com
+                            </button>
+                        )}
+                        {hotel.expedia_affiliate_url && (
+                            <button
+                                onClick={() => onBookingClick('expedia')}
+                                className="w-full px-4 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-sans font-bold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base"
+                            >
+                                <Icons.Plane />
+                                Check Expedia
+                            </button>
+                        )}
+                        {hotel.agoda_hotel_id && (
+                            <button
+                                onClick={() => onBookingClick('agoda')}
+                                className="w-full px-4 py-2.5 sm:py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-sans font-bold rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base"
+                            >
+                                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                                </svg>
+                                Check Agoda
+                            </button>
+                        )}
+                    </>
                 )}
             </div>
 
-            <div className="mt-4 text-[10px] sm:text-xs text-gray-500 text-center font-sans">
-                We may earn a commission from bookings made through these links
-            </div>
+            {showAffiliates && (
+                <div className="mt-4 text-[10px] sm:text-xs text-gray-500 text-center font-sans">
+                    We may earn a commission from bookings made through these links
+                </div>
+            )}
         </div>
     );
 }

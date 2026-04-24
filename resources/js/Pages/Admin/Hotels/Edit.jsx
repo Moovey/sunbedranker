@@ -357,7 +357,7 @@ function TabNavigation({ activeTab, setActiveTab }) {
     const tabConfig = [
         { id: 'basic', label: 'Basic Info' },
         { id: 'contact', label: 'Contact & Location' },
-        { id: 'images', label: 'Images' },
+        { id: 'images', label: 'Images & Video' },
         { id: 'pool', label: 'Pool Scoring' },
         { id: 'affiliate', label: 'Affiliate Links' },
     ];

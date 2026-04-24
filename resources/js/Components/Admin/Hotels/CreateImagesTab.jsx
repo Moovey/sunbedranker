@@ -9,7 +9,7 @@ const compressionOptions = {
     useWebWorker: true,
 };
 
-export default function CreateImagesTab({ data, setData, errors, hotel, onDeleteImage, hotelId }) {
+export default function CreateImagesTab({ data, setData, errors, hotel, onDeleteImage, hotelId, videosRouteName = 'admin.hotels.update-videos', videosRouteParam = null }) {
     // Auto-save the videos array (and any pending uploads) immediately, without
     // requiring the admin to submit the full hotel form. Only available in Edit
     // mode (when hotelId is provided).
@@ -32,7 +32,7 @@ export default function CreateImagesTab({ data, setData, errors, hotel, onDelete
             if (file) fd.append('video_files[]', file);
 
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', route('admin.hotels.update-videos', { hotel: hotelId }));
+            xhr.open('POST', route(videosRouteName, { hotel: videosRouteParam ?? hotelId }));
             xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]')?.content || '');
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             xhr.setRequestHeader('Accept', 'application/json');

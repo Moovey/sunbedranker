@@ -416,50 +416,6 @@ function SpecialOfferBanner({ hotel }) {
     )) })
   ] });
 }
-function HeroEnhancedFeatures({ hotel, onBookingClick }) {
-  const hasVideoContent = !!hotel.video_360_url;
-  const hasDirectBooking = hotel.direct_booking_url;
-  if (!hasVideoContent && !hasDirectBooking) {
-    return null;
-  }
-  const handleDirectClick = (e) => {
-    e.preventDefault();
-    if (onBookingClick) {
-      onBookingClick("direct");
-    }
-    window.open(hotel.direct_booking_url, "_blank", "noopener,noreferrer");
-  };
-  return /* @__PURE__ */ jsx("div", { className: "mt-6 sm:mt-8", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4", children: [
-    hotel.video_360_url && /* @__PURE__ */ jsx("div", { className: "bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl overflow-hidden shadow-lg", children: renderEmbeddedVideo(hotel.video_360_url, "360° Virtual Tour") ? /* @__PURE__ */ jsx("div", { className: "aspect-video", children: renderEmbeddedVideo(hotel.video_360_url, "360° Virtual Tour") }) : /* @__PURE__ */ jsxs(
-      "a",
-      {
-        href: hotel.video_360_url,
-        target: "_blank",
-        rel: "noopener noreferrer",
-        className: "flex flex-col items-center justify-center p-6 text-white hover:bg-white/10 transition-colors h-full",
-        children: [
-          /* @__PURE__ */ jsx("div", { className: "w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mb-2", children: /* @__PURE__ */ jsx("svg", { className: "w-7 h-7", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24", children: /* @__PURE__ */ jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" }) }) }),
-          /* @__PURE__ */ jsx("span", { className: "font-bold", children: "360° Virtual Tour" }),
-          /* @__PURE__ */ jsx("span", { className: "text-xs text-white/80", children: "Explore in immersive 360°" })
-        ]
-      }
-    ) }),
-    hasDirectBooking && /* @__PURE__ */ jsxs(
-      "button",
-      {
-        onClick: handleDirectClick,
-        className: "bg-white border-2 border-orange-300 rounded-2xl p-5 shadow-lg flex items-center gap-4 hover:bg-orange-50 transition-all group hover:shadow-xl text-left",
-        children: [
-          /* @__PURE__ */ jsx("div", { className: "w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform", children: /* @__PURE__ */ jsx("svg", { className: "w-7 h-7 text-orange-600", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24", children: /* @__PURE__ */ jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" }) }) }),
-          /* @__PURE__ */ jsxs("div", { children: [
-            /* @__PURE__ */ jsx("span", { className: "font-bold block text-orange-600", children: "Visit Hotel Website" }),
-            /* @__PURE__ */ jsx("span", { className: "text-xs text-gray-500", children: "Book direct for best rates" })
-          ] })
-        ]
-      }
-    )
-  ] }) });
-}
 function HeroSection({ hotel, allImages, mediaItems, activeImageIndex, onPrevImage, onNextImage, onBookingClick, setActiveImageIndex }) {
   const isPremium = hotel.is_premium;
   const items = mediaItems && mediaItems.length > 0 ? mediaItems : (allImages || []).map((url) => ({ type: "image", url, thumbnail: url }));
@@ -481,8 +437,7 @@ function HeroSection({ hotel, allImages, mediaItems, activeImageIndex, onPrevIma
       ),
       /* @__PURE__ */ jsx(MapAndScoreColumn, { hotel })
     ] }),
-    /* @__PURE__ */ jsx(QuickFacts, { hotel }),
-    /* @__PURE__ */ jsx(HeroEnhancedFeatures, { hotel, onBookingClick })
+    /* @__PURE__ */ jsx(QuickFacts, { hotel })
   ] }) });
 }
 function SunbedAvailabilitySection({ poolCriteria }) {
@@ -874,47 +829,64 @@ const PoolDetailsSection = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.
   TowelReservationSection: TowelReservationSection$1
 }, Symbol.toStringTag, { value: "Module" }));
 function BookingCard({ hotel, onBookingClick }) {
+  const isClaimed = !!hotel.owned_by;
+  const hasDirect = !!hotel.direct_booking_url;
+  const showDirectOnly = isClaimed && hasDirect;
+  const showAffiliates = !showDirectOnly;
   return /* @__PURE__ */ jsxs("div", { className: "bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] hover:ring-slate-300 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(15,23,42,0.12)] p-5 sm:p-6 lg:p-7 xl:p-8 transition-all duration-300", children: [
     /* @__PURE__ */ jsxs("h3", { className: "text-lg sm:text-xl lg:text-2xl xl:text-3xl font-sans font-bold text-gray-900 mb-4 lg:mb-5 xl:mb-6 flex items-center gap-2", children: [
       /* @__PURE__ */ jsx(Icons.Money, { className: "w-5 h-5 text-orange-500" }),
       "Check Prices & Book"
     ] }),
     /* @__PURE__ */ jsxs("div", { className: "space-y-2 sm:space-y-3", children: [
-      hotel.booking_affiliate_url && /* @__PURE__ */ jsxs(
+      showDirectOnly && /* @__PURE__ */ jsxs(
         "button",
         {
-          onClick: () => onBookingClick("booking"),
+          onClick: () => onBookingClick("direct"),
           className: "w-full px-4 py-2.5 sm:py-3 lg:py-3.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base",
           children: [
-            /* @__PURE__ */ jsx(Icons.Booking, {}),
-            "Check Booking.com"
+            /* @__PURE__ */ jsx("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24", children: /* @__PURE__ */ jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" }) }),
+            "Book Direct with Hotel"
           ]
         }
       ),
-      hotel.expedia_affiliate_url && /* @__PURE__ */ jsxs(
-        "button",
-        {
-          onClick: () => onBookingClick("expedia"),
-          className: "w-full px-4 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-sans font-bold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base",
-          children: [
-            /* @__PURE__ */ jsx(Icons.Plane, {}),
-            "Check Expedia"
-          ]
-        }
-      ),
-      hotel.agoda_hotel_id && /* @__PURE__ */ jsxs(
-        "button",
-        {
-          onClick: () => onBookingClick("agoda"),
-          className: "w-full px-4 py-2.5 sm:py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-sans font-bold rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base",
-          children: [
-            /* @__PURE__ */ jsx("svg", { className: "w-5 h-5", viewBox: "0 0 24 24", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsx("path", { d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" }) }),
-            "Check Agoda"
-          ]
-        }
-      )
+      showAffiliates && /* @__PURE__ */ jsxs(Fragment, { children: [
+        hotel.booking_affiliate_url && /* @__PURE__ */ jsxs(
+          "button",
+          {
+            onClick: () => onBookingClick("booking"),
+            className: "w-full px-4 py-2.5 sm:py-3 lg:py-3.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-sans font-bold rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base",
+            children: [
+              /* @__PURE__ */ jsx(Icons.Booking, {}),
+              "Check Booking.com"
+            ]
+          }
+        ),
+        hotel.expedia_affiliate_url && /* @__PURE__ */ jsxs(
+          "button",
+          {
+            onClick: () => onBookingClick("expedia"),
+            className: "w-full px-4 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-sans font-bold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base",
+            children: [
+              /* @__PURE__ */ jsx(Icons.Plane, {}),
+              "Check Expedia"
+            ]
+          }
+        ),
+        hotel.agoda_hotel_id && /* @__PURE__ */ jsxs(
+          "button",
+          {
+            onClick: () => onBookingClick("agoda"),
+            className: "w-full px-4 py-2.5 sm:py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-sans font-bold rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base",
+            children: [
+              /* @__PURE__ */ jsx("svg", { className: "w-5 h-5", viewBox: "0 0 24 24", fill: "currentColor", "aria-hidden": "true", children: /* @__PURE__ */ jsx("path", { d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" }) }),
+              "Check Agoda"
+            ]
+          }
+        )
+      ] })
     ] }),
-    /* @__PURE__ */ jsx("div", { className: "mt-4 text-[10px] sm:text-xs text-gray-500 text-center font-sans", children: "We may earn a commission from bookings made through these links" })
+    showAffiliates && /* @__PURE__ */ jsx("div", { className: "mt-4 text-[10px] sm:text-xs text-gray-500 text-center font-sans", children: "We may earn a commission from bookings made through these links" })
   ] });
 }
 function PromotionalBanner({ hotel, onBookingClick }) {
@@ -1079,12 +1051,12 @@ const CleanlinessSection = lazy(() => Promise.resolve().then(() => PoolDetailsSe
 const AccessibilitySection = lazy(() => Promise.resolve().then(() => PoolDetailsSection).then((m) => ({ default: m.AccessibilitySection })));
 const KidsFeaturesSection = lazy(() => Promise.resolve().then(() => PoolDetailsSection).then((m) => ({ default: m.KidsFeaturesSection })));
 const LuxuryFeaturesSection = lazy(() => Promise.resolve().then(() => PoolDetailsSection).then((m) => ({ default: m.LuxuryFeaturesSection })));
-const PoolDescriptionSection = lazy(() => import("./HotelierContentSection-N5ZzVOmf.js").then((m) => ({ default: m.PoolDescriptionSection })));
-const AmenitiesDescriptionSection = lazy(() => import("./HotelierContentSection-N5ZzVOmf.js").then((m) => ({ default: m.AmenitiesDescriptionSection })));
-const HouseRulesSection = lazy(() => import("./HotelierContentSection-N5ZzVOmf.js").then((m) => ({ default: m.HouseRulesSection })));
-const FaqsSection = lazy(() => import("./HotelierContentSection-N5ZzVOmf.js").then((m) => ({ default: m.FaqsSection })));
-const PhotoGallerySection = lazy(() => import("./HotelierContentSection-N5ZzVOmf.js").then((m) => ({ default: m.PhotoGallerySection })));
-const ReviewsSection = lazy(() => import("./HotelierContentSection-N5ZzVOmf.js").then((m) => ({ default: m.ReviewsSection })));
+const PoolDescriptionSection = lazy(() => import("./HotelierContentSection-CuRD2odm.js").then((m) => ({ default: m.PoolDescriptionSection })));
+const AmenitiesDescriptionSection = lazy(() => import("./HotelierContentSection-CuRD2odm.js").then((m) => ({ default: m.AmenitiesDescriptionSection })));
+const HouseRulesSection = lazy(() => import("./HotelierContentSection-CuRD2odm.js").then((m) => ({ default: m.HouseRulesSection })));
+const FaqsSection = lazy(() => import("./HotelierContentSection-CuRD2odm.js").then((m) => ({ default: m.FaqsSection })));
+const PhotoGallerySection = lazy(() => import("./HotelierContentSection-CuRD2odm.js").then((m) => ({ default: m.PhotoGallerySection })));
+const ReviewsSection = lazy(() => import("./HotelierContentSection-CuRD2odm.js").then((m) => ({ default: m.ReviewsSection })));
 const SimilarHotelsSection = lazy(() => import("./SimilarHotels-Dd3nRs0p.js").then((m) => ({ default: m.default })));
 function HotelShow({ hotel, similarHotels }) {
   var _a, _b;
