@@ -42,6 +42,16 @@ Route::get('/health', function () {
     ], $healthy ? 200 : 503);
 })->middleware('throttle:30,1')->name('health');
 
+// CSRF cookie refresh endpoint. The web middleware automatically issues a fresh
+// XSRF-TOKEN cookie on every response, so simply hitting this with credentials
+// gives the client a current token. Used by long-lived SPA pages (Inertia keeps
+// the JS app alive across navigations) right before large multipart uploads to
+// avoid 419 "CSRF token mismatch" when the original page-load token has been
+// rotated by a subsequent login or session regenerate.
+Route::get('/csrf-cookie', function () {
+    return response()->noContent();
+})->middleware('throttle:60,1')->name('csrf-cookie');
+
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 

@@ -669,11 +669,22 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
     }, [promotions, setData]);
 
     // Form submission - Use router.post directly like Admin Edit does for Laravel Cloud compatibility
-    const handleSubmit = useCallback((e) => {
+    const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
         setValidationErrors({}); // Clear previous errors
         setProcessing(true);
-        
+
+        // Refresh the CSRF cookie before submitting. Inertia keeps the SPA
+        // alive across navigations so the original page-load token can become
+        // stale (notably after a login that regenerated the session). Without
+        // this, the first multipart upload returns 419 and the user has to
+        // hard-refresh the page.
+        try {
+            await fetch(route('csrf-cookie'), { credentials: 'same-origin' });
+        } catch (_) {
+            // Non-fatal — fall through to the submit attempt.
+        }
+
         router.post(route('hotelier.hotels.update', hotel.slug), {
             ...data,
             // Marker so the backend always reconciles the videos array, even when it's

@@ -153,10 +153,23 @@ export default function EditHotel({ hotel, destinations, badges, stats, errors: 
     };
 
     // Form submission
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setValidationErrors({}); // Clear previous errors
         setProcessing(true);
+
+        // Refresh the CSRF cookie before submitting. Inertia keeps the SPA alive
+        // across navigations, so the XSRF-TOKEN cookie embedded at original page
+        // load can become stale after a login (session regenerate) or when the
+        // session lifetime has rolled. Without this, the first multipart upload
+        // returns 419 and the user has to hard-refresh the page. Failures here
+        // are non-fatal — we still attempt the submit so a temporary network
+        // hiccup doesn't block the user.
+        try {
+            await fetch(route('csrf-cookie'), { credentials: 'same-origin' });
+        } catch (_) {
+            // Ignore — fall through to the submit attempt.
+        }
 
         // Use router.post with _method for proper PATCH with multipart/form-data
         router.post(route('admin.hotels.update', hotel.id), data, {
