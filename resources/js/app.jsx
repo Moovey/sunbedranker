@@ -34,9 +34,30 @@ createInertiaApp({
         syncZiggy(props.initialPage);
         window.route = route;
 
+        // Keep the <meta name="csrf-token"> tag in sync with the live XSRF-TOKEN
+        // cookie that Laravel rotates on every response (notably after login,
+        // when the session ID is regenerated). Without this, manual fetch() /
+        // XHR uploads that read the meta tag will use a stale token from the
+        // initial page load and get a 419 "CSRF token mismatch" until the user
+        // hard-refreshes the page.
+        const refreshCsrfMeta = () => {
+            const cookieToken = document.cookie
+                .split('; ')
+                .find((row) => row.startsWith('XSRF-TOKEN='))
+                ?.split('=')[1];
+            if (!cookieToken) return;
+            const meta = document.querySelector('meta[name="csrf-token"]');
+            if (meta) {
+                meta.setAttribute('content', decodeURIComponent(cookieToken));
+            }
+        };
+
+        refreshCsrfMeta();
+
         // Sync Ziggy on successful page navigation (after re-render)
         document.addEventListener('inertia:success', (event) => {
             syncZiggy(event.detail.page);
+            refreshCsrfMeta();
         });
 
         const root = createRoot(el);
