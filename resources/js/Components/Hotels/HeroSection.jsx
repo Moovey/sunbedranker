@@ -413,12 +413,24 @@ const renderEmbeddedVideo = (url, title) => {
     if (isNativeVideoUrl(url)) {
         return (
             <video
+                key={url}
                 src={url}
                 controls
                 playsInline
+                muted
                 preload="metadata"
                 className="w-full h-full bg-black object-contain"
+                onError={(e) => {
+                    const err = e.currentTarget.error;
+                    // eslint-disable-next-line no-console
+                    console.error('[video] playback error', {
+                        code: err?.code,
+                        message: err?.message,
+                        src: e.currentTarget.currentSrc,
+                    });
+                }}
             >
+                <source src={url} type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
         );
