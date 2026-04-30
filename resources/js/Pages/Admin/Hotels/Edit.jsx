@@ -162,13 +162,28 @@ export default function EditHotel({ hotel, destinations, badges, stats, errors: 
         // across navigations, so the XSRF-TOKEN cookie embedded at original page
         // load can become stale after a login (session regenerate) or when the
         // session lifetime has rolled. Without this, the first multipart upload
-        // returns 419 and the user has to hard-refresh the page. Failures here
-        // are non-fatal — we still attempt the submit so a temporary network
-        // hiccup doesn't block the user.
+        // returns 419 and the user has to hard-refresh the page. We bypass any
+        // edge cache with a unique query param so we always get a fresh token.
         try {
-            await fetch(route('csrf-cookie'), { credentials: 'same-origin' });
+            await fetch(route('csrf-cookie') + '?_=' + Date.now(), {
+                credentials: 'same-origin',
+                cache: 'no-store',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            });
+            // Also push the fresh token into the meta tag so any other code
+            // that reads it (image deletes, RichTextEditor uploads, etc.) is
+            // up to date too.
+            const fresh = document.cookie
+                .split('; ')
+                .find((r) => r.startsWith('XSRF-TOKEN='))
+                ?.split('=')[1];
+            if (fresh) {
+                document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.setAttribute('content', decodeURIComponent(fresh));
+            }
         } catch (_) {
-            // Ignore — fall through to the submit attempt.
+            // Non-fatal — fall through to the submit attempt.
         }
 
         // Use router.post with _method for proper PATCH with multipart/form-data
