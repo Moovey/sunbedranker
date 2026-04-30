@@ -44,6 +44,9 @@
         }
     },
     "scripts": {
+        "post-install-cmd": [
+            "@php scripts/install-ffmpeg.php"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
