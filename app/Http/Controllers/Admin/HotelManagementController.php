@@ -16,6 +16,7 @@ use App\Services\DestinationLookupService;
 use App\Services\AgodaService;
 use App\Services\PoolEstimationService;
 use App\Jobs\ProcessHotelImages;
+use App\Services\HotelVideoUploader;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
@@ -333,7 +334,7 @@ class HotelManagementController extends Controller
 
         // Video: file upload takes precedence over URL
         if ($request->hasFile('video_file')) {
-            $validated['video_url'] = $request->file('video_file')->store('hotels/videos', $disk);
+            $validated['video_url'] = HotelVideoUploader::store($request->file('video_file'), $disk);
         }
         // else: $validated['video_url'] is whatever the admin pasted (or null)
 
@@ -346,7 +347,7 @@ class HotelManagementController extends Controller
         ));
         if ($request->hasFile('video_files')) {
             foreach ($request->file('video_files') as $vf) {
-                $videos[] = $vf->store('hotels/videos', $disk);
+                $videos[] = HotelVideoUploader::store($vf, $disk);
             }
         }
         $validated['videos'] = $videos;
@@ -733,7 +734,7 @@ class HotelManagementController extends Controller
             if ($hotel->getRawOriginal('video_url') && !filter_var($hotel->getRawOriginal('video_url'), FILTER_VALIDATE_URL)) {
                 Storage::disk($disk)->delete($hotel->getRawOriginal('video_url'));
             }
-            $validated['video_url'] = $request->file('video_file')->store('hotels/videos', $disk);
+            $validated['video_url'] = HotelVideoUploader::store($request->file('video_file'), $disk);
         } elseif (array_key_exists('video_url', $validated)) {
             // If the submitted URL exactly equals the accessor-resolved current value,
             // the admin didn't touch it — keep the raw stored value (could be a path).
@@ -784,7 +785,7 @@ class HotelManagementController extends Controller
             // Append new uploads
             if ($request->hasFile('video_files')) {
                 foreach ($request->file('video_files') as $vf) {
-                    $kept[] = $vf->store('hotels/videos', $disk);
+                    $kept[] = HotelVideoUploader::store($vf, $disk);
                 }
             }
 
@@ -1081,7 +1082,7 @@ class HotelManagementController extends Controller
             // Append new uploads
             if ($request->hasFile('video_files')) {
                 foreach ($request->file('video_files') as $vf) {
-                    $kept[] = $vf->store('hotels/videos', $disk);
+                    $kept[] = HotelVideoUploader::store($vf, $disk);
                 }
             }
 

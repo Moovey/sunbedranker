@@ -142,7 +142,7 @@ export default function About() {
 
                         {/* CTA */}
                         <section className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)] p-8 sm:p-12 text-center">
-                            <h2 className="text-2xl sm:text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mb-4">Start Exploring</h2>
+                            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mb-4">Start Exploring</h2>
                             <p className="text-slate-700 text-base sm:text-lg mb-6">Ready to find your perfect pool? Browse our destinations or read our latest travel guides.</p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <Link href="/destinations" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold tracking-tight px-6 sm:px-8 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md ring-1 ring-inset ring-black/[0.04]">

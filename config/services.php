@@ -28,6 +28,13 @@ return [
         'key' => env('RESEND_KEY'),
     ],
 
+    'ffmpeg' => [
+        // Optional absolute paths to the ffmpeg / ffprobe binaries.
+        // Leave unset to auto-detect from the system PATH (recommended).
+        'ffmpeg_path'  => env('FFMPEG_PATH'),
+        'ffprobe_path' => env('FFPROBE_PATH'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

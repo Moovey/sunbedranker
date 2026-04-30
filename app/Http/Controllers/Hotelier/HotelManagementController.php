@@ -7,6 +7,7 @@ use App\Jobs\ProcessHotelImages;
 use App\Jobs\RecalculateHotelScores;
 use App\Models\Hotel;
 use App\Services\HotelScoringService;
+use App\Services\HotelVideoUploader;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -152,7 +153,7 @@ class HotelManagementController extends Controller
             // Append new uploads
             if ($request->hasFile('video_files')) {
                 foreach ($request->file('video_files') as $vf) {
-                    $kept[] = $vf->store('hotels/videos', $disk);
+                    $kept[] = HotelVideoUploader::store($vf, $disk);
                 }
             }
 
@@ -438,7 +439,7 @@ class HotelManagementController extends Controller
             // Append new uploads
             if ($request->hasFile('video_files')) {
                 foreach ($request->file('video_files') as $vf) {
-                    $kept[] = $vf->store('hotels/videos', $disk);
+                    $kept[] = HotelVideoUploader::store($vf, $disk);
                 }
             }
 
