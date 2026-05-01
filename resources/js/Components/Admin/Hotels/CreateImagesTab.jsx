@@ -31,9 +31,21 @@ export default function CreateImagesTab({ data, setData, errors, hotel, onDelete
             (videosList || []).forEach((v) => fd.append('videos[]', v));
             if (file) fd.append('video_files[]', file);
 
+            // Read the live XSRF-TOKEN cookie that Laravel rotates on every
+            // response. This avoids the stale meta-tag token problem after
+            // session regeneration (e.g. immediately after login). Laravel
+            // accepts the encrypted token via the X-XSRF-TOKEN header and
+            // decrypts it automatically before CSRF validation.
+            const xsrfCookie = document.cookie
+                .split('; ')
+                .find((row) => row.startsWith('XSRF-TOKEN='))
+                ?.split('=')[1];
+
             const xhr = new XMLHttpRequest();
             xhr.open('POST', route(videosRouteName, { hotel: videosRouteParam ?? hotelId }));
-            xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]')?.content || '');
+            if (xsrfCookie) {
+                xhr.setRequestHeader('X-XSRF-TOKEN', decodeURIComponent(xsrfCookie));
+            }
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             xhr.setRequestHeader('Accept', 'application/json');
             xhr.withCredentials = true;

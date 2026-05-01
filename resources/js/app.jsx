@@ -34,30 +34,17 @@ createInertiaApp({
         syncZiggy(props.initialPage);
         window.route = route;
 
-        // Keep the <meta name="csrf-token"> tag in sync with the live XSRF-TOKEN
-        // cookie that Laravel rotates on every response (notably after login,
-        // when the session ID is regenerated). Without this, manual fetch() /
-        // XHR uploads that read the meta tag will use a stale token from the
-        // initial page load and get a 419 "CSRF token mismatch" until the user
-        // hard-refreshes the page.
-        const refreshCsrfMeta = () => {
-            const cookieToken = document.cookie
-                .split('; ')
-                .find((row) => row.startsWith('XSRF-TOKEN='))
-                ?.split('=')[1];
-            if (!cookieToken) return;
-            const meta = document.querySelector('meta[name="csrf-token"]');
-            if (meta) {
-                meta.setAttribute('content', decodeURIComponent(cookieToken));
-            }
-        };
-
-        refreshCsrfMeta();
+        // NOTE on CSRF: do NOT copy the XSRF-TOKEN cookie value into the
+        // <meta name="csrf-token"> tag. The cookie holds the *encrypted*
+        // token, while X-CSRF-TOKEN expects the *plain* token (csrf_token()).
+        // Manual XHR/fetch upload sites should send X-XSRF-TOKEN read from
+        // the cookie instead — Laravel rotates that cookie on every response
+        // and decrypts it server-side automatically, which avoids 419 errors
+        // after login (session regenerate) without a hard page refresh.
 
         // Sync Ziggy on successful page navigation (after re-render)
         document.addEventListener('inertia:success', (event) => {
             syncZiggy(event.detail.page);
-            refreshCsrfMeta();
         });
 
         const root = createRoot(el);

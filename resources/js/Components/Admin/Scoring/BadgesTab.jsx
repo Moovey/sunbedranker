@@ -41,11 +41,14 @@ export default function BadgesTab({ badges, availableCriteria }) {
         setPreviewLoading(true);
         
         try {
+            const xsrf = document.cookie.split('; ').find((r) => r.startsWith('XSRF-TOKEN='))?.split('=')[1];
             const response = await fetch(route('admin.scoring.badges.preview'), {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'X-XSRF-TOKEN': xsrf ? decodeURIComponent(xsrf) : '',
+                    'X-Requested-With': 'XMLHttpRequest',
                 },
                 body: JSON.stringify({ criteria: badge.criteria }),
             });

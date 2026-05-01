@@ -158,34 +158,6 @@ export default function EditHotel({ hotel, destinations, badges, stats, errors: 
         setValidationErrors({}); // Clear previous errors
         setProcessing(true);
 
-        // Refresh the CSRF cookie before submitting. Inertia keeps the SPA alive
-        // across navigations, so the XSRF-TOKEN cookie embedded at original page
-        // load can become stale after a login (session regenerate) or when the
-        // session lifetime has rolled. Without this, the first multipart upload
-        // returns 419 and the user has to hard-refresh the page. We bypass any
-        // edge cache with a unique query param so we always get a fresh token.
-        try {
-            await fetch(route('csrf-cookie') + '?_=' + Date.now(), {
-                credentials: 'same-origin',
-                cache: 'no-store',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            });
-            // Also push the fresh token into the meta tag so any other code
-            // that reads it (image deletes, RichTextEditor uploads, etc.) is
-            // up to date too.
-            const fresh = document.cookie
-                .split('; ')
-                .find((r) => r.startsWith('XSRF-TOKEN='))
-                ?.split('=')[1];
-            if (fresh) {
-                document
-                    .querySelector('meta[name="csrf-token"]')
-                    ?.setAttribute('content', decodeURIComponent(fresh));
-            }
-        } catch (_) {
-            // Non-fatal — fall through to the submit attempt.
-        }
-
         // Use router.post with _method for proper PATCH with multipart/form-data
         router.post(route('admin.hotels.update', hotel.id), data, {
             forceFormData: true,
@@ -409,11 +381,13 @@ function TabNavigation({ activeTab, setActiveTab }) {
 
 function TabContent({ activeTab, data, setData, errors, destinations, hotel }) {
     const handleDeleteImage = (imagePath) => {
+        const xsrf = document.cookie.split('; ').find((r) => r.startsWith('XSRF-TOKEN='))?.split('=')[1];
         fetch(route('admin.hotels.delete-gallery-image', { hotel: hotel.id }), {
             method: 'DELETE',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                'X-XSRF-TOKEN': xsrf ? decodeURIComponent(xsrf) : '',
                 'X-Requested-With': 'XMLHttpRequest',
             },
             body: JSON.stringify({ image_path: imagePath }),

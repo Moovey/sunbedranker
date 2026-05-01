@@ -172,11 +172,14 @@ const EditorToolbar = ({ editor }) => {
         const formData = new FormData();
         formData.append('image', file);
 
+        const xsrf = document.cookie.split('; ').find((r) => r.startsWith('XSRF-TOKEN='))?.split('=')[1];
         fetch(route('admin.content.upload-image'), {
             method: 'POST',
+            credentials: 'same-origin',
             body: formData,
             headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                'X-XSRF-TOKEN': xsrf ? decodeURIComponent(xsrf) : '',
+                'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json',
             },
         })
@@ -535,11 +538,14 @@ export default function RichTextEditor({ content, onChange, placeholder, error }
                         const formData = new FormData();
                         formData.append('image', file);
 
+                        const xsrf = document.cookie.split('; ').find((r) => r.startsWith('XSRF-TOKEN='))?.split('=')[1];
                         fetch(route('admin.content.upload-image'), {
                             method: 'POST',
+                            credentials: 'same-origin',
                             body: formData,
                             headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                                'X-XSRF-TOKEN': xsrf ? decodeURIComponent(xsrf) : '',
+                                'X-Requested-With': 'XMLHttpRequest',
                                 'Accept': 'application/json',
                             },
                         })
@@ -584,11 +590,14 @@ export default function RichTextEditor({ content, onChange, placeholder, error }
                         const formData = new FormData();
                         formData.append('image', file);
 
+                        const xsrf = document.cookie.split('; ').find((r) => r.startsWith('XSRF-TOKEN='))?.split('=')[1];
                         fetch(route('admin.content.upload-image'), {
                             method: 'POST',
+                            credentials: 'same-origin',
                             body: formData,
                             headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                                'X-XSRF-TOKEN': xsrf ? decodeURIComponent(xsrf) : '',
+                                'X-Requested-With': 'XMLHttpRequest',
                                 'Accept': 'application/json',
                             },
                         })

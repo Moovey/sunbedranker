@@ -674,31 +674,6 @@ export default function ManageHotel({ hotel, flash, subscription, errors: server
         setValidationErrors({}); // Clear previous errors
         setProcessing(true);
 
-        // Refresh the CSRF cookie before submitting. Inertia keeps the SPA
-        // alive across navigations so the original page-load token can become
-        // stale (notably after a login that regenerated the session). Without
-        // this, the first multipart upload returns 419 and the user has to
-        // hard-refresh the page. Bypass any edge cache with a unique query
-        // param so we always get a fresh token.
-        try {
-            await fetch(route('csrf-cookie') + '?_=' + Date.now(), {
-                credentials: 'same-origin',
-                cache: 'no-store',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            });
-            const fresh = document.cookie
-                .split('; ')
-                .find((r) => r.startsWith('XSRF-TOKEN='))
-                ?.split('=')[1];
-            if (fresh) {
-                document
-                    .querySelector('meta[name="csrf-token"]')
-                    ?.setAttribute('content', decodeURIComponent(fresh));
-            }
-        } catch (_) {
-            // Non-fatal — fall through to the submit attempt.
-        }
-
         router.post(route('hotelier.hotels.update', hotel.slug), {
             ...data,
             // Marker so the backend always reconciles the videos array, even when it's
