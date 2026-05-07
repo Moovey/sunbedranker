@@ -76,6 +76,15 @@ class Hotel extends Model
         'videos',
         'show_verified_badge',
         'promotions', // JSON array for multiple promotions (Premium feature)
+        // AI-generated SEO content
+        'ai_description',
+        'ai_meta_title',
+        'ai_meta_description',
+        'ai_h2_sections',
+        'ai_schema_jsonld',
+        'ai_related_hotel_ids',
+        'ai_generated_at',
+        'ai_model_used',
     ];
 
     protected $casts = [
@@ -101,6 +110,10 @@ class Hotel extends Model
         'show_verified_badge' => 'boolean',
         'promotions' => 'array',
         'videos' => 'array',
+        'ai_h2_sections' => 'array',
+        'ai_schema_jsonld' => 'array',
+        'ai_related_hotel_ids' => 'array',
+        'ai_generated_at' => 'datetime',
     ];
 
     protected $appends = ['main_image_url', 'gallery_images_urls', 'has_pending_claim', 'is_premium', 'active_promotions', 'videos_resolved'];
@@ -216,34 +229,40 @@ class Hotel extends Model
         return 'slug';
     }
 
+    /** @param  \Illuminate\Database\Eloquent\Builder  $query */
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
 
+    /** @param  \Illuminate\Database\Eloquent\Builder  $query */
     public function scopeFeatured($query)
     {
         return $query->where('is_featured', true);
     }
 
+    /** @param  \Illuminate\Database\Eloquent\Builder  $query */
     public function scopeTopRated($query)
     {
         return $query->whereNotNull('overall_score')
             ->orderByDesc('overall_score');
     }
 
+    /** @param  \Illuminate\Database\Eloquent\Builder  $query */
     public function scopeForFamilies($query)
     {
         return $query->whereNotNull('family_score')
             ->orderByDesc('family_score');
     }
 
+    /** @param  \Illuminate\Database\Eloquent\Builder  $query */
     public function scopeQuietSun($query)
     {
         return $query->whereNotNull('quiet_score')
             ->orderByDesc('quiet_score');
     }
 
+    /** @param  \Illuminate\Database\Eloquent\Builder  $query */
     public function scopePartyPools($query)
     {
         return $query->whereNotNull('party_score')
@@ -277,6 +296,7 @@ class Hotel extends Model
      * - External URLs (YouTube, Vimeo, TikTok, etc.) are returned as-is.
      * - Storage paths (e.g. "hotels/videos/abc.mp4") are resolved via the configured disk.
      */
+    /** @param  mixed  $value */
     public function getVideoUrlAttribute($value): ?string
     {
         if (!$value) {

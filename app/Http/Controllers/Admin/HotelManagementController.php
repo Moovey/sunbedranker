@@ -899,6 +899,17 @@ class HotelManagementController extends Controller
     }
 
     /**
+     * Queue regeneration of AI-written SEO content (description, meta tags,
+     * H2 sections, related-hotel links) for a single hotel.
+     */
+    public function regenerateAiContent(Hotel $hotel): RedirectResponse
+    {
+        \App\Jobs\GenerateHotelAiContent::dispatch($hotel->id);
+
+        return back()->with('success', 'AI content regeneration queued. Refresh in a moment to see updates.');
+    }
+
+    /**
      * Upload and set main image for hotel
      */
     public function uploadMainImage(Request $request, Hotel $hotel): JsonResponse
@@ -1164,6 +1175,10 @@ class HotelManagementController extends Controller
 
     /**
      * Check individual condition
+     */
+    /**
+     * @param  mixed  $value
+     * @param  mixed  $condition
      */
     private function checkCondition($value, $condition): bool
     {

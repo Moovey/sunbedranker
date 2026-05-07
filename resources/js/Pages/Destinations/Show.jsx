@@ -136,24 +136,28 @@ export default function DestinationShow({ destination, hotels }) {
 
     return (
         <>
-            <Head title={`${destination.name} - Hotels with Great Pools`}>
+            <Head title={destination.ai_meta_title || `${destination.name} - Hotels with Great Pools`}>
                 {!hasHotels && <meta name="robots" content="noindex, follow" />}
-                <meta name="description" content={`Find the best hotel pools and sunbeds in ${destination.name}. ${hotels.total} hotels ranked by pool quality, sunbed availability, and atmosphere. Expert reviews and ratings.`} />
-                <meta property="og:title" content={`${destination.name} - Best Hotel Pools & Sunbeds | Sunbed Ranker`} />
-                <meta property="og:description" content={`Discover ${hotels.total} hotels in ${destination.name} ranked by pool quality, sunbed ratio, and atmosphere.`} />
+                <meta name="description" content={destination.ai_meta_description || `Find the best hotel pools and sunbeds in ${destination.name}. ${hotels.total} hotels ranked by pool quality, sunbed availability, and atmosphere. Expert reviews and ratings.`} />
+                <meta property="og:title" content={(destination.ai_meta_title || `${destination.name} - Best Hotel Pools & Sunbeds`) + ' | Sunbed Ranker'} />
+                <meta property="og:description" content={destination.ai_meta_description || `Discover ${hotels.total} hotels in ${destination.name} ranked by pool quality, sunbed ratio, and atmosphere.`} />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={`${appUrl}/destinations/${destination.slug}`} />
                 {destination.image && <meta property="og:image" content={destination.image.startsWith('http') ? destination.image : `${appUrl}/storage/${destination.image}`} />}
                 <meta property="og:site_name" content="Sunbed Ranker" />
                 <meta name="twitter:card" content="summary_large_image" />
                 <link rel="canonical" href={`${appUrl}/destinations/${destination.slug}`} />
-                <script type="application/ld+json">{JSON.stringify({
-                    "@context": "https://schema.org",
-                    "@type": "TouristDestination",
-                    "name": destination.name,
-                    "description": destination.description || `Hotels with great pools in ${destination.name}`,
-                    "url": `${appUrl}/destinations/${destination.slug}`
-                })}</script>
+                <script type="application/ld+json">{JSON.stringify(
+                    destination.ai_schema_jsonld
+                        ? { ...destination.ai_schema_jsonld, url: `${appUrl}/destinations/${destination.slug}` }
+                        : {
+                            "@context": "https://schema.org",
+                            "@type": "TouristDestination",
+                            "name": destination.name,
+                            "description": destination.ai_description || destination.description || `Hotels with great pools in ${destination.name}`,
+                            "url": `${appUrl}/destinations/${destination.slug}`
+                        }
+                )}</script>
             </Head>
             
             <div className="min-h-screen bg-slate-50/60 font-sans">
@@ -190,6 +194,29 @@ export default function DestinationShow({ destination, hotels }) {
                 </div>
 
                 <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-8 sm:py-10 md:py-12 lg:py-16">
+                    {/* AI-generated destination intro + H2 sections (only when present) */}
+                    {(destination.ai_description || (Array.isArray(destination.ai_h2_sections) && destination.ai_h2_sections.length > 0)) && (
+                        <section className="mb-8 sm:mb-10 bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] overflow-hidden">
+                            <div className="p-6 sm:p-7 lg:p-8 xl:p-9 space-y-6">
+                                {destination.ai_description && (
+                                    <p className="text-slate-600 text-[15px] sm:text-base leading-[1.75] whitespace-pre-line">
+                                        {destination.ai_description}
+                                    </p>
+                                )}
+                                {Array.isArray(destination.ai_h2_sections) && destination.ai_h2_sections.map((section, i) => (
+                                    <div key={i}>
+                                        <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 tracking-tight mb-3">
+                                            {section.title}
+                                        </h2>
+                                        <p className="text-slate-600 text-[15px] sm:text-base leading-[1.75] whitespace-pre-line">
+                                            {section.body}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
                     {hotels.data.length === 0 && activeFilterCount === 0 ? (
                         <div className="text-center py-8 sm:py-12 md:py-16 lg:py-20 bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.03)]">
                             <svg className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto mb-3 sm:mb-4 md:mb-6 text-orange-500" viewBox="0 0 24 24" fill="currentColor">

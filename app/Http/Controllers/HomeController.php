@@ -98,6 +98,7 @@ class HomeController extends Controller
     /**
      * Fetch Agoda hotels for featured destinations that have an agoda_city_id.
      */
+    /** @param  \Illuminate\Support\Collection|\Illuminate\Database\Eloquent\Collection  $featuredDestinations */
     private function fetchAgodaHotels($featuredDestinations): array
     {
         $agodaService = app(AgodaService::class);

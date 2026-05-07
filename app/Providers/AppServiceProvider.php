@@ -117,5 +117,12 @@ class AppServiceProvider extends ServiceProvider
                     ]);
                 });
         });
+
+        // Gemini API rate limiter for queued AI content jobs.
+        // Stays well under Gemini Flash paid tier (~1,000 req/min) so a bulk
+        // promote of thousands of hotels does not trigger 429s.
+        RateLimiter::for('gemini', function () {
+            return Limit::perMinute(60);
+        });
     }
 }

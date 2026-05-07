@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\GenerateHotelAiContent;
 use App\Models\AgodaHotel;
 use App\Models\Destination;
 use App\Models\Hotel;
@@ -105,6 +106,11 @@ class AgodaPromotionService
         $agodaHotel->update(['promoted_hotel_id' => $hotel->id]);
 
         Cache::forget('agoda_directory_promoted');
+
+        // Kick off AI SEO content generation for the new hotel. Runs async on
+        // the queue and is rate-limited so bulk promotes don't blast Gemini.
+        // Safe no-op when GEMINI_API_KEY is not configured.
+        GenerateHotelAiContent::dispatch($hotel->id);
 
         return [
             'status'  => 'created',

@@ -118,6 +118,9 @@ class FixLegacyPoolEnumsCommand extends Command
         return Command::SUCCESS;
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     private function buildLegacyQuery()
     {
         $query = PoolCriteria::query();
@@ -165,6 +168,9 @@ class FixLegacyPoolEnumsCommand extends Command
         return $updates;
     }
 
+    /**
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     */
     private function showDryRunPreview($query): void
     {
         $rows = (clone $query)

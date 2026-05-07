@@ -64,4 +64,9 @@ return [
         'endpoint' => env('AGODA_API_ENDPOINT', 'http://affiliateapi7643.agoda.com/affiliateservice/lt_v1'),
     ],
 
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY'),
+        'model'   => env('GEMINI_MODEL', 'gemini-flash-latest'),
+    ],
+
 ];

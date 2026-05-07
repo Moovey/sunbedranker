@@ -61,6 +61,11 @@ Route::middleware(['auth', 'admin', 'throttle:admin'])->prefix('admin')->name('a
     // Hotel Subscription
     Route::post('/hotels/{hotel:id}/update-subscription', [HotelManagementController::class, 'updateSubscription'])->name('hotels.update-subscription');
 
+    // AI SEO content regeneration
+    Route::post('/hotels/{hotel:id}/regenerate-ai', [HotelManagementController::class, 'regenerateAiContent'])
+        ->middleware('throttle:admin-actions')
+        ->name('hotels.regenerate-ai');
+
     // Scoring & Criteria Settings
     Route::get('/scoring', [ScoringSettingsController::class, 'index'])->name('scoring.index');
     Route::put('/scoring/weights', [ScoringSettingsController::class, 'updateWeights'])->name('scoring.weights.update');

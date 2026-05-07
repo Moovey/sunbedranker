@@ -209,6 +209,18 @@ export default function EditHotel({ hotel, destinations, badges, stats, errors: 
                             <p className="text-slate-500 text-xs sm:text-sm font-light">Edit hotel details and settings</p>
                         </div>
                         <div className="flex gap-2 flex-wrap w-full sm:w-auto">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (confirm('Queue AI content regeneration for this hotel? This will rewrite the description, meta tags, and H2 sections using Gemini.')) {
+                                        router.post(route('admin.hotels.regenerate-ai', hotel.id), {}, { preserveScroll: true });
+                                    }
+                                }}
+                                className="flex-1 sm:flex-none px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium shadow-sm hover:shadow ring-1 ring-purple-700/10 transition-all text-xs sm:text-sm whitespace-nowrap text-center"
+                                title={hotel.ai_generated_at ? `Last generated: ${hotel.ai_generated_at}` : 'No AI content yet'}
+                            >
+                                {hotel.ai_generated_at ? 'Regenerate AI Content' : 'Generate AI Content'}
+                            </button>
                             <Link
                                 href={route('hotels.show', hotel.slug)}
                                 target="_blank"

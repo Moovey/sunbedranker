@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\AgodaHotel;
+use App\Models\Hotel;
 use App\Services\AgodaPromotionService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -103,10 +104,39 @@ class BulkPromoteAgodaHotels implements ShouldQueue
         Cache::forget('agoda_directory_promoted');
         Cache::forget('admin.stats.total_hotels');
 
+        // Regenerate AI content for any destinations that gained hotels in
+        // this run, so city/country pages reflect the new inventory. We do
+        // this once at the end (instead of on every promote) to avoid
+        // redundant work when 50 hotels in the same city are promoted.
+        $this->regenerateAffectedDestinations();
+
         $this->updateProgress(
             'completed', $processed, $total, $created, $failed,
             "Done. Created/linked: {$created}. Skipped: {$skipped}. Failed: {$failed}."
         );
+    }
+
+    /**
+     * Dispatch GenerateDestinationAiContent for every distinct destination
+     * touched by this bulk run (within the country filter).
+     */
+    protected function regenerateAffectedDestinations(): void
+    {
+        $country = $this->filters['country'] ?? null;
+        if (!$country) {
+            return;
+        }
+
+        $destinationIds = Hotel::query()
+            ->whereHas('destination', fn ($q) => $q->where('country_code', $country))
+            ->where('is_active', true)
+            ->distinct()
+            ->pluck('destination_id')
+            ->all();
+
+        foreach ($destinationIds as $id) {
+            \App\Jobs\GenerateDestinationAiContent::dispatch($id);
+        }
     }
 
     public function failed(Throwable $e): void

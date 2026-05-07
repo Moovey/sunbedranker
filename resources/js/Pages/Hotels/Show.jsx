@@ -111,38 +111,55 @@ export default function HotelShow({ hotel, similarHotels }) {
 
     return (
         <>
-            <Head title={`${hotel.name} - Pool & Sunbed Review`}>
-                <meta name="description" content={`Detailed pool and sunbed review of ${hotel.name} in ${hotel.destination?.name || ''}. See sunbed-to-guest ratio, sun exposure, atmosphere ratings, pool facilities, and honest traveler reviews.`} />
-                <meta property="og:title" content={`${hotel.name} - Pool & Sunbed Review | Sunbed Ranker`} />
-                <meta property="og:description" content={`Detailed pool and sunbed review of ${hotel.name}. See sunbed ratios, sun exposure, atmosphere ratings, and more.`} />
+            <Head title={hotel.ai_meta_title || `${hotel.name} - Pool & Sunbed Review`}>
+                <meta name="description" content={hotel.ai_meta_description || `Detailed pool and sunbed review of ${hotel.name} in ${hotel.destination?.name || ''}. See sunbed-to-guest ratio, sun exposure, atmosphere ratings, pool facilities, and honest traveler reviews.`} />
+                <meta property="og:title" content={(hotel.ai_meta_title || `${hotel.name} - Pool & Sunbed Review`) + ' | Sunbed Ranker'} />
+                <meta property="og:description" content={hotel.ai_meta_description || `Detailed pool and sunbed review of ${hotel.name}. See sunbed ratios, sun exposure, atmosphere ratings, and more.`} />
                 <meta property="og:type" content="article" />
                 <meta property="og:url" content={`${appUrl}/hotels/${hotel.slug}`} />
                 {hotel.main_image_url && <meta property="og:image" content={hotel.main_image_url} />}
                 <meta property="og:site_name" content="Sunbed Ranker" />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content={`${hotel.name} - Pool & Sunbed Review`} />
-                <meta name="twitter:description" content={`Detailed pool review of ${hotel.name}. Sunbed ratios, facilities, and honest reviews.`} />
+                <meta name="twitter:title" content={hotel.ai_meta_title || `${hotel.name} - Pool & Sunbed Review`} />
+                <meta name="twitter:description" content={hotel.ai_meta_description || `Detailed pool review of ${hotel.name}. Sunbed ratios, facilities, and honest reviews.`} />
                 {hotel.main_image_url && <meta name="twitter:image" content={hotel.main_image_url} />}
                 <link rel="canonical" href={`${appUrl}/hotels/${hotel.slug}`} />
-                <script type="application/ld+json">{JSON.stringify({
-                    "@context": "https://schema.org",
-                    "@type": "Hotel",
-                    "name": hotel.name,
-                    "description": `Pool and sunbed review of ${hotel.name}`,
-                    "url": `${appUrl}/hotels/${hotel.slug}`,
-                    "image": hotel.main_image_url || '',
-                    "address": {
-                        "@type": "PostalAddress",
-                        "addressLocality": hotel.destination?.name || ''
-                    },
-                    ...(hotel.overall_score ? { "aggregateRating": {
-                        "@type": "AggregateRating",
-                        "ratingValue": hotel.overall_score,
-                        "bestRating": 10,
-                        "worstRating": 0,
-                        "ratingCount": hotel.review_count || 1
-                    }} : {})
-                })}</script>
+                <script type="application/ld+json">{JSON.stringify(
+                    // Prefer AI-generated schema when available; merge in URL,
+                    // image and aggregate rating which we always know server-side.
+                    hotel.ai_schema_jsonld
+                        ? {
+                            ...hotel.ai_schema_jsonld,
+                            url: `${appUrl}/hotels/${hotel.slug}`,
+                            image: hotel.main_image_url || hotel.ai_schema_jsonld.image || '',
+                            ...(hotel.overall_score ? { aggregateRating: {
+                                "@type": "AggregateRating",
+                                ratingValue: hotel.overall_score,
+                                bestRating: 10,
+                                worstRating: 0,
+                                ratingCount: hotel.review_count || 1
+                            }} : {})
+                        }
+                        : {
+                            "@context": "https://schema.org",
+                            "@type": "Hotel",
+                            "name": hotel.name,
+                            "description": `Pool and sunbed review of ${hotel.name}`,
+                            "url": `${appUrl}/hotels/${hotel.slug}`,
+                            "image": hotel.main_image_url || '',
+                            "address": {
+                                "@type": "PostalAddress",
+                                "addressLocality": hotel.destination?.name || ''
+                            },
+                            ...(hotel.overall_score ? { "aggregateRating": {
+                                "@type": "AggregateRating",
+                                "ratingValue": hotel.overall_score,
+                                "bestRating": 10,
+                                "worstRating": 0,
+                                "ratingCount": hotel.review_count || 1
+                            }} : {})
+                        }
+                )}</script>
             </Head>
             
             <div className="min-h-screen bg-slate-50/60">
@@ -170,27 +187,22 @@ export default function HotelShow({ hotel, similarHotels }) {
                         {/* Main Content Column */}
                         <div className="lg:col-span-2 space-y-5 sm:space-y-6 lg:space-y-7 xl:space-y-8">
                             
-                            {/* Hotel Overview / About */}
-                            {hotel.description && (() => {
-                                // Split the Agoda overview into readable paragraphs
-                                // The text often has no line breaks - split on topic-shifting sentence patterns
+                            {/* Hotel Overview / About — prefers AI rewrite, falls back to Agoda source */}
+                            {(hotel.ai_description || hotel.description) && (() => {
+                                const source = hotel.ai_description || hotel.description;
+                                const isAi = !!hotel.ai_description;
+                                // Split the text into readable paragraphs.
                                 const formatDescription = (text) => {
-                                    // First fix missing spaces after periods (e.g. "available.The" → "available. The")
                                     let cleaned = text.replace(/\.([A-Z])/g, '. $1');
-                                    
-                                    // Split into sentences
                                     const sentences = cleaned.match(/[^.!?]+[.!?]+/g) || [cleaned];
-                                    
-                                    // Group sentences into paragraphs (~2-3 sentences each)
                                     const paragraphs = [];
                                     for (let i = 0; i < sentences.length; i += 3) {
                                         paragraphs.push(sentences.slice(i, i + 3).join('').trim());
                                     }
-                                    
                                     return paragraphs;
                                 };
 
-                                const paragraphs = formatDescription(hotel.description);
+                                const paragraphs = formatDescription(source);
 
                                 return (
                                     <section className="relative bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_16px_36px_-16px_rgba(15,23,42,0.12)] transition-shadow duration-300 overflow-hidden">
@@ -216,6 +228,51 @@ export default function HotelShow({ hotel, similarHotels }) {
                                     </section>
                                 );
                             })()}
+
+                            {/* AI-generated H2 sections (only when present) */}
+                            {Array.isArray(hotel.ai_h2_sections) && hotel.ai_h2_sections.length > 0 && (
+                                <section className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] overflow-hidden">
+                                    <div className="p-6 sm:p-7 lg:p-8 xl:p-9 space-y-6">
+                                        {hotel.ai_h2_sections.map((section, i) => (
+                                            <div key={i}>
+                                                <h2 className="text-xl sm:text-2xl font-sans font-semibold text-slate-900 tracking-tight mb-3">
+                                                    {section.title}
+                                                </h2>
+                                                <p className="text-slate-600 font-sans text-[15px] sm:text-base leading-[1.75] whitespace-pre-line">
+                                                    {section.body}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
+
+                            {/* Internal linking: parent destination + country (SEO silo) */}
+                            {hotel.destination && (
+                                <section className="bg-white rounded-2xl ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] overflow-hidden">
+                                    <div className="p-6 sm:p-7 lg:p-8 xl:p-9">
+                                        <h2 className="text-xl sm:text-2xl font-sans font-semibold text-slate-900 tracking-tight mb-4">
+                                            Explore more pool hotels
+                                        </h2>
+                                        <div className="flex flex-wrap gap-2">
+                                            <a
+                                                href={`/destinations/${hotel.destination.slug}`}
+                                                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 text-orange-700 ring-1 ring-orange-200/70 hover:bg-orange-100 transition text-sm font-medium"
+                                            >
+                                                Best pool hotels in {hotel.destination.name}
+                                            </a>
+                                            {hotel.destination.country && (
+                                                <a
+                                                    href={`/destinations?country=${encodeURIComponent(hotel.destination.country_code || hotel.destination.country)}`}
+                                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 text-slate-700 ring-1 ring-slate-200/70 hover:bg-slate-200 transition text-sm font-medium"
+                                                >
+                                                    All hotels in {hotel.destination.country}
+                                                </a>
+                                            )}
+                                        </div>
+                                    </div>
+                                </section>
+                            )}
 
                             {/* Sunbedranker's Top Tip */}
                             {hotel.top_tip && (

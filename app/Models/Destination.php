@@ -25,6 +25,14 @@ class Destination extends Model
         'is_active',
         'is_auto_created',
         'agoda_city_id',
+        // AI-generated SEO content
+        'ai_description',
+        'ai_meta_title',
+        'ai_meta_description',
+        'ai_h2_sections',
+        'ai_schema_jsonld',
+        'ai_generated_at',
+        'ai_model_used',
     ];
 
     protected $casts = [
@@ -33,6 +41,9 @@ class Destination extends Model
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
         'is_auto_created' => 'boolean',
+        'ai_h2_sections' => 'array',
+        'ai_schema_jsonld' => 'array',
+        'ai_generated_at' => 'datetime',
     ];
 
     public function hotels(): HasMany
