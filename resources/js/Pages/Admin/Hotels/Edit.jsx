@@ -1,6 +1,6 @@
 import { Link, Head, useForm, router, usePage } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import AdminNav from '@/Components/AdminNav';
 import TabButton from '@/Components/Admin/Hotels/TabButton';
 import CreateBasicInfoTab from '@/Components/Admin/Hotels/CreateBasicInfoTab';
@@ -194,6 +194,7 @@ export default function EditHotel({ hotel, destinations, badges, stats, errors: 
     return (
         <>
             <Head title={`Edit ${hotel.name}`} />
+            <ToastContainer />
             
             <div className="min-h-screen bg-slate-50 font-sans">
                 <AdminNav stats={stats} />
@@ -213,7 +214,11 @@ export default function EditHotel({ hotel, destinations, badges, stats, errors: 
                                 type="button"
                                 onClick={() => {
                                     if (confirm('Queue AI content regeneration for this hotel? This will rewrite the description, meta tags, and H2 sections using Gemini.')) {
-                                        router.post(route('admin.hotels.regenerate-ai', hotel.id), {}, { preserveScroll: true });
+                                        router.post(route('admin.hotels.regenerate-ai', hotel.id), {}, {
+                                            preserveScroll: true,
+                                            onSuccess: () => toast.success('AI content generation queued — the description will update shortly.'),
+                                            onError: () => toast.error('Failed to queue AI content generation. Please try again.'),
+                                        });
                                     }
                                 }}
                                 className="flex-1 sm:flex-none px-3 sm:px-4 py-1.5 sm:py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium shadow-sm hover:shadow ring-1 ring-purple-700/10 transition-all text-xs sm:text-sm whitespace-nowrap text-center"
