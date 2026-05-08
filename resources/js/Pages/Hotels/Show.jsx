@@ -1,6 +1,7 @@
 import { Head, router } from '@inertiajs/react';
 import { useState, useCallback, useMemo, lazy, Suspense } from 'react';
 import { useAppUrl } from '@/hooks/useAppUrl';
+import { useIsMetricPublic } from '@/hooks/useIsMetricPublic';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
@@ -43,6 +44,7 @@ export default function HotelShow({ hotel, similarHotels }) {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
     const [openFaqIndex, setOpenFaqIndex] = useState(null);
     const appUrl = useAppUrl();
+    const isMetricPublic = useIsMetricPublic();
 
     // Memoized values
     const allImages = useMemo(() => [
@@ -327,35 +329,47 @@ export default function HotelShow({ hotel, similarHotels }) {
                             {poolCriteria && (
                                 <>
                                     {/* 1. Sunbed-to-Guest Ratio */}
-                                    <SunbedAvailabilitySection poolCriteria={poolCriteria} />
+                                    {isMetricPublic('sunbed_ratio') && (
+                                        <SunbedAvailabilitySection poolCriteria={poolCriteria} />
+                                    )}
                                     
                                     {/* 2. Sun Exposure & Orientation */}
-                                    <SunExposureSection poolCriteria={poolCriteria} />
+                                    {isMetricPublic('sun_exposure') && (
+                                        <SunExposureSection poolCriteria={poolCriteria} />
+                                    )}
                                     
                                     {/* 3. Pool Area Size & Variety */}
-                                    <PoolSizeSection poolCriteria={poolCriteria} />
+                                    {isMetricPublic('pool_variety') && (
+                                        <PoolSizeSection poolCriteria={poolCriteria} />
+                                    )}
                                     
                                     {/* Lazy-loaded below-fold pool sections */}
                                     <Suspense fallback={null}>
-                                        {/* 4. Towel & Reservation Policy */}
+                                        {/* 4. Towel & Reservation Policy (no scoring weight — always shown) */}
                                         <TowelReservationSection poolCriteria={poolCriteria} />
                                         
-                                        {/* 5. Pool Facilities & Comfort */}
+                                        {/* 5. Pool Facilities & Comfort (no scoring weight — always shown) */}
                                         <FacilitiesSection poolCriteria={poolCriteria} />
                                         
                                         {/* 6. Noise & Atmosphere */}
-                                        <AtmosphereSection poolCriteria={poolCriteria} />
+                                        {isMetricPublic('atmosphere') && (
+                                            <AtmosphereSection poolCriteria={poolCriteria} />
+                                        )}
                                         
                                         {/* 7. Cleanliness & Maintenance */}
-                                        <CleanlinessSection poolCriteria={poolCriteria} />
+                                        {isMetricPublic('cleanliness') && (
+                                            <CleanlinessSection poolCriteria={poolCriteria} />
+                                        )}
                                         
-                                        {/* 8. Accessibility Features */}
+                                        {/* 8. Accessibility Features (no scoring weight — always shown) */}
                                         <AccessibilitySection poolCriteria={poolCriteria} />
                                         
                                         {/* 9. Kids & Family Facilities */}
-                                        <KidsFeaturesSection poolCriteria={poolCriteria} />
+                                        {isMetricPublic('family_features') && (
+                                            <KidsFeaturesSection poolCriteria={poolCriteria} />
+                                        )}
                                         
-                                        {/* 10. Extras & Luxury Touches */}
+                                        {/* 10. Extras & Luxury Touches (no scoring weight — always shown) */}
                                         <LuxuryFeaturesSection poolCriteria={poolCriteria} />
                                     </Suspense>
                                 </>

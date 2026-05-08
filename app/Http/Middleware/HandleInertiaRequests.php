@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\HotelClaim;
+use App\Models\ScoringWeight;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
@@ -66,6 +67,33 @@ class HandleInertiaRequests extends Middleware
                     return HotelClaim::where('status', 'pending')->count();
                 }),
             ] : null,
+            // Map of criteria_name => true for metrics admins have flagged as
+            // publicly displayable. Frontend uses this to gate metric sections
+            // on hotel detail, comparison and ranking pages. Cached because it
+            // changes only when an admin saves the visibility tab.
+            'publicMetrics' => fn () => Cache::remember(
+                self::PUBLIC_METRICS_CACHE_KEY,
+                now()->addHour(),
+                fn () => ScoringWeight::query()
+                    ->where('is_public', true)
+                    ->pluck('criteria_name')
+                    ->mapWithKeys(fn ($name) => [$name => true])
+                    ->all(),
+            ),
         ];
+    }
+
+    /**
+     * Cache key for the publicly-visible metrics map.
+     */
+    public const PUBLIC_METRICS_CACHE_KEY = 'inertia.public_metrics';
+
+    /**
+     * Forget the cached public metrics map. Call from admin controllers
+     * whenever ScoringWeight visibility flags change.
+     */
+    public static function forgetPublicMetricsCache(): void
+    {
+        Cache::forget(self::PUBLIC_METRICS_CACHE_KEY);
     }
 }

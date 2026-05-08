@@ -3,13 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Requests\Admin\Scoring\BadgeRequest;
+use App\Http\Requests\Admin\Scoring\PreviewBadgeRequest;
+use App\Http\Requests\Admin\Scoring\UpdateScoringOrderRequest;
+use App\Http\Requests\Admin\Scoring\UpdateScoringVisibilityRequest;
+use App\Http\Requests\Admin\Scoring\UpdateScoringWeightsRequest;
 use App\Jobs\ApplyBadgesToHotels;
 use App\Jobs\RecalculateHotelScores;
 use App\Models\Badge;
-use App\Models\Hotel;
 use App\Models\ScoringWeight;
+use App\Services\BadgeCriteriaService;
 use App\Services\HotelScoringService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
@@ -18,11 +23,10 @@ use Inertia\Inertia;
 
 class ScoringSettingsController extends Controller
 {
-    protected HotelScoringService $scoringService;
-
-    public function __construct(HotelScoringService $scoringService)
-    {
-        $this->scoringService = $scoringService;
+    public function __construct(
+        protected HotelScoringService $scoringService,
+        protected BadgeCriteriaService $badgeCriteria,
+    ) {
     }
 
     /**
@@ -132,16 +136,9 @@ class ScoringSettingsController extends Controller
     /**
      * Update metric weights
      */
-    public function updateWeights(Request $request)
+    public function updateWeights(UpdateScoringWeightsRequest $request)
     {
-        $validated = $request->validate([
-            'weights' => 'required|array',
-            'weights.*.id' => 'required|exists:scoring_weights,id',
-            'weights.*.weight' => 'required|numeric|min:0|max:5',
-            'weights.*.family_weight' => 'required|numeric|min:0|max:5',
-            'weights.*.quiet_weight' => 'required|numeric|min:0|max:5',
-            'weights.*.party_weight' => 'required|numeric|min:0|max:5',
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
         try {
@@ -161,6 +158,7 @@ class ScoringSettingsController extends Controller
             
             // Clear stats cache
             self::clearStatsCache();
+            HandleInertiaRequests::forgetPublicMetricsCache();
 
             return back()->with('success', 'Scoring weights updated successfully! Click "Recalculate All Scores" to apply changes to hotels.');
         } catch (\Exception $e) {
@@ -172,15 +170,9 @@ class ScoringSettingsController extends Controller
     /**
      * Update metric visibility settings
      */
-    public function updateVisibility(Request $request)
+    public function updateVisibility(UpdateScoringVisibilityRequest $request)
     {
-        $validated = $request->validate([
-            'metrics' => 'required|array',
-            'metrics.*.id' => 'required|exists:scoring_weights,id',
-            'metrics.*.is_active' => 'required|boolean',
-            'metrics.*.is_visible' => 'required|boolean',
-            'metrics.*.is_public' => 'required|boolean',
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
         try {
@@ -194,6 +186,11 @@ class ScoringSettingsController extends Controller
 
             DB::commit();
 
+            // Active/visible flags affect the cached stats panel.
+            self::clearStatsCache();
+            $this->scoringService->clearWeightsCache();
+            HandleInertiaRequests::forgetPublicMetricsCache();
+
             return back()->with('success', 'Visibility settings updated successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -204,12 +201,9 @@ class ScoringSettingsController extends Controller
     /**
      * Update metric order
      */
-    public function updateOrder(Request $request)
+    public function updateOrder(UpdateScoringOrderRequest $request)
     {
-        $validated = $request->validate([
-            'order' => 'required|array',
-            'order.*' => 'required|exists:scoring_weights,id',
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
         try {
@@ -229,35 +223,28 @@ class ScoringSettingsController extends Controller
     /**
      * Store a new badge
      */
-    public function storeBadge(Request $request)
+    public function storeBadge(BadgeRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:500',
-            'icon' => 'nullable|string|max:50',
-            'color' => 'required|string|max:20',
-            'criteria' => 'required|array|min:1',
-            'criteria.*.field' => 'required|string',
-            'criteria.*.operator' => 'required|in:>,>=,<,<=,==,!=',
-            'criteria.*.value' => 'required',
-            'priority' => 'required|integer|min:0|max:100',
-            'is_active' => 'boolean',
-        ]);
+        $validated = $request->validated();
 
         try {
-            $badge = Badge::create([
-                'name' => $validated['name'],
-                'slug' => Str::slug($validated['name']),
-                'description' => $validated['description'],
-                'icon' => $validated['icon'],
-                'color' => $validated['color'],
-                'criteria' => $validated['criteria'],
-                'priority' => $validated['priority'],
-                'is_active' => $validated['is_active'] ?? true,
-            ]);
+            DB::transaction(function () use ($validated) {
+                Badge::create([
+                    'name' => $validated['name'],
+                    'slug' => Str::slug($validated['name']),
+                    'description' => $validated['description'] ?? null,
+                    'icon' => $validated['icon'] ?? null,
+                    'color' => $validated['color'],
+                    'criteria' => $validated['criteria'],
+                    'priority' => $validated['priority'],
+                    'is_active' => $validated['is_active'] ?? true,
+                ]);
+            });
+
+            self::clearStatsCache();
 
             return back()->with('success', 'Badge created successfully!');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return back()->withErrors(['message' => 'Failed to create badge: ' . $e->getMessage()]);
         }
     }
@@ -265,35 +252,28 @@ class ScoringSettingsController extends Controller
     /**
      * Update an existing badge
      */
-    public function updateBadge(Request $request, Badge $badge)
+    public function updateBadge(BadgeRequest $request, Badge $badge)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:500',
-            'icon' => 'nullable|string|max:50',
-            'color' => 'required|string|max:20',
-            'criteria' => 'required|array|min:1',
-            'criteria.*.field' => 'required|string',
-            'criteria.*.operator' => 'required|in:>,>=,<,<=,==,!=',
-            'criteria.*.value' => 'required',
-            'priority' => 'required|integer|min:0|max:100',
-            'is_active' => 'boolean',
-        ]);
+        $validated = $request->validated();
 
         try {
-            $badge->update([
-                'name' => $validated['name'],
-                'slug' => Str::slug($validated['name']),
-                'description' => $validated['description'],
-                'icon' => $validated['icon'],
-                'color' => $validated['color'],
-                'criteria' => $validated['criteria'],
-                'priority' => $validated['priority'],
-                'is_active' => $validated['is_active'] ?? true,
-            ]);
+            DB::transaction(function () use ($validated, $badge) {
+                $badge->update([
+                    'name' => $validated['name'],
+                    'slug' => Str::slug($validated['name']),
+                    'description' => $validated['description'] ?? null,
+                    'icon' => $validated['icon'] ?? null,
+                    'color' => $validated['color'],
+                    'criteria' => $validated['criteria'],
+                    'priority' => $validated['priority'],
+                    'is_active' => $validated['is_active'] ?? true,
+                ]);
+            });
+
+            self::clearStatsCache();
 
             return back()->with('success', 'Badge updated successfully!');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return back()->withErrors(['message' => 'Failed to update badge: ' . $e->getMessage()]);
         }
     }
@@ -304,12 +284,15 @@ class ScoringSettingsController extends Controller
     public function destroyBadge(Badge $badge)
     {
         try {
-            // Detach from all hotels first
-            $badge->hotels()->detach();
-            $badge->delete();
+            DB::transaction(function () use ($badge) {
+                $badge->hotels()->detach();
+                $badge->delete();
+            });
+
+            self::clearStatsCache();
 
             return back()->with('success', 'Badge deleted successfully!');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return back()->withErrors(['message' => 'Failed to delete badge: ' . $e->getMessage()]);
         }
     }
@@ -320,35 +303,34 @@ class ScoringSettingsController extends Controller
     public function toggleBadge(Badge $badge)
     {
         try {
-            $badge->update(['is_active' => !$badge->is_active]);
+            $badge->update(['is_active' => ! $badge->is_active]);
+            self::clearStatsCache();
 
             return back()->with('success', 'Badge status updated!');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return back()->withErrors(['message' => 'Failed to toggle badge: ' . $e->getMessage()]);
         }
     }
 
     /**
-     * Preview which hotels would receive a badge
+     * Preview which hotels would receive a badge.
+     *
+     * Returns the full match count plus the first 10 hotels for display.
      */
-    public function previewBadge(Request $request)
+    public function previewBadge(PreviewBadgeRequest $request)
     {
-        $validated = $request->validate([
-            'criteria' => 'required|array|min:1',
-            'criteria.*.field' => 'required|string',
-            'criteria.*.operator' => 'required|in:>,>=,<,<=,==,!=',
-            'criteria.*.value' => 'required',
-        ]);
+        $validated = $request->validated();
 
-        $matchingHotels = $this->getHotelsMatchingCriteria($validated['criteria']);
+        $matching = $this->badgeCriteria->matchingHotels($validated['criteria']);
 
         return response()->json([
-            'count' => $matchingHotels->count(),
-            'hotels' => $matchingHotels->take(10)->map(fn($h) => [
-                'id' => $h->id,
-                'name' => $h->name,
+            'count'   => $matching->count(),
+            'preview_limit' => 10,
+            'hotels'  => $matching->take(10)->map(fn ($h) => [
+                'id'            => $h->id,
+                'name'          => $h->name,
                 'overall_score' => $h->overall_score,
-            ]),
+            ])->values(),
         ]);
     }
 
@@ -452,36 +434,4 @@ class ScoringSettingsController extends Controller
         Cache::forget('admin.scoring.stats');
     }
 
-    /**
-     * Get hotels matching criteria
-     */
-    protected function getHotelsMatchingCriteria(array $criteria)
-    {
-        $query = Hotel::with('poolCriteria');
-
-        foreach ($criteria as $criterion) {
-            $field = $criterion['field'];
-            $operator = $criterion['operator'];
-            $value = $criterion['value'];
-
-            // Handle boolean fields
-            if (in_array($field, ['has_infinity_pool', 'has_heated_pool', 'has_kids_pool', 'has_swim_up_bar', 'has_private_cabanas', 'has_lifeguard', 'towels_included'])) {
-                $query->whereHas('poolCriteria', function ($q) use ($field, $value) {
-                    $q->where($field, filter_var($value, FILTER_VALIDATE_BOOLEAN));
-                });
-            }
-            // Handle hotel-level scores
-            elseif (in_array($field, ['overall_score', 'family_score', 'quiet_score', 'party_score'])) {
-                $query->where($field, $operator, $value);
-            }
-            // Handle pool criteria fields
-            else {
-                $query->whereHas('poolCriteria', function ($q) use ($field, $operator, $value) {
-                    $q->where($field, $operator, $value);
-                });
-            }
-        }
-
-        return $query->get();
-    }
 }

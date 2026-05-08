@@ -1,9 +1,11 @@
 import { Link, Head } from '@inertiajs/react';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
+import { useIsMetricPublic } from '@/hooks/useIsMetricPublic';
 import { memo, useCallback, useMemo } from 'react';
 
 function HotelCompare({ hotels, auth }) {
+    const isMetricPublic = useIsMetricPublic();
     if (!hotels || hotels.length === 0) {
         return (
             <>
@@ -107,6 +109,7 @@ function HotelCompare({ hotels, auth }) {
                                 <SpecialOffersRow hotels={hotels} />
 
                                 {/* Family Score */}
+                                {isMetricPublic('family_features') && (
                                 <ComparisonRow
                                     label="Family Score"
                                     icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63C19.68 7.55 18.92 7 18.06 7h-.12c-.86 0-1.62.55-1.9 1.37L13.5 16H16v6h4zM5.5 6c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2zm1.5 16v-7H9V9c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v6h2v7h3z"/></svg>}
@@ -115,6 +118,7 @@ function HotelCompare({ hotels, auth }) {
                                     formatValue={(value) => value ? `${value}/10` : '-'}
                                     highlightBest={true}
                                 />
+                                )}
 
                                 {/* Quiet Score */}
                                 <ComparisonRow
@@ -127,6 +131,7 @@ function HotelCompare({ hotels, auth }) {
                                 />
 
                                 {/* Party Score */}
+                                {isMetricPublic('atmosphere') && (
                                 <ComparisonRow
                                     label="Party Vibe Score"
                                     icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M7 8c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.76-2.24 5-5 5S7 10.76 7 8zm5-3c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3zm1 13h-2v-2H9v2H7v2h2v2h2v-2h2v-2zm8-4h-2v2h2v-2zm-2-2h2v-2h-2v2zM4 14H2v2h2v-2zm0-4H2v2h2v-2z"/></svg>}
@@ -135,11 +140,13 @@ function HotelCompare({ hotels, auth }) {
                                     formatValue={(value) => value ? `${value}/10` : '-'}
                                     highlightBest={true}
                                 />
+                                )}
 
                                 {/* Section Header - Pool Metrics */}
                                 <SectionHeader title="Pool Metrics" color="blue" />
 
                                 {/* Sunbed Ratio */}
+                                {isMetricPublic('sunbed_ratio') && (
                                 <ComparisonRow
                                     label="Sunbed to Guest Ratio"
                                     icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M8 2v2h2V2h4v2h2V2h2v4H6V2h2zm0 6h8v12H8V8zm-5 2v12a2 2 0 002 2h14a2 2 0 002-2V10a2 2 0 00-2-2H5a2 2 0 00-2 2z"/></svg>}
@@ -148,8 +155,10 @@ function HotelCompare({ hotels, auth }) {
                                     formatValue={(value) => value ? `${value}:1` : '-'}
                                     highlightBest={true}
                                 />
+                                )}
 
                                 {/* Number of Pools */}
+                                {isMetricPublic('pool_variety') && (
                                 <ComparisonRow
                                     label="Number of Pools"
                                     icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M22 21c-1.11 0-1.73-.37-2.18-.64-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.08.64-2.19.64-1.11 0-1.73-.37-2.18-.64-.37-.23-.6-.36-1.15-.36s-.78.13-1.15.36c-.46.27-1.08.64-2.19.64v-2c.56 0 .78-.13 1.15-.36.46-.27 1.08-.64 2.19-.64s1.73.37 2.18.64c.37.23.59.36 1.15.36.56 0 .78-.13 1.15-.36.46-.27 1.08-.64 2.19-.64 1.11 0 1.73.37 2.18.64.37.22.6.36 1.15.36s.78-.13 1.15-.36c.45-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.23.59.36 1.15.36v2z"/></svg>}
@@ -158,8 +167,10 @@ function HotelCompare({ hotels, auth }) {
                                     formatValue={(value) => value || '-'}
                                     highlightBest={true}
                                 />
+                                )}
 
                                 {/* Pool Size */}
+                                {isMetricPublic('pool_variety') && (
                                 <ComparisonRow
                                     label="Total Pool Size"
                                     icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16V8c0-.55-.22-1.05-.59-1.41L14.5 1.59C14.14 1.22 13.64 1 13.09 1H8v6H2v14c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-5l5-5zM13 3.5L18.5 9H13V3.5zM4 21V9h16v4.83L16.83 21H4z"/></svg>}
@@ -168,8 +179,10 @@ function HotelCompare({ hotels, auth }) {
                                     formatValue={(value) => value ? `${value} m²` : '-'}
                                     highlightBest={true}
                                 />
+                                )}
 
                                 {/* Sun Exposure */}
+                                {isMetricPublic('sun_exposure') && (
                                 <ComparisonRow
                                     label="Sun Exposure"
                                     icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1z"/></svg>}
@@ -177,8 +190,10 @@ function HotelCompare({ hotels, auth }) {
                                     getValue={(hotel) => hotel.pool_criteria?.sun_exposure}
                                     formatValue={(value) => value ? formatSunExposure(value) : '-'}
                                 />
+                                )}
 
                                 {/* Atmosphere */}
+                                {isMetricPublic('atmosphere') && (
                                 <ComparisonRow
                                     label="Atmosphere"
                                     icon={<svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z"/></svg>}
@@ -186,6 +201,7 @@ function HotelCompare({ hotels, auth }) {
                                     getValue={(hotel) => hotel.pool_criteria?.atmosphere}
                                     formatValue={(value) => value ? value.charAt(0).toUpperCase() + value.slice(1) : '-'}
                                 />
+                                )}
 
                                 {/* Section Header - Features */}
                                 <SectionHeader title="Pool Features" color="orange" />

@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Badge;
-use App\Models\Hotel;
+use App\Services\BadgeCriteriaService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -48,7 +48,7 @@ class ApplyBadgesToHotels implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(BadgeCriteriaService $criteria): void
     {
         $cacheKey = 'scoring.badges.progress';
 
@@ -80,7 +80,7 @@ class ApplyBadgesToHotels implements ShouldQueue
 
         foreach ($badges as $badge) {
             try {
-                $matchingHotels = $this->getHotelsMatchingCriteria($badge->criteria);
+                $matchingHotels = $criteria->matchingHotels($badge->criteria ?? []);
                 $badge->hotels()->sync($matchingHotels->pluck('id'));
                 
                 $totalAssignments += $matchingHotels->count();
@@ -122,63 +122,6 @@ class ApplyBadgesToHotels implements ShouldQueue
             'badges_processed' => $processedBadges,
             'total_assignments' => $totalAssignments,
         ]);
-    }
-
-    /**
-     * Get hotels matching criteria
-     */
-    protected function getHotelsMatchingCriteria(array $criteria)
-    {
-        $query = Hotel::with('poolCriteria');
-
-        // Boolean fields in pool_criteria
-        $booleanFields = [
-            'has_infinity_pool', 'has_rooftop_pool', 'has_pool_bar', 'has_waiter_service',
-            'has_accessibility_ramp', 'has_pool_hoist', 'has_step_free_access', 'has_elevator_to_rooftop',
-            'has_kids_pool', 'has_splash_park', 'has_waterslide', 'has_lifeguard',
-            'has_luxury_cabanas', 'has_cabana_service', 'has_heated_pool', 'has_jacuzzi',
-            'has_adult_sun_terrace', 'is_adults_only', 'has_entertainment'
-        ];
-        
-        // Number fields in pool_criteria
-        $poolCriteriaNumberFields = [
-            'sunbed_count', 'sunbed_to_guest_ratio', 'pool_size_sqm', 'number_of_pools',
-            'cleanliness_rating', 'sunbed_condition_rating', 'tiling_condition_rating'
-        ];
-        
-        // Hotel-level score fields
-        $hotelScoreFields = ['overall_score', 'family_score', 'quiet_score', 'party_score'];
-
-        foreach ($criteria as $criterion) {
-            $field = $criterion['field'];
-            $operator = $criterion['operator'];
-            $value = $criterion['value'];
-
-            // Handle boolean fields in pool_criteria
-            if (in_array($field, $booleanFields)) {
-                $query->whereHas('poolCriteria', function ($q) use ($field, $value) {
-                    $q->where($field, filter_var($value, FILTER_VALIDATE_BOOLEAN));
-                });
-            }
-            // Handle hotel-level scores
-            elseif (in_array($field, $hotelScoreFields)) {
-                $query->where($field, $operator, $value);
-            }
-            // Handle pool criteria number fields
-            elseif (in_array($field, $poolCriteriaNumberFields)) {
-                $query->whereHas('poolCriteria', function ($q) use ($field, $operator, $value) {
-                    $q->where($field, $operator, $value);
-                });
-            }
-            // Default: try pool_criteria table
-            else {
-                $query->whereHas('poolCriteria', function ($q) use ($field, $operator, $value) {
-                    $q->where($field, $operator, $value);
-                });
-            }
-        }
-
-        return $query->get();
     }
 
     /**
