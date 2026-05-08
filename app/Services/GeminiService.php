@@ -59,7 +59,7 @@ class GeminiService
             'generationConfig' => [
                 'responseMimeType' => 'application/json',
                 'temperature'      => 0.7,
-                'maxOutputTokens'  => 2048,
+                'maxOutputTokens'  => 4096,
             ],
         ];
 
