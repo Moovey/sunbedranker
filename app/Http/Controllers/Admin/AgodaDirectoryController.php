@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Directory\BulkPromoteSelectedRequest;
 use App\Jobs\BulkPromoteAgodaHotels;
 use App\Jobs\ImportAgodaDirectory;
 use App\Models\AgodaHotel;
@@ -321,6 +322,62 @@ class AgodaDirectoryController extends Controller
         ]);
 
         return back()->with('success', "Bulk promotion started for country {$filters['country']} (up to {$filters['limit']} hotels). Watch the progress banner above.");
+    }
+
+    /**
+     * Promote a curated, admin-selected list of directory hotels at once.
+     * Each promoted hotel automatically queues AI content generation via
+     * AgodaPromotionService::promote(), so no extra step is needed.
+     */
+    public function bulkPromoteSelected(BulkPromoteSelectedRequest $request): RedirectResponse
+    {
+        // Refuse to start if another bulk job is already running.
+        $current = Cache::get(BulkPromoteAgodaHotels::PROGRESS_KEY);
+        if ($current && in_array($current['status'] ?? null, ['queued', 'running'], true)) {
+            return back()->withErrors([
+                'bulk' => 'A bulk promotion is already running. Please wait for it to finish.',
+            ]);
+        }
+
+        // Drop any IDs that are already promoted so the count is honest.
+        $eligible = AgodaHotel::query()
+            ->whereIn('id', $request->ids())
+            ->whereNull('promoted_hotel_id')
+            ->pluck('id')
+            ->all();
+
+        if (empty($eligible)) {
+            return back()->withErrors([
+                'bulk' => 'None of the selected hotels are eligible for promotion (already promoted or not found).',
+            ]);
+        }
+
+        $filters = [
+            'ids'   => $eligible,
+            'limit' => count($eligible),
+        ];
+
+        Cache::put(BulkPromoteAgodaHotels::PROGRESS_KEY, [
+            'status'    => 'queued',
+            'processed' => 0,
+            'total'     => count($eligible),
+            'created'   => 0,
+            'failed'    => 0,
+            'message'   => 'Promoting ' . count($eligible) . ' selected hotels and generating AI content...',
+            'updated_at'=> now()->toIso8601String(),
+        ], now()->addHours(2));
+
+        BulkPromoteAgodaHotels::dispatch($filters);
+
+        Log::info('Agoda bulk promote (selected) dispatched', [
+            'count'   => count($eligible),
+            'user_id' => Auth::id(),
+        ]);
+
+        return back()->with(
+            'success',
+            'Promoting ' . count($eligible) . ' selected hotel' . (count($eligible) === 1 ? '' : 's') . '. AI descriptions will be generated automatically.'
+        );
     }
 
     /**

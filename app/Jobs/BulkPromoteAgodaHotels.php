@@ -123,16 +123,30 @@ class BulkPromoteAgodaHotels implements ShouldQueue
     protected function regenerateAffectedDestinations(): void
     {
         $country = $this->filters['country'] ?? null;
-        if (!$country) {
+        $ids     = $this->filters['ids'] ?? null;
+
+        $hotelsQuery = Hotel::query()->where('is_active', true);
+
+        if (!empty($ids) && is_array($ids)) {
+            // Selected-IDs mode: find the curated hotels that were just linked
+            // from these specific Agoda directory rows.
+            $promotedHotelIds = AgodaHotel::query()
+                ->whereIn('id', array_map('intval', $ids))
+                ->whereNotNull('promoted_hotel_id')
+                ->pluck('promoted_hotel_id');
+
+            if ($promotedHotelIds->isEmpty()) {
+                return;
+            }
+
+            $hotelsQuery->whereIn('id', $promotedHotelIds);
+        } elseif ($country) {
+            $hotelsQuery->whereHas('destination', fn ($q) => $q->where('country_code', $country));
+        } else {
             return;
         }
 
-        $destinationIds = Hotel::query()
-            ->whereHas('destination', fn ($q) => $q->where('country_code', $country))
-            ->where('is_active', true)
-            ->distinct()
-            ->pluck('destination_id')
-            ->all();
+        $destinationIds = $hotelsQuery->distinct()->pluck('destination_id')->all();
 
         foreach ($destinationIds as $id) {
             \App\Jobs\GenerateDestinationAiContent::dispatch($id);
@@ -147,10 +161,24 @@ class BulkPromoteAgodaHotels implements ShouldQueue
     /** @param array<string,mixed> $filters */
     protected function buildQuery(array $filters)
     {
+        $query = AgodaHotel::query()->whereNull('promoted_hotel_id');
+
+        // Mode A: explicit list of selected directory IDs (admin ticked checkboxes).
+        // When `ids` is present we ignore country/star/type filters — the admin
+        // has already curated the exact set they want to promote.
+        if (!empty($filters['ids']) && is_array($filters['ids'])) {
+            $ids = array_values(array_filter(array_map('intval', $filters['ids'])));
+            if (empty($ids)) {
+                // Force an empty result rather than throwing — the job will
+                // gracefully report "No hotels matched" via the progress cache.
+                return $query->whereRaw('1 = 0');
+            }
+            return $query->whereIn('id', $ids);
+        }
+
+        // Mode B: country-scoped bulk filter (existing behaviour).
         // country is REQUIRED at the controller level; double-check here as defense.
-        $query = AgodaHotel::query()
-            ->whereNull('promoted_hotel_id')
-            ->where('countryisocode', $filters['country']);
+        $query->where('countryisocode', $filters['country']);
 
         if (!empty($filters['star_rating'])) {
             $query->where('star_rating', $filters['star_rating']);

@@ -60,6 +60,69 @@ export default function DirectoryIndex({
     const [detailHotel, setDetailHotel] = useState(null);
     const [liveBulkProgress, setLiveBulkProgress] = useState(bulkPromoteProgress);
 
+    // Multi-select: track which directory hotel IDs the admin has ticked.
+    // Reset when the page of results changes (e.g. filter or pagination).
+    const [selectedIds, setSelectedIds] = useState([]);
+    const [bulkSelectedSubmitting, setBulkSelectedSubmitting] = useState(false);
+    useEffect(() => {
+        setSelectedIds([]);
+    }, [hotels.current_page, filters.search, filters.country, filters.star_rating, filters.accommodation_type, filters.promoted]);
+
+    const toggleSelectHotel = (id) => {
+        setSelectedIds((prev) =>
+            prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+        );
+    };
+
+    const selectablePageIds = hotels.data
+        .filter((h) => !h.promoted_hotel_id)
+        .map((h) => h.id);
+    const allPageSelected =
+        selectablePageIds.length > 0 &&
+        selectablePageIds.every((id) => selectedIds.includes(id));
+
+    const toggleSelectAllOnPage = () => {
+        if (allPageSelected) {
+            setSelectedIds((prev) => prev.filter((id) => !selectablePageIds.includes(id)));
+        } else {
+            setSelectedIds((prev) => Array.from(new Set([...prev, ...selectablePageIds])));
+        }
+    };
+
+    const clearSelection = () => setSelectedIds([]);
+
+    const handlePromoteSelected = () => {
+        if (selectedIds.length === 0) return;
+        if (!confirm(`Promote ${selectedIds.length} selected hotel${selectedIds.length === 1 ? '' : 's'} and generate AI descriptions automatically?`)) {
+            return;
+        }
+        setBulkSelectedSubmitting(true);
+        router.post(
+            route('admin.directory.bulk-promote-selected'),
+            { ids: selectedIds },
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => {
+                    setSelectedIds([]);
+                    setLiveBulkProgress({
+                        status: 'queued',
+                        processed: 0,
+                        total: selectedIds.length,
+                        created: 0,
+                        failed: 0,
+                        message: 'Promoting selected hotels and generating AI content...',
+                    });
+                },
+                onError: (errors) => {
+                    if (errors.bulk) toast.error(errors.bulk);
+                    else toast.error('Failed to promote selected hotels.');
+                },
+                onFinish: () => setBulkSelectedSubmitting(false),
+            }
+        );
+    };
+
     const promoteForm = useForm({});
     const bulkForm = useForm({
         country: filters.country || '',
@@ -96,6 +159,30 @@ export default function DirectoryIndex({
         poll();
         const interval = setInterval(poll, 2500);
         return () => clearInterval(interval);
+    }, [liveBulkProgress?.status]);
+
+    // Auto-dismiss the progress banner once it reaches a terminal state, so a
+    // future page refresh doesn't keep showing a stale "Completed" message.
+    // The admin still sees it briefly + already gets a toast notification.
+    useEffect(() => {
+        const status = liveBulkProgress?.status;
+        if (status !== 'completed' && status !== 'failed') return;
+
+        const timer = setTimeout(() => {
+            const token = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+            fetch(route('admin.directory.bulk-promote.dismiss'), {
+                method: 'DELETE',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-XSRF-TOKEN': token ? decodeURIComponent(token) : '',
+                },
+                credentials: 'same-origin',
+            })
+                .catch(() => {})
+                .finally(() => setLiveBulkProgress(null));
+        }, 6000);
+
+        return () => clearTimeout(timer);
     }, [liveBulkProgress?.status]);
 
     // Live preview of how many hotels match the bulk filters (debounced)
@@ -198,7 +285,7 @@ export default function DirectoryIndex({
             <div className="min-h-screen bg-gray-50 font-sans">
                 <AdminNav stats={stats} />
 
-                <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
+                <div className={`max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 ${selectedIds.length > 0 ? 'pb-28 sm:pb-24' : ''}`}>
                     {/* Header */}
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
                         <div>
@@ -250,9 +337,67 @@ export default function DirectoryIndex({
                         hotels={hotels}
                         onPromote={openPromoteModal}
                         onViewDetail={openDetail}
+                        selectedIds={selectedIds}
+                        onToggleSelect={toggleSelectHotel}
+                        onToggleSelectAll={toggleSelectAllOnPage}
+                        allPageSelected={allPageSelected}
+                        hasSelectableOnPage={selectablePageIds.length > 0}
                     />
                 </div>
             </div>
+
+            {/* Sticky bulk-action bar — only visible while items are selected */}
+            {selectedIds.length > 0 && (
+                <div className="fixed bottom-0 inset-x-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur shadow-[0_-4px_20px_-8px_rgba(15,23,42,0.15)]">
+                    <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 text-orange-700 text-sm font-semibold flex-shrink-0">
+                                {selectedIds.length}
+                            </span>
+                            <div className="min-w-0">
+                                <p className="text-sm font-semibold text-slate-900 truncate">
+                                    {selectedIds.length} hotel{selectedIds.length === 1 ? '' : 's'} selected
+                                </p>
+                                <p className="text-xs text-slate-500 truncate">
+                                    Promote &amp; auto-generate AI descriptions in one go.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex gap-2 w-full sm:w-auto">
+                            <button
+                                type="button"
+                                onClick={clearSelection}
+                                className="flex-1 sm:flex-none px-3 sm:px-4 py-2 text-sm font-medium text-slate-700 bg-white ring-1 ring-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                            >
+                                Clear
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handlePromoteSelected}
+                                disabled={bulkSelectedSubmitting}
+                                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded-lg shadow-[0_2px_8px_-2px_rgba(249,115,22,0.45)] hover:shadow-[0_4px_12px_-2px_rgba(249,115,22,0.55)] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                                {bulkSelectedSubmitting ? (
+                                    <>
+                                        <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.3" />
+                                            <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                                        </svg>
+                                        Queuing…
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                        </svg>
+                                        Promote &amp; Generate AI ({selectedIds.length})
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Promote Modal */}
             {showPromoteModal && selectedHotel && (
@@ -722,7 +867,16 @@ function FilterSection({ filterState, updateFilter, countries, accommodationType
     );
 }
 
-function DirectoryTable({ hotels, onPromote, onViewDetail }) {
+function DirectoryTable({
+    hotels,
+    onPromote,
+    onViewDetail,
+    selectedIds = [],
+    onToggleSelect = () => {},
+    onToggleSelectAll = () => {},
+    allPageSelected = false,
+    hasSelectableOnPage = false,
+}) {
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             {/* Desktop Table */}
@@ -730,6 +884,16 @@ function DirectoryTable({ hotels, onPromote, onViewDetail }) {
                 <table className="min-w-full">
                     <thead className="bg-gray-50 border-b border-gray-100">
                         <tr>
+                            <th className="px-4 py-3 text-left w-10">
+                                <input
+                                    type="checkbox"
+                                    aria-label="Select all unpromoted hotels on this page"
+                                    checked={allPageSelected}
+                                    disabled={!hasSelectableOnPage}
+                                    onChange={onToggleSelectAll}
+                                    className="w-4 h-4 rounded border-gray-300 text-orange-500 focus:ring-orange-500 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                                />
+                            </th>
                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hotel</th>
                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
@@ -741,13 +905,30 @@ function DirectoryTable({ hotels, onPromote, onViewDetail }) {
                     <tbody className="divide-y divide-gray-100">
                         {hotels.data.length === 0 ? (
                             <tr>
-                                <td colSpan={6} className="px-4 py-12 text-center text-gray-500 text-sm">
+                                <td colSpan={7} className="px-4 py-12 text-center text-gray-500 text-sm">
                                     No hotels found. {hotels.total === 0 ? 'Upload a CSV to get started.' : 'Try adjusting your filters.'}
                                 </td>
                             </tr>
                         ) : (
-                            hotels.data.map(hotel => (
-                                <tr key={hotel.id} className="hover:bg-gray-50 transition-colors">
+                            hotels.data.map(hotel => {
+                                const isPromoted = !!hotel.promoted_hotel_id;
+                                const isSelected = selectedIds.includes(hotel.id);
+                                return (
+                                <tr
+                                    key={hotel.id}
+                                    className={`transition-colors ${isSelected ? 'bg-orange-50/60 hover:bg-orange-50' : 'hover:bg-gray-50'}`}
+                                >
+                                    <td className="px-4 py-3">
+                                        <input
+                                            type="checkbox"
+                                            aria-label={`Select ${hotel.hotel_name}`}
+                                            checked={isSelected}
+                                            disabled={isPromoted}
+                                            onChange={() => onToggleSelect(hotel.id)}
+                                            title={isPromoted ? 'Already promoted' : 'Select to promote with AI description'}
+                                            className="w-4 h-4 rounded border-gray-300 text-orange-500 focus:ring-orange-500 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                                        />
+                                    </td>
                                     <td className="px-4 py-3">
                                         <div className="flex items-center gap-3">
                                             {hotel.photo1 ? (
@@ -829,7 +1010,8 @@ function DirectoryTable({ hotels, onPromote, onViewDetail }) {
                                         </div>
                                     </td>
                                 </tr>
-                            ))
+                                );
+                            })
                         )}
                     </tbody>
                 </table>
@@ -842,9 +1024,23 @@ function DirectoryTable({ hotels, onPromote, onViewDetail }) {
                         No hotels found.
                     </div>
                 ) : (
-                    hotels.data.map(hotel => (
-                        <div key={hotel.id} className="p-3 sm:p-4 hover:bg-gray-50 transition-colors">
+                    hotels.data.map(hotel => {
+                        const isPromoted = !!hotel.promoted_hotel_id;
+                        const isSelected = selectedIds.includes(hotel.id);
+                        return (
+                        <div
+                            key={hotel.id}
+                            className={`p-3 sm:p-4 transition-colors ${isSelected ? 'bg-orange-50/60' : 'hover:bg-gray-50'}`}
+                        >
                             <div className="flex items-start gap-3 mb-2">
+                                <input
+                                    type="checkbox"
+                                    aria-label={`Select ${hotel.hotel_name}`}
+                                    checked={isSelected}
+                                    disabled={isPromoted}
+                                    onChange={() => onToggleSelect(hotel.id)}
+                                    className="mt-1 w-4 h-4 rounded border-gray-300 text-orange-500 focus:ring-orange-500 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex-shrink-0"
+                                />
                                 {hotel.photo1 ? (
                                     <img src={hotel.photo1} alt="" className="w-14 h-14 rounded-lg object-cover flex-shrink-0" />
                                 ) : (
@@ -895,7 +1091,8 @@ function DirectoryTable({ hotels, onPromote, onViewDetail }) {
                                 )}
                             </div>
                         </div>
-                    ))
+                        );
+                    })
                 )}
             </div>
 

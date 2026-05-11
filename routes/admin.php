@@ -162,6 +162,9 @@ Route::middleware(['auth', 'admin', 'throttle:admin'])->prefix('admin')->name('a
     Route::post('/directory/bulk-promote', [AgodaDirectoryController::class, 'bulkPromote'])
         ->middleware('throttle:admin-bulk')
         ->name('directory.bulk-promote');
+    Route::post('/directory/bulk-promote-selected', [AgodaDirectoryController::class, 'bulkPromoteSelected'])
+        ->middleware('throttle:admin-bulk')
+        ->name('directory.bulk-promote-selected');
     Route::get('/directory/bulk-promote/progress', [AgodaDirectoryController::class, 'bulkPromoteProgress'])
         ->name('directory.bulk-promote.progress');
     Route::delete('/directory/bulk-promote/progress', [AgodaDirectoryController::class, 'dismissBulkPromoteProgress'])
