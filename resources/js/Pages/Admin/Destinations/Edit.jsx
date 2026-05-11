@@ -1,7 +1,14 @@
 import { Link, Head, useForm, router } from '@inertiajs/react';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+import imageCompression from 'browser-image-compression';
 import AdminNav from '@/Components/AdminNav';
+
+const compressionOptions = {
+    maxSizeMB: 2,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true,
+};
 
 export default function EditDestination({ destination }) {
     const { data, setData, processing, errors } = useForm({
@@ -23,12 +30,26 @@ export default function EditDestination({ destination }) {
             ? (destination.image.startsWith('http') ? destination.image : `/storage/${destination.image}`)
             : null
     );
+    const [compressing, setCompressing] = useState(false);
 
-    const handleImageChange = (e) => {
+    const handleImageChange = async (e) => {
         const file = e.target.files[0];
-        if (file) {
+        if (!file) return;
+        setCompressing(true);
+        try {
+            const compressed = await imageCompression(file, compressionOptions);
+            setData('image', compressed);
+            setImagePreview(URL.createObjectURL(compressed));
+            const savedKB  = ((file.size - compressed.size) / 1024).toFixed(0);
+            if (savedKB > 0) {
+                toast.info(`Image compressed — saved ${savedKB} KB before upload.`);
+            }
+        } catch {
+            // Compression failed — fall back to original file
             setData('image', file);
             setImagePreview(URL.createObjectURL(file));
+        } finally {
+            setCompressing(false);
         }
     };
 
@@ -45,8 +66,15 @@ export default function EditDestination({ destination }) {
                     toast.success(page.props.flash.success);
                 }
             },
-            onError: () => {
-                toast.error('Please fix the validation errors.');
+            onError: (errs) => {
+                // Show each validation error as its own toast so the admin
+                // doesn't have to scroll to find the red box.
+                const messages = Object.values(errs || {});
+                if (messages.length > 0) {
+                    messages.forEach((msg) => toast.error(msg));
+                } else {
+                    toast.error('Please fix the validation errors.');
+                }
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             },
         });
@@ -66,6 +94,7 @@ export default function EditDestination({ destination }) {
     return (
         <>
             <Head title={`Edit ${destination.name}`} />
+            <ToastContainer />
 
             <div className="min-h-screen bg-gray-50 font-sans">
                 <AdminNav />
@@ -249,9 +278,19 @@ export default function EditDestination({ destination }) {
                                     <input
                                         type="file"
                                         accept="image/*"
+                                        disabled={compressing}
                                         onChange={handleImageChange}
-                                        className="block w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-orange-600 hover:file:bg-orange-100 transition-colors"
+                                        className="block w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-orange-600 hover:file:bg-orange-100 transition-colors disabled:opacity-60 disabled:cursor-wait"
                                     />
+                                    {compressing && (
+                                        <p className="mt-1.5 text-xs text-orange-600 font-medium flex items-center gap-1.5">
+                                            <svg className="animate-spin w-3.5 h-3.5" viewBox="0 0 24 24" fill="none">
+                                                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.3" />
+                                                <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                                            </svg>
+                                            Compressing image…
+                                        </p>
+                                    )}
                                     {errors.image && <p className="mt-1 text-xs text-red-600">{errors.image}</p>}
                                     <p className="mt-2 text-xs text-gray-400">Max 2MB. JPG, PNG, or WebP recommended.</p>
                                 </div>
@@ -324,10 +363,10 @@ export default function EditDestination({ destination }) {
                             </Link>
                             <button
                                 type="submit"
-                                disabled={processing}
+                                disabled={processing || compressing}
                                 className="px-6 py-2.5 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {processing ? 'Saving...' : 'Save Changes'}
+                                {compressing ? 'Compressing...' : processing ? 'Saving...' : 'Save Changes'}
                             </button>
                         </div>
                     </form>
