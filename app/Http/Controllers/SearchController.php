@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AutocompleteRequest;
 use App\Models\Hotel;
 use App\Models\Destination;
+use App\Services\AutocompleteService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
@@ -13,89 +15,56 @@ use Inertia\Response;
 
 class SearchController extends Controller
 {
-    /**
-     * Common English name aliases for countries/regions/islands
-     * that don't appear literally in the DB.
-     * Maps lowercase user input → [field => DB value].
-     */
-    private const SEARCH_ALIASES = [
-        // Canary Islands
-        'canary islands'     => ['region' => 'Canarias'],
-        'the canary islands' => ['region' => 'Canarias'],
-        'canaries'           => ['region' => 'Canarias'],
-        'islas canarias'     => ['region' => 'Canarias'],
-        'tenerife'           => ['region' => 'Canarias'],
-        'gran canaria'       => ['region' => 'Canarias'],
-        'lanzarote'          => ['region' => 'Canarias'],
-        'fuerteventura'      => ['region' => 'Canarias'],
-        'la palma'           => ['region' => 'Canarias'],
-        'la gomera'          => ['region' => 'Canarias'],
-        // Spain
-        'spain'              => ['country' => 'España'],
-        'espana'             => ['country' => 'España'],
-        'spanish'            => ['country' => 'España'],
-        // Balearic Islands
-        'balearic islands'   => ['region' => 'Illes Balears'],
-        'balearics'          => ['region' => 'Illes Balears'],
-        'mallorca'           => ['region' => 'Illes Balears'],
-        'majorca'            => ['region' => 'Illes Balears'],
-        'ibiza'              => ['region' => 'Illes Balears'],
-        'menorca'            => ['region' => 'Illes Balears'],
-        // Greece
-        'greece'             => ['country_code' => 'GR'],
-        'greek islands'      => ['country_code' => 'GR'],
-        'hellas'             => ['country_code' => 'GR'],
-        // Italy
-        'italy'              => ['country_code' => 'IT'],
-        'italia'             => ['country_code' => 'IT'],
-        // Portugal
-        'portugal'           => ['country_code' => 'PT'],
-        'algarve'            => ['region' => 'Algarve'],
-        // France
-        'france'             => ['country_code' => 'FR'],
-        'french riviera'     => ['region' => 'Provence-Alpes-Côte d\'Azur'],
-        'cote d azur'        => ['region' => 'Provence-Alpes-Côte d\'Azur'],
-        // Turkey
-        'turkey'             => ['country_code' => 'TR'],
-        'türkiye'            => ['country_code' => 'TR'],
-        'turkiye'            => ['country_code' => 'TR'],
-        // Croatia
-        'croatia'            => ['country_code' => 'HR'],
-        // Thailand
-        'thailand'           => ['country_code' => 'TH'],
-        // Mexico
-        'mexico'             => ['country_code' => 'MX'],
-        // Caribbean
-        'dominican republic' => ['country_code' => 'DO'],
-        // Egypt
-        'egypt'              => ['country_code' => 'EG'],
-        // Morocco
-        'morocco'            => ['country_code' => 'MA'],
-        // UAE
-        'dubai'              => ['country_code' => 'AE'],
-        'uae'                => ['country_code' => 'AE'],
-        // Indonesia
-        'bali'               => ['region' => 'Bali'],
-        'indonesia'          => ['country_code' => 'ID'],
-    ];
+    public function __construct(private readonly AutocompleteService $autocomplete)
+    {
+    }
 
     /**
-     * Resolve a search term to DB conditions via alias or country_code lookup.
-     * Returns [field => value] or null.
+     * Autocomplete endpoint for destination + hotel search suggestions.
+     *
+     * Heavy lifting lives in {@see AutocompleteService}; this method just
+     * validates input, delegates, and adds an HTTP cache header so the
+     * browser can short-circuit repeat keystrokes entirely.
+     */
+    public function autocomplete(AutocompleteRequest $request): JsonResponse
+    {
+        $suggestions = $this->autocomplete->suggest($request->searchTerm());
+
+        return response()->json($suggestions)
+            ->header('Cache-Control', sprintf(
+                'public, max-age=%d, stale-while-revalidate=300',
+                (int) config('search.browser_cache_ttl', 60)
+            ));
+    }
+
+    /**
+     * Empty-state suggestions: popular destinations.
+     * Cached daily; safe to hit on every focus.
+     */
+    public function popular(): JsonResponse
+    {
+        return response()->json($this->autocomplete->popular())
+            ->header('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600');
+    }
+
+    /**
+     * Resolve a search term to DB conditions via config alias map or
+     * direct 2-letter country_code lookup. Used by {@see executeSearch()}.
      */
     private function resolveAlias(string $term): ?array
     {
         $lower = strtolower(trim($term));
+        $aliases = config('search.aliases', []);
 
-        // 1. Check hardcoded aliases
-        if (isset(self::SEARCH_ALIASES[$lower])) {
-            return self::SEARCH_ALIASES[$lower];
+        if (isset($aliases[$lower])) {
+            return $aliases[$lower];
         }
 
-        // 2. Check if it matches a 2-letter country code directly
         if (strlen($lower) === 2) {
             $upper = strtoupper($lower);
-            $exists = Destination::where('country_code', $upper)->where('is_active', true)->exists();
+            $exists = Destination::where('country_code', $upper)
+                ->where('is_active', true)
+                ->exists();
             if ($exists) {
                 return ['country_code' => $upper];
             }
@@ -103,130 +72,6 @@ class SearchController extends Controller
 
         return null;
     }
-
-    /**
-     * Autocomplete endpoint for destination search suggestions.
-     */
-    public function autocomplete(Request $request): JsonResponse
-    {
-        $request->validate([
-            'q' => 'required|string|min:1|max:255',
-        ]);
-
-        $query = trim($request->input('q'));
-        $cacheKey = 'search:autocomplete:' . md5(strtolower($query));
-
-        $suggestions = Cache::remember($cacheKey, now()->addMinutes(30), function () use ($query) {
-            $escaped = str_replace(['%', '_'], ['\%', '\_'], $query);
-
-            $suggestions = [];
-
-            // Check alias resolution (e.g. "Spain" → country=España, "Canary Islands" → region=Canarias)
-            $alias = $this->resolveAlias($query);
-            if ($alias) {
-                $field = array_key_first($alias);
-                $value = $alias[$field];
-
-                $hotelCount = Hotel::where('is_active', true)
-                    ->whereHas('destination', fn ($q) => $q->where($field, $value))
-                    ->count();
-
-                if ($hotelCount > 0) {
-                    // Find a nice label for the suggestion
-                    $sampleDest = Destination::where($field, $value)->where('is_active', true)->first();
-                    $sublabel = match ($field) {
-                        'region' => ($sampleDest->country ?? '') . ' · Region',
-                        'country' => 'Country',
-                        'country_code' => ($sampleDest->country ?? '') . ' · Country',
-                        default => '',
-                    };
-                    $label = $field === 'country_code' ? ($sampleDest->country ?? $value) : $value;
-
-                    $suggestions[] = [
-                        'type' => 'region',
-                        'label' => $label,
-                        'sublabel' => $sublabel,
-                        'value' => $label,
-                        'hotel_count' => $hotelCount,
-                    ];
-                }
-            }
-
-            // Search destinations by name, country, region, and country_code
-            $destinations = Destination::where('is_active', true)
-                ->where(function ($q) use ($escaped) {
-                    $q->where('name', 'LIKE', "%{$escaped}%")
-                      ->orWhere('country', 'LIKE', "%{$escaped}%")
-                      ->orWhere('region', 'LIKE', "%{$escaped}%")
-                      ->orWhere('country_code', 'LIKE', "{$escaped}%");
-                })
-                ->withCount(['hotels' => fn ($q) => $q->where('is_active', true)])
-                ->orderByDesc('hotels_count')
-                ->limit(10)
-                ->get();
-
-            // Group by region if multiple destinations share the same region
-            $regionGroups = [];
-            foreach ($destinations as $dest) {
-                if ($dest->region) {
-                    $regionGroups[$dest->region][] = $dest;
-                }
-            }
-
-            // Group by country if multiple destinations share the same country
-            $countryGroups = [];
-            foreach ($destinations as $dest) {
-                if ($dest->country) {
-                    $countryGroups[$dest->country][] = $dest;
-                }
-            }
-
-            // Add country suggestion if multiple destinations share a country
-            foreach ($countryGroups as $country => $dests) {
-                if (count($dests) > 1 && !$alias) {
-                    $totalHotels = array_sum(array_map(fn ($d) => $d->hotels_count, $dests));
-                    $suggestions[] = [
-                        'type' => 'region',
-                        'label' => $country,
-                        'sublabel' => count($dests) . ' destinations · Country',
-                        'value' => $country,
-                        'hotel_count' => $totalHotels,
-                    ];
-                }
-            }
-
-            // Add region suggestion if multiple destinations share a region (and different from country)
-            foreach ($regionGroups as $region => $dests) {
-                if (count($dests) > 1 && !$alias) {
-                    $totalHotels = array_sum(array_map(fn ($d) => $d->hotels_count, $dests));
-                    $alreadyHasCountry = isset($countryGroups[$dests[0]->country]) && count($countryGroups[$dests[0]->country]) > 1;
-                    $suggestions[] = [
-                        'type' => 'region',
-                        'label' => $region,
-                        'sublabel' => $dests[0]->country . ' · ' . count($dests) . ' areas',
-                        'value' => $region,
-                        'hotel_count' => $totalHotels,
-                    ];
-                }
-            }
-
-            // Add individual destinations
-            foreach ($destinations as $dest) {
-                $suggestions[] = [
-                    'type' => 'destination',
-                    'label' => $dest->name,
-                    'sublabel' => implode(', ', array_filter([$dest->region, $dest->country])),
-                    'value' => $dest->name,
-                    'hotel_count' => $dest->hotels_count,
-                ];
-            }
-
-            return $suggestions;
-        });
-
-        return response()->json($suggestions);
-    }
-
 
     public function search(Request $request): Response
     {

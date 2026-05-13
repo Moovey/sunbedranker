@@ -10,10 +10,31 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use Laravel\Scout\Searchable;
 
 class Hotel extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, Searchable, SoftDeletes;
+
+    /**
+     * Fields exposed to Scout (database driver does WHERE LIKE on these).
+     * Keep narrow — only user-typeable text.
+     */
+    public function toSearchableArray(): array
+    {
+        return [
+            'name'    => $this->name,
+            'address' => $this->address,
+        ];
+    }
+
+    /**
+     * Don't auto-index inactive hotels.
+     */
+    public function shouldBeSearchable(): bool
+    {
+        return (bool) $this->is_active;
+    }
 
     protected $fillable = [
         'destination_id',
@@ -233,6 +254,19 @@ class Hotel extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Case-insensitive partial match against the hotel name.
+     * Escapes LIKE wildcards so user input can't widen the search.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     */
+    public function scopeSearch($query, string $term)
+    {
+        $escaped = str_replace(['%', '_'], ['\%', '\_'], trim($term));
+
+        return $query->where('name', 'LIKE', "%{$escaped}%");
     }
 
     /** @param  \Illuminate\Database\Eloquent\Builder  $query */

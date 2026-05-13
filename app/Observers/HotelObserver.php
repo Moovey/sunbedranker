@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Hotelier\HotelierDashboardController;
 use App\Http\Controllers\Hotelier\HotelManagementController;
 use App\Models\Hotel;
+use App\Services\AutocompleteService;
 
 class HotelObserver
 {
@@ -17,6 +18,7 @@ class HotelObserver
     {
         AdminDashboardController::clearHotelCaches();
         HomeController::clearHomeCache();
+        AutocompleteService::bumpVersion();
 
         if ($hotel->destination) {
             $hotel->destination->updateHotelCount();
@@ -52,6 +54,11 @@ class HotelObserver
         if ($hotel->wasChanged($relevantFields)) {
             AdminDashboardController::clearHotelCaches();
             HomeController::clearHomeCache();
+        }
+
+        // Invalidate autocomplete cache if user-visible search fields changed
+        if ($hotel->wasChanged(['name', 'slug', 'is_active', 'star_rating', 'overall_score', 'destination_id'])) {
+            AutocompleteService::bumpVersion();
         }
     }
 

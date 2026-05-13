@@ -84,4 +84,27 @@ class Destination extends Model
     {
         return 'slug';
     }
+
+    /** @param  \Illuminate\Database\Eloquent\Builder  $query */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Case-insensitive partial match across name/country/region/country_code.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     */
+    public function scopeSearch($query, string $term)
+    {
+        $escaped = str_replace(['%', '_'], ['\%', '\_'], trim($term));
+
+        return $query->where(function ($q) use ($escaped) {
+            $q->where('name', 'LIKE', "%{$escaped}%")
+              ->orWhere('country', 'LIKE', "%{$escaped}%")
+              ->orWhere('region', 'LIKE', "%{$escaped}%")
+              ->orWhere('country_code', 'LIKE', "{$escaped}%");
+        });
+    }
 }

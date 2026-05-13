@@ -33,8 +33,37 @@ export default function HeroSection() {
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [activeIndex, setActiveIndex] = useState(-1);
+    const [recentSearches, setRecentSearches] = useState([]);
+    const [popular, setPopular] = useState([]);
+    const [isEmptyState, setIsEmptyState] = useState(false);
     const debounceRef = useRef(null);
     const wrapperRef = useRef(null);
+
+    const RECENT_KEY = 'sbr:recentSearches';
+    const RECENT_LIMIT = 4;
+
+    // Load recent searches from localStorage + fetch popular destinations once
+    useEffect(() => {
+        try {
+            const raw = localStorage.getItem(RECENT_KEY);
+            if (raw) setRecentSearches(JSON.parse(raw).slice(0, RECENT_LIMIT));
+        } catch (_) { /* ignore */ }
+
+        fetch('/search/popular', { headers: { 'Accept': 'application/json' } })
+            .then(r => r.ok ? r.json() : [])
+            .then(data => setPopular(Array.isArray(data) ? data : []))
+            .catch(() => {});
+    }, []);
+
+    const persistRecent = (item) => {
+        try {
+            const next = [item, ...recentSearches.filter(r =>
+                !(r.type === item.type && r.value === item.value)
+            )].slice(0, RECENT_LIMIT);
+            setRecentSearches(next);
+            localStorage.setItem(RECENT_KEY, JSON.stringify(next));
+        } catch (_) { /* ignore */ }
+    };
 
     // Close suggestions on outside click
     useEffect(() => {
@@ -53,6 +82,7 @@ export default function HeroSection() {
         if (text.trim().length < 2) {
             setSuggestions([]);
             setShowSuggestions(false);
+            setIsEmptyState(false);
             return;
         }
 
@@ -64,6 +94,7 @@ export default function HeroSection() {
                 .then(data => {
                     setSuggestions(data || []);
                     setShowSuggestions((data || []).length > 0);
+                    setIsEmptyState(false);
                     setActiveIndex(-1);
                 })
                 .catch(() => {});
@@ -77,9 +108,48 @@ export default function HeroSection() {
     };
 
     const selectSuggestion = (suggestion) => {
-        setSearchData({ ...searchData, destination: suggestion.value });
         setShowSuggestions(false);
         setSuggestions([]);
+        setIsEmptyState(false);
+
+        persistRecent({
+            type: suggestion.type,
+            label: suggestion.label,
+            sublabel: suggestion.sublabel,
+            value: suggestion.value,
+            slug: suggestion.slug,
+            hotel_count: suggestion.hotel_count,
+        });
+
+        // Hotel suggestions navigate directly to the hotel page
+        if (suggestion.type === 'hotel' && suggestion.slug) {
+            router.visit(`/hotels/${suggestion.slug}`);
+            return;
+        }
+
+        setSearchData({ ...searchData, destination: suggestion.value });
+    };
+
+    const showEmptyState = () => {
+        const merged = [
+            ...recentSearches.map(r => ({ ...r, _section: 'recent' })),
+            ...popular.map(p => ({ ...p, _section: 'popular' })),
+        ];
+        if (merged.length === 0) return;
+        setSuggestions(merged);
+        setIsEmptyState(true);
+        setShowSuggestions(true);
+        setActiveIndex(-1);
+    };
+
+    const handleFocus = () => {
+        if (suggestions.length > 0 && !isEmptyState) {
+            setShowSuggestions(true);
+            return;
+        }
+        if (!searchData.destination || searchData.destination.trim().length < 2) {
+            showEmptyState();
+        }
     };
 
     const handleKeyDown = (e) => {
@@ -152,7 +222,7 @@ export default function HeroSection() {
                                                 value={searchData.destination}
                                                 onChange={handleInputChange}
                                                 onKeyDown={handleKeyDown}
-                                                onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+                                                onFocus={handleFocus}
                                                 placeholder="Where to? (e.g., Canary Islands, Tenerife)"
                                                 className="w-full px-4 py-3 bg-white ring-1 ring-slate-200 rounded-lg focus:ring-2 focus:ring-orange-400 focus:shadow-[0_0_0_4px_rgba(249,115,22,0.08)] outline-none text-slate-900 placeholder-slate-400 transition-all duration-200 text-base font-medium"
                                                 autoComplete="off"
@@ -167,23 +237,40 @@ export default function HeroSection() {
                                                 <ul
                                                     id="destination-suggestions"
                                                     role="listbox"
-                                                    className="absolute z-50 left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden max-h-72 overflow-y-auto"
+                                                    className="absolute z-50 left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden max-h-80 overflow-y-auto"
                                                 >
-                                                    {suggestions.map((s, i) => (
-                                                        <li
-                                                            key={`${s.type}-${s.value}`}
-                                                            role="option"
-                                                            aria-selected={i === activeIndex}
-                                                            className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${
-                                                                i === activeIndex ? 'bg-orange-50' : 'hover:bg-gray-50'
-                                                            }`}
-                                                            onClick={() => selectSuggestion(s)}
-                                                            onMouseEnter={() => setActiveIndex(i)}
-                                                        >
+                                                    {suggestions.map((s, i) => {
+                                                        const prev = i > 0 ? suggestions[i - 1] : null;
+                                                        const sectionChanged = isEmptyState && (!prev || prev._section !== s._section);
+                                                        return (
+                                                        <div key={`wrap-${s.type}-${s.value}-${i}`}>
+                                                            {sectionChanged && (
+                                                                <div className="px-4 pt-2.5 pb-1 text-[11px] uppercase tracking-[0.12em] font-semibold text-slate-400 bg-slate-50/60">
+                                                                    {s._section === 'recent' ? 'Recent searches' : 'Popular destinations'}
+                                                                </div>
+                                                            )}
+                                                            <li
+                                                                key={`${s.type}-${s.value}-${i}`}
+                                                                role="option"
+                                                                aria-selected={i === activeIndex}
+                                                                className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${
+                                                                    i === activeIndex ? 'bg-orange-50' : 'hover:bg-gray-50'
+                                                                }`}
+                                                                onClick={() => selectSuggestion(s)}
+                                                                onMouseEnter={() => setActiveIndex(i)}
+                                                            >
                                                             <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${
-                                                                s.type === 'region' ? 'bg-blue-100 text-blue-600' : 'bg-orange-100 text-orange-600'
+                                                                s.type === 'hotel'
+                                                                    ? 'bg-purple-100 text-purple-600'
+                                                                    : s.type === 'region'
+                                                                        ? 'bg-blue-100 text-blue-600'
+                                                                        : 'bg-orange-100 text-orange-600'
                                                             }`}>
-                                                                {s.type === 'region' ? (
+                                                                {s.type === 'hotel' ? (
+                                                                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                                                        <path d="M7 14c1.66 0 3-1.34 3-3S8.66 8 7 8s-3 1.34-3 3 1.34 3 3 3zm6-6h7v8h2V6H13v2zm-1 6c0-1.66-1.34-3-3-3s-3 1.34-3 3v6h6v-6zm9 0v6h-2v-4h-2v4h-2v-6h6z"/>
+                                                                    </svg>
+                                                                ) : s.type === 'region' ? (
                                                                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                                                                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
                                                                     </svg>
@@ -199,11 +286,19 @@ export default function HeroSection() {
                                                                     <div className="text-xs text-gray-500 truncate">{s.sublabel}</div>
                                                                 )}
                                                             </div>
-                                                            <span className="flex-shrink-0 text-xs font-medium text-gray-400">
-                                                                {s.hotel_count} {s.hotel_count === 1 ? 'hotel' : 'hotels'}
-                                                            </span>
+                                                            {s.type === 'hotel' ? (
+                                                                <span className="flex-shrink-0 text-xs font-medium text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded-md">
+                                                                    Hotel
+                                                                </span>
+                                                            ) : (
+                                                                <span className="flex-shrink-0 text-xs font-medium text-gray-400">
+                                                                    {s.hotel_count} {s.hotel_count === 1 ? 'hotel' : 'hotels'}
+                                                                </span>
+                                                            )}
                                                         </li>
-                                                    ))}
+                                                        </div>
+                                                        );
+                                                    })}
                                                 </ul>
                                             )}
                                         </div>

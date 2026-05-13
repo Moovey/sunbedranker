@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Http\Controllers\Admin\HotelManagementController;
 use App\Models\Destination;
+use App\Services\AutocompleteService;
 use Illuminate\Support\Facades\Cache;
 
 class DestinationObserver
@@ -14,6 +15,7 @@ class DestinationObserver
     private function clearPublicCache(): void
     {
         Cache::forget('destinations:index');
+        AutocompleteService::bumpVersion();
     }
 
     /**
