@@ -24,8 +24,13 @@ export default function AdminNav({ stats }) {
         return pathname === href || (href === '/admin' && pathname === '/admin/');
     };
 
-    // Poll for live pending claims count every 30 seconds + on mount
+    // Poll for live pending claims count every 30 seconds while the tab is visible.
+    // Stops polling when the tab is hidden, and on auth/session expiry (401/419)
+    // so we don't spam the server.
     useEffect(() => {
+        let interval = null;
+        let stopped = false; // set true once a 401/419 kills polling for this mount
+
         const poll = () => {
             fetch(route('admin.api.stats.pending-claims'), {
                 headers: {
@@ -34,7 +39,15 @@ export default function AdminNav({ stats }) {
                 },
                 credentials: 'same-origin',
             })
-                .then(res => res.ok ? res.json() : null)
+                .then(res => {
+                    // Session expired or unauthorized — stop polling permanently
+                    if (res.status === 401 || res.status === 419) {
+                        stopped = true;
+                        stop();
+                        return null;
+                    }
+                    return res.ok ? res.json() : null;
+                })
                 .then(data => {
                     if (data && typeof data.pending_claims === 'number') {
                         setPendingClaims(data.pending_claims);
@@ -43,11 +56,31 @@ export default function AdminNav({ stats }) {
                 .catch(() => {}); // silently fail
         };
 
-        // Fetch immediately on mount / page navigation
-        poll();
+        const start = () => {
+            if (stopped || interval) return;
+            poll(); // immediate refresh on become-visible / mount
+            interval = setInterval(poll, 30000);
+        };
 
-        const interval = setInterval(poll, 30000);
-        return () => clearInterval(interval);
+        const stop = () => {
+            if (interval) {
+                clearInterval(interval);
+                interval = null;
+            }
+        };
+
+        const onVisibility = () => {
+            document.hidden ? stop() : start();
+        };
+
+        // Kick off only if visible on mount
+        if (!document.hidden) start();
+        document.addEventListener('visibilitychange', onVisibility);
+
+        return () => {
+            stop();
+            document.removeEventListener('visibilitychange', onVisibility);
+        };
     }, []);
 
     // Sync when props change (e.g. Inertia page visit)
