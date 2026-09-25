@@ -53,6 +53,11 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', '/auth/google/callback'),
     ],
 
+    'gtm' => [
+        // Leave unset locally so dev traffic is not sent to Analytics.
+        'container_id' => env('GTM_CONTAINER_ID'),
+    ],
+
     'countrystatecity' => [
         'key' => env('COUNTRYSTATECITY_API_KEY'),
         'base_url' => 'https://api.countrystatecity.in/v1',

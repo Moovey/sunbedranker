@@ -47,6 +47,27 @@ createInertiaApp({
             syncZiggy(event.detail.page);
         });
 
+        // GTM only auto-tracks the initial document load, so client-side
+        // Inertia navigations are pushed to the dataLayer manually.
+        let isInitialVisit = true;
+        document.addEventListener('inertia:navigate', () => {
+            if (isInitialVisit) {
+                isInitialVisit = false;
+                return;
+            }
+
+            if (!Array.isArray(window.dataLayer)) {
+                return;
+            }
+
+            window.dataLayer.push({
+                event: 'inertia_page_view',
+                page_path: window.location.pathname + window.location.search,
+                page_location: window.location.href,
+                page_title: document.title,
+            });
+        });
+
         const root = createRoot(el);
 
         root.render(

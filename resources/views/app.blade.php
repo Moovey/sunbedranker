@@ -9,6 +9,17 @@
         <meta name="robots" content="index, follow" />
         <meta name="google-site-verification" content="1BFi1lziWSsKbvL-aJbAt5VeLsOo8Fg67dzHYRGvzm8" />
 
+        @if($gtmId = config('services.gtm.container_id'))
+            <script>window.dataLayer = window.dataLayer || [];</script>
+            <!-- Google Tag Manager -->
+            <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','{{ $gtmId }}');</script>
+            <!-- End Google Tag Manager -->
+        @endif
+
         <!-- Favicon -->
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48.png">
@@ -45,6 +56,13 @@
         @inertiaHead
     </head>
     <body class="font-sans antialiased">
+        @if($gtmId = config('services.gtm.container_id'))
+            <!-- Google Tag Manager (noscript) -->
+            <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $gtmId }}"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+            <!-- End Google Tag Manager (noscript) -->
+        @endif
+
         @inertia
     </body>
 </html>
