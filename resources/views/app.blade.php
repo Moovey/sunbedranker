@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    @php
+        $gtmId = config('services.gtm.container_id');
+        $ga4Id = config('services.ga4.measurement_id');
+    @endphp
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,8 +13,34 @@
         <meta name="robots" content="index, follow" />
         <meta name="google-site-verification" content="ZNFMwGgbxZs7C5iJcPKSuxw2BYW8ekh7icFLfcFc2Fs" />
 
-        @if($gtmId = config('services.gtm.container_id'))
-            <script>window.dataLayer = window.dataLayer || [];</script>
+        @if($gtmId || $ga4Id)
+            {{-- Consent Mode v2 defaults. Must run before any Google tag loads. --}}
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('consent', 'default', {
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied',
+                    analytics_storage: 'denied',
+                    functionality_storage: 'granted',
+                    security_storage: 'granted',
+                    wait_for_update: 500
+                });
+                try {
+                    if (window.localStorage.getItem('sbr_cookie_consent') === 'accepted') {
+                        gtag('consent', 'update', {
+                            ad_storage: 'granted',
+                            ad_user_data: 'granted',
+                            ad_personalization: 'granted',
+                            analytics_storage: 'granted'
+                        });
+                    }
+                } catch (e) {}
+            </script>
+        @endif
+
+        @if($gtmId)
             <!-- Google Tag Manager -->
             <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -20,12 +50,10 @@
             <!-- End Google Tag Manager -->
         @endif
 
-        @if($ga4Id = config('services.ga4.measurement_id'))
+        @if($ga4Id)
             <!-- Google tag (gtag.js) -->
             <script async src="https://www.googletagmanager.com/gtag/js?id={{ $ga4Id }}"></script>
             <script>
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
                 gtag('config', '{{ $ga4Id }}');
             </script>
@@ -68,7 +96,7 @@
         @inertiaHead
     </head>
     <body class="font-sans antialiased">
-        @if($gtmId = config('services.gtm.container_id'))
+        @if($gtmId)
             <!-- Google Tag Manager (noscript) -->
             <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $gtmId }}"
             height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>

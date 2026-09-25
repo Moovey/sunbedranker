@@ -1,39 +1,39 @@
 {
   "node_modules/laravel-vite-plugin/inertia-helpers/index.js": [],
   "resources/js/Components/Admin/Claims/ClaimsTab.jsx": [
-    "/build/assets/Index-Q2O9-ic6.js"
+    "/build/assets/Index-DCNIFQ4n.js"
   ],
   "resources/js/Components/Admin/Claims/HoteliersTab.jsx": [
-    "/build/assets/Index-Q2O9-ic6.js"
+    "/build/assets/Index-DCNIFQ4n.js"
   ],
   "resources/js/Components/Admin/Claims/SubscriptionModal.jsx": [
-    "/build/assets/Index-Q2O9-ic6.js"
+    "/build/assets/Index-DCNIFQ4n.js"
   ],
   "resources/js/Components/Admin/Claims/SubscriptionsTab.jsx": [
-    "/build/assets/Index-Q2O9-ic6.js"
+    "/build/assets/Index-DCNIFQ4n.js"
   ],
   "resources/js/Components/Admin/Claims/TemporaryAccessModal.jsx": [
-    "/build/assets/Index-Q2O9-ic6.js"
+    "/build/assets/Index-DCNIFQ4n.js"
   ],
   "resources/js/Components/Admin/Content/CategoriesTab.jsx": [
-    "/build/assets/Index-CI41-VgB.js",
+    "/build/assets/Index-Dvor57DK.js",
     "/build/assets/vendor-react-VYesxZYF.css"
   ],
   "resources/js/Components/Admin/Content/CategoryModal.jsx": [
     "/build/assets/TagModal-Dl6mQ5aH.js"
   ],
   "resources/js/Components/Admin/Content/PostsTab.jsx": [
-    "/build/assets/Index-CI41-VgB.js",
+    "/build/assets/Index-Dvor57DK.js",
     "/build/assets/vendor-react-VYesxZYF.css"
   ],
   "resources/js/Components/Admin/Content/RichTextEditor.jsx": [
-    "/build/assets/RichTextEditor-BfcETVi8.js"
+    "/build/assets/RichTextEditor-B5cj6DF_.js"
   ],
   "resources/js/Components/Admin/Content/TagModal.jsx": [
     "/build/assets/TagModal-Dl6mQ5aH.js"
   ],
   "resources/js/Components/Admin/Content/TagsTab.jsx": [
-    "/build/assets/Index-CI41-VgB.js",
+    "/build/assets/Index-Dvor57DK.js",
     "/build/assets/vendor-react-VYesxZYF.css"
   ],
   "resources/js/Components/Admin/EmptyState.jsx": [
@@ -61,13 +61,13 @@
     "/build/assets/marker-icon-hN30_KVU.png"
   ],
   "resources/js/Components/Admin/Hotels/CreateImagesTab.jsx": [
-    "/build/assets/CreateImagesTab-BZ8H15It.js"
+    "/build/assets/CreateImagesTab-Bcds3qa0.js"
   ],
   "resources/js/Components/Admin/Hotels/PoolCriteriaTab.jsx": [
-    "/build/assets/CreateImagesTab-BZ8H15It.js"
+    "/build/assets/CreateImagesTab-Bcds3qa0.js"
   ],
   "resources/js/Components/Admin/Hotels/TabButton.jsx": [
-    "/build/assets/CreateImagesTab-BZ8H15It.js"
+    "/build/assets/CreateImagesTab-Bcds3qa0.js"
   ],
   "resources/js/Components/Admin/Icons.jsx": [
     "/build/assets/Modal--roSw4Ve.js"
@@ -79,19 +79,19 @@
     "/build/assets/EmptyState-DFAGVrDk.js"
   ],
   "resources/js/Components/Admin/Scoring/BadgeModal.jsx": [
-    "/build/assets/Index-mxui57zE.js",
+    "/build/assets/Index-C8zrF1oU.js",
     "/build/assets/vendor-react-VYesxZYF.css"
   ],
   "resources/js/Components/Admin/Scoring/BadgesTab.jsx": [
-    "/build/assets/Index-mxui57zE.js",
+    "/build/assets/Index-C8zrF1oU.js",
     "/build/assets/vendor-react-VYesxZYF.css"
   ],
   "resources/js/Components/Admin/Scoring/VisibilityTab.jsx": [
-    "/build/assets/Index-mxui57zE.js",
+    "/build/assets/Index-C8zrF1oU.js",
     "/build/assets/vendor-react-VYesxZYF.css"
   ],
   "resources/js/Components/Admin/Scoring/WeightsTab.jsx": [
-    "/build/assets/Index-mxui57zE.js",
+    "/build/assets/Index-C8zrF1oU.js",
     "/build/assets/vendor-react-VYesxZYF.css"
   ],
   "resources/js/Components/Admin/StatCard.jsx": [
@@ -104,13 +104,13 @@
     "/build/assets/TabButton-kurVP5_k.js"
   ],
   "resources/js/Components/Admin/TierBadge.jsx": [
-    "/build/assets/Index-Q2O9-ic6.js"
+    "/build/assets/Index-DCNIFQ4n.js"
   ],
   "resources/js/Components/Admin/helpers.js": [
-    "/build/assets/Index-Q2O9-ic6.js"
+    "/build/assets/Index-DCNIFQ4n.js"
   ],
   "resources/js/Components/AdminNav.jsx": [
-    "/build/assets/AdminNav-Dpi9gSoo.js"
+    "/build/assets/AdminNav-CJbszoxG.js"
   ],
   "resources/js/Components/ApplicationLogo.jsx": [
     "/build/assets/ApplicationLogo-xMpxFOcX.js"
@@ -131,28 +131,28 @@
     "/build/assets/AgodaHotelsSection-MfdPnXzD.js"
   ],
   "resources/js/Components/Home/FeaturedDestinations.jsx": [
-    "/build/assets/Home-Cywubr9H.js"
+    "/build/assets/Home-DNDHLtuE.js"
   ],
   "resources/js/Components/Home/HeroSection.jsx": [
-    "/build/assets/Home-Cywubr9H.js"
+    "/build/assets/Home-DNDHLtuE.js"
   ],
   "resources/js/Components/Home/HotelCard.jsx": [
-    "/build/assets/Home-Cywubr9H.js"
+    "/build/assets/Home-DNDHLtuE.js"
   ],
   "resources/js/Components/Home/HotelCarousel.jsx": [
-    "/build/assets/HotelCarouselSection-CwxkKCiI.js"
+    "/build/assets/HotelCarouselSection-hfpYhLN6.js"
   ],
   "resources/js/Components/Home/HotelCarouselSection.jsx": [
-    "/build/assets/HotelCarouselSection-CwxkKCiI.js"
+    "/build/assets/HotelCarouselSection-hfpYhLN6.js"
   ],
   "resources/js/Components/Home/LatestPosts.jsx": [
     "/build/assets/LatestPosts-2n53HhpR.js"
   ],
   "resources/js/Components/Home/PromoBanner.jsx": [
-    "/build/assets/Home-Cywubr9H.js"
+    "/build/assets/Home-DNDHLtuE.js"
   ],
   "resources/js/Components/Home/TopRatedHotels.jsx": [
-    "/build/assets/Home-Cywubr9H.js"
+    "/build/assets/Home-DNDHLtuE.js"
   ],
   "resources/js/Components/Home/WhyChooseUs.jsx": [
     "/build/assets/WhyChooseUs-CGvKXAh_.js"
@@ -197,25 +197,25 @@
     "/build/assets/HotelierNav-CV4guQe6.js"
   ],
   "resources/js/Components/Hotels/HeroSection.jsx": [
-    "/build/assets/Show-CZ0KCiQK.js"
+    "/build/assets/Show-nHw271xB.js"
   ],
   "resources/js/Components/Hotels/HotelierContentSection.jsx": [
-    "/build/assets/HotelierContentSection-CuRD2odm.js"
+    "/build/assets/HotelierContentSection-WBL5Xohq.js"
   ],
   "resources/js/Components/Hotels/Icons.jsx": [
-    "/build/assets/Show-CZ0KCiQK.js"
+    "/build/assets/Show-nHw271xB.js"
   ],
   "resources/js/Components/Hotels/PoolDetailsSection.jsx": [
-    "/build/assets/Show-CZ0KCiQK.js"
+    "/build/assets/Show-nHw271xB.js"
   ],
   "resources/js/Components/Hotels/Sidebar.jsx": [
-    "/build/assets/Show-CZ0KCiQK.js"
+    "/build/assets/Show-nHw271xB.js"
   ],
   "resources/js/Components/Hotels/SimilarHotels.jsx": [
     "/build/assets/SimilarHotels-Dd3nRs0p.js"
   ],
   "resources/js/Components/Hotels/ui/index.jsx": [
-    "/build/assets/HotelierContentSection-CuRD2odm.js"
+    "/build/assets/HotelierContentSection-WBL5Xohq.js"
   ],
   "resources/js/Components/InputError.jsx": [
     "/build/assets/InputLabel-DHM-t9oD.js"
@@ -251,67 +251,67 @@
     "/build/assets/GuestLayout-B-R2jca9.js"
   ],
   "resources/js/Pages/Admin/Claims/HotelierPerformance.jsx": [
-    "/build/assets/HotelierPerformance-BmCOXtWN.js"
+    "/build/assets/HotelierPerformance-B2ZiyFJC.js"
   ],
   "resources/js/Pages/Admin/Claims/Index.jsx": [
-    "/build/assets/Index-Q2O9-ic6.js"
+    "/build/assets/Index-DCNIFQ4n.js"
   ],
   "resources/js/Pages/Admin/Claims/Show.jsx": [
-    "/build/assets/Show-Bt1eQAUh.js"
+    "/build/assets/Show-B3ffVAqE.js"
   ],
   "resources/js/Pages/Admin/Content/CreatePost.jsx": [
-    "/build/assets/CreatePost-BVEsokZu.js",
+    "/build/assets/CreatePost-Cy-KOEDZ.js",
     "/build/assets/vendor-react-VYesxZYF.css"
   ],
   "resources/js/Pages/Admin/Content/EditPost.jsx": [
-    "/build/assets/EditPost-pSeQrVnO.js",
+    "/build/assets/EditPost-Bl3-Kxxd.js",
     "/build/assets/vendor-react-VYesxZYF.css"
   ],
   "resources/js/Pages/Admin/Content/Index.jsx": [
-    "/build/assets/Index-CI41-VgB.js",
+    "/build/assets/Index-Dvor57DK.js",
     "/build/assets/vendor-react-VYesxZYF.css"
   ],
   "resources/js/Pages/Admin/Dashboard.jsx": [
-    "/build/assets/Dashboard-DiOE4og4.js"
+    "/build/assets/Dashboard-CZVoqMUs.js"
   ],
   "resources/js/Pages/Admin/Destinations/Edit.jsx": [
-    "/build/assets/Edit-BO_GyKcw.js"
+    "/build/assets/Edit-7OBO9Nj_.js"
   ],
   "resources/js/Pages/Admin/Destinations/Index.jsx": [
-    "/build/assets/Index-D8_PPY9w.js"
+    "/build/assets/Index-Df7T31Li.js"
   ],
   "resources/js/Pages/Admin/Directory/Index.jsx": [
-    "/build/assets/Index-Dp4HvIwZ.js"
+    "/build/assets/Index-CgDcp5EJ.js"
   ],
   "resources/js/Pages/Admin/Hotels/Create.jsx": [
-    "/build/assets/Create-CuV_WyLW.js",
+    "/build/assets/Create-C9t9JzYV.js",
     "/build/assets/vendor-leaflet-CG6DamIu.css",
     "/build/assets/layers-BWBAp2CZ.png",
     "/build/assets/layers-2x-Bpkbi35X.png",
     "/build/assets/marker-icon-hN30_KVU.png"
   ],
   "resources/js/Pages/Admin/Hotels/Edit.jsx": [
-    "/build/assets/Edit-UFfkU2vj.js",
+    "/build/assets/Edit-lDPp2iBm.js",
     "/build/assets/vendor-leaflet-CG6DamIu.css",
     "/build/assets/layers-BWBAp2CZ.png",
     "/build/assets/layers-2x-Bpkbi35X.png",
     "/build/assets/marker-icon-hN30_KVU.png"
   ],
   "resources/js/Pages/Admin/Hotels/Index.jsx": [
-    "/build/assets/Index-B7BzLSV9.js"
+    "/build/assets/Index-BJL_qAaB.js"
   ],
   "resources/js/Pages/Admin/Profile.jsx": [
-    "/build/assets/Profile-CLujniWm.js"
+    "/build/assets/Profile-HZzXB2-N.js"
   ],
   "resources/js/Pages/Admin/Scoring/Index.jsx": [
-    "/build/assets/Index-mxui57zE.js",
+    "/build/assets/Index-C8zrF1oU.js",
     "/build/assets/vendor-react-VYesxZYF.css"
   ],
   "resources/js/Pages/Admin/Users/Edit.jsx": [
-    "/build/assets/Edit-CvdA_Srv.js"
+    "/build/assets/Edit-DDeMn47u.js"
   ],
   "resources/js/Pages/Admin/Users/Index.jsx": [
-    "/build/assets/Index-OoiQgLMV.js"
+    "/build/assets/Index-CHM31HiE.js"
   ],
   "resources/js/Pages/Auth/ConfirmPassword.jsx": [
     "/build/assets/ConfirmPassword-DAaitNbg.js"
@@ -323,7 +323,7 @@
     "/build/assets/Login-hvuEweRM.js"
   ],
   "resources/js/Pages/Auth/Register.jsx": [
-    "/build/assets/Register-Ct3lKrjR.js"
+    "/build/assets/Register-CEAmkMKR.js"
   ],
   "resources/js/Pages/Auth/ResetPassword.jsx": [
     "/build/assets/ResetPassword-COLRyy41.js"
@@ -344,10 +344,10 @@
     "/build/assets/Index-zedj7D4G.js"
   ],
   "resources/js/Pages/Destinations/Show.jsx": [
-    "/build/assets/Show-C14JLZWE.js"
+    "/build/assets/Show-BGFAwWvb.js"
   ],
   "resources/js/Pages/Home.jsx": [
-    "/build/assets/Home-Cywubr9H.js"
+    "/build/assets/Home-DNDHLtuE.js"
   ],
   "resources/js/Pages/Hotelier/Analytics.jsx": [
     "/build/assets/Analytics-irCzyHeE.js"
@@ -356,14 +356,14 @@
     "/build/assets/BillingHistory-B78X_3t6.js"
   ],
   "resources/js/Pages/Hotelier/ClaimHotel.jsx": [
-    "/build/assets/ClaimHotel-ENPNtJtb.js",
+    "/build/assets/ClaimHotel-DpoHTSdv.js",
     "/build/assets/vendor-react-VYesxZYF.css"
   ],
   "resources/js/Pages/Hotelier/Claims/Index.jsx": [
     "/build/assets/Index-CO4ieLcc.js"
   ],
   "resources/js/Pages/Hotelier/Claims/ManageHotel.jsx": [
-    "/build/assets/ManageHotel-Cq6JcgEP.js"
+    "/build/assets/ManageHotel-g3ZYxXzn.js"
   ],
   "resources/js/Pages/Hotelier/Claims/Verify.jsx": [
     "/build/assets/Verify-DDXWUwF8.js",
@@ -382,13 +382,13 @@
     "/build/assets/SubscriptionCheckout-B7Xv4w6n.js"
   ],
   "resources/js/Pages/Hotelier/SubscriptionPayment.jsx": [
-    "/build/assets/SubscriptionPayment-DDXrV5Be.js"
+    "/build/assets/SubscriptionPayment-BcFJCLR7.js"
   ],
   "resources/js/Pages/Hotels/Compare.jsx": [
-    "/build/assets/Compare-BI2URCBX.js"
+    "/build/assets/Compare-9B-2q9rS.js"
   ],
   "resources/js/Pages/Hotels/Show.jsx": [
-    "/build/assets/Show-CZ0KCiQK.js"
+    "/build/assets/Show-nHw271xB.js"
   ],
   "resources/js/Pages/Profile/Edit.jsx": [
     "/build/assets/Edit-_ezHv5db.js"
@@ -406,7 +406,7 @@
     "/build/assets/Results-CkfSim3T.js"
   ],
   "resources/js/Pages/Static/About.jsx": [
-    "/build/assets/About-CiaWqQkb.js"
+    "/build/assets/About-DqVoDy-e.js"
   ],
   "resources/js/Pages/Static/AffiliateDisclosure.jsx": [
     "/build/assets/AffiliateDisclosure-DcxyYhp0.js"
@@ -437,6 +437,12 @@
   ],
   "resources/js/hooks/useAppUrl.js": [
     "/build/assets/useAppUrl-B4l_DIW7.js"
+  ],
+  "resources/js/hooks/useIsMetricPublic.js": [
+    "/build/assets/useIsMetricPublic-CaUZ5V4l.js"
+  ],
+  "resources/js/lib/analytics.js": [
+    "/build/assets/analytics-Be4ccnh2.js"
   ],
   "resources/js/ssr.jsx": [],
   "vendor/tightenco/ziggy/dist/index.esm.js": []

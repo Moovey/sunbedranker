@@ -1,6 +1,7 @@
 import { Link, Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import HotelierNav from '@/Components/HotelierNav';
+import { trackHotelClaim } from '@/lib/analytics';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -18,6 +19,7 @@ export default function ClaimHotel({ hotel }) {
         e.preventDefault();
         post(route('hotelier.hotels.claim.store', hotel.slug), {
             onSuccess: () => {
+                trackHotelClaim({ hotel });
                 toast.success('Hotel claim submitted successfully! We will review your claim and contact you soon.', {
                     position: 'top-right',
                     autoClose: 5000,

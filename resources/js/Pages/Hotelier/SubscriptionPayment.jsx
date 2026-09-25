@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import HotelierNav from '@/Components/HotelierNav';
+import { trackPurchase } from '@/lib/analytics';
 
 import { useAppUrl } from '@/hooks/useAppUrl';
 
@@ -40,6 +41,13 @@ function PaymentForm({ plan, period, orderSummary, clientSecret, billingData, on
         }
 
         if (paymentIntent && paymentIntent.status === 'succeeded') {
+            trackPurchase({
+                transactionId: paymentIntent.id,
+                plan,
+                period,
+                value: orderSummary.total,
+            });
+
             // Payment successful - submit to backend to create subscription
             router.post(route('hotelier.subscribe.complete', { plan }), {
                 ...billingData,

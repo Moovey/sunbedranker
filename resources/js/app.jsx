@@ -6,6 +6,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { lazy, Suspense } from 'react';
 import { route } from '../../vendor/tightenco/ziggy/dist/index.esm.js';
+import CookieConsent from '@/Components/CookieConsent';
 const LazyToastContainer = lazy(() => import('react-toastify').then(mod => {
     import('react-toastify/dist/ReactToastify.css');
     return { default: mod.ToastContainer };
@@ -81,6 +82,7 @@ createInertiaApp({
         root.render(
             <>
                 <App {...props} />
+                <CookieConsent />
                 <Suspense fallback={null}>
                     <LazyToastContainer
                         position="top-right"

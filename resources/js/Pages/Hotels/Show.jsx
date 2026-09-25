@@ -2,6 +2,7 @@ import { Head, router } from '@inertiajs/react';
 import { useState, useCallback, useMemo, lazy, Suspense } from 'react';
 import { useAppUrl } from '@/hooks/useAppUrl';
 import { useIsMetricPublic } from '@/hooks/useIsMetricPublic';
+import { trackAffiliateClick } from '@/lib/analytics';
 import Header from '@/Components/Header';
 import Footer from '@/Components/Footer';
 
@@ -96,8 +97,9 @@ export default function HotelShow({ hotel, similarHotels }) {
 
     // Memoized handlers
     const handleBookingClick = useCallback((type) => {
+        trackAffiliateClick({ hotel, provider: type });
         window.location.href = `/hotels/${hotel.slug}/click?type=${type}`;
-    }, [hotel.slug]);
+    }, [hotel]);
 
     const toggleFaq = useCallback((index) => {
         setOpenFaqIndex(prev => prev === index ? null : index);

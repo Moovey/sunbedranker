@@ -1,6 +1,7 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import Header from '@/Components/Header';
+import { trackSignUp } from '@/lib/analytics';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -18,6 +19,7 @@ export default function Register() {
         e.preventDefault();
 
         post(route('register'), {
+            onSuccess: () => trackSignUp({ method: 'email', userType: data.user_type }),
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
