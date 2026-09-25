@@ -8,6 +8,7 @@
         <meta name="description" content="Find the best hotel pools and sunbeds. Compare hotels by pool quality, sunbed availability, sun exposure, and atmosphere ratings." />
         <meta name="robots" content="index, follow" />
         <meta name="google-site-verification" content="1BFi1lziWSsKbvL-aJbAt5VeLsOo8Fg67dzHYRGvzm8" />
+        <meta name="google-site-verification" content="ZNFMwGgbxZs7C5iJcPKSuxw2BYW8ekh7icFLfcFc2Fs" />
 
         @if($gtmId = config('services.gtm.container_id'))
             <script>window.dataLayer = window.dataLayer || [];</script>
