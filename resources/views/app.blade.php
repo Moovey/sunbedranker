@@ -55,7 +55,9 @@
             <script async src="https://www.googletagmanager.com/gtag/js?id={{ $ga4Id }}"></script>
             <script>
                 gtag('js', new Date());
-                gtag('config', '{{ $ga4Id }}');
+                // ?ga_debug=1 surfaces the session in GA4 DebugView.
+                var gaDebug = '{{ request()->boolean("ga_debug") ? "1" : "" }}' === '1';
+                gtag('config', '{{ $ga4Id }}', gaDebug ? { debug_mode: true } : {});
             </script>
             <!-- End Google tag (gtag.js) -->
         @endif
