@@ -21,6 +21,18 @@
             <!-- End Google Tag Manager -->
         @endif
 
+        @if($ga4Id = config('services.ga4.measurement_id'))
+            <!-- Google tag (gtag.js) -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id={{ $ga4Id }}"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '{{ $ga4Id }}');
+            </script>
+            <!-- End Google tag (gtag.js) -->
+        @endif
+
         <!-- Favicon -->
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48.png">

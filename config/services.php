@@ -58,6 +58,11 @@ return [
         'container_id' => env('GTM_CONTAINER_ID'),
     ],
 
+    'ga4' => [
+        // Leave unset locally so dev traffic is not sent to Analytics.
+        'measurement_id' => env('GA4_MEASUREMENT_ID'),
+    ],
+
     'countrystatecity' => [
         'key' => env('COUNTRYSTATECITY_API_KEY'),
         'base_url' => 'https://api.countrystatecity.in/v1',

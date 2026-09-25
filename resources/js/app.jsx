@@ -56,16 +56,24 @@ createInertiaApp({
                 return;
             }
 
-            if (!Array.isArray(window.dataLayer)) {
-                return;
+            const pagePath = window.location.pathname + window.location.search;
+
+            if (Array.isArray(window.dataLayer)) {
+                window.dataLayer.push({
+                    event: 'inertia_page_view',
+                    page_path: pagePath,
+                    page_location: window.location.href,
+                    page_title: document.title,
+                });
             }
 
-            window.dataLayer.push({
-                event: 'inertia_page_view',
-                page_path: window.location.pathname + window.location.search,
-                page_location: window.location.href,
-                page_title: document.title,
-            });
+            if (typeof window.gtag === 'function') {
+                window.gtag('event', 'page_view', {
+                    page_path: pagePath,
+                    page_location: window.location.href,
+                    page_title: document.title,
+                });
+            }
         });
 
         const root = createRoot(el);
