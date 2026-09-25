@@ -30,13 +30,13 @@ class SecurityHeaders
         $response->headers->set('Content-Security-Policy',
             "upgrade-insecure-requests; " .
             "default-src 'self'; " .
-            "script-src 'self' 'unsafe-inline' https://js.stripe.com https://*.cloudflareinsights.com https://challenges.cloudflare.com; " .
+            "script-src 'self' 'unsafe-inline' https://js.stripe.com https://*.cloudflareinsights.com https://challenges.cloudflare.com https://www.googletagmanager.com; " .
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.bunny.net https://unpkg.com; " .
             "img-src 'self' data: blob: https:; " .
             "media-src 'self' blob: https:; " .
             "font-src 'self' https://fonts.gstatic.com https://fonts.bunny.net; " .
-            "connect-src 'self' https://api.stripe.com https://*.cloudflareinsights.com https://*.tile.openstreetmap.org; " .
-            "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://www.youtube.com https://www.youtube-nocookie.com https://maps.google.com https://www.google.com; " .
+            "connect-src 'self' https://api.stripe.com https://*.cloudflareinsights.com https://*.tile.openstreetmap.org https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; " .
+            "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://www.youtube.com https://www.youtube-nocookie.com https://maps.google.com https://www.google.com https://www.googletagmanager.com; " .
             "worker-src 'self' blob:; " .
             "object-src 'none'; " .
             "frame-ancestors 'self'; " .
